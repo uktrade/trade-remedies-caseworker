@@ -1,71 +1,133 @@
 {% load format_date %}
 
 <table class="review-list empty margin-top-1">
-	<thead>
-		<tr>
-		<th colspan={% if hide_headings %}4{% else %}2{% endif %}>{{ title|default:'Documents' }}
-				{% if hide_headings and not editable %}
-					{% if not submission.organisation_case_role_outer.validated_at %}
-						<span  class="pull-right">Publication available after verification</span>
-					{% else %}
-						{% if not submission.issued_at %}
-							{% if user.permissions.publish_public %}<button class="link pull-right" type value="publish-start">
-								Publish current version</button>
-							{% endif %}
-						{% else %}
-							{% if user.permissions.publish_public %}
-								<button type="button" class="link pull-right" name="btn-value" value="withdraw"
-								>Withdraw</button>
-							{% endif %}
-							<span class="font-weight-normal pull-right"><i class="icon icon-green-tick"></i><strong class="bold">Published</strong> {% if submission.deficiency_notice_params.issue_anonymously == 'yes'%}(anonymous) {% endif %}{{submission.issued_at|format_date:'{S} %b %Y'}} by {{submission.issued_by.name}}</span>
-						{% endif %}
-					{% endif %}
-				{% endif %}
-		</th>
-		{% if not hide_headings %}
-			<th>Status</th>
-			<th><span class="pull-right">Sufficient?</span></th>
-		{% endif %}
-		</tr>
-	</thead>
+    <thead>
+    <tr>
+        <th colspan={% if hide_headings %}4{% else %}2{% endif %}>{{ title|default:'Documents' }}
+            {% if hide_headings and not editable %}
+                {% if not submission.organisation_case_role_outer.validated_at %}
+                    <span class="pull-right">Publication available after verification</span>
+                {% else %}
+                    {% if submission.issued_at %}
+                        {% if user.permissions.publish_public %}
+                            <button type="button" class="link pull-right" name="btn-value" value="withdraw"
+                            >Withdraw
+                            </button>
+                        {% endif %}
+                        <span class="font-weight-normal pull-right"><i class="icon icon-green-tick"></i><strong
+                                class="bold">Published</strong>
+                            {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
+                                (anonymous) {% endif %}{{ submission.issued_at|format_date:'{S} %b %Y' }}
+                            by {{ submission.issued_by.name }}</span>
+                    {% else %}
+                        {% if user.permissions.publish_public %}
+                            <button class="link pull-right" type value="publish-start">
+                                Publish current version
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </th>
+        {% if not hide_headings %}
+            <th>Status</th>
+            <th><span class="pull-right">Sufficient?</span></th>
+        {% endif %}
+    </tr>
+    </thead>
     <tbody>
     {% if documents %}
-	    {% for document in documents %}
-	        <tr data-fileid="{{document.id}}" data-filename="{{document.name}}" data-filesize="{{document.size}}" data-fileconfidential="{{document.confidential}}">
-	        	<td class="small"><span class="file-count">{{ forloop.counter }}.</span></td>
-	            <td>
-	                <span class="filename">{% document_link document %}</span>
-	            </td>
-	            <td>
-	           		{% if document.parent.checksum == document.checksum %}
-	           			&nbsp;
-	           		{% elif document.parent.deficient %}
-	           		    Deficient/replaced
-	           		{% elif document.parent %}
-	           			Replaced
-	           		{% else %}
-	           			New
-	           		{% endif %}
-	            </td>
-	            <td>
-					{% set 'doc_editable' editable %}
-	            	{% set 'value' '' %}
-	            	{% if document.deficient or not document.safe %}
-						{% set 'value' 'no' %}
-						{% if document.safe == False %}
-							{% set 'doc_editable' False %}
-						{% endif %}
-	            	{% elif document.sufficient %}
-	            		{% set 'value' 'yes' %}
-	            	{% endif %}
-					{% include 'widgets/slider.html' with value=value name=document.id editable=doc_editable %}
-	            </td>
-	        </tr>
-	    {% endfor %}
-	{% else %}
-		<tr class="empty-line">
-			<td colspan="3" class="text-grey">No files have been added</td>
-		</tr>
-	{% endif %}
+        {% for document in documents %}
+            <tr data-fileid="{{ document.id }}" data-filename="{{ document.name }}" data-filesize="{{ document.size }}"
+                data-fileconfidential="{{ document.confidential }}"
+                {% if document.deficient %}class="is-deficient"{% endif %}>
+                {# NB - document.confidential is a string from a python bool, it gets parsed by helpers.js #}
+                <td class="small"><span class="file-count">{{ forloop.counter }}.</span></td>
+                <td>
+                    <span class="filename">{% document_link document %}</span>
+                    {% if not document.confidential %}
+                        {% if not editable %}
+                            {% if document.block_from_public_file %}
+                                <div class="blocked-publication__readonly-container">
+                                    <div class="info">
+                                        Blocked from public file by {{ document.blocked_by.name }} on
+                                        {{ document.blocked_at | format_date:"%d %b %Y %H:%M" }}
+                                        <br>
+                                        <span class="reason">{{ document.block_reason }}</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                        <div class="block-publication__edit-container"
+                                {# We *have* to render these components because the save and continue button is hardwired #}
+                                {# to call ReviewSubmission.js/setDocumentDeficiency which in turn will update the blocked #}
+                                {# status based on these inputs #}
+                             {% if not editable %}style="display:none;"{% endif %}>
+                            <div class="multiple-choice" data-target="block-reason-container-{{ document.id }}">
+                                <input id="block-publication-yes-{{ document.id }}" type="radio"
+                                       name="block-publication-{{ document.id }}"
+                                        {% if document.block_from_public_file %}
+                                       checked
+                                        {% endif %}
+                                       value="yes">
+                                <label for="block-publication-yes-{{ document.id }}">Not suitable to publish</label>
+                            </div>
+                            <div class="panel panel-border-narrow js-hidden"
+                                 id="block-reason-container-{{ document.id }}">
+                                <label class="form-label" for="contact-email">Reason for blocking
+                                    publication</label>
+                                <input class="form-control"
+                                       name="block-reason--{{ document.id }}" type="text"
+                                       id="block-reason-{{ document.id }}"
+                                       style="width:75%;"
+                                       maxlength="128"
+                                       value="{{ document.block_reason|default_if_none:"" }}"/>
+
+                            </div>
+                            <div class="multiple-choice">
+                                <input id="block-publication-no-{{ document.id }}" type="radio"
+                                       name="block-publication-{{ document.id }}"
+                                        {% if not document.block_from_public_file %}
+                                       checked
+                                        {% endif %}
+                                       value="no">
+                                <label for="block-publication-no-{{ document.id }}">Suitable to publish</label>
+                            </div>
+                        </div>
+
+                    {% endif %}
+                </td>
+                <td>
+                    {% if document.parent.checksum == document.checksum %}
+                        &nbsp;
+                    {% elif document.parent.deficient %}
+                        Deficient/replaced
+                    {% elif document.parent %}
+                        Replaced
+                    {% else %}
+                        New
+                    {% endif %}
+                </td>
+                <td>
+                    {% set 'doc_editable' editable %}
+                    {% set 'value' '' %}
+                    {% if document.deficient or not document.safe %}
+                        {% set 'value' 'no' %}
+                        {% if document.safe == False %}
+                            {% set 'doc_editable' False %}
+                        {% endif %}
+                    {% elif document.sufficient %}
+                        {% set 'value' 'yes' %}
+                    {% endif %}
+                    {% include 'widgets/slider.html' with value=value name=document.id editable=doc_editable %}
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr class="empty-line">
+            <td colspan="3" class="text-grey">No files have been added</td>
+        </tr>
+    {% endif %}
     </tbody>
 </table>

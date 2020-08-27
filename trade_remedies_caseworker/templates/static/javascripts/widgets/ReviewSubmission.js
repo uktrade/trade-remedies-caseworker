@@ -8,7 +8,6 @@ define(["modules/helpers", "modules/popUps", "modules/logging"], function (
   const logger = logging.getLogger("reviewsubmission");
   var constructor = function (el) {
     var self = this;
-    logger.log("constructor");
     this.outer = el;
     try {
       this.submission = JSON.parse(this.outer.attr("data-submission"));
@@ -93,10 +92,26 @@ define(["modules/helpers", "modules/popUps", "modules/logging"], function (
 
   function setDocumentsDeficiency() {
     var self = this;
-    var doc_state = {};
+    logger.log("setDocumentDeficiency");
+    const documentStates = {};
     _.each(this.sliderList, function (val, id) {
-      doc_state[id] = { no: "deficient", yes: "sufficient" }[val];
+      if (!val) return;
+
+      const blockedSelector = `input[name="block-publication-${id}"]:checked`;
+      const blockReasonSelector = `#block-reason-${id}`;
+
+      const isBlocked = $(blockedSelector).val();
+      const blockReason = $(blockReasonSelector).val();
+
+      documentStates[id] = {
+        status: { no: "deficient", yes: "sufficient" }[val],
+        block_from_public_file: isBlocked || "no",
+        block_reason: blockReason || "",
+      };
     });
+
+    const documentList = JSON.stringify(documentStates);
+
     return $.ajax({
       url:
         "/case/" +
@@ -108,7 +123,7 @@ define(["modules/helpers", "modules/popUps", "modules/logging"], function (
       dataType: "json",
       data: {
         csrfmiddlewaretoken: window.dit.csrfToken,
-        document_list: JSON.stringify(doc_state),
+        document_list: documentList,
       },
     });
   }
@@ -150,18 +165,38 @@ define(["modules/helpers", "modules/popUps", "modules/logging"], function (
       .setClass("deficient", deficient);
   }
 
+  function parseConfidentialAttribute(target) {
+    const isConfValue = target.closest("tr").attr("data-fileconfidential");
+    return helpers.parsePythonBool(isConfValue);
+  }
+
+  function displayBlockPublicationEditControls(slider, visible) {
+    slider.closest("tr").toggleClass("is-deficient", visible);
+  }
+
   function onChange(evt) {
     var target = $(evt.target);
 
-    if (target.closest(".slider").length && target.prop("checked")) {
-      var docId = target.attr("name");
-      if (!this.sliderList[docId]) {
-        this.reviewsLeft--;
-      }
-      this.sliderList[docId] = target.val();
-      if (this.reviewsLeft <= 0) {
-        reviewComplete.call(this);
-      }
+    if (!target.closest(".slider").length || !target.prop("checked")) return;
+    const isPublicDocument = !parseConfidentialAttribute(target);
+    const docId = target.attr("name");
+
+    if (!this.sliderList[docId]) {
+      this.reviewsLeft--;
+    }
+
+    const sliderValue = target.val();
+    this.sliderList[docId] = sliderValue;
+
+    //hack - so slider checkboxes have values yes and no hardcoded
+    if (isPublicDocument) {
+      if (sliderValue == "no")
+        displayBlockPublicationEditControls(target, true);
+      else displayBlockPublicationEditControls(target, false);
+    }
+
+    if (this.reviewsLeft <= 0) {
+      reviewComplete.call(this);
     }
   }
 
@@ -195,6 +230,7 @@ define(["modules/helpers", "modules/popUps", "modules/logging"], function (
         }
       }, error);
     }
+
     if (value in { "publish-start": 1, "publish-cancel": 1 }) {
       setParameter
         .call(self, "publish", value == "publish-start")

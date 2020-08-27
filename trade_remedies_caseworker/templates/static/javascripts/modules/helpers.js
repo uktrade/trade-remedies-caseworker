@@ -168,7 +168,17 @@ define([], function () {
     return out;
   }
 
+  function parsePythonBool(value) {
+    //Expecting values of True or False anything else will raise an error
+    if (typeof value === "undefined") throw "Unable to parse";
+    if (value == "True") return true;
+    if (value == "False") return false;
+
+    throw `Expected True or False but received ${value}`;
+  }
+
   var library = {
+    parsePythonBool: parsePythonBool,
     urlParameters: function (map) {
       // Return the url (get) parameters as a map
       // .. or pass in a map to set all url parameters and load page.
