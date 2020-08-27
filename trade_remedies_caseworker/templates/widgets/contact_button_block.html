@@ -1,0 +1,28 @@
+{% load to_json %}
+<div class="button-block">
+    {% if party.primary_contact and invite %}
+        <button
+            type="button"
+            class="button modal-form button-blue compact"
+            data-url="/case/{{case.id}}/invite/{% if party.users %}organisation/{{party.id}}{% else %}{{party.primary_contact.id}}{% endif %}/as/{{case_role_id}}/">
+                <i class="icon icon-amber-warning pull-left">
+                    <span class="visually-hidden">Alert</span>
+                </i>Invite party to case
+        </button>
+    {% endif %}
+    <form action="/organisations/{{organisation.id}}/case/{{case.id}}/sampled/" method="post" data-attach="RedirectManager">
+        <button type="submit" class="button button-blue compact">
+            {% if party.sampled %}Remove from {% else %}Add to {% endif %} sampled list
+        </button>
+    </form>
+    {% if party.role.key != 'rejected' %}
+        {% if party.role.key == 'awaiting_approval' or not organisation.validated_at %}
+            <button type="button" class="button compact button-blue modal-form" data-url="/case/{{case.id}}/organisation/{{party.id}}/verify_caserole_tasks/">
+                <i class="icon icon-amber-warning pull-left">
+                    <span class="visually-hidden">Alert</span>
+                </i>
+                Verification process
+            </button>
+        {% endif %}
+    {% endif %}
+</div>

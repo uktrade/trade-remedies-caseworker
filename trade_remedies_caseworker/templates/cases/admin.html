@@ -1,0 +1,181 @@
+{% extends "cases/_case_template.html" %}
+{% load get_item %}
+{% load format_date %}
+{% block case_page_content %}
+  <div class="column-one-half">
+    <h3 class="heading-medium">Case milestone dates</h3>
+    <p>
+      Edit any important dates in the life of the case here.
+    </p>
+    <button type="button" class="link" value="milestones" onClick="document.location='/case/{{case.id}}/milestones/'">
+      Milestones
+    </button>
+
+
+    <h3 class="heading-medium">Case initiation</h3>
+
+    {% if case.decision_to_initiate %}
+    <form action="/case/{{case.id}}/admin/" method="post">
+       {% csrf_token %}
+        <p>
+          The case has had decision to initiate. Click the button to reset the decision to initiate.
+        </p>
+        <button type="submit" class="button" name="action" value="reset_initiation_decision">
+          Reset the decision to initiate
+        </button>
+    </form>
+    {% endif %}
+
+    <form action="/case/{{case.id}}/admin/" method="post">
+        {% csrf_token %}
+        <p>
+          The case is currently <em>
+          {% if case.initiated_at %}
+            Initiated at {% format_date case.initiated_at '%d %b %Y' %}
+          {% else %}
+            Not Initiated{% endif %}
+          </em>. Click the button below to toggle the initiation state of the case.
+          Note that this will <strong>RESET</strong> the initiation date of the case, and toggling this back on will set the initiation date to <em>now</em>
+        </p>
+        <button type="submit" class="button" name="action" value="initiation_flag_toggle">
+          {%if case.initiated_at %}Un-initiate and reset initiation date{% else %}Initiated from now{% endif %}
+        </button>
+    </form>
+
+    {% if not case.initiated_at %}
+      <h3 class="heading-medium">Case type</h3>
+      <form action="/case/{{case.id}}/admin/" method="post">
+          {% csrf_token %}
+          <p>
+            The case type is currently set to <em>{{case.type.name|default:'Not Set'}}</em>.<br/>
+            Be aware that changing case type will reset the case status as well and <em>will
+            reset any workflow states that exist</em>.
+          </p>
+          <select class="form-control" name="type_id">
+            <option value="">Not Set</option>
+            {% for case_type in case_enums.case_types %}
+              <option value="{{case_type.id}}" {% if case.type.id == case_type.id %}selected{% endif %}>{{case_type.name}}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="button" name="action" value="set_case_type">
+            Set type
+          </button>
+      </form>
+    {% endif %}
+
+    <h3 class="heading-medium">Case stage</h3>
+    <form action="/case/{{case.id}}/admin/" method="post">
+        {% csrf_token %}
+        <p>
+          The case stage is currently set to <em>{{case.stage.name|default:'Not Set'}}</em>.
+        </p>
+        <select class="form-control" name="stage_id">
+          <option value="">Not Set</option>
+          {% for stage in case_enums.case_stages %}
+            <option value="{{stage.id}}" {% if case.stage.id == stage.id %}selected{% endif %}>{{stage.name}}</option>
+          {% endfor %}
+        </select>
+        <br/>
+        <input type="checkbox" name="ignore_flow" value="true" id="ignore_flow"/>
+        <label for="ignore_flow">Force stage change</label>
+        <br/>
+        <button type="submit" class="button" name="action" value="set_case_stage">
+          Set stage
+        </button>
+    </form>
+
+    <h3 class="heading-medium">Case name</h3>
+    <form action="/case/{{case.id}}/admin/" method="post">
+        {% csrf_token %}
+        <p>
+          The case is currently titled <em>{{case.name}}</em>.
+        </p>
+        <input type="text" class="form-control" name="name" value="{{case.name}}"/>
+        <button type="submit" class="button" name="action" value="set_name">
+          Update case name
+        </button>
+    </form>
+
+    <h3 class="heading-medium">Archived Case</h3>
+    <form action="/case/{{case.id}}/admin/" method="post">
+        {% csrf_token %}
+        <p>
+          The case is currently <em>
+          {%if case.archived_at %}
+            Archived since {% format_date case.archived_at '%d %b %Y' %}.<br/>
+            Reason: {{case.archive_reason.name|default:'Not set'}}<br/>
+          {% else %}
+            Not Archived
+          {% endif %}<br/>
+          </em>Click the button below to toggle the archived state of the case.
+          Note that this will <strong>RESET</strong> the archive date of the case, and toggling this back on will set the archive date to <em>now</em>
+        </p>
+        <select name="archive_reason_id" class="form-control">
+          <option value="">No Reason</option>
+          {% for reason in case_enums.archive_reasons %}
+            <option value="{{reason.id}}" {% if case.archive_reason.id == reason.id %}selected{% endif %}>{{reason.name}}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="button" name="action" value="toggle_archived">
+          {%if case.archived_at %}Un-archive and reset archive date{% else %}Archive from now{% endif %}
+        </button>
+    </form>
+  </div>
+  <div class="column-one-half">
+    <h3 class="heading-medium">Case Users</h3>
+    <form action="/case/{{case.id}}/admin/">
+      <input type="hidden" name="action" value="users"/>
+      <h3 class="heading-small">Public Users</h3>
+      <UL>
+      {% for user in users.public_users %}
+        <LI>
+          {{user.user.name}} ({{user.organisation.name}})
+        </LI>
+      {% endfor %}
+      </UL>
+      <h3 class="heading-small">{% include "TRID_abbreviation.html" %} Users</h3>
+      <UL>
+      {% for user in users.tra_users %}
+        <LI>
+          {{user.name}}
+        </LI>
+      {% endfor %}
+      </UL>
+
+    </form>
+    <hr/>
+    <h3 class="heading-medium">Case Parties</h3>
+      <UL>
+      {% for party_role in participants %}
+        {% for party in participants|get_item:party_role|get_item:'parties' %}
+          <LI>
+            <!-- <form action="/organisations/{{party.id}}/case/{{case.id}}/role/" method="post" style="margin: 2px;"  data-attach="RedirectManager">
+              {% csrf_token %} -->
+              {{party.name}}<br/>
+              Role in case: {{party.role.name}}<br/>
+              <button
+                class="button modal-form button-blue compact"
+                data-url="/organisations/{{party.id}}/case/{{case.id}}/role/?action=change">
+                  <span class="visually-hidden">Alert</span>
+                  Change Role</button>
+              <button
+                class="button modal-form button-blue compact"
+                data-url="/organisations/{{party.id}}/case/{{case.id}}/role/?action=remove">
+                  <span class="visually-hidden">Alert</span>
+                  Remove from case</button>
+              <hr/>
+            <!-- <select name="role_key" class="form-control"></form>>
+              {% for role in case_enums.roles %}
+                <option value="{{role.key}}" {% if role.key == party_role %}selected{% endif %}>{{role.name}}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="button">Set</button> -->
+            <!-- </form> -->
+          </LI>
+        {% endfor %}
+      {% endfor %}
+      </UL>
+    </form>
+  </div>
+
+{% endblock %}

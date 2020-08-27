@@ -1,0 +1,290 @@
+/************  Overlays ***********/
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  &.active .semi-transparent {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    background: #000;
+    z-index: -1;
+    &.op0 {
+      opacity: 0;
+      filter: alpha(opacity=0);
+    }
+    &.op33 {
+      opacity: 0.33;
+      filter: alpha(opacity=33);
+    }
+    &.op66 {
+      opacity: 0.66;
+      filter: alpha(opacity=66);
+    }
+    &.op75 {
+      opacity: 0.75;
+      filter: alpha(opacity=75);
+    }
+    &.op85 {
+      opacity: 0.75;
+      filter: alpha(opacity=75);
+    }
+  }
+}
+
+.pop-up {
+  margin: 0 auto;
+  background: white;
+  z-index: 150;
+  outline: none;
+  position: absolute;
+  min-width: 280px;
+  box-shadow: 3px 4px 21px 0px #000;
+  > .outer {
+    overflow: auto;
+    padding: 15px 50px;
+    font-size: 19px;
+    select {
+      font-size: 19px;
+    }
+    img {
+      border: 5px solid #dee0e2;
+      border-radius: 5px;
+      display: block;
+      margin: 0 auto 10px;
+    }
+    .title {
+      margin-bottom: 20px;
+    }
+  }
+  > .title {
+    background: #5a5adc;
+    width: 100%;
+    overflow: hidden;
+    color: #fff;
+    h1 {
+      margin: 4px 10px;
+    }
+  }
+  .button-container {
+    width: 100%;
+    button {
+      float: left;
+      margin: 12px 6px;
+      padding: 6px 30px;
+      font-weight: bold;
+    }
+  }
+  .pop-up-header {
+    position: relative;
+    .dlg-close {
+      background: transparent;
+      border: none;
+      position: absolute;
+      right: 10px;
+      top: 14px;
+      height: auto;
+      padding: 6px 7px;
+    }
+  }
+  h1 {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  .heading-large {
+    margin: 20px 0;
+  }
+  .heading-medium {
+    margin: 10px 0;
+  }
+  table {
+    width: auto;
+    tr {
+      &.active {
+        background: #f6e0dd;
+      }
+      td,
+      th {
+        padding: 0.5em;
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+.alert {
+  border-width: 1px;
+}
+.alert h1 {
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.5;
+  margin: 0px;
+  font-weight: bold;
+}
+.alert a.alert-link {
+  text-decoration: underline;
+  font-weight: normal;
+}
+.alert .error-summary-list {
+  margin: 0;
+}
+.sr-only {
+  position: absolute;
+  left: -1000px;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/************************   Pop up editing  ***************/
+
+.pop-up .outer {
+  //min-width: 780px;
+  .main-content {
+    overflow: hidden;
+    width: 100%;
+  }
+  > div {
+    overflow: hidden;
+    padding: 3px;
+  }
+  label,
+  input,
+  textarea,
+  select,
+  h1,
+  h2 {
+    float: left;
+    clear: both;
+  }
+  select {
+    width: auto;
+    max-width: 100%;
+  }
+  label {
+    width: 100%;
+    margin: 5px 0;
+  }
+  .inline {
+    label,
+    input,
+    textarea,
+    select,
+    div,
+    h1,
+    h2 {
+      clear: none;
+    }
+  }
+  input,
+  textarea {
+    border-color: #ccc;
+  }
+  .compact-form {
+    width: 700px;
+    input,
+    textarea {
+      width: 100%;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-size: 16px;
+      > span {
+        font-size: 15px;
+        margin: 0px 0 -2px 0;
+        width: 100%;
+        display: block;
+        color: $grey-1;
+      }
+    }
+    .date-widget {
+      input {
+        clear: none;
+        &:first-child {
+          clear: both;
+        }
+        .date,
+        .month {
+          width: 2em;
+        }
+        .year {
+          width: 4em;
+        }
+      }
+    }
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  textarea {
+    &.compact {
+      height: 4em;
+      font-size: 16px;
+    }
+  }
+  .button-set {
+    margin: 10px 0;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+
+.loading-block {
+  padding: 15px;
+  @keyframes progress {
+    from {
+      background-position: 0px;
+    }
+    to {
+      background-position: 40px;
+    }
+  }
+
+  div.progress-bar {
+    height: 20px;
+    background: $govuk-blue;
+    width: 250px;
+    z-index: 1;
+    border: 1px solid $grey-3;
+    &.striped {
+      background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 20px 20px;
+    }
+    &.animated {
+      animation: progress 4s linear infinite;
+    }
+    div {
+      background: $grey-3;
+      width: 0;
+      height: 100%;
+    }
+    &.pale-blue {
+      background-color: $light-blue-50;
+    }
+  }
+}

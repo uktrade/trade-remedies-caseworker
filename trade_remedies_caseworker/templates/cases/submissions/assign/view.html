@@ -1,0 +1,17 @@
+{% extends '../review.html' %}
+{% load set %}
+{% block upper_info_block %}
+	<div class="info">
+		<p>Approval of this request will give the user access to the case page for the organisation. They will be able to submit evidence to the case.</p>
+		<p>An email confirming your approval will be sent to the admin and the new user.</p>
+	</div>
+{% endblock %}
+{% block lower_info_block %}
+	<div class="info">
+		<p><span class="bold">{{submission.created_by.name}}</span> from <span class="bold">{{submission.created_by.organisation.name}}</span> is requesting access for <span class="bold">{{submission.contact.name}}</span> to represent <span class="bold">{{submission.organisation.name}}</span> in this case.</p>
+	</div>
+{% endblock %}
+{% block case_page_content %}
+	{% set 'submission_group_name' 'assign user to case' %}
+	{{ block.super }}
+{% endblock %}

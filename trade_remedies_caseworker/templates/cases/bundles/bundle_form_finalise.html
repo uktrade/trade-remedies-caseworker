@@ -1,0 +1,57 @@
+{% extends "cases/bundles/bundle_form.html" %}
+{% load format_date %}
+
+{% block bundle_type %}
+    <div class="grey-box">
+        <div class="column-full">
+            <span class="label">Type</span>
+            <span class="value">{{bundle.name}}</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bundle_documents %}
+    <div class="grey-box">
+        <div class="column-one-half">
+            <span class="label">Content type</span>
+            <span class="value">Documents</span>
+        </div>
+    </div>
+
+    <div class="grey-box">
+        <div class="column-one-half">
+            <span class="label">Contents</span>
+            <button
+                type="button"
+                class="link edit"
+                onClick="document.location.replace('/documents/bundle/{{bundle.id}}/?edit=documents')">Edit</button>
+            <ul class="document-list">
+            {% for document in bundle.documents %}
+                <li>{% document_link document with_link=False with_confidential_mark=True %}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bundle_finalise %}
+    <div class="form-group">
+        <h2 class="heading-medium">Review and finalise bundle</h2>
+        <span class="form-hint">
+                Once finalised this bundle will be available for future applicants
+        </span>
+        {% include 'cases/submissions/virus_not_checked_warnings.html' with counts=counts %}
+        {% if store.virusfound %}
+            <span><i class="icon icon-amber-warning correct margin-right-5px"></i>You cannot issue a request until all the documents are virus-free</span>
+        {% else %}
+            <div class="multiple-choice submit-widget">
+
+                <input class="pull-left" id="finalise" name="finalise" type="checkbox" value="1">
+                <label class="form-label">
+                    I am happy to proceed with finalising this bundle
+                </label>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

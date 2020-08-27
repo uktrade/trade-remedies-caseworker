@@ -1,0 +1,50 @@
+{% extends "cases/bundles/bundle_form.html" %}
+{% load format_date %}
+{% load document_link %}
+
+{% block bundle_type %}
+    <div class="grey-box">
+        <div class="column-full">
+            <span class="label">Type</span>
+            <span class="value">{{bundle.name}}</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bundle_documents %}
+    <div class="grey-box">
+        <div class="column-one-half">
+            <span class="label">Content type</span>
+            <span class="value">Documents</span>
+        </div>
+    </div>
+
+    <div class="grey-box">
+        <div class="column-one-half">
+            <span class="label">Contents</span>
+            {% if bundle.status == 'DRAFT' %}
+                <button
+                    type="button"
+                    class="link edit"
+                    onClick="document.location.replace('/documents/bundle/{{bundle.id}}/?edit=documents')">Edit</button>
+            {% endif %}
+            <ul class="document-list">
+            {% for document in bundle.documents %}
+                <li>
+                    {% document_link document True True %}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bundle_finalise %}
+
+        <div class="form-group">
+            <div class="multiple-choice submit-widget">
+                This bundle is live
+            </div>
+        </div>
+
+{% endblock %}

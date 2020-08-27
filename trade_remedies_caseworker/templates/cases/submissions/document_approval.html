@@ -1,0 +1,41 @@
+
+<div class="form-group document-side-by-side margin-top-2">
+    <ul>
+        <li>
+            <div>
+                <strong class="bold-small">Documents submitted</strong>
+            </div>
+            <div>
+                <strong class="bold-small">Non-confidential submission</strong>
+                <span class="form-hint">These documents will form part of the case record in this case</span>
+            </div>
+        <li>
+
+        {% for document in documents.respondent %}
+            <li>
+                <div>
+                    {% if document.confidential %}
+                        <div>
+                            <a href="/cases/{{case_id}}/submission/{{submission.id}}/document/{{document.id}}/download/" target="_blank">{{document.name}}</a>
+                            <a
+                                href="/case/{{ case_id }}/submission/{{ submission.id }}/document/{{ document.id }}/{% if document.deficient %}sufficient{% else %}deficient{% endif %}/"
+                                class="icon pull-right icon-{% if document.deficient %}flag{% else %}tick{% endif %}"></a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if not document.confidential %}
+                        <div>
+                            <a href="/cases/{{case_id}}/submission/{{submission.id}}/document/{{document.id}}/download/" target="_blank">{{document.name}}</a>
+                            <a
+                                href="/case/{{ case_id }}/submission/{{ submission.id }}/document/{{ document.id }}/{% if document.deficient %}sufficient{% else %}deficient{% endif %}/"
+                                class="icon pull-right icon-{% if document.deficient %}flag{% else %}tick{% endif %}"></a>
+                        </div>
+
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+
+    </ul>
+</div>

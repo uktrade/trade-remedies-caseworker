@@ -1,0 +1,37 @@
+{% load format_date %}
+    <div class="column-full" data-action="{{action.key}}">
+        {% set 'value_tup' state|get_item:action.key %}
+        {% set 'value' value_tup.0 %}
+        {% set 'due_date' value_tup.1 %}
+        <div class="pull-right state-container" >
+        {% if value == 'complete' %}
+            <strong class="task-completed">Completed</strong>
+        {% else %}
+            {% if value == 'in-progress' %}
+                <strong class="task-completed progress">In progress</strong>
+            {% endif %}
+            {% if due_date %}
+                <span class="due-date pull-right"><span class="grey">due:</span>&nbsp;{% format_date due_date '%d %b %Y' %}</span>
+            {% endif %}
+        {% endif %}
+        </div>
+        <div class="">
+        {% if action.children and not action.children.0.response_type %}
+            {% if not action.permission or action.permission in user.permissions %}
+                <a class="expander link" data-attach="ExpandCollapse" href="javascript:void(0);">{{ action.label }}</a>
+            {% else %}
+                <span class="task-name">{{ action.label}}</span>
+            {% endif %}
+        {% else %}
+            {% if action.active %}
+                {% if not action.permission or action.permission in user.permissions %}
+                    <a class="task-name link" data-id="{{ action.key }}" data-target-block=".action-list-target" href="#{{ action.key }}">{{ action.label }}</a>
+                {% else %}
+                    <span class="task-name">{{ action.label}}</span>
+                {% endif %}
+            {% else %}
+                <span class="task-name">{{ action.label}}</span>
+            {% endif %}
+        {% endif %}
+        </div>
+    </div>

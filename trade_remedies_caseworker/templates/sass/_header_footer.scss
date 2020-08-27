@@ -1,0 +1,40 @@
+/* Overrides */
+
+#global-header.with-proposition .header-wrapper.header-wrapper .header-global {
+  width: auto;
+}
+#global-header.with-proposition
+  .header-wrapper.header-wrapper
+  .header-proposition {
+  width: auto;
+  float: none;
+}
+#global-header-bar {
+  background: $mellow-red;
+}
+footer#footer,
+footer#footer .footer-wrapper {
+  background-color: $grey-1;
+}
+footer#footer .footer-wrapper {
+  padding: 50px;
+  .footer-content {
+    color: $white;
+    margin-top: -12px;
+    .footer-support-links {
+      float: right;
+      a {
+        color: white;
+        margin: 0px 0 0 80px;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+footer#footer .footer-meta,
+footer .copyright {
+  display: none;
+}

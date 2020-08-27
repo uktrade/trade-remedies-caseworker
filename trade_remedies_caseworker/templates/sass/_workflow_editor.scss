@@ -1,0 +1,131 @@
+.type-label {
+  float: left;
+  margin: 0 9px 0 0px;
+  background: #999;
+  color: white;
+  padding: 2px 6px 0px 6px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+.workflow-editor {
+  .workflow-page {
+    position: relative;
+    padding: 0px;
+    margin: 0;
+    min-height: 300px;
+    .edit-item {
+      position: relative;
+      .expander {
+        cursor: pointer;
+        position: absolute;
+        left: 6px;
+        top: 9px;
+        &:hover {
+          opacity: 0.6;
+        }
+      }
+      &.expanded {
+        > div > .expander {
+          transform: rotate(-90deg);
+        }
+        > ul {
+          display: block;
+          visibility: visible;
+          margin-bottom: 15px;
+          > a {
+            margin-left: 50px;
+          }
+        }
+      }
+      .node-container {
+        padding: 10px 10px 10px 50px;
+        > span {
+          display: block;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        > .action-container {
+          display: none;
+          a {
+            margin: 0 5px;
+            cursor: pointer;
+            &:hover {
+              opacity: 0.6;
+            }
+          }
+        }
+        &:hover {
+          background: #eee;
+          > .action-container {
+            display: block;
+          }
+          /*&:after {
+            @include icon(24px);
+            content:'';
+            position:absolute;
+            top: 10px;
+            right: 9px;
+            background-position-y: -480px;
+            cursor: pointer;
+          } */
+        }
+      }
+    }
+  }
+  .state-page {
+    table td {
+      vertical-align: top;
+      > div {
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-width: 500px;
+      }
+    }
+  }
+  /*.tab-page {
+    display: none;
+    &.active {
+      display:block;
+    }
+  }*/
+}
+.pop-up .workflow {
+  .inline .form-label {
+    width: 140px;
+    text-align: right;
+    margin-right: 10px;
+  }
+  textarea {
+    min-height: 80px;
+  }
+  &.node-edit .form-group {
+    min-width: 850px;
+  }
+  &.choose-type .form-group {
+    min-width: 400px;
+  }
+}
+
+.action-list {
+  ul {
+    padding-left: 50px;
+  }
+  li {
+    padding: inherit 0;
+  }
+  li.highlight:before {
+    content: "";
+    background: #44a65b;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    display: block;
+    margin: 11px 0px 0 -35px;
+    float: left;
+  }
+  a {
+    cursor: pointer;
+  }
+}

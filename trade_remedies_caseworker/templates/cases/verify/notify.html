@@ -1,0 +1,34 @@
+{% load get_item %}
+<form>
+<div class="edit-section" data-attach="TemplateSubstitution">
+    {% for field_name in notification_template.personalisation %}
+        {% if field_name in editable_fields %}
+            {% with field=editable_fields|get_item:field_name %}
+                <div class="form-group edit-item type-text ">
+                    <input type="hidden" name="notify_keys" value="{{field_name}}"/>
+                    <label class="form-label" for="field-{{field_name}}">{{field.title|default:field_name}}</label>
+                    {% if field.type == 'textarea' %}
+                        <textarea class="form-control text" id="field-{{field_name}}"  name="{{field_name}}" rows="3" style="width:95%">{{values|get_item:field_name}}</textarea>
+                    {% else %}
+                        <input class="form-control text" id="field-{{field_name}}"  type="text" name="{{field_name}}" value="{{values|get_item:field_name}}">
+                    {% endif %}
+                </div>
+            {% endwith %}
+        {% endif %}
+    {% endfor %}
+    <div class="pull-left">The following notification will be sent including the personalisations highlighted:</div>
+    <div class="form-group edit-item type-text ">
+        {% if parsed_template %}
+            <div class="notify-preview" style="width:95%;">{{parsed_template|safe}}</div>
+        {% else %}
+            <textarea readonly rows="10" style="width:95%;">{{notification_template.body}}</textarea>
+        {% endif %}
+    </div>
+</div>
+<div class="button-group form-group margin-top-1">
+    <span class="issue-button-group pull-left">
+        <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Send the notification</button>
+    </span>
+    <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
+</div>
+</form>

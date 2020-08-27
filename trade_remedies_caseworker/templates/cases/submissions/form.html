@@ -1,0 +1,66 @@
+{% load get_item %}
+<form
+    action="{% if submission.id %}/case/{{case_id}}/submission/{{submission.id}}/{% else %}/case/{{case_id}}/organisation/{{organisation_id}}/submission/create/{% endif %}?__prefix={{case_id}}"
+    method="POST"
+    enctype="multipart/form-data"
+    data-redirect="/case/{{case_id}}/submissions"
+    data-case="{{case_id}}"
+    data-submission="{{submission.id}}"
+    data-organisation="{{organisation_id}}">
+    {% csrf_token %}
+    <h2 class="heading-large">{% block submission_title %}Questionnaire bundle{% endblock %}</h2>
+
+    <ul class="name-value-list margin-bottom-1">
+        {% if submission.status %}
+        <li>
+          <div class="name">Status</div>
+          <div class="value">{{submission.status.name}}</div>
+        </li>
+        {% endif %}
+        <li>
+          <div class="name">Organisation</div>
+          <div class="value">{{organisation.name}}</div>
+        </li>
+    </ul>
+
+    {% if submission_type_id %}
+        <input type="hidden" name="submission_type_id" value="{{submission_type_id}}"/>
+    {% else %}
+        <div class="form-group edit-item type-text ">
+            <label class="form-label" for="submission_type">Submission Type</label>
+            <select name="submission_type_id" id="submission_type" class="form-control">
+                {% for submission_type in submission_types %}
+                  <option
+                    value="{{submission_type.id}}"
+                    {% if submission_type.name.lower == selected_submission_type %}selected{% endif %}
+                  >{{submission_type.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endif %}
+    <div class="form-group">
+        <label class="form-label" for="submission_name">Name your bundle</label>
+        <input type="text" class="form-control" name="name" id="submission_name" value="{{submission.name}}"/>
+    </div>
+
+    {% include "widgets/file_browser.html" with documents=submission.documents operation_type="" %}
+
+    <label class="form-label" for="contact_id">Contact</label>
+    <select name="contact_id" id="contact_id" class="form-control">
+        <option value=""></option>
+        {% for contact in organisation.contacts %}
+            <option value="{{contact.id}}"
+                {% if contact.id == submission.contact.id %}selected{% endif %}>
+                    {{contact.name}} &lt;{{contact.email}}&gt; {% if contact.primary %}[PRIMARY]{% endif %}
+            </option>
+        {% endfor %}
+    </select>
+
+    <div class="form-group">
+        <button class="button button-blue margin-top-1" type="submit" name="notify" value="save">Save</button>
+
+        <button class="button button-green margin-top-1" type="submit" name="notify" value="save_and_notify">Save and send</button>
+        <button type="button" id="modalButton" class="hidden button modal-form button-blue compact margin-top-1" data-url="/case/{{case.id}}/submission/{{submission.id}}/notify/"></button>
+        <a class="button button-grey pull-right" href="/case/{{case_id}}/submissions/">Cancel</cancel>
+    </div>
+</form>

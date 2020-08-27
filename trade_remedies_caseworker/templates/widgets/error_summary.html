@@ -1,0 +1,25 @@
+{% if errors %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+                    {{ message|default:'Please correct the following errors' }}
+                </h2>
+                {% if hint %}
+                <p>
+                    {{ hint }}
+                </p>
+                {% endif %}
+                <ul class="error-summary-list">
+                    {% for key, value in errors.items %}
+                        <li><a href="#{{ key }}_error">
+                            {% autoescape off %}
+                                {{ value }}
+                            {% endautoescape %}
+                        </a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}

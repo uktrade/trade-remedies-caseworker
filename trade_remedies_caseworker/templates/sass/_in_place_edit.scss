@@ -1,0 +1,73 @@
+.in-place-edit:not(.editing):focus {
+  outline: 4px solid $yellow;
+}
+.in-place-edit:not(.editing):active {
+  outline: none;
+}
+.in-place-edit:not(.editing) {
+  position: relative;
+  //transition: background 0.3s;
+  transition: box-shadow 0.2s;
+  padding: 3px;
+  &:hover {
+    //background-color: #dddddd;
+    border-radius: 2px;
+    box-shadow: 0px 2px 4px 1px $grey-2;
+
+    &::after {
+      content: " ";
+      @include icon(20px);
+      background-position: 0px 600px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+  &:empty:before {
+    content: "...enter text";
+    display: block;
+    color: $grey-1;
+  }
+  &.placeholder-description:empty:before {
+    content: "... enter description";
+  }
+  &.placeholder-name:empty:before {
+    content: "... enter name";
+  }
+}
+.in-place-edit.editing {
+  padding: 3px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 4px 1px $link-hover-colour;
+  min-height: 1em;
+}
+
+.edit-buttons {
+  position: absolute;
+  z-index: 1;
+  button {
+    float: left;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    border: none;
+    margin: 0 0 0 3px;
+    line-height: 1;
+    padding: 4px 1px 0 0;
+    border-radius: 2px;
+    width: 28px;
+    height: 28px;
+    transition: hover 0.3s;
+    &.save {
+      background: $button-colour;
+    }
+    &.cancel {
+      background: $grey-2;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

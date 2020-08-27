@@ -1,0 +1,24 @@
+{% extends "cases/_case_template.html" %}
+{% block case_page_content %}
+<script>
+	window.dit.content_type='content.content';
+	window.dit.model_id='{{content.id}}';
+</script>
+{% if panel_layout %}
+<div class="column-one-quarter divider-right">
+		<div class="tree-nav" data-attach="TreeNav">
+		{% include "widgets/treeNav.html" with tree=tree pageOrSection="section"%}
+	</div>
+	<div class="hidden">
+		<div id="create-page-form">
+			<form>
+				<input type="text" name="name"/>
+			</form>
+		</div>
+	</div>
+</div>
+{% endif %}
+<div class="column-{% if panel_layout %}three-quarters{% else %}full{% endif %}">
+    {% include "cases/_nav_section.html" with navSection=content %}
+</div>
+{% endblock %}

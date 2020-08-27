@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load format_date %}
+{% load case_type_badge %}
+
+{% block heading %}Applications and cases{% endblock %}
+{% block main_content %}
+{% set 'archive' False %}
+{% if tabs.value == 'archived' %}
+	{% set 'archive' True %}
+{% endif %}
+{% include "widgets/tabs.html" with q=tabs %}
+{% include "widgets/case_list.html" with cases=cases archive=archive %}
+
+
+{% if user.permissions.create_ex_oficio %}
+<p class="margin-top-1">
+  <a class="link" href="/case/create/">New ex-officio case</a>
+</p>
+{% endif %}
+
+{% endblock %}

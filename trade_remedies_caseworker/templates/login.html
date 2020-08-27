@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block top_of_page %}&#32;{% endblock %}
+{% load application_heading %}
+
+{% block heading %}
+    {% application_heading %}
+{% endblock %}
+
+{% block main_content %}
+    {% if error %}
+        <span class="error-message">
+        {% if error == 'INVALID_LOGIN' %}
+            You have entered an incorrect email address or password.<br/>
+            Please try again or click on the Forgotten password link below.
+        {% else %}
+            {{error}}
+        {% endif %}
+        </span>
+    {% endif %}
+    <form action="/accounts/login/" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" name="email" value="{{email}}">
+        </div>
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" autocomplete="off" id="password" name="password" value="">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="button button-blue margin-top-1">Log in</button>
+        </div>
+        <div class="form-group">
+            <a href="/accounts/forgotpassword/">Forgotten password</a>
+        </div>
+    </form>
+{% endblock %}

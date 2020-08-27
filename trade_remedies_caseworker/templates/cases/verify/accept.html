@@ -1,0 +1,51 @@
+{% load to_json %}
+<form>
+<div class="grid-row">
+	<div class="column-full">
+		<div class="form-group">
+			<label class="form-label">Do you want to accept <span class="bold">{{submission.organisation.name}}</span> represented by <span class="bold">{{submission.created_by.name}}</span> into the case?</label>
+	        <div class="multiple-choice submit-widget">
+	            <input id="accepted-radio" class="pull-left" type="radio" value="accept" name="approve" {% if caserole.approved_at %}checked{% endif %}>
+	            <label class="form-label">
+	                Accept into case
+	            </label>
+	        </div>
+	        <div class="multiple-choice submit-widget">
+	            <input class="pull-left" type="radio" value="reject" name="approve" {% if caserole.role.key == 'rejected' %}checked{% endif %}>
+				<label class="form-label">
+	                Reject
+	            </label>
+	        </div>
+		</div>
+		{% for role in roles %}
+			{% if caserole.role.key == role.key %}
+				{% set 'selected_role' role.key %}
+			{% endif %}
+		{% endfor %}
+	    <div class="form-group" data-attach="Reveal" data-revealedby="#accepted-radio">
+            <label class="form-label" for="role_id">
+        		Which party type does this organisation represent in this case?
+            </label>
+            {% set 'default_role' '' %}
+            {% if caserole.role.key and caserole.role.key != 'awaiting_approval' %}
+				{% set 'default_role' caserole.role.key %}
+            {% elif organisation.json_data.created_as_type %}
+				{% set 'default_role' organisation.json_data.created_as_type %}
+            {% endif %}
+            <select name="role_key" class="form-control" >
+                <option value="" disabled {% if not selected_role %}selected{% endif %}>Select role...</option>
+                {% for role in roles %}
+                    <option value="{{role.key}}" {% if role.key == default_role %} selected {% endif %}>{{role.name}}</option>
+                {% endfor %}
+            </select>
+	    </div>
+	</div>
+</div>
+<div class="button-group form-group margin-top-1">
+    <span class="issue-button-group pull-left">
+        <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Save</button>
+    </span>
+    <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
+</div>
+</form>
+

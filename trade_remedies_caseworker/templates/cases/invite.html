@@ -1,0 +1,31 @@
+{% load get_item %}
+<h2 class="heading-medium">Invite {{organisation.name}}</h2>
+<div class="pull-left clear">
+    The following content will be sent to <em>{{contact.name}} &lt;{{contact.email}}&gt;</em> with the following personalisations:
+</div>
+<form action="{{form_url}}" method="POST" data-attach="TemplateSubstitution">
+    {% csrf_token %}
+    {% for item  in notification_template.personalisation %}
+        {% if item in editable_fields %}
+            <div class="form-group edit-item type-text ">
+                <label class="form-label" for="field-{{item}}">{{item}}</label>
+                <input class="form-control text" id="field-{{item}}"  type="text" name="{{item}}" value="{{values|get_item:item}}">
+                <!-- {{item}} <input type="text" name="{{item}}" value="{{values|get_item:item}}"/><br/> -->
+            </div>
+        {% endif %}
+    {% endfor %}
+    <input type="hidden" name="" value=""/>
+    <div class="form-group edit-item type-text ">
+        {# <textarea readonly rows="10" cols="80">{{notification_template.body}}</textarea> #}
+        {% if parsed_template %}
+            <div class="notify-preview" style="width:95%;">{{parsed_template|safe}}</div>
+        {% else %}
+            <textarea readonly rows="10" style="width:95%;">{{notification_template.body}}</textarea>
+        {% endif %}
+    </div>
+    <div class="button-set">
+        <button class="button button-blue" type="submit">Send</button>
+        <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
+    </div>
+</form>
+</div>

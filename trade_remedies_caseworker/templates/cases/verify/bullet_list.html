@@ -1,0 +1,42 @@
+{% comment %}
+**************************************
+The bulleted list of information, hints and instructions that's based on the 
+verification of an organisation in the verification flow.
+**************************************
+{% endcomment %}
+{% load pluralize %}
+
+<ul class="list-bullet double-spaced">
+    {% if organisation.fraudulent %}
+        <li><strong class="bold">{{organisation.name}}</strong> has been marked as potentially <strong class="bold">FRAUDULENT</strong><i class="icon icon-warning correct"></i></li>
+    {% endif %}    
+    {% if organisation.indirect_cases or organisation.cases %}
+        {% if organisation.cases %}
+            <li><strong class="bold">{{organisation.name}}</strong> has participated in {% if organisation.collated_cases|length %}<a href="javascript:void(0)" class="js-pop-up link">{{organisation.collated_cases|length}} previous case{% pluralize organisation.collated_cases|length %}</a>{% else %}no previous cases{% endif %} in its own right.
+                {% include "organisations/_representations_popup.html" with party=organisation cases=organisation.collated_cases mode="participation_list" title="Case participation" %}
+            </li>
+        {% endif %}        
+        {% if organisation.collated_indirect_cases %}
+            <li>Members of <strong class="bold">{{organisation.name}}</strong> have made <a href="javascript:void(0)" class="js-pop-up link">{{organisation.collated_indirect_cases|length}} previous third party representation{% pluralize organisation.collated_indirect_cases|length %}.</a>
+                {% include "organisations/_representations_popup.html" with party=organisation cases=organisation.collated_indirect_cases mode="representation_list" %}
+            </li>
+            {% if organisation.cases_for_org %}
+                <li>In {{organisation.cases_for_org|length}} of these, <strong class="bold">{{submission.organisation.name}}</strong> was being represented.</li>
+            {% endif %}
+        {% endif %}
+        {% if organisation.verified_usercases %}
+            <li>Of these cases, <a href="javascript:void(0)" class="js-pop-up link">{{organisation.verified_usercases|length}} {% pluralize organisation.verified_usercases|length 'has' 'have' %} been validated.</a><i class="icon icon-green-tick correct"></i>
+                {% include "organisations/_representations_popup.html" with party=organisation cases=organisation.verified_usercases mode="verification_list" title="Validated case access" %}
+            </li>
+            <li>
+                The last validation was on <strong class="bold">{{organisation.verified_usercases.0.caserole.validated_at|format_date:'%d %b %Y'}}</strong> by <strong class="bold">{{organisation.verified_usercases.0.caserole.validated_by.name}}</strong>
+            </li>
+        {% else %}
+            <li class="highlight"><strong class="bold">{{organisation.name}}</strong> has not yet been validated in any of the cases it's been involved in.</li>
+        {% endif %}
+    {% else %}
+        <li class="highlight"><strong class="bold">{{organisation.name}}</strong> has made no previous representations and must be checked thoroughly.</li>
+    {% endif %}                 
+
+</ul>
+ 

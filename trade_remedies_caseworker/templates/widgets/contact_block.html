@@ -1,0 +1,101 @@
+{% load get_item %}
+
+{#******   Set up contact icon ******#}
+{% if contact.has_user %}
+	{% set 'icon_class' 'icon-user-hollow' %}
+	{% if contact.user.organisation.id|_equals:organisation.id %}
+		{% set 'icon_class' 'icon-user' %}
+	{% endif %}
+{% endif %}
+<div class="contact-block {% if contact.primary and not hide_controls and not hide_primary%} primary{% endif %}
+{% if not icon_class %} grey{% endif %}">
+	{% if not hide_controls and not contact.has_user %}
+		<button
+			type="button"
+			class="link modal-form edit-contact {% if contact.loa %}hover-show{% endif %}"
+			data-event-update="party-updated"
+			data-url="/organisations/{% if case_id %}case/{{case.id}}/organisation/{% endif %}{{organisation.id}}/contact/{{contact.id}}/"
+			>Edit<span class="visually-hidden"> contact {{contact.name}}</span>
+		</button>
+	{% endif %}
+	{% if contact.loa %}
+		<i class="icon icon-quillscroll pull-right"></i>
+	{% endif %}
+	{% if icon_class %}
+		<i class="icon {{icon_class}} pull-left margin-right-5px"></i>
+	{% endif %}
+
+	<div class="bold margin-bottom-1">
+		{{contact.name}}
+	</div>
+	<div >
+		{% if contact.organisation.id != organisation.id %}
+			<div>{{contact.organisation.name}}</div>
+		{% endif %}
+		<div {% if not expand_addresses %}data-attach="AddressExpander"{% endif %}>
+			<div class="address">{{contact.address|default_if_none:''|wordwrap:50|linebreaksbr}}</div>
+		</div>
+		<div>{{contact.post_code|default_if_none:''}}</div>
+		<div>{{contact.country.name|default_if_none:''}}</div>
+		<div class="tel">
+			{% if contact.phone %}
+				Tel:{{contact.phone}}
+			{% endif %}
+		</div>
+		{% if contact.email %}
+			<a class="email link" href="mailto:{{contact.email}}">{{contact.email}}</a>
+		{% endif %}
+	</div>
+
+	<!--button type="button" class="button button-blue compact margin-top-1">Log in as this user</button-->
+	<div class="button-container">
+		{% if not hide_controls %}
+			{% if contact.id in invites %}
+				<span class="margin-bottom-1">
+					{% with invited_contact=invites|get_item:contact.id %}
+						{% if invited_contact.0.accepted_at %}
+							<i class="icon icon-green-tick"></i>Invitation accepted
+							{% if invited_contact.0.user.name %}
+								(as {{invited_contact.0.user.name}})
+							{% endif %}
+						{% else %}
+							<i class="icon icon-timer"></i>Invited
+						{% endif %}
+					{% endwith %}
+				</span>
+
+			{% elif pre_release_invitations and not organisation.users %}
+				{% if not contact.cases|_get:case_id or not contact.has_user %}
+					<button type="button" class="button modal-form button-blue compact margin-top-1" data-event-update="party-updated" data-url="/case/{{case.id}}/invite/{{contact.id}}/as/{{case_role_id}}/for/{{organisation.id}}/">Invite <span class="visually-hidden"> {{contact.name}}</span>to case</button>
+				{% endif %}
+			{% endif %}
+
+			{% if not hide_primary and case_id and contact.has_user %}
+				{# If we have a case id, we can set the primary contact #}
+				{% if not contact.primary or primary_count > '1' %}
+					<button type="button" class="button button-blue compact margin-top-1" data-method="post" data-event="party-updated" data-url="/organisations/case/{{case.id}}/organisation/{{organisation.id}}/contact/{{contact.id}}/set/primary/">Set<span class="visually-hidden"> {{contact.name}}</span> as primary user</button>
+				{% endif %}
+			{% endif %}
+			{% if not case_id %}
+				{# Otherwise, we are setting the org admin flag #}
+				<form action="/organisations/{{organisation.id}}/user/{{user.id}}/admin/toggle/{% if redirect %}?redirect={{ redirect }}{% endif %}" method="post" data-attach="RedirectManager" >
+					{% csrf_token %}
+					{% if 'Organisation Owner' in user.groups %}
+						<button type="submit" class="button button-blue compact margin-top-1" >Admin[change]<span class="visually-hidden"> {{contact.name}}</span></button>
+					{% else %}
+						<button type="submit" class="button button-blue compact margin-top-1" >Set<span class="visually-hidden"> {{contact.name}}</span> as admin</button>
+					{% endif %}
+				</form>
+			{% endif %}
+			{% if not contact.has_user %}
+					<button type="button" class="button button-blue compact margin-top-1" name="delete"
+						data-title="Confirm delete"
+						data-message="Are you sure you want to delete &quot;{{contact.name}}&quot;<br>This action cannot be undone."
+						data-url="/organisations/case/{{case.id}}/organisation/{{organisation.id}}/contact/{{contact.id}}/delete/"
+						data-method="post" data-event="party-updated"
+					>Delete contact<span class="visually-hidden"> {{contact.name}}</span></button>
+			{% endif %}
+		{% endif %}
+	</div>
+	<div class="spacer"></div>
+</div>

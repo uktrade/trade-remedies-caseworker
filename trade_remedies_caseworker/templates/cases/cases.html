@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load format_date %}
+{% load case_type_badge %}
+
+{% block body_classes %}
+	panel-layout
+	{{ body_classes }}
+{% endblock %}
+
+{% block header_row %}
+{% endblock %}
+
+{% block main_content %}
+{% set 'archive' False %}
+{% if tabs.value == 'archived' %}
+	{% set 'archive' True %}
+{% endif %}
+	<span class="heading-medium pull-left" style="margin-top:13px;">Cases</span>
+	<div class="pull-right margin-top-1">
+		<a href="javascript:void(0)" class="link bold menu-icon" data-attach="menuExpand">Other actions</a>
+		<span class="function-menu">
+			<div>
+				<ul>
+					{% if user.is_authenticated %}
+						{% get_feature_flag "SYSTEM_DASHBOARD" as FEATURE_SYSTEM_DASHBOARD %}
+						{% if FEATURE_SYSTEM_DASHBOARD %}
+							<li><a href="/system/">System View</a></li>
+						{% endif %}
+					{% endif %}
+					<li><a href="/organisations/">Manage organisations</a></li>
+					{% if user.is_admin %}
+						{% get_feature_flag "ORGANISATION_ADMIN" as FEATURE_ORGANISATION_ADMIN %}
+						<li><a href="/users/">Manage users</a></li>
+						<li><a href="/settings/feedback/">View customer feedback</a></li>
+					{% endif %}
+					<li><a href="/document/bundles/">Manage application templates</a></li>
+					{% if user.is_admin %}
+						{% get_feature_flag "NOTICES" as FEATURE_NOTICES %}
+						{% if FEATURE_NOTICES %}
+							<li><a href="/cases/notices/">Manage notices</a></li>
+						{% endif %}
+						{% if user.permissions.workflow_editor %}
+							<li><a href="/settings/system_parameters/">Set system parameters</a></li>
+						{% endif %}
+					{% endif %}
+					{% if user.permissions.create_ex_oficio %}
+						<li><a href="/case/create/">Create a new ex-officio case</a></li>
+					{% endif %}
+				</ul>
+			</div>
+		</span>
+	</div>
+<div class="stretch" style="top:50px;">
+	<div class="stretch tab-box case-list" style="height:38%;">
+		{% include "widgets/tabs.html" with q=tabs %}
+		<div class="overflow-auto tabpage" data-attach="ScrollShadow">
+			{% include "widgets/case_list.html" with cases=cases archive=archive %}
+		</div>
+	</div>
+	{% from_json '{"value": "yt", "tabList": [{"label": "Your tasks", "value": "yt", "sr_text": "Show your tasks"}]}' as tasks_tab %}
+	<div  class="stretch tab-box" style="top:40%; bottom:20px;">
+		{% include "widgets/tabs.html" with q=tasks_tab %}
+		<div id="taskbar" class="taskbar tabpage" data-attach="tasks/TaskManager" data-mode="my-tasks" data-viewer-mode="popup"></div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block footer %}{% endblock %}

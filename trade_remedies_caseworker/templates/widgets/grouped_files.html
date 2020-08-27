@@ -1,0 +1,50 @@
+{% load format_date %}
+{% load get_item %}
+{% load ellipsis_short %}
+{% for group in documents %}
+    <h3 class="heading-medium">{{group}}</h3>
+    {% if documents|get_item:group|length > 0 %}
+        <div class="grid-row">
+            <div class="column-one-half">
+                <h3 class="heading-small">Confidential files</h3>
+                <table>
+                <thead></thead>
+                <tbody>
+                    {% for document in documents|get_item:group %}
+                        {% if document.confidential %}
+                            <tr>
+                                <td>
+                                    <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
+                                        {{document.name|ellipsis_short}}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            <div class="column-one-half">
+                <h3 class="heading-small">Non confidential files</h3>
+                <table>
+                <thead></thead>
+                <tbody>
+                {% for document in documents|get_item:group %}
+                    {% if not document.confidential %}
+                       <tr>
+                            <td>
+                                <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
+                                    {{document.name|ellipsis_short}}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        No documents available
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,53 @@
+<div class="column-one-half">
+    {% if not is_email_read_only %}
+    <input data-key="id" name="contact_id" type="hidden" value="">
+    <div class="form-group edit-item type-text " data-attach="Typeahead" data-validate=".+->You must provide an email address||^(?:[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+){0,1}$->This email address is not valid">
+        <label class="form-label" for="field-20">
+            Email
+        </label>
+        <input class="form-control" type="text" placeholder="Type email&hellip;" data-mode="contactEmail" value="{{contact.email}}" name="contact_email" data-key="email" autocomplete="off">
+    </div>
+    {% endif %}
+    <div class="form-group edit-item type-text" data-validate=".+->You must provide a name for the contact">
+        <label class="form-label" for="field-10">
+            Name
+        </label>
+        <input class="form-control text" data-key="name" type="text" name="contact_name" value="{{contact.name}}" autocomplete="off">
+    </div>
+    <div class="form-group edit-item type-text" data-validate="^(?:[+]?[0-9 ,]{7,14}(?:[ a-zA-Z]{0,10}\d{2,6})?)?$->The phone number should contain up to 14 digits followed by an optional extension number">
+        <label class="form-label" for="field-30">
+            Phone
+            <span class="form-hint inline">(optional)</span>
+        </label>
+        <input class="form-control text"  type="text" name="contact_phone" data-key="phone" value="{{contact.phone|default_if_none:''}}" autocomplete="off">
+    </div>
+</div>
+<div class="column-one-half">
+    <div class="form-group edit-item type-text" data-validate="^(?:[+]?[0-9 ,]{7,14}(?:[ a-zA-Z]{0,10}\d{2,6})?)?$->The phone number should contain up to 14 digits followed by an optional extension number">
+        <label class="form-label" for="field-30">
+            Organisation
+        </label>
+        <input class="form-control text"  type="text" disabled="true" readonly="true" value="" data-key="organisation.name" autocomplete="off">
+    </div>
+    <div class="form-group edit-item type-textarea ">
+        <label class="form-label" for="field-40">
+            Address
+            <span class="form-hint inline">(optional)</span>
+        </label>
+        <textarea class="form-control compact" name="contact_address" data-key="address" autocomplete="off">{{ contact.address|default_if_none:'' }}</textarea>
+    </div>
+    <div class="form-group edit-item type-text ">
+        <label class="form-label" for="contact_country">Country
+            <span class="form-hint inline">(optional)</span>
+        </label>
+        <select class="form-control" name="contact_country" data-key="country.code">
+            <option value="">Please select ...</option>
+            {% for country_code, country_name in countries %}
+                <option
+                    value="{{country_code}}"
+                    {% if contact.country.code == country_code %}selected{% endif %}
+                >{{country_name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+{% extends "cases/_case_template.html" %}
+
+{% load format_date %}
+
+{% block case_page_content %}
+<script type="text/javascript">
+    window.dit.page = 'actions';
+</script>
+<div data-attach="Workflow" data-target-block=".action-list-target" data-case="{{case_id}}">
+    <textarea id="workflow-json" class="hidden">{{ workflow|to_json }}</textarea>
+    <textarea id="state-json" class="hidden">{{ state|to_json }}</textarea>
+    <textarea id="permissions-json" class="hidden">{{ permissions|to_json }}</textarea>
+
+    <form action="#" method="post" class="dd-form">
+        <div class="column-full">
+            <div class="form-group edit-item task-list">
+                <ul class="task-list-items action-list-user">
+                    {% for action in workflow.root %}
+                        <li class="task-list-item edit-item expand-base {% if action.key == state.CURRENT_ACTION %} highlight{% endif %}">
+                            {% include "cases/_action_row.html" with action=action level=1 %}
+                            <ul class="expand-section pull-left column-full">
+                                {% for sub_action in action.children %}
+                                    <li class="column-full no-padding-right{% if sub_action.key == state.CURRENT_ACTION %} highlight{% endif %}">
+                                        {% include "cases/_action_row.html" with action=sub_action level=2 %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="action-list-target"></div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load format_date %}
+<div class="section {% if populated %}populated{% endif %}">
+    {% if populated %}
+     <div class="grey-box">
+        <div class="column-one-half">
+            <span class="label">Reviewed and {{verb_perfect|default:'sent' }}</span>
+            <span class="value">{{ submission.sent_at|format_date:"{S} %b %Y at %H:%M" }}{{ bundle.finalised_at|format_date:"{S} %b %Y at %H:%M" }}</span>
+        </div>
+        <div class="column-one-half">
+            <span class="label">{{verb_perfect|default:'sent'}} by</span>
+            <span class="value">{{submission.sent_by.name}}{{bundle.finalised_by.name}}</span>
+        </div>
+    </div>
+
+    {% endif %}
+
+    <div id="name-description" class="edit-section">
+        <div class="form-group">
+            <label class="form-label" for="issue_confirm">
+                {% if submission.type.key == 'public' %}
+                Review and publish
+                {% else %}
+                Review and issue {{submission_group_name}}
+                {% endif %}
+            </label>
+            {% include 'cases/submissions/virus_not_checked_warnings.html' with counts=counts_to_check %}
+
+            {% if store.virusfound %}
+                <span><i class="icon icon-amber-warning correct margin-right-5px"></i>You cannot {% if submission.type.key == 'public' %}publish{% else %}issue{% endif %} until all the documents are virus-free</span>
+            {% else %}
+                {% if user.permissions.publish_public %}
+                    <div class="multiple-choice">
+                        <input id="issue_confirm" type="checkbox" name="issue-confirm" value="issue_confirm" data-handler="enableButton" data-selector="button[value={% if submission.type.key == 'public' %}publish{% else %}send{% endif %}]">
+                        <label for="issue_confirm">I am happy to proceed with {% if submission.type.key == 'public' %}publishing{% else %}issuing{% endif %} this {{submission_group_name}}</label>
+                    </div>
+                {% else %}
+                    <span><i class="icon icon-amber-warning correct"></i>This must be reviewed by a lead investigator before it can be published</span>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>

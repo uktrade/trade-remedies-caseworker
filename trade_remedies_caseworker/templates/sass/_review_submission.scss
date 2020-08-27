@@ -1,0 +1,34 @@
+.review_submission {
+  .review-buttons > button {
+    display: none;
+  }
+  &.deficient {
+    .review-buttons button[value="reject"] {
+      display: block;
+    }
+    .review-buttons > span {
+      display: none;
+    }
+  }
+  &.sufficient {
+    .review-buttons button[value="approve"] {
+      display: block;
+    }
+    .review-buttons > span {
+      display: none;
+    }
+  }
+  button.correct {
+    margin-top: 2px;
+  }
+  .compact-section {
+    background: $grey-3;
+    padding: 30px;
+    margin: 20px 0;
+    .expand-section {
+      > div {
+        margin-top: 10px;
+      }
+    }
+  }
+}

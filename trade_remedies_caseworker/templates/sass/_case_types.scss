@@ -1,0 +1,135 @@
+.case-type-icon {
+  &:before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    background: #f66;
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: -3px;
+  }
+  > span {
+    position: relative;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  &.case-type-AD:before {
+    background: #9a0088;
+  }
+  &.case-type-AR:before {
+    background: #000;
+  }
+  &.case-type-NE:before {
+    background: #3584c6;
+  }
+  &.case-type-SC:before {
+    background: #1c3a75;
+  }
+  &.case-type-SU:before {
+    background: #ff00c1;
+  }
+  &.case-type-CR:before {
+    background: #007d3d;
+  }
+  &.case-type-UR:before {
+    background: #8c2dbd;
+  }
+  &.case-type-ER:before {
+    background: #fc9600;
+  }
+  &.case-type-IR:before {
+    background: #b38d3b;
+  }
+  &.case-type-SR:before {
+    background: #6d7579;
+  }
+  &.case-type-RR:before {
+    background: #00bc21;
+  }
+  &.case-type-SF:before {
+    background: #00a597;
+  }
+  &.case-type-DR:before {
+    background: #fc0000;
+  }
+}
+
+.circular-badge {
+  position: relative;
+  min-width: 28px;
+  display: inline-block;
+  top: 0px;
+  left: 5px;
+  text-align: center;
+  //font-family: "ntatabularnumbers", "nta", Arial, sans-serif;
+  color: white;
+  z-index: 1;
+  font-size: 19px;
+  font-weight: bold;
+  width: auto;
+  padding: 0px 2px;
+  border-radius: 50%;
+  margin-right: 0.5em;
+  &:before {
+    content: "";
+    width: 100%;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    background: inherit;
+    display: block;
+    position: absolute;
+    top: -6px;
+    left: -1px;
+    z-index: -1;
+  }
+  &.small {
+    min-width: 20px;
+    font-size: 14px;
+    padding: 0 2px;
+    box-shadow: 2px 2px 4px 0 #888;
+    &:before {
+      height: 26px;
+      min-width: 26px;
+      top: -5px;
+      border-radius: 13px;
+    }
+  }
+}
+
+.heading-large .circular-badge {
+  line-height: 1.25;
+  vertical-align: middle;
+  margin-top: -6px;
+}
+
+.number-circle {
+  position: relative;
+  min-width: 18px;
+  display: inline-block;
+  top: 0px;
+  left: 5px;
+  text-align: center;
+  color: white;
+  z-index: 1;
+  font-size: 19px;
+  font-weight: bold;
+  width: auto;
+  padding: 0px 4px;
+  &:before {
+    content: "";
+    width: 100%;
+    min-width: 26px;
+    height: 26px;
+    border-radius: 20px;
+    background: #6b6b6b;
+    display: block;
+    position: absolute;
+    top: -2px;
+    left: 0px;
+    z-index: -1;
+  }
+}

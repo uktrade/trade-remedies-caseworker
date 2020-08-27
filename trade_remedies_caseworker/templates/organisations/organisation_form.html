@@ -1,0 +1,56 @@
+{% load set %}
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-large">{% if organisation.id %}Edit {% else %}Add {% endif %}organisation</h2> 
+    </div>
+</div>
+
+{% if not organisation.id %}
+    {% set 'form_action' '/organisations/case/'|addstr:case_id|addstr:'/create/'|addstr:organisation_type|addstr:'/' %}
+{% else %}
+    {% set 'form_action' '/organisations/'|addstr:organisation.id|addstr:'/edit/' %}
+{% endif %}
+<form action="{{ form_action }}" method="post" data-attach="Validate">
+    {% csrf_token %}
+    {% if case_id and organisation.id %}
+        <h2 class="heading-medium">Case Role</h2>
+        <select name="organisation_type" class="form-control">
+            {% for role in case_roles %}
+                <option value="{{role.key}}" {% if organisation_type == role.key %}selected{% endif %}>{{role.name}}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    <div class="page page-1" {% if not organisation.id %} data-attach="OrganisationWizard" {% endif %}>
+        <div class="grid-row compact-form">
+            {% include "widgets/organisation_form.html" with organisation=organisation %}
+        </div>
+        <div class="button-set">
+            {% if not organisation.id %}
+                <button class="button button-blue lookup" type="button">Next</button>
+            {% else %}
+                <button class="button button-blue" type="submit">Save</button>
+            {% endif %}
+            <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
+        </div>
+    </div>
+    <div class="page page-2 hidden">
+        <div class="grid-row org-search-results compact-form">
+        </div>
+        <div class="button-set">
+            <button class="button button-blue " data-action="picked_organisation" type="button">Add organisation</button>
+            <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
+        </div>
+    </div>
+    <div class="page page-3 hidden compact-form">
+        {% if show_contact_form %}
+            <div class="column-full">
+                <h2 class="heading-medium">Primary contact</h2>
+            </div>
+            {% include "widgets/contact_form.html" with contact=contact organisation=organisation %}
+        {% endif %}
+        <div class="button-set">
+            <button class="button button-blue" type="button" data-action="create_organisation">Create organisation</button>
+            <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,23 @@
+  <!--{% comment %}
+  |A grey expanding box with a list of files inside
+  Pass block_title and documents as filelist
+  {% endcomment %}-->
+{% load to_json %}
+  {% if documents %}
+    <div class="compact-section">
+        <span>{{title}}</span><div class="number-circle">{{documents|length}}</div>
+        <a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">Expand deficiency documents</span></a>
+    <div class="expand-section">
+
+      {% for document in documents %}
+      <div class="">
+        {% if document.safe %}
+          <a class="link bold" href="/document/{{document.id}}/download/" target="_blank">{{ document.name }}</a>
+        {% else %}
+          <span class="bold">{{ document.name }}</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}

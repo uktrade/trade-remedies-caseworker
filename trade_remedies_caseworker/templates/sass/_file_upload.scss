@@ -1,0 +1,120 @@
+/******** drop target **********/
+.upload-target {
+  padding: 20px;
+  border: none;
+  text-align: center;
+  color: #999;
+  font-size: 23px;
+  background: #f5f5f5;
+  &:before {
+    content: "";
+    background-image: url(images/upload-arrow-light.png);
+    width: 64px;
+    height: 64px;
+    background-size: cover;
+    display: block;
+    margin: auto;
+  }
+  &.drag-over {
+    background: $jamie-panel-colour;
+    border-color: $grey-2;
+    &:before {
+      background-image: url(images/upload-arrow-dark.png);
+    }
+  }
+  .center-text {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #6a7276;
+    text-align: center;
+    font-size: 19px;
+  }
+  button {
+    box-shadow: none;
+    background: #005ea5;
+    display: block;
+    margin: 10px auto 10px;
+    font-size: 18px;
+    padding: 7px 40px;
+  }
+  button:hover,
+  button:focus {
+    background: #025390;
+  }
+}
+
+table.file-list,
+table.review-list {
+  .filename {
+    font-weight: bold;
+  }
+  a {
+    text-decoration: none;
+  }
+  tr td:nth-child(2),
+  table.file-list tr td:nth-child(3) {
+    min-width: 80px;
+  }
+}
+
+table.review-list {
+  tr {
+    th:nth-child(1),
+    td:nth-child(1) {
+      width: 25px;
+      padding-right: 5px;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+      width: 90px;
+    }
+    th:nth-child(4),
+    td:nth-child(4) {
+      width: 140px;
+    }
+  }
+}
+
+.file-browser {
+  .tab-box {
+    height: 215px;
+    position: relative;
+    border: 2px solid $grey-2;
+    margin-top: -22px;
+    padding: 20px;
+    .stretch {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+    }
+    .inner {
+      margin: 20px;
+    }
+  }
+
+  .ui-autocomplete-input {
+    padding: 14px 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 4px 7px #ddd;
+    margin: 16px 10px;
+  }
+}
+
+table.file-list {
+  border-top: 1px solid $grey-2;
+  tr {
+    border-bottom: 1px solid $grey-2;
+    td {
+      border: none;
+    }
+  }
+  .empty-line {
+    display: none;
+  }
+  &.empty .empty-line {
+    display: block;
+  }
+}

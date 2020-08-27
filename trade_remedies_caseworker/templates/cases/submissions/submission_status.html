@@ -1,0 +1,28 @@
+{% if submission.status.evaluate_deficiency %}
+    <form action="/case/{{case.id}}/submission/{{submission.id}}/status/" method="POST"  class="dd-form">
+        {% csrf_token %}
+        {% if False and submission.status.review %}
+            <input type="hidden" name="stage_change_if_sufficient" value="SUFFICIENT_TO_PROCEED"/>
+            <input type="hidden" name="stage_change_if_deficient" value="INSUFFICIENT_TO_PROCEED"/>
+        {% endif %}
+        <div class="form-group edit-item">
+            <div class="column-full">
+                <h3 class="heading-small">Is the submission sufficient to proceed?</h3>
+            </div>
+            <div class="column-full">
+                <div class="multiple-choice">
+                    <input type="radio" id="status-yes" name="submission_status_id" value="{{status_context.YES}}"/>
+                    <label for="status-yes">Yes, it includes all the information requested</label>
+                </div>
+                <div class="multiple-choice">
+                    <input type="radio" id="status-no" name="submission_status_id" value="{{status_context.NO}}"/>
+                    <label for="status-no">No, this submission is deficient</label>
+                </div>
+            </div>
+        </div>
+        <button class="button button-blue" type="submit">Set Status</button>
+    </form>
+    <hr/>
+{% elif not submission.deficiency_sent_at and deficiency_notice %}
+    <button class="button modal-form button-blue "  data-url="/case/{{case.id}}/submission/{{submission.id}}/status/notify/" type="submit">Send Deficiency Notice</button>
+{% endif %}

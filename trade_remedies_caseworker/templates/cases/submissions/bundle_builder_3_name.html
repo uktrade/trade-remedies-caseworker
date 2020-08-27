@@ -1,0 +1,31 @@
+{% load set %}
+<div class="section {% if populated %}populated{% endif %}">
+    {# set 'object' object|_or:submission #}
+    {% if populated %}
+        <div class="grey-box">
+            <div class="column-full">
+                <span class="label">Name of {{ submission_group_name }}</span>
+                {% include "cases/submissions/bundle_builder_edit_button.html" %}
+                <span class="value">{{ object.name }}</span>
+            </div>
+        </div>
+    {% endif %}
+
+    <div id="name-description" class="edit-section">
+        <div class="outer">
+            {% set 'name_name' name_prefix|addstr:'name' %}
+            {% set 'label' 'Name of '|addstr:submission_group_name %}
+            {% set 'name' '' %}
+            {% if submission.name %}
+                {% set 'name' submission.name %}
+            {% endif %}
+            {% if object.name %}
+                {% set 'name' object.name %}
+            {% endif %}
+            {% if not name %}
+                {% set 'name' submission.type.name %}
+            {% endif %}
+            {% text_element id='name' name=name_name label=label errors=errors value=name %}
+        </div>
+    </div>
+</div>

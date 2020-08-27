@@ -1,0 +1,11 @@
+{% extends "cases/_case_template.html" %}
+
+{% block case_page_content %}
+
+<div class="grid-row">
+    <div class="column-full">
+      {% include 'cases/submissions/'|add:selected_submission_type|add:'/form.html' %}
+    </div>
+</div>
+
+{% endblock %}

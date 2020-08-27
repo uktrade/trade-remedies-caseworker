@@ -1,0 +1,72 @@
+{% load to_json %}
+<div class="section {% if populated %}populated{% endif %}">
+    {% if populated %}
+        <div class="grey-box">
+            <div class="column-one-half">
+                <span class="label">Content type</span>
+                <span class="value">{% if has_docs %}Documents{% else %}Url{% endif %}</span>
+            </div>
+        </div>
+
+        {% if has_docs %}
+            <div class="grey-box">
+                <div class="column-full">
+                    <span class="label">Documents in your {{ submission_group_name|default:'information request'}}</span>
+                    {% include "cases/submissions/bundle_builder_edit_button.html" %}   
+
+                    <ul class="document-list">
+                    {% for document in documents %}
+                        <li>                    
+                            <span class="filename">{% document_link document False%}</span>                            </span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+        {% if has_url %}
+            <div class="grey-box">
+                <div class="column-full">
+                    <span class="label">URL in your {{ submission_group_name|default:'information request'}}</span>
+                    {% include "cases/submissions/bundle_builder_edit_button.html" %}
+                    <span class="value">{{submission.url}}</span>
+                    <a class="link pull-left clear margin-top-1" href="{{submission.url}}" target="_blank">Open in new window <i class="icon icon-link text-align"></i></a>
+                </div>
+            </div>
+        {% endif %}        
+    {% endif %}
+    <div id="name-description" class="edit-section">
+        {% if not populated %} {# we don't need to show the selector in edit mode #}
+            <div id="url-type" class="column-full">
+                <div class="form-group edit-item">    
+                    <label class="form-label">Type of content in your {{ submission_group_name|default:'information request'}}</label>
+                    <div class="multiple-choice">
+                        <input id="url-type-1" type="radio" name="url_type" value="documents" {% if submission.documents|length %} checked="checked" {% endif %}>
+                        <label for="url-type-1">Documents</label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="url-type-2" type="radio" name="url_type" value="url" {% if task.value == 'no' %} checked="checked" {% endif %}>
+                        <label for="url-type-2">URL only</label>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if not populated or has_docs %}
+            <div {% if not has_docs %} data-attach="Reveal" data-revealedby="#url-type input[value=documents]:yes" {% endif %} >
+                {% set 'file_list_heading' 'Files in your '|addstr:submission_group_name %}
+                {% include "widgets/file_browser.html" with documents=documents operation_type="" file_list_heading=file_list_heading %}
+            </div>
+        {% endif %}
+        {% if not populated or has_url %}
+            <div {% if not has_url %} data-attach="Reveal" data-revealedby="#url-type input[value=url]:yes" {% endif %}>
+                <div class="form-group">
+                    <label class="form-label" for="submission_name">
+                        URL
+                        <span class="form-hint">Enter the full URL linking to the online document you wish to reference</span>
+                    </label>
+                    <input type="text" class="form-control" name="url" id="submission_url" value="{{ submission.url|default:''}}"/>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

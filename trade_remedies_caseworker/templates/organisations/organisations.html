@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load format_date %}
+
+{% block heading %}Organisations{% endblock %}
+{% block main_content %}
+{% include "widgets/tabs.html" with q=tabs %}
+
+<table clas="sortable" data-attach="TableSort">
+  <thead>
+    <tr>
+      <th class="sort-active asc">Organisation name</th>
+      <th>Registration No.</th>
+      <th>Country</th>
+      <th>Cases</th>
+      <th>Users</th>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for organisation in organisations %}
+      <tr>
+          <td sortval="{{organisation.name|lower}}"><a class="link" href="/organisations/{{organisation.id}}/">{{organisation.name}}</a></td>
+          <td>{{organisation.companies_house_id|default:'-'}}</td>
+          <td>{{organisation.country.name}}</td>
+          <td>{{organisation.case_count}}</td>
+          <td>{{organisation.user_count}}</td>
+          <td sortval="{{organisation.created_at}}">{{organisation.created_at|format_date}}</td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

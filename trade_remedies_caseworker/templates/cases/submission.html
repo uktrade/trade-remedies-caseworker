@@ -1,0 +1,10 @@
+{% extends "cases/_case_template.html" %}
+
+{% block case_page_content %}
+    <div class="grid-row">
+        {% if submission.archived_at %}<h1 class="heading-medium">ARCHIVED</h1>{% endif %}
+        {% with submission=submission submission_statuses=submission_statuses %}
+            {% include 'cases/submissions/'|add:template_name|add:'/'|add:mode|add:'.html' %}
+        {% endwith %}
+    </div>
+{% endblock %}

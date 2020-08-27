@@ -1,0 +1,18 @@
+{% comment %}
+==============================================
+	A carousel to de-dupe organisations
+	<organisation>, <match_list>
+	Pass in a list of organisations and a matching org list
+==============================================
+{% endcomment %}
+{% load custom_filters %}
+{% if match_list|length > 1 %}
+<div class="info">
+<p class="bold">Duplicate organisations have been found</p><ul class="list-bullet margin-top-1"><li>Organisations are matched on registration number, EORI, VAT number, D-U-N-S number and web domain.
+</li><li>Genuine duplicates should be merged after confirmation with the parties involved.</li>
+<li>If the match is incorrect, please correct the offending data.</li>
+<!--<li>If a matched organisation is fraudulent, please mark it as such.</li>-->
+</div>
+{% endif %}
+
+{% include "widgets/organisation_carousel_inner.html" with enable_merge=True %}

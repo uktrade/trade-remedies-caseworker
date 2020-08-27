@@ -1,0 +1,35 @@
+
+{% load to_json %}
+{% load text_element %}
+
+{% block case_page_content %}
+<form class="bundle-builder"
+	method="POST"
+	data-attach="BundleBuilder">
+    {% csrf_token %}
+    {% set 'editable' False %}
+	<div class="form-group">
+		<h2 class="heading-large"><span class="heading-secondary">{{ organisation.name }}</span>Duplicate organisations</h2> 
+	</div>
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'widgets/organisation_carousel.html' with organisation=organisation match_list=org_matches %}
+            </div>
+        </div>
+
+    {% if not submission or submission.tra_editable %}
+        <div class="button-group form-group margin-top-1 {% if not lastpage %}editing{% else %} issuing{% endif %}">
+            <span class="issue-button-group pull-left">
+                <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Send the notification</button>
+            </span>
+            {% if editable %}
+                <span class="edit-button-group pull-left">
+                    <button class="button button-blue" tabindex="0" type="submit" name="btn-value" value="save" disabled="disabled">Save and continue</button>
+                </span>
+            {% endif %}
+            <button class="button button-grey pull-right dlg-close" title="Exit without saving">Exit</a>
+        </div>
+    {% endif %}   
+
+</form>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load format_date %}
+
+{% block heading %}
+    <h2 class="heading-large">Application and review bundles</h2>
+{% endblock %}
+
+{% block main_content %}
+<div class="column-full">
+    <div class="right-of-tabs">
+        <a class="link bold" href="/document/bundle/create/">&#x2795; Add New</a>
+    </div>
+    {% include "widgets/tabs.html" with q=tabs %}
+
+    <table class="sortable margin-top-1" data-attach="TableSort">
+        <thead>
+        <tr>
+            <th scope="col">Type</th>
+            <th scope="col">Version</th>
+            <th scope="col">Created</th>
+            <th scope="col">Previous versions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for bundle in bundles %}
+        <tr>
+            <td><a href="/document/bundle/{{bundle.id}}/">{{bundle.name}}</a></td>
+            <td>{{bundle.version}}</td>
+            <td class="nobreak">{{bundle.created_at|format_date:'%d %b %Y' }}</td>
+            <td>
+                {% for version in bundle.versions %}
+                    <a href="/document/bundle/{{version.id}}/">{{version.version}}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

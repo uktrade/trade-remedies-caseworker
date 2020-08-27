@@ -1,0 +1,46 @@
+{% comment %}
+A table in the submissions page. Pass submissions and columns - a list of column keys
+{% endcomment %} 
+{% load set %}
+<table class="submissions free-format sortable" data-attach="TableSort">
+	<thead>
+		<tr>
+			{% for col in columns %}
+				{% if col == 'organisation' %}
+					<th scope="col"><span>Party</span></th>
+				{% elif col == 'type' %}
+					<th scope="col"><span>Submission</span></th>
+				{% elif col == 'name' %}
+					<th scope="col"><span>Name</span></th>
+				{% elif col == 'type_name' %}
+					<th scope="col"><span>Submission</span></th>
+				{% elif col == 'status' %}
+					<th scope="col" class="status {% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>Status</span></th>
+				{% elif col == 'sent' %}
+					<th scope="col" class="date {% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>Sent</span></th>
+				{% elif col == 'received' %}
+					<th scope="col" class="date {% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>Received</span></th>
+				{% elif col == 'due' %}
+					<th scope="col" class="date {% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>Due</span></th>
+				{% elif col == 'created' %}
+					<th scope="col" class="date {% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>Created</span></th>
+				{% elif col == 'last_date' %}
+					<th scope="col" class="date {% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>Date</span></th>
+				{% elif col == 'last_action' %}
+					<th scope="col" class="status {% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>Action</span></th>
+				{% elif col == 'last_by' %}
+					<th scope="col" class="{% if forloop.counter == 1 %}sort-active asc{% endif %}"><span>By</span></th>
+				{% elif col == 'created_by' %}
+					<th scope="col"><span>Author</span></th>
+				{% endif %}
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for submission in submissions %}
+			{% set 'participant' submission|get_item:'organisation' %}
+			{% include "cases/submission_table_row_flex.html" with submission=submission participant=participant columns=columns %}
+		{% endfor %}
+	</tbody>
+</table>
+

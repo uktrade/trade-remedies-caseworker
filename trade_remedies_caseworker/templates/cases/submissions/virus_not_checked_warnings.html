@@ -1,0 +1,16 @@
+{% comment %}
+  Show a virus warning check not run block for either customer files or caseworker files
+  Pass 'counts' as the correct count
+{% endcomment %}
+{% load set %}
+{% if not store.virusfound and counts.unscanned > 0 %}
+  <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1" data-attach="VirusCheckRefesh">
+    <i class="icon icon-amber-warning icon32 absolute"></i>
+    <div class="margin-left-3">
+      Your uploaded files are currently being checked for viruses and this can take several minutes. You won’t be able to view or publish these files until the process is complete. 
+	<br>If the warning remains after 10 minutes please contact your system administrator.
+    </div>
+    {% set 'virusfound' True %}
+  </div>      
+{% endif %}
+

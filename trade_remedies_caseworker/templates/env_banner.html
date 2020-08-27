@@ -1,0 +1,79 @@
+{% if SHOW_ENV_BANNER %}
+    <style>
+        .env-banner {
+            position: fixed;
+            z-index: 100;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            background-color: gold;
+            color: black;
+            padding: 0 1em;
+
+            cursor: pointer;
+            text-align: center;
+        }
+
+        {# although env banner should not be visible in prod!? #}
+        .env-banner.production {
+            background-color: limegreen;
+            color: black;
+        }
+
+        .env-banner.dev, .env-banner.local_development {
+            background-color: gold;
+            color: black;
+        }
+
+        .env-banner.staging {
+            background-color: aqua;
+            color: black;
+        }
+
+        .env-banner.uat {
+            background-color: lightpink;
+            color: black;
+        }
+
+        .env-banner.demo {
+            background-color: silver;
+            color: black;
+        }
+
+        .env-banner:hover {
+            transition: all 0.1s ease-in-out;
+            opacity: 0.3;
+        }
+
+        .env-banner p {
+            line-height: 60px;
+        }
+
+        .env-banner p .env {
+            text-transform: uppercase;
+            padding-right: 1em;
+        }
+
+        .env-banner p .gits {
+            padding: 0 1em 0 0;
+            font-style: italic;
+
+        }
+
+    </style>
+    <script>
+      function hide() {
+        var el = document.querySelector('.env-banner');
+        el.style = 'display:none;';
+      }
+    </script>
+    <div class="env-banner {{ ENV_NAME }}" onclick="javascript:hide()" title="click to hide">
+        <p class="govuk-body">
+            ENV:<span class="gits">        {{ ENV_NAME }}        </span>
+            GIT_BRANCH:<span class="gits">{{ GIT_BRANCH }}</span>
+            GIT_COMMIT:<span class="gits">{{ GIT_COMMIT }}</span>
+        </p>
+    </div>
+{% endif %}

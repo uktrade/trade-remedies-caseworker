@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load format_date %}
+{% load set %}
+
+{% block heading %}
+	{{party.name}}
+{% endblock %}
+
+{% block main_content %}
+	<div id="party-details-page" class="margin-top-1">
+
+		{% include 'organisations/_party_details.html' with party=party %}
+		<div class="compact-section margin-top-1">
+		  <div class="header-line">
+		    <span class="heading-medium">Cases and applications </span><div class="number-circle">{{ cases_idx.false|length }}</div>
+		    <a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">Expand case list</span></a>
+		  </div>
+		  <div class="expand-section" data-attach="Tabset">
+		    <ul class="tabset">
+		     {% include "widgets/tab.html" with value="current" label="Current" sr_text="Current cases" selected=True left=True %}
+		     {% include "widgets/tab.html" with value="archived" label="Archived" sr_text="Archived cases" left=True %}
+		    </ul>
+		    <div class="tab-page" data-tab="current">
+		      {% include "widgets/case_list.html" with cases=cases_idx.false %}
+		    </div>
+		    <div class="tab-page hidden" data-tab="archived">
+		      {% include "widgets/case_list.html" with cases=cases_idx.true %}
+		    </div>
+		  </div>
+		</div>
+
+		<div class="compact-section margin-top-1">
+		   <div class="header-line">
+		    <span class="heading-medium">Users </span><div class="number-circle">{{organisation.users|length}}</div>
+		    {% if organisation.users|length > 0 %}<a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">Expand case list</span></a>{% endif %}
+		  </div>
+		  <div class="party-details expand-section">
+		      <ul class="contact-list">
+		      {% for user in organisation.users %}
+		        <li>
+		          {% include "widgets/contact_block.html" with contact=user.contact user=user party=party case=case case_role_id=case_role_id %}
+		        </li>
+		      {% endfor %}
+		    </ul>
+		  </div>
+		</div>
+		<div class="pull-left margin-top-1">
+			<button type="button" class="button button-blue modal-form" data-url="/organisation/{{party.id}}/edit/">Update details</button>
+		</div>
+		<div class="pull-right margin-top-1">
+		  <form action="/organisations/{% if case %}case/{{case.id}}/organisation/{% endif %}{{organisation.id}}/delete/" method="post">
+		    {% csrf_token %}
+		    <button type="submit" value="delete" class="button button-red" {% if organisation.users|length > 0 %}disabled{% endif %} data-handler="clickConfirm" data-title="Confirm delete" data-message="Are you sure you want to delete this empty party?<br>This action cannot be undone.">Delete party</button>
+		  </form>
+		</div>
+
+	</div>
+{% endblock %}

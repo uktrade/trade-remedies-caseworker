@@ -1,0 +1,50 @@
+{% load custom_filters %}
+<div class="section {% if populated %}populated{% endif %}">
+    {% set 'object' object|_or:submission %}
+    {% if populated %}
+        <div class="grey-box">
+            <div class="column-full">
+                <span class="label">Publication date</span>
+                {% include "cases/submissions/bundle_builder_edit_button.html" %}   
+                {% set 'not_time_set' submission.issued_at|_not %}
+                {% set 'no_chosen' object.response_window_yn|_notequals:'yes' %}
+                {% if submission.issued_at %}
+                    <span class="value">The submission was published on {{submission.issued_at|format_date:'{S} %b %Y'}}</span>
+                {% else %}
+                    {% if object.response_window_yn == 'now' %}
+                        <span class="value">The submission will be published immediately</span>
+                    {% elif object.response_window_yn == 'future' %}
+                        <span class="value">The submission will be published in {{ object.time_window }} days</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    <div class="edit-section"> 
+        <div id="response-window-yn" class="column-full ">
+            <div class="form-group">    
+                <label class="form-label">Publication date
+                    <span class="form-hint">
+                        When do you want this submission to appear on the public file?
+                    </span>
+                </label>
+                <div class="multiple-choice">
+                    <input id="response-window-1" type="radio" name="{{name_prefix}}response_window_yn" value="now" {% if object.response_window_yn == 'now' %} checked="checked" {% endif %}>
+                    <label for="response-window-1">Now</label>
+                </div>
+                <div class="multiple-choice">
+                    <input id="response-window-2" type="radio" name="{{name_prefix}}response_window_yn" value="future" {% if object.response_window_yn == 'future' %} checked="checked" {% endif %}>
+                    <label for="response-window-2">In the future</label>
+                </div>
+            </div>
+        </div>
+        <div  data-attach="Reveal" data-revealedby="#response-window-yn input[value=future]:future">
+            <div class="form-group">
+                <label class="form-label" for="time-window">
+                    Number of days the recipient will have to respond once this request is sent
+                </label>
+                <input type="number" class="form-control" name="{{name_prefix}}time_window" id="time-window" value="{{object.time_window}}"/>
+            </div>
+        </div>
+    </div> 
+</div>       

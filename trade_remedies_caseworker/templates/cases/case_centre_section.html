@@ -1,0 +1,65 @@
+
+{% load to_json %}
+<div class="pad">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </div>
+<div class="top-strap">
+  <span class="pull-left">Application ID: {{case.sequence|stringformat:"04d"}}</span>
+  {% if case.initiated_sequence %}
+    <a class="link pull-right" href="/case/{{case.id}}/public/">View public file</a>
+  {% endif %}
+</div>
+<div class="compact-section">
+	<h2 class="heading-medium pull-left">Recent progress</h2>
+  {% if user.permissions.can_generate_audit %}
+    <a class="link pull-right" href="/case/{{case.id}}/audit">View all milestones</a>
+  {% endif %}
+    {% include "widgets/auditBlock.html" with audit=audit %}
+  <!-- <button class="link pull-right more">More <i class="icon icon-down correct"></i></button> -->
+  <a href="javascript:void(0)" class="expander text pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">More progress items</span></a>
+</div>
+
+<div class="compact-section margin-top-1 expand-base">
+    <h2 class="heading-medium pull-left">Team members</h2>
+    {% if user.permissions.can_assign_team %}
+      <a class="link pull-right" href="/case/{{case.id}}/team/">Edit</a>
+    {% endif %}
+    <div class="clear"></div>
+    <div class="team-block table">
+      {% if team_groups|length == 0 %}
+          <i class="icon icon-amber-warning correct"><span class="visually-hidden">Alert</span></i>Not yet assigned
+      {% endif %}
+      {% set 'expander_needed' False %}
+      <ul>
+        {% for key in group_order %}
+          {% set 'values' team_groups|get_item:key %}
+          {% if values|length > 0 %}
+            {% include "cases/case_team_row.html" %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+      <ul class="expand-section">
+        {% for key, values in team_groups.items %}
+          {% if not key in group_order %}
+            {% set 'expander_needed' True %}
+            {% include "cases/case_team_row.html" %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% if store.expander_needed %}
+      <a href="javascript:void(0)" class="expander text pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">More progress items</span></a>
+    {% endif %}
+
+</div>
+<div class="compact-section margin-top-1">
+    <h2 class="heading-medium">Case administration</h2>
+    <ul class="link-list">
+      <li><a class="link margin-top-1" href="/case/{{case.id}}/bundles/">Case documents</a></li>
+      {% if user.permissions.case_admin %}
+        <li><a class="link margin-top-1" href="/case/{{case.id}}/admin/">Administrator controls</a></li>
+      {% endif %}
+    <ul>
+    <!--p>
+      Public invite code: {{case.public_invite.short_code }}
+    </p-->
+</div>
+

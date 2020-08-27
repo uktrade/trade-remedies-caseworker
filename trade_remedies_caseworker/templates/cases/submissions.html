@@ -1,0 +1,133 @@
+{% extends "cases/_case_template.html" %}
+{% load format_date %}
+{% load ascii %}
+
+{% block case_page_content %}
+
+<script type="text/javascript">
+	window.dit.page='submissions';
+</script>
+
+{% if alert %}
+    <div class="govuk-box-highlight bold">
+        {% if alert == 'send' %}
+            Your submissions have been sent
+        {% else %}
+            {{ alert }}
+        {% endif %}
+    </div>
+{% endif %}
+
+
+
+<div id="submissions-page">
+
+	{% comment %} ***********   Submission menu {% endcomment %}
+	<div class="pull-right margin-top-1">
+		<a href="javascript:void(0)" class="link bold menu-icon" data-attach="menuExpand">Submission actions</a>
+		<span class="function-menu">
+			<div>
+				<ul>
+					<li><a href="/case/{{case_id}}/submission/create/?for=public">Publish documents</a></li>
+					<li><a href="/case/{{case_id}}/submission/create/">Request information</a></li>
+					<li><a href="draft/">Review draft submissions</a></li>
+				</ul>
+			</div>
+		</span>
+	</div>
+	{% comment %} ***********   Tabs {% endcomment %}
+	<ul class="tabset">
+		{% include 'widgets/tab.html' with label='Rejected' value='rejected' current=tab number=counts.rejected %}
+		{% include 'widgets/tab.html' with label='Awaiting' value='awaiting_approval' current=tab number=counts.awaiting_approval %}
+		{% include 'widgets/tab.html' with label='Not sampled' value='not_sampled' current=tab number=counts.not_sampled %}
+		{% include 'widgets/tab.html' with label='Sampled' value='sampled' current=tab number=counts.sampled %}
+	</ul>
+
+	{% comment %} ***********   List of party types {% endcomment %}
+	{% for role in all_roles %}
+		{% if all_roles|length > 1 %}
+		<h2 class="heading-medium">{{ role.name }}</h2>
+		{% endif %}
+			{% if role.participants %}
+			<table class="compact-table submissions {% if all_roles|length < 2 %}sortable{% endif %}" {% if all_roles|length < 2 %}data-attach="TableSort"{% endif %}>
+				<thead>
+					<tr>
+						<th scope="col"><span>Party</span></th>
+						<th scope="col"><span>Submission</span></th>
+						<th scope="col"><span>Status</span></th>
+						<th scope="col"><span>Sent</span></th>
+						<th scope="col"><span>Received</span></th>
+						<th scope="col"><span>Due</span></th>
+					</tr>
+				</thead>
+				<tbody>
+
+				{% set 'odd' False %}
+				{% for participant in role.participants %}
+						{% set 'odd' odd|_not %}
+						{% if participant.submissions|length == 0 %} {% comment %} This is to remove the TRA in the case of ex-officio cases {% endcomment %}
+							<tr class="{% if odd %}odd-row{% else %}even-row{% endif %}">
+								<td>
+									<a class="link" href="/case/{{case.id}}/organisation/{{participant.id}}/" title="{{participant.name}}">{{participant.name}}</a>
+								</td>
+								<td><i class="icon icon-amber-warning"></i></td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td>
+							</tr>
+						{% else %}
+							{% for submission in participant.submissions %}
+								<tr class="{% if odd %}odd-row{% else %}even-row{% endif %}">
+									<td>
+										{% if forloop.counter == 1 %}
+										<a class="link" href="/case/{{case.id}}/organisation/{{participant.id}}/" title="{{participant.name}}">{{participant.name}}</a>
+										{% endif %}
+									</td>
+									<td>
+										{% if submission.tra_editable %}
+										<a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/" title="{{submission.name}}">
+										{% endif %}
+										{{submission.name|default:submission.type.name}}
+										{% if submission.review %} (review) {% endif %}
+										{% if not submission.organisation.id %}*{% endif %}
+										{% if submission.version > 1 %}(version {{submission.version}}){% endif %}
+										{% if submission.tra_editable %}</a>{% endif %}
+									</td>
+									<td>{{submission.status.name}}</td>
+									<td>
+										{{ submission.sent_at|format_date:'%d %b %Y' }}
+									</td>
+									<td>{{ submission.received_at|format_date:'%d %b %Y' }}</td>
+									<td><a href="javascript:void(0)" data-handler="editDueDate" class="link" data-caseid="{{case_id}}" data-submissionid="{{ submission.id }}" data-value="{{submission.due_at}}">{% format_date submission.due_at '%d %b %Y' %}</a></td>
+								</tr>
+							{% endfor %}
+						{% endif %}
+				{% endfor %}
+				</tbody>
+			{% else %}
+				<p>No {% if tab == 'sampled' %}sampled{% else %}non-sampled{% endif %} {{role.plural|lower}} found</p>
+			{% endif %}
+		</table>
+		<hr/>
+	{% endfor %}
+</div>
+
+{% if invites %}
+	<h2 class="heading-medium">3rd Party Invites</h2>
+	<table class="compact-table submissions">
+		<thead>
+			<tr>
+				<th scope="col">Organisation</th>
+				<th scope="col">Created by</th>
+				<th scope="col">Created at</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for invite in invites %}
+				<tr class="{% cycle 'odd-row' 'even-row' %}">
+					<td><a href="/case/{{case.id}}/submission/{{invite.id}}/">{{invite.organisation.name}}</a></td>
+					<td>{{invite.created_by.name}}</td>
+					<td>{% format_date invite.created_at '%d %b' %}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endif %}
+{% endblock %}

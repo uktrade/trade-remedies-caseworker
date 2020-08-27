@@ -1,0 +1,22 @@
+{% load document_link %}
+<div class="section {% if populated %}populated{% endif %}">
+    {% if has_docs %}
+        <div class="grey-box">
+            <div class="column-full">
+                <span class="label">{{label|default:'Deficiency documents'}}</span>
+                {% include "cases/submissions/bundle_builder_edit_button.html" %}
+                <ul class="document-list">
+                {% for document in documents %}
+                    <li>{% document_link document False %}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    <div id="name-description" class="edit-section">
+        <div>
+            {% set 'browse_limiter' submission.submission_type.meta.bundle_files_limit %}
+            {% include "widgets/file_browser.html" with documents=documents submission_document_type=submission_document_type browse_limiter=browse_limiter %}
+        </div>
+    </div>
+</div>

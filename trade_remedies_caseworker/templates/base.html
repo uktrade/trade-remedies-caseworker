@@ -1,0 +1,107 @@
+{% extends "govuk_template.html" %}
+{% load static %}
+{% load govuk_template_base %}
+{% load get_feature_flag %}
+
+{% block page_title %}
+{{ global_header_text }}
+{% endblock %}
+
+{% block body_classes %}
+  {{ body_classes }}
+{% endblock %}
+
+{% block head %}
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <link href="{% static 'stylesheets/caseworker.css' %}" media="screen" rel="stylesheet" />
+  <link href="{% static 'javascripts/vendor/ui/jquery-ui.min.css' %}" media="screen" rel="stylesheet"/>
+  <script type="text/javascript" src="{% static 'javascripts/vendor/jquery-3.5.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascripts/vendor/require.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascripts/vendor/underscore-min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
+  {{ block.super }}
+  <script type="text/javascript">
+    window.dit = window.dit || {};
+    window.dit.environment = "{{ ENV_NAME }}";
+    window.dit.jsBase = "{% static 'javascripts' %}";
+    window.dit.csrfToken = "{{ csrf_token }}";
+    window.dit.csrfToken_input = '{% csrf_token %}';
+    {% if submission %}
+      window.dit.submission_id = '{{submission.id}}';
+    {% endif %}
+    {% if user %}
+      window.dit.user_id = '{{user.id}}';
+    {% endif %}
+    {% if organisation %}
+      window.dit.organisation_id = '{{organisation.id}}';
+    {% endif %}
+    window.dit.user = {
+      id: '{{ user.id }}',
+      name: '{{ user.name }}',
+      is_admin:{% if user.is_admin %}true{% else %}false{% endif %},
+      hoi: {% if user.is_top_admin %}true{% else %}false{% endif %},
+    };
+
+    function setOrganisation(organisationId) {
+      var url;
+      if (organisationId && organisationId.length > 0) {
+        url = '/organisation/set/' + organisationId + '/?next={{request.path}}';
+      } else {
+        url = '/organisation/set/?next={{request.path}}';
+      }
+      document.location.replace(url)
+    }
+  </script>
+{% endblock %}
+
+{% block content %}
+  {% if public_notice %}
+    <div class="warning severe" >{{public_notice}}</div>
+  {% endif %}
+  <main role="main" tabindex="-1">
+     
+      <div id="content">
+        
+        {% block header_row %}
+        <div class="grid-row">
+          <div class="column-two-thirds">
+            <h1 class="heading-large">{% block heading %}&lt;add heading&gt;{% endblock %}</h1>
+          </div>
+          <div class="column-one-third">
+            {% include "widgets/caseSummary.html" %}
+          </div>
+        </div>
+        {% endblock %}
+
+        {% block main_content %}
+
+        {% endblock %}
+      </div>
+  </main>
+{% endblock %}
+
+{% block proposition_header %}
+  {% get_service_settings as service_settings %}
+  <div class="header-proposition">
+    <div class="content">
+      <nav id="proposition-menu">
+        <div class="user-menu">
+          {% if authenticated %}
+            <span>{{user.name}}</span>
+            <textarea id="user_json" class="hidden">{{user_dict|to_json}}</textarea>
+            | <!-- <a href="/users/my-account/">Account</a>-->
+            <button class="button modal-form link" data-url="/users/my-account/">Account</button>
+             | <a href="/accounts/logout/">Log out</a>
+          {% endif %}
+        </div>
+      </nav>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer_top %}
+  {% include "./footer.html" %}
+  {% include "./env_banner.html" %}
+{% endblock %}

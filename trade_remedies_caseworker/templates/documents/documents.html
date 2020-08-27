@@ -1,0 +1,47 @@
+{% extends "cases/_case_template.html" %}
+{% load application_heading %}
+
+{% block heading %}
+  Documents
+{% endblock %}
+
+{% block case_page_content %}
+{% include "widgets/document_search.html" %}
+
+<table class="filelist sortable" data-attach="TableSort">
+  <thead>
+    <tr>
+      {% table_heading 'Uploaded' 'document.created_at' sort tabs.value dir %}
+      {% table_heading 'File name' 'document.name' sort tabs.value dir %}
+      {% table_heading 'By' 'document.user_type' sort tabs.value dir %}
+      {% table_heading 'Snippet' 'document.highlight' sort tabs.value dir %}
+      {% table_heading 'Score' 'document.score' sort tabs.value dir %}
+
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for document in documents %}
+      <tr>
+          <td class="nobreak" sortVal="{% format_date document.created_at '%Y-%m-%d' %}">
+              {{ document.created_at|format_date:'%d %b %Y' }}
+          </td>
+          <td>
+              <a class="link" href="/document/{{document.id}}/download/" >{{ document.name }}</a>
+              {% if document.confidential %}[C]{% endif %}
+          </td>
+          <td>{{ document.user_type }}</td>
+          <td>
+            {% autoescape off %}
+              {{ document.highlight.content|join:'<br/>' }}
+            {% endautoescape %}
+          </td>
+          <td class="nobreak">
+            {{ document.score }}
+          </td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

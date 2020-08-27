@@ -1,0 +1,266 @@
+@keyframes progress {
+  from {
+    background-position: 0px;
+  }
+  to {
+    background-position: 160px;
+  }
+}
+@keyframes kit {
+  0% {
+    background-position: 0px 0;
+  }
+  100% {
+    background-position: 100px 0;
+  }
+}
+
+button.button-link {
+  background: none !important;
+  color: $link-colour;
+  box-shadow: none;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    color: $link-hover-colour;
+    text-decoration: underline;
+  }
+  &.active {
+    top: 0;
+  }
+  &:focus {
+    color: $link-colour;
+  }
+  i.icon {
+    margin: 0px 0px -5px 10px;
+  }
+}
+.note-widget {
+  .note-list {
+    margin-top: 20px;
+    h1 {
+      margin: 0;
+    }
+    .form-group {
+      margin: 20px 0 10px 0;
+      padding: 0 3px;
+    }
+    li.note {
+      background: $jamie-panel-colour;
+      padding: 10px;
+      transition: background 0.3s;
+      margin: 15px 0;
+      overflow: hidden;
+      position: inherit;
+      div.note-event {
+        font-size: 15px;
+        color: $secondary-text-colour;
+        margin: 10px 0 20px 15px;
+        display: flex;
+      }
+      .note-text {
+        min-height: 1em;
+        font-size: 16px;
+      }
+      .note-text:empty:before {
+        content: "\003c Add note text \003e";
+        opacity: 0.5;
+      }
+    }
+    .note-file-list {
+      li {
+        margin: 5px 0;
+        .confidential {
+          color: white;
+          font-weight: 700;
+          background: $jamie-red;
+          padding: 0 5px;
+        }
+      }
+    }
+  }
+  .note-edit {
+    overflow: hidden;
+    position: relative;
+    background: $jamie-panel-colour;
+    margin: 15px 0;
+    padding: 20px;
+    ul.file-list {
+      float: left;
+      display: table;
+      width: 100%;
+      li {
+        padding: 15px 0;
+        border-bottom: 1px solid $grey-2;
+        > div {
+          display: table-cell;
+          &.select {
+            margin: -8px 15px 0 0;
+          }
+        }
+        .form-control {
+          width: auto;
+        }
+      }
+      li:first-child {
+        border-top: 1px solid $grey-2;
+      }
+    }
+    .close-link {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      text-decoration: none;
+    }
+    .column-one-half {
+      clear: none;
+    }
+    div.saving {
+      display: none;
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cec7c799;
+      background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+      );
+      animation: progress 1s linear infinite;
+      background-size: 80px 80px;
+      > div {
+        font-size: 35px;
+        font-weight: bold;
+        color: $grey-1;
+        text-align: center;
+        position: relative;
+        top: 50%;
+      }
+    }
+    &.saving div.saving {
+      display: block;
+    }
+  }
+  #text-edit {
+    height: 210px;
+  }
+  .upload-target {
+    position: relative;
+    padding: 0;
+    height: 181px;
+    border: 4px dashed $grey-2;
+    background: $white;
+    div {
+      padding-top: 25px;
+      color: $grey-1;
+      font-weight: bold;
+    }
+  }
+  .upload-target-js.drag-over:before {
+    content: "Drop here";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: $green-50;
+    text-align: center;
+    padding: 26px;
+    font-weight: bold;
+    font-size: 24px;
+    opacity: 0.6;
+  }
+
+  .kit {
+    background: repeating-linear-gradient(
+      to left,
+      transparent 0px,
+      transparent 20px,
+      #1c1980cf 40px,
+      transparent 60px,
+      transparent 100px
+    );
+    animation: kit 2s linear infinite;
+    background-repeat: repeat;
+    background-size: 100px auto;
+  }
+  // Compact form in task viewer
+  &.compact {
+    li.note {
+      font-size: 1em;
+      background: inherit;
+      padding: 8px 0;
+      margin: 0;
+      overflow: hidden;
+      div.note-event {
+        font-size: 14px;
+        margin: 0px 0 5px 10px;
+        > span.nobreak {
+          margin-left: 5px;
+        }
+      }
+    }
+    .note-edit {
+      background: none;
+      padding: 0;
+      margin: 0;
+      textarea#text-edit {
+        height: 5em;
+        font-size: 16px;
+      }
+    }
+    .note-file-list {
+      border-top: 2px solid $grey-3;
+      font-size: 15px;
+      /*&:before {
+        content: 'attachments';
+        display: inline-block;
+        color: $grey-2;
+        background: white;
+        padding: 0 10px;
+        position: absolute;
+        left: 50%;
+        margin: -12px 0 0 -79px;
+        border: 2px solid $grey-3;
+        border-radius: 20px;
+        font-size: 13px;
+        line-height: 13px;
+      }*/
+    }
+  }
+}
+
+.markdown.markdown.markdown.markdown.markdown {
+  /* Override the GDS style killers */
+  h1 {
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+  }
+  h2 {
+    font-size: 19px;
+    line-height: 1.25;
+    font-weight: 700;
+  }
+  ul {
+    margin-left: 30px;
+    list-style: disc;
+    ul {
+      list-style: circle;
+    }
+  }
+  strong {
+    font-weight: bold;
+  }
+}

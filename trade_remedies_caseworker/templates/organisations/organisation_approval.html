@@ -1,0 +1,69 @@
+{% load get_item %}
+<h2 class="heading-medium">{{ action|capfirst }} organisation</h2>
+<form action="/organisations/case/{{case.id}}/organisation/{{organisation.id}}/change/" method="POST" data-attach="TemplateSubstitution">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="{{action}}"/>
+    <div class="form-group">
+        {% if action == 'approve' or action == 'change' %}
+            <label class="form-label" for="role_id">
+                {% if action == 'approve' %}
+                    Which party type does this organisation represent in this case?
+                {% else %}
+                    Which party type will this organisation now represent in this case?
+                {% endif %}
+            </label>
+            <select name="organisation_type" data-substitute="{{data_substitute|default_if_none:'role'}}" class="form-control">
+                {% if not organisation.case_role %}
+                    <option value="" >Select role...</option>
+                {% endif %}
+                {% for role in roles %}
+                    <option value="{{role.key}}" {% if organisation.case_role.key == role.key %}selected disabled{% endif %}>{{role.name}}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            This organisation will not be part of the case.
+        {% endif %}
+    </div>
+        <div class="form-group">
+            <label class="form-label" for="contact_id">Which contact do you want to receive this notification?</label>
+            <select name="contact_id" id="contact_id" class="form-control" data-substitute="full_name">
+                {% for contact in contacts %}
+                    {% if not contact_id and contact.primary %}
+                        {% set 'contact_id' contact.id %}
+                    {% endif %}
+                    <option value="{{contact.id}}" data-text-value="{{contact.name}}" {% if contact_id == contact.id %} selected="selected"{% endif %}>{{contact.name}} &lt;{{contact.email}}&gt; {% if contact.primary %}(Primary){% endif %}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+    {% for field_name in notification_template.personalisation %}
+        {% if field_name in editable_fields %}
+            {% with field=editable_fields|get_item:field_name %}
+                <div class="form-group edit-item type-text ">
+                    <input type="hidden" name="notify_keys" value="{{field_name}}"/>
+                    <label class="form-label" for="field-{{field_name}}">{{field.title|default:field_name}}</label>
+                    {% if field.type == 'textarea' %}
+                        <textarea class="form-control text" id="field-{{field_name}}"  name="{{field_name}}" rows="3" style="width:95%">{{values|get_item:field_name}}</textarea>
+                    {% else %}
+                        <input class="form-control text" id="field-{{field_name}}"  type="text" name="{{field_name}}" value="{{values|get_item:field_name}}">
+                    {% endif %}
+                </div>
+            {% endwith %}
+
+        {% endif %}
+    {% endfor %}
+    <input type="hidden" name="" value=""/>
+    <div class="pull-left">The following notification will be sent including the personalisations highlighted:</div>
+    <div class="form-group edit-item type-text ">
+        {% if parsed_template %}
+            <div class="notify-preview" style="width:95%;">{{parsed_template|safe}}</div>
+        {% else %}
+            <textarea readonly rows="10" style="width:95%;">{{notification_template.body}}</textarea>
+        {% endif %}
+    </div>
+    <div class="button-set">
+        <button class="button button-blue" type="submit">Send</button>
+        <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
+    </div>
+</form>
+</div>

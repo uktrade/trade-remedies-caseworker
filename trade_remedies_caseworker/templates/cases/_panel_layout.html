@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load format_date %}
+{% load case_type_badge %}
+
+{% block body_classes %}
+  {% if panel_layout %}
+    panel-layout
+  {% endif %}
+  {{ body_classes }}
+{% endblock %}
+
+{% block content %}
+  <script type="text/javascript">
+    (window.dit = window.dit || {}).caseId="{{case.id}}";
+  </script>
+  {% if public_notice %}
+    <div class="warning severe" >{{public_notice}}</div>
+  {% endif %}
+  <main role="main" tabindex="-1">
+
+    {% if panel_side == 'left' %}
+      {% set 'left_tasks' True %}
+    {% endif %}
+
+    {% if panel_layout and left_tasks %}
+      <div id="panel-left" class="drag-panel">
+        <div id="taskbar" class="taskbar" data-attach="tasks/TaskManager"></div>
+        <div class="dragger left" data-attach="layout/PanelDragger" data-slavepanel="#panel-right" data-mode="left">
+          <div class="handle"></div>
+        </div>
+      </div>
+      <div id="panel-right">
+    {% endif %}
+    {% if panel_layout and not left_tasks %}
+      <div id="panel-left">
+    {% endif %}
+
+    {% block panel_right %} 
+    {% endblock %}
+
+      {% if panel_layout and not left_tasks %}
+      </div> <!-- close left panel -->
+      <div id="panel-right" class="drag-panel">
+        <div class="dragger right" data-attach="layout/PanelDragger" data-slavepanel="#panel-left" data-mode="right">
+          <div class="handle"></div>          
+        </div>
+        <div id="taskbar" class="taskbar" data-attach="tasks/TaskManager"></div>
+      </div>
+    {% endif %}
+    {% if panel_layout and left_tasks %}
+      </div>
+    {% endif %}
+
+    {% if panel_layout%}
+        <script>
+          {% if store.left_tasks %}
+            var offset = parseInt(window.localStorage['drag_panel-left'] || '0');
+            var collapsed = window.localStorage['open_panel-left'] != 'y';
+            if(collapsed) {
+              offset = 15;
+            }
+            var slave = document.getElementById('panel-right');
+            slave.style.left = offset+'px';
+            slave.style.right = 0;
+            var dragpanel = document.getElementById('panel-left');
+            dragpanel.style.width=offset+'px';
+            dragpanel.style.zIndex=2;
+          {% else %}
+            var offset = parseInt(window.localStorage['drag_panel-right'] || '0');
+            var collapsed = window.localStorage['open_panel-right'] != 'y';
+            if(collapsed) {
+              offset = 15;
+            }
+            var slave = document.getElementById('panel-left');
+            slave.style.right = offset+'px';
+            slave.style.left = 0;
+            var dragpanel = document.getElementById('panel-right');
+            dragpanel.style.width=offset+'px';
+            dragpanel.style.zIndex=2;
+          {% endif %}
+        </script>
+    {% endif %}
+  </main>
+{% endblock %}

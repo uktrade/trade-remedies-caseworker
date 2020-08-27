@@ -1,0 +1,37 @@
+{% load text_element %}
+<div class="column-one-half">
+<div class="form-group type-text" data-attach="Typeahead" data-validate=".+->You must provide the company name" >
+    <label class="form-label" for="company">Company name</label>
+    <input class="form-control" id="company" type="text" data-mode="company" name="organisation_name" value="{{organisation.name}}" autocomplete="new-password">
+</div>
+<div class="form-group type-text" data-validate=".+->You must provide the company number or postcode if not known." >
+    <label class="form-label" for="company_number">Company number<span class="form-hint">Use postcode if not known.</span></label>
+    <input class="form-control" id="company_number" type="text" name="companies_house_id" value="{{organisation.companies_house_id|default_if_none:''}}">
+</div>
+<div class="form-group type-text" >
+	<label class="form-label" for="company_number">Address
+        <span class="form-hint">Optional</span>
+    </label>
+    <input class="form-control" id="postal_code" type="hidden" name="organisation_post_code" value="{{organisation.post_code|default_if_none:''}}">
+    <textarea class="form-control" id="full_address" type="text" name="organisation_address">{{ organisation.address|default_if_none:'' }}</textarea>
+
+    {% if not disable_country_selection %}
+        {% set 'country_code' 'GB' %}
+        {% if organisation.country.code %}
+            {% set 'country_code' organisation.country.code %}
+        {% endif %}
+        <label class="form-label" for="country">Country</label>
+        <select id="country" name="organisation_country" class="form-control">
+            {% for country in countries %}
+            <option value="{{country.0}}" {% if country_code == country.0 %}selected{% endif %}>{{country.1}}</option>
+            {% endfor %}
+        </select>
+    {% endif %} 
+</div>
+</div>
+<div class="column-one-half">
+{% text_element id='eori_number' label='EORI number' value=organisation.eori_number %}
+{% text_element id='vat_number' label='VAT number' value=organisation.vat_number %}
+{% text_element id='organisation_website' label='Web domain' value=organisation.organisation_website %}
+{% text_element id='duns_number' label='DUNS number' value=organisation.duns_number %}
+</div>

@@ -1,0 +1,34 @@
+{% extends "cases/bundles/bundle_form.html" %}
+{% load format_date %}
+
+
+{% block bundle_type %}
+    <div class="grey-box">
+        <div class="column-full">
+            <span class="label">Type</span>
+            <span class="value">{{bundle.name}}</span>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block bundle_documents %}
+
+    <div class="grey-box">
+        <div class="column-one-half">
+            <span class="label">Content type</span>
+            <span class="value">Documents</span>
+        </div>
+    </div>
+
+    <input type="hidden" name="return-json" value="true">
+    <div id="name-description" class="edit-section">
+
+        <div>
+            {% include "widgets/file_browser.html" with documents=bundle.documents %}
+        </div>
+
+    </div>
+
+
+{% endblock %}

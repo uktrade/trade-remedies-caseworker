@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load format_date %}
+
+{% set 'inactive_count' 0 %}
+
+{% block heading %}
+    <h2 class="heading-large">User Management</h2>
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="column-full user-list-container">
+        {% if inactive_user_count %}
+            <div class="row">
+                <div class="multiple-choice" style="margin-top:0;">
+                    <input type="checkbox" name="show_all_users" id="show_all_users" data-handler="toggleActiveUsers"/>
+                    <label for="show_all_users">
+                        Show {{ inactive_user_count }} inactive user{% if inactive_user_count != 1 %}s{% endif %}
+                    </label>
+                </div>
+            </div>
+        {% endif %}
+        <div class="right-of-tabs">
+            {% if user_group == 'caseworker' %}
+                <a class="link bold modal-form" href="/users/create/caseworker/" data-url="/users/create/caseworker/">&#x2795;
+                    New investigator</a>
+            {% elif user_group == 'public' %}
+                <a class="link bold modal-form" href="/users/create/public/" data-url="/users/create/caseworker/">&#x2795;
+                    New investigator</a>
+            {% endif %}
+        </div>
+
+        {% include "widgets/tabs.html" with q=tabs %}
+        {{ tab }}
+        <table class="sortable margin-top-1" data-attach="TableSort">
+            <thead>
+            {% if tabs.value == 'caseworker' %}
+                <tr>
+                    <th scope="col" class="sort-active">Created</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                </tr>
+            {% else %}
+                <tr>
+                    <th scope="col" class="sort-active">Created</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Organisation</th>
+                    <th scope="col">Country</th>
+                    {% if tabs.value == 'pending' %}
+                        <th scope="col" class="nobreak">Last verify email</th>
+                    {% else %}
+                        <th scope="col">Verified</th>
+                    {% endif %}
+                </tr>
+            {% endif %}
+            </thead>
+            <tbody>
+            {% for user in users %}
+                {% if tabs.value != 'pending' or not user.email_verified_at %}
+                    {% if tabs.value != 'public' or user.email_verified_at %}
+                        <tr class="user-active__{{ user.active }}">
+                            <td class="nobreak"
+                                sortVal="{{ user.created_at }}">{{ user.created_at|format_date:'%d %b %Y' }}</td>
+                            <td>
+                                <a href="/users/{{ user_group }}/{{ user.id }}/" class="modal-form"
+                                   data-url="/users/{{ user_group }}/{{ user.id }}/"
+                                   {% if not user.active %}style="text-decoration: line-through;"{% endif %}
+                                   }>{{ user.name }}</a>
+                            </td>
+                            <td>
+                                <span {% if not user.active %}style="text-decoration: line-through;"{% endif %}>{{ user.email }}</span>
+                            </td>
+                            {% if tabs.value != 'caseworker' %}
+                                <td>
+                                    <a href="/organisation/{{ user.organisations.0.id }}/">{{ user.organisations.0.name }}</a>
+                                </td>
+                                <td>{{ user.country|default:'' }}</td>
+                                {% if tabs.value == 'pending' %}
+                                    <td sortVal="{{ user.email_verify_code_last_sent|default:'0' }}">{{ user.email_verify_code_last_sent|format_date:'%d %b %H:%M:%S' }}</td>
+                                {% else %}
+                                    <td class="nobreak"
+                                        sortVal="{{ user.email_verified_at }}">{{ user.email_verified_at|format_date:'%d %b %Y' }}</td>
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

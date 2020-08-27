@@ -1,0 +1,28 @@
+<!-- dedupe for both contact org and main submission org -->
+{% load set %}
+{% set 'param_name' 'org_verify' %}
+{% set 'value' json_data.org_verify %}
+{% if representing %}
+	{% set 'param_name' 'contact_org_verify' %}
+	{% set 'value' json_data.contact_org_verify %}
+{% endif %}
+
+<form>
+	<div class="edit-section">
+		<div class="grid-row">
+			<div class="column-full">
+				<div class="margin-top-1">
+					{% include 'widgets/organisation_carousel.html' with organisation=organisation match_list=match_list %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" name="deficiency_notice_params_merge_complete" value="1">
+	<div class="button-group form-group margin-top-1">
+	    <span class="issue-button-group pull-left">
+	        <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Continue</button>
+	    </span>
+	    <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
+	</div>
+</form>
+

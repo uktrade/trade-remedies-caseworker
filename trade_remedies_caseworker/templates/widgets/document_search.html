@@ -1,0 +1,23 @@
+
+{% if pre_document_search %}
+    {% if case_id %}
+        <form action="/case/{{case_id}}/files/search/" method="GET">
+    {% else %}
+        <form action="/documents/search/" method="POST">
+        {% csrf_token %}
+    {% endif %}
+
+        <input type="text" class="form-control" placeholder="Search term" name="query" value="{{ query|default_if_none:'' }}">
+        <select name="confidential_status" class="form-control" style="width:230px;">
+            <option value="ALL" {% if conf_status == 'ALL' %}selected{% endif %}>All documents</option>
+            <option value="NONCONF" {% if conf_status == 'NONCONF' %}selected{% endif %}>Non confidential only</option>
+            <option value="CONF" {% if conf_status == 'CONF' %}selected{% endif %}>Confidential only</option>
+        </select>
+        <select name="user_type" class="form-control" style="width:230px;">
+            <option value="" {% if conf_status == '' %}selected{% endif %}>Any</option>
+            <option value="TRA" {% if conf_status == 'TRA' %}selected{% endif %}>Case worker</option>
+            <option value="PUB" {% if conf_status == 'PUB' %}selected{% endif %}>Public</option>
+        </select>
+        <button class="button" type="submit">Search</button>
+    </form>
+{% endif %}

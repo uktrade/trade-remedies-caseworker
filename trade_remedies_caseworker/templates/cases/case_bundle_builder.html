@@ -1,0 +1,62 @@
+{% extends "cases/_case_template.html" %}
+{% load get_item %}
+{% load set %}
+{% block case_page_content %}
+<form class="bundle-builder"
+    action="{% if bundle.id %}/case/{{case_id}}/bundle/{{bundle.id|default:'create'}}/{% else %}/case/{{case_id}}/bundle/create/{% endif %}?__prefix={{case_id}}"
+    method="POST"
+    enctype="multipart/form-data"
+    data-attach="BundleBuilder"
+    data-redirect="/case/{{case_id}}/bundle/{{bundle.id}}/"
+    data-case="{{case_id}}">
+    {% csrf_token %}
+    {% set 'has_docs' bundle.documents|length %}
+    {% set 'has_url' bundle.url %}
+    {% set 'has_content_type' has_docs|_or:has_url %}
+    {% if bundle.status in 'LIVE,ARCHIVED' %}
+        {% set 'live' True %}
+    {% endif %}
+    {% set 'submission' bundle %}
+    {% set 'editable' live|_not %}
+    {% set 'submission_group_name' 'bundle' %}
+    <h2 class="heading-medium">Create a case bundle</h2>
+    {% include 'cases/submissions/bundle_builder_alert_block.html' %}
+    {% include 'cases/submissions/virus_warnings.html' with counts=counts customer=False %}
+
+    {% comment %}****************    Submission type  ***********{% endcomment %}
+    {% set 'populated' bundle.submission_type|_not|_not %}
+    {% include "cases/submissions/bundle_builder_1b_subtype.html" with obj=bundle %}
+
+    {% comment %}****************    Files or URL  *************{% endcomment %}
+    {% if populated %}
+        {% set 'populated' has_content_type %}
+        {% include "cases/submissions/bundle_builder_2b_deficiency_docs.html" with documents=bundle.documents label="Contents" %}
+    {% endif %}
+
+    {% comment %}****************  Signoff and send *********{% endcomment %}
+    {% if populated %}
+        {% if not live %}
+            {% set 'populated' False %}
+            {% set 'lastpage' True %}
+        {% endif %}
+        {% include "cases/submissions/bundle_builder_5b_declaration_finalize.html" %}
+    {% endif %}
+    {% if not live %}
+        <div class="button-group {% if not lastpage %}editing{% else %} {% if submission.type.key == 'public' %}publishing{% else %}issuing{% endif %}{% endif %}">
+            <div class="form-group margin-top-1 issue-button-group">
+                <button class="button button-blue pull-left"  type="submit" name="btn-value" value="send" disabled="disabled">Finalise the bundle</button>                
+                <a class="button button-grey pull-right" href="/case/{{case_id}}/bundles/">Exit without finalising</a>
+            </div>
+
+            <div class="form-group edit-button-group">
+                <button class="button button-blue margin-top-1" type="submit" name="save" value="save" disabled="disabled">Save and continue</button>
+            </div>
+            <button type="button" id="modalButton" class="hidden modal-form" data-url="-" data-notify="/case/{{case.id}}/submission/{{submission.id}}/notify/"></button>
+        </div>
+    <a class="link" href="/case/{{case_id}}/bundles/?tab=draft">Back to case documents</a>
+    {% else %}
+        <a class="link" href="/case/{{case_id}}/bundles/">Back to case documents</a>
+    {% endif %}
+
+</form>
+{% endblock %}

@@ -1,0 +1,29 @@
+.case-summary {
+  margin-top: 30px;
+  max-width: 500px;
+  min-width: 300px;
+  background: $jamie-panel-colour;
+  padding: 10px;
+  float: right;
+  li {
+    margin: 2px 2px;
+    font-size: 16px;
+    span.title {
+      width: 151px;
+      display: block;
+      float: left;
+      font-weight: bold;
+    }
+    span.value {
+      display: table-cell;
+    }
+  }
+}
+
+h1 a {
+  text-decoration: none;
+  color: #005ea5 !important;
+  &:hover {
+    text-decoration: underline;
+  }
+}

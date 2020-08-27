@@ -1,0 +1,223 @@
+.party-type-list {
+  .party-list {
+    > li {
+      margin: 10px 0px;
+      background: $jamie-panel-colour;
+      font-size: 17px;
+      .compact-section {
+        padding: 20px;
+      }
+    }
+  }
+  h2.party-type-name {
+    margin: 75px 0 -42px 0; // lower the party type title onto the tabs
+  }
+  ul.tabset {
+    > a {
+      float: right;
+      li {
+        font-size: 17px;
+      }
+    }
+    > a:first-child li {
+      margin-right: 10px;
+    }
+  }
+}
+
+#party-details-page {
+  .compact-section {
+    .header-line {
+      background: $grey-3;
+      padding: 30px;
+      margin: 20px 0 0;
+    }
+    .expand-section {
+      > div {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+.party-details {
+  background: $jamie-party-expander-background;
+  width: 100%;
+  box-shadow: inset 0px 18px 18px -19px #0000004d;
+  .button-block {
+    padding: 17px 15px 0;
+    overflow: hidden;
+    button {
+      margin: 0 5px 5px 0;
+      float: left;
+    }
+  }
+  .spacer {
+    height: 85px;
+  }
+
+  .contact-list {
+    overflow: hidden;
+    padding: 10px 10px 20px 10px;
+    > li {
+      float: left;
+      margin: 20px;
+      padding: 0;
+      height: 340px;
+      width: 270px;
+    }
+    .section-heading {
+      width: 100%;
+      float: left;
+      clear: both;
+      font-weight: bold;
+      margin: 10px 0px 0px 20px;
+    }
+  }
+
+  .contact-block {
+    &.grey {
+      background: $grey-3;
+    }
+    position: relative;
+    background: $white;
+    padding: 15px 20px;
+    width: 230px;
+    height: 310px;
+    overflow: hidden;
+    font-size: 17px;
+    box-shadow: 0px 0 11px -3px #000c;
+    .button-container {
+      position: absolute;
+      bottom: 10px;
+    }
+    .address {
+      min-height: 2em;
+      overflow: hidden;
+      transition: height 0.3s;
+    }
+    .fold-controls {
+      overflow: hidden;
+      height: 30px;
+      a {
+        margin-top: 3px;
+      }
+      .shader {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 20px;
+        margin-top: -20px;
+        overflow: hidden;
+        &:before {
+          content: "";
+          display: block;
+          box-shadow: 0px 0px 10px 2px #000;
+          margin-left: -10px;
+          margin-right: -10px;
+          margin-top: 20px;
+        }
+      }
+    }
+    .tel {
+      margin-top: 5px;
+    }
+    a.email {
+      min-height: 1em;
+      word-wrap: break-word;
+    }
+    button.button.button {
+      background: $white;
+      color: $jamie-party-button-text;
+      border: 2px solid $jamie-party-button-border;
+      width: 170px;
+      text-align: left;
+      &:hover {
+        color: darken($jamie-party-button-text, 10);
+        border-color: darken($jamie-party-button-border, 10);
+      }
+    }
+    .edit-contact {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      font-weight: normal;
+      font-size: 16px;
+      background: $grey-3;
+      box-shadow: 0 0 10px 8px $grey-3;
+    }
+    .hover-show {
+      transition: opacity 300ms;
+      opacity: 0;
+    }
+    &:hover .hover-show {
+      opacity: 1;
+    }
+    span > i {
+      margin-bottom: -5px;
+      margin-right: 5px;
+    }
+    .name {
+      font-weight: bold;
+    }
+    &.primary::before {
+      content: "";
+      border-top: 30px solid $jamie-red;
+      border-right: 30px solid transparent;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+  .contact-block.expanded {
+    position: absolute;
+    z-index: 2;
+  }
+  .add-block {
+    height: 300px;
+    width: 92px;
+    position: relative;
+    div.inner {
+      position: absolute;
+      top: 50%;
+      padding-top: 40px;
+      transform: translateY(-50%);
+      color: $link-colour;
+      font-weight: bold;
+      white-space: nowrap;
+      cursor: pointer;
+      &:before {
+        content: "";
+        display: block;
+        width: 31px;
+        height: 10px;
+        background: #005ea5;
+        position: absolute;
+        left: 27px;
+        top: 10px;
+        border-radius: 2px;
+      }
+      &:after {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 31px;
+        background: #005ea5;
+        position: absolute;
+        left: 37px;
+        top: 0px;
+        border-radius: 2px;
+      }
+      &:hover {
+        color: darken($link-colour, 5);
+        &:after,
+        &:before {
+          background: darken($link-colour, 5);
+        }
+      }
+    }
+  }
+}
+.party-details.expand-section:not(.expanded) .contact-block.expanded {
+  position: relative !important;
+}

@@ -1,0 +1,7 @@
+{% extends '../review.html' %}
+{% load set %}
+{% block main_title %}Public notice{% endblock %}
+{% block case_page_content %}
+	{% set 'submission_group_name' 'public notice' %}
+	{{ block.super }}
+{% endblock %}

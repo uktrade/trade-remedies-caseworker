@@ -1,0 +1,83 @@
+{% load format_date %}
+<div class="margin-top-1 margin-bottom-1 grid-row">
+  {% comment %} ***********   Details section {% endcomment %}
+  <div class="column-one-half grid-row">
+  	<div class="column-one-third clear">
+      <strong class="bold">Name</strong>
+    </div>
+    <div class="column-two-thirds">
+      {{party.name}}
+      {% if party.previous_names %}
+        <div class="text-small">
+          <a href="#" onClick="togglePreviousName()">Previous names</a>
+          <div style="display: none; z-index: 100; position: absolute; background: white; margin: 10px; padding: 10px; border: 1px solid black;" id="previousNames">
+            <UL>
+            {% for previous_name in party.previous_names %}
+              <LI>{{previous_name.name}} ({% if previous_name.from_date %}from {% format_date previous_name.from_date %}{% endif %} to {% format_date previous_name.to_date %})</LI>
+            {% endfor %}
+            </UL>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    <div class="column-one-third clear">
+      <strong class="bold">Address</strong>
+    </div>
+    <div class="column-two-thirds">
+      {{party.address|linebreaksbr}}<br/>
+      {{party.country.name|default_if_none:''}}
+    </div>
+  </div>
+  <div class="column-one-half grid-row">
+    <div class="float-block">
+      <div class="column-one-third clear">
+        <strong class="bold">EORI</strong>
+      </div>
+      <div class="column-two-thirds">
+        {{party.eori_number|default:'-'}}
+      </div>
+    </div>
+    <div class="float-block">
+      <div class="column-one-third clear">
+        <strong class="bold">VAT No.</strong>
+      </div>
+      <div class="column-two-thirds">
+        {{party.vat_number|default:'-'}}
+      </div>
+    </div>
+    <div class="float-block">
+      <div class="column-one-third clear">
+        <strong class="bold">Reg No.</strong>
+      </div>
+      <div class="column-two-thirds">
+        {{party.companies_house_id|default:'-'}}
+      </div>
+    </div>
+    <div class="float-block">
+      <div class="column-one-third clear">
+        <strong class="bold">Web domain</strong>
+      </div>
+      <div class="column-two-thirds">
+        {% if party.organisation_website %}
+          <a href="{{party.organisation_website}}" target="_blank">{{party.organisation_website}}</a>
+        {% else %}
+          -
+        {% endif %}
+      </div>
+    </div>
+    <div class="float-block">
+      <div class="column-one-third clear">
+        <strong class="bold">D-U-N-S No.</strong>
+      </div>
+      <div class="column-two-thirds">
+        {{party.duns_number|default:'-'}}
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function togglePreviousName() {
+  var prevNames = $('#previousNames');
+  $('#previousNames').css('display', prevNames.css('display') == 'none' ? 'block' : 'none');
+}
+</script>

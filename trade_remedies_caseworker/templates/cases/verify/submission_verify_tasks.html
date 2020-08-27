@@ -1,0 +1,107 @@
+
+{% load to_json %}
+{% load text_element %}
+
+{% block case_page_content %}
+<div data-attach="SubmissionVerify">
+    <textarea id="verify-json" class="hidden">{{ page_data|to_json }}</textarea>
+    {% set 'thirdparty' True %}
+    {% set 'contact_org' submission.contact.user.organisation.organisation %}
+    {% if contact_org.id == organisation.id %}
+        {% set 'thirdparty' False %}
+    {% endif %}    
+	<div class="form-group">
+		<h2 class="heading-large"><span class="heading-secondary">{{submission.type.name}}</span>Approve user and organisation into case</h2>
+	</div>
+    {% set 'party' submission.organisation %}
+    <div class="grid-row">
+        <div class="column-full">
+            {% if thirdparty %}
+                <div class="info narrow">
+                    <p>A third party user <strong class="bold">{{submission.contact.name}}</strong> from <strong class="bold">{{contact_org.name}}</strong> is applying to join the case.</p>
+                    <p>They are applying on behalf of <strong class="bold">{{party.name}}</strong></p>
+                </div>
+            {% else %}
+                <div class="info narrow">
+                    <p>An organisation user <strong class="bold">{{submission.created_by.name}}</strong> is applying for <strong class="bold">{{submission.organisation.name}}</strong> to participate in the case.</p>
+                 </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="form-group task-list">
+        <ul class="task-list-items">
+            {% set 'notify_disabled' True %}
+            {% if thirdparty %}
+                {% if caserole.auth_contact %}
+                    {% set 'loa_state' 'complete' %}
+                {% else %}
+                    {% set 'approve_disabled' True %}
+                {% endif %}
+            {% else %}
+                {% set 'loa_state' 'complete' %}
+            {% endif %}
+
+
+            {% if submission.deficiency_notice_params.merge_complete %}
+                {% set 'merge_state' 'complete' %}
+            {% elif org_matches|length <= 1 %}
+                {% set 'merge_state' 'not-applicable' %}
+            {% endif %}
+
+            {% if submission.deficiency_notice_params.org_verify == 'verified' %}
+                {% set 'org_verify_state' 'complete' %}
+            {% elif submission.deficiency_notice_params.org_verify == 'accepted' %}
+                {% set 'org_verify_state' 'in-progress' %}
+            {% elif submission.deficiency_notice_params.org_verify == 'rejected' %}
+                {% set 'org_verify_state' 'complete' %}
+                {% set 'verify_disabled' True %}
+                {% set 'approve_disabled' True %}
+            {% else %}
+                {% set 'approve_disabled' True %}
+            {% endif %}
+
+            {% if not thirdparty %}
+                {% set 'contact_org_verify_state' 'not-applicable' %}
+                {% set 'loa_state' 'not-applicable' %}
+            {% elif submission.deficiency_notice_params.contact_org_verify == 'verified' %}
+                {% set 'contact_org_verify_state' 'complete' %}
+            {% elif submission.deficiency_notice_params.contact_org_verify == 'accepted' %}
+                {% set 'contact_org_verify_state' 'in-progress' %}
+            {% else %}
+                {% set 'approve_disabled' True %}
+            {% endif %}
+
+            {% if submission.contact.organisation.name %}
+                {% set 'rep_verify_label' 'Verify '|addstr:submission.contact.user.organisation.organisation.name %}
+            {% endif %}
+            {% set 'org_verify_label' 'Verify '|addstr:organisation.name %}
+
+            {% if caserole.role.key != 'awaiting_approval' and caserole.approved_at or caserole.role.key == 'rejected' %}
+                {% set 'approve_state' 'complete' %}
+                {% if submission.deficiency_notice_params.notification_sent_at %}
+                    {% set 'approve_disabled' True %}
+                    {% set 'notify_state' 'complete' %}
+                {% endif %}
+                {% if caserole.role.key == 'applicant' %}
+                    {% set 'notify_state' 'not-applicable' %}
+                {% endif %}
+            {% endif %}
+            {% if not submission.deficiency_notice_params.notification_sent_at and approve_state and loa_state and contact_org_verify_state and org_verify_state %}
+                {% set 'notify_disabled' False %}
+            {% endif %}
+
+            {% include "cases/verify/taskline.html" with  state=loa_state label='Enter Letter of authority contact details' function_name='LoaDetails' %}
+            {% include "cases/verify/taskline.html" with  state=merge_state label='View/merge duplicate organisations' function_name='mergeOrganisation' disabled=merge_disabled %}
+            {% include "cases/verify/taskline.html" with  state=contact_org_verify_state label=rep_verify_label function_name='verifyContactOrganisation' %}
+            {% include "cases/verify/taskline.html" with  state=org_verify_state label=org_verify_label function_name='verifyOrganisation' disabled=verify_disabled %}
+            {% include "cases/verify/taskline.html" with  state=approve_state label='Choose to accept into case' function_name='acceptToCase' disabled=approve_disabled %}
+            {% include "cases/verify/taskline.html" with  state=notify_state label='Notify contact' function_name='notify' disabled=notify_disabled %}
+        </ul>
+        <div class="button-group form-group margin-top-1 {% if not lastpage %}editing{% else %} issuing{% endif %}">
+            <button class="button button-grey pull-right dlg-close" >Exit</button>
+        </div>
+    </div>
+    <div class="edit-page">
+    </div>
+</div>
+{% endblock %}

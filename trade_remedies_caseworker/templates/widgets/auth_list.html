@@ -1,0 +1,35 @@
+{# A table of authorising contacts #}
+{% load to_json %}
+
+
+
+<table class="auth sortable" data-attach="TableSort">
+  <thead>
+    <tr>
+      <th class="date">Date</th>
+      <th class="name">Name</th>
+      <th class="email">Email</th>
+      <th class="case-name">Case Name</th>
+      <th class="auth_user">User</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for user_case in user_cases %}
+      <tr>
+          <td>
+            {{ user_case.auth_contact.created_at }}
+          </td>
+          <td>
+            {{ user_case.auth_contact.name }}
+          </td>
+          <td>
+            {{ user_case.auth_contact.email }}
+          </td>
+          <td>
+            {{ user_case.case.name }}
+          </td>
+          <td>{{ user_case.name }}</td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>

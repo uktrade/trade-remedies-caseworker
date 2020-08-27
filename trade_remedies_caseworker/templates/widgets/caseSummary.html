@@ -1,0 +1,30 @@
+<!-- summary block for cases - displayed in top right -->
+{% load format_date %}
+
+{% if case %}
+<div class="case-summary">
+    <ol>
+    {% if case.archived_at %}
+        <li>
+            <span class="title">Archived</span>
+            <span class="value">{{case.archive_reason.name | default:"n/a"}}
+            </span>
+        </li>
+    {% else %}
+        <li>
+            <span class="title">Current stage</span>
+            <span class="value" data-statekey="CURRENT_STAGE">{{case.stage.name | default:"n/a"}}
+            </span>
+        </li>
+        <li>
+            <span class="title">Next action</span>
+            <span class="value" data-statekey="CURRENT_ACTION" data-type="lookup">{{case.case_status.next_action | default:"n/a"}}</span>
+        </li>
+        <li>
+            <span class="title">Next notice due</span>
+            <span class="value" data-statekey="NEXT_NOTICE" data-type="date">{% format_date case.case_status.next_notice_due "%d %b %Y"%}</span>
+        </li>
+    {% endif %}
+    </ol>
+</div>
+{% endif %}

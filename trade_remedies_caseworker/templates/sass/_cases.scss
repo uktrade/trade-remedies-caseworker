@@ -1,0 +1,12 @@
+table.cases {
+  th {
+    &.number,
+    &.type,
+    &.ref {
+      width: 50px;
+    }
+  }
+  tr td:nth-child(8) {
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,171 @@
+html {
+  overflow: auto;
+}
+.panel-layout {
+  > main {
+    position: absolute;
+    left: 0px;
+    top: 58px;
+    right: 0;
+    bottom: 3px;
+    overflow-y: hidden;
+    #panel-left {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0px;
+      z-index: 2;
+    }
+    // styling of old content panel
+    #panel-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      background: $white;
+      > div.grid-row {
+        min-width: 750px;
+      }
+    }
+    .slow-move {
+      transition: left 0.3s cubic-bezier(1, 0, 0, 1),
+        right 0.3s cubic-bezier(1, 0, 0, 1), width 0.3s cubic-bezier(1, 0, 0, 1);
+    }
+    .dragger {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 15px;
+      cursor: col-resize;
+      margin-right: -16px;
+      z-index: 2;
+      &.left {
+        right: 0;
+      }
+      &.right {
+        left: 0;
+      }
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0px;
+        border-right: 2px solid $grey-2;
+        //transition: border-color 0.3s;
+      }
+      &:hover:after {
+        border-color: $light-blue;
+      }
+      > .handle {
+        position: absolute;
+        top: 50%;
+        margin-top: -8px;
+        width: 15px;
+        height: 15px;
+        background: $light-blue-25;
+        border: 6px solid $light-blue-25;
+        border-radius: 50%;
+        z-index: 1;
+        left: -15px;
+        background-size: 15px 15 * 50px;
+        background-image: url(images/sprite@2x.png);
+        background-position-y: -60px;
+        cursor: pointer;
+        &:hover {
+          background-color: darken($light-blue-25, 10%);
+          border: 6px solid darken($light-blue-25, 10%);
+        }
+        &.collapsed {
+          transform: rotate(180deg);
+        }
+      }
+      &.left > .handle {
+        transform: rotate(180deg);
+        &.collapsed {
+          transform: rotate(0deg);
+        }
+      }
+    }
+    #content {
+      background: $white;
+      overflow: auto;
+      position: absolute;
+      left: 0px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      > .grid-row {
+        min-width: 650px;
+      }
+    }
+    #menu-bar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      background: $govuk-blue;
+      padding-top: 10px;
+      .menu-icon {
+        text-align: center;
+        margin: 3px auto;
+        width: 36px;
+        height: 36px;
+        border-radius: 18px;
+        padding: 0px;
+        transition: background-color 0.2s;
+        &:hover {
+          background-color: lighten($govuk-blue, 10%);
+        }
+        &:focus-within,
+        &.selected {
+          background-color: $yellow;
+        }
+        .icon {
+          margin-top: 5px;
+        }
+        a:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+  // public notice panel
+  > .warning.severe {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    right: 0;
+    border: none;
+    background: $mellow-red;
+    color: $white;
+    padding: 0 20px;
+    text-align: center;
+    height: 24px;
+    margin: 0;
+    &:before {
+      display: none;
+    }
+    + main {
+      margin-top: 14px;
+    }
+  }
+  footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 2;
+    transition: height 0.3s;
+    overflow: hidden;
+    font-size: 15px;
+    & > .footer-wrapper {
+      padding: 16px !important;
+    }
+    &:hover {
+      height: 28px;
+    }
+  }
+}

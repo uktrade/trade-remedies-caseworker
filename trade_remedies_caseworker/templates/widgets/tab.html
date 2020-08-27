@@ -1,0 +1,11 @@
+
+	
+	<li class="tab {% if not left %} pull-right{% endif %} {% if selected or value == current %}selected{% endif %}">
+		{% if value != current %}<a href="?tab={{ value }}" data-tab="{{ value }}">{% else %}<span>{% endif %}
+			{{ label }}{% if sr_text %}<span class="visually-hidden">{{sr_text}}</span>{% endif %}
+			{% if not number == None %}
+				<div class="number-circle"><span>{{ number|default:0}} </span></div>
+			{% endif %}
+		{% if value != current %}</a>{% else %}</span>{% endif %}
+	</li>
+	

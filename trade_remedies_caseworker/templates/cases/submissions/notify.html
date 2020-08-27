@@ -1,0 +1,85 @@
+{% load get_item %}
+<h2 class="heading-medium nofloat">{% block form_title%}Send a notification{% endblock %}</h2>
+<form action="{{form_action}}" method="POST">
+    {% csrf_token %}
+    {% if True or templates and templates|length > 1 %} {% comment %} TODO: Multiple should always be the way! {% endcomment %}
+        <input type="hidden" name="multiple" value="multiple">
+    {% endif %}
+    {% if not contact and submission.organisation.contacts %}
+        <div class="form-group edit-item type-text ">
+            <label class="form-label" for="field-contact">Send to</label>
+            <select class="form-control" name="contact">
+                {% for contact in submission.organisation.contacts %}
+                    <option value="{{contact.id}}">{{contact.name}} &lt;{{contact.email}}&gt;</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endif %}
+
+    {% for field_name in notification_template.personalisation %}
+        {% if field_name in editable_fields %}
+            {% with field=editable_fields|get_item:field_name %}
+                <div class="form-group edit-item type-text ">
+                    <input type="hidden" name="notify_keys" value="{{field_name}}"/>
+                    <label class="form-label" for="field-{{field_name}}">{{field.title|default:field_name}}</label>
+                    {% if field.type == 'textarea' %}
+                        <textarea
+                            class="form-control text"
+                            id="field-{{field_name}}"
+                            name="{{field_name}}"
+                            rows="3"
+                            style="width:95%"
+                            {% if field.disabled %}disabled{% endif %}
+                        >{{values|get_item:field_name}}</textarea>
+                    {% else %}
+                        <input
+                            class="form-control text"
+                            id="field-{{field_name}}"
+                            type="text"
+                            name="{{field_name}}"
+                            value="{{values|get_item:field_name}}"
+                            {% if field.disabled %}disabled{% endif %}
+                        />
+                    {% endif %}
+                </div>
+            {% endwith %}
+        {% elif parsed_template or templates %}
+            <input type="hidden" name="{{field_name}}" value="{{values|get_item:field_name}}"/>
+        {% else %}
+            <div class="form-group edit-item type-text ">
+                <label class="form-label" for="field-{{field_name}}">{{ field_name }}</label>
+                <input class="form-control text" id="field-{{field_name}}"  type="text" name="{{field_name}}" disabled="disabled" value="{{values|get_item:field_name}}">
+            </div>
+        {% endif %}
+
+    {% endfor %}
+    <input type="hidden" name="" value=""/>
+        {% if parsed_template %}
+            <div class="preview" data-email="{{template_spec.values.email}}">
+                {% if contact %}
+                    <div>
+                        The following content will be sent to <span class="bold">{{contact.name}} &lt;{{contact.email}}&gt;</span>
+                    </div>                
+                {% endif %}
+                <div class="notify-preview">{{parsed_template|safe}}</div>
+            </div>
+        {% elif templates %}
+            {% for template_spec in templates %}
+                <div class="preview" data-email="{{template_spec.values.email}}">
+                    <div>
+                        The following content will be sent to <span class="bold">{{template_spec.values.full_name}} &lt;{{template_spec.values.email}}&gt;</span>
+                    </div>
+                    <div class="form-group edit-item type-text ">
+                        <div class="notify-preview">{{template_spec.preview|safe}}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <textarea readonly rows="10" style="width:95%;">{{notification_template.body}}</textarea>
+        {% endif %}
+    <div class="button-set">
+        <button class="button button-blue" type="submit">Send</button>
+        <button class="button button-grey pull-right dlg-close" type="button" redirect_on_close="{{cancel_redirect_url}}">Cancel</button>
+    </div>
+</form>
+</div>

@@ -1,0 +1,34 @@
+{
+  "name": "trade-remedies-caseworker",
+  "version": "1.0.0",
+  "description": "Case-worker-facing UI for the Trade Remedies system",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Node is only used for front end asset building\" && exit 1",
+    "gulp": "gulp",
+    "watch": "gulp && gulp sass:watch",
+    "prettier": "prettier 'trade_remedies_caseworker/templates/{static,sass}/**/*.{scss,js}' --check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uktrade/trade-remedies-caseworker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uktrade/trade-remedies-caseworker/issues"
+  },
+  "homepage": "https://github.com/uktrade/trade-remedies-caseworker#readme",
+  "dependencies": {
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^2.6.5"
+  },
+  "devDependencies": {
+    "all-contributors-cli": "^6.17.2",
+    "prettier": "^2.0.5"
+  }
+}

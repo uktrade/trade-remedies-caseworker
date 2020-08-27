@@ -1,0 +1,64 @@
+{% load format_date %}
+<h2 class="heading-large">Submission details</h2>
+
+<ul class="name-value-list">
+  <li>
+    <div class="name">Submission type</div>
+    <div class="value">{{ submission.type.name }}</div>
+  </li>
+  {% if submission.name %}
+    <li>
+      <div class="name">Name</div>
+      <div class="value">{{ submission.name }}</div>
+    </li>
+  {% endif %}
+  {% if submission.status %}
+    <li>
+      <div class="name">Status</div>
+      <div class="value">{{ submission.status.name }}</div>
+    </li>
+  {% endif %}
+  <li>
+      <div class="name">Current Version</div>
+      <div class="value">
+        {% if submission.version > 1 %}
+          {{submission.version}}
+        {% else %}
+          First version
+        {% endif %}
+      </div>
+  </li>
+  {% if submission.due_at %}
+    <li>
+        <div class="name">Due at</div>
+        <div class="value">
+          {% format_date submission.due_at '%d %b %Y' %}
+        </div>
+    </li>
+  {% endif %}
+  {% if submission.issued_at %}
+    <li>
+        <div class="name">Issued at</div>
+        <div class="value">
+          {{ submission.issued_at|format_date:'%d %b %Y' }} by {{submission.issued_by.name}}
+        </div>
+    </li>
+  {% endif %}
+  <li>
+    <div class="name">Created for</div>
+    <div class="value">{{submission.organisation.name}}</div>
+  </li>
+  <li>
+    <div class="name">Submitted by</div>
+    <div class="value">{{submission.created_by.name}}</div>
+  </li>
+  {% if submission.parent.deficiency_sent_at %}
+    <li>
+      <div class="name">Deficiency</div>
+      <div class="value">
+        Sent at {% format_date submission.parent.deficiency_sent_at '%d %b %Y' %}
+      </div>
+    </li>
+  {% endif %}
+
+</ul>

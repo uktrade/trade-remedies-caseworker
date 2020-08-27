@@ -1,0 +1,51 @@
+.create-case {
+  max-width: 500px;
+
+  .panel {
+    padding-right: 0;
+  }
+
+  .company-entry {
+    input {
+      padding: 4px 4px 5px 8px;
+    }
+  }
+
+  .company-entry,
+  .company-selector {
+    display: flex;
+    a {
+      padding-left: 10px;
+      padding-top: 8px;
+    }
+  }
+
+  .product-classification-code {
+    display: flex;
+    input {
+      margin-right: 10px;
+      max-width: 180px;
+    }
+    .danger {
+      background-color: $red;
+    }
+  }
+
+  .remove-export {
+    display: flex;
+    .danger {
+      background-color: $red;
+      margin-left: 10px;
+    }
+  }
+
+  select {
+    height: 38px;
+  }
+
+  @media (min-width: 641px) {
+    .form-control {
+      width: 100% !important;
+    }
+  }
+}

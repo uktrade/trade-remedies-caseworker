@@ -1,0 +1,837 @@
+$small-font-size: 16px;
+$task-filters-container-min-width: 480px;
+$task-filters-bg-color: white;
+
+@mixin legible-color-text($background-color) {
+  //http://www.colourlovers.com/web/blog/2010/03/11/calculating-color-contrast-for-legible-text
+
+  @if lightness($background-color) > 50% {
+    color: #000000;
+  }
+  @if lightness($background-color) <= 50% {
+    color: #ffffff;
+  }
+}
+
+.taskbar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  > div {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+  .task-top-panel {
+    background: white;
+    position: absolute;
+    left: 2px;
+    top: 0;
+    right: 0;
+    margin-bottom: 10px;
+    z-index: 1;
+    .counts {
+      overflow: hidden;
+      padding: 5px 60px 5px 15px;
+      min-width: 380px;
+    }
+
+    .add-task {
+      line-height: 31px;
+    }
+
+    .task-count {
+      float: left;
+      background: $grey-3;
+      padding: 2px 0px 2px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      box-shadow: 0 0 2px 0 #535353;
+      margin: 5px 8px;
+      position: relative;
+      .count {
+        background: $govuk-blue;
+        top: 1px;
+      }
+      &.selected:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        border-bottom: 3px solid $govuk-blue;
+        bottom: -7px;
+      }
+      &:hover {
+        background: darken($grey-3, 5%);
+        cursor: pointer;
+      }
+    }
+
+    .include-done-tasks-container {
+      background-color: $task-filters-bg-color;
+    }
+
+    .assignee-dropdown-container {
+      position: absolute;
+      background: white;
+      white-space: nowrap;
+
+      .show-assignees-link {
+        color: black;
+        text-decoration: none;
+        padding-right: 32px;
+        box-sizing: border-box;
+        font-size: $small-font-size;
+        padding-right: 1.5em;
+        background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 140 140' width='1em' height='1em' xmlns='http://www.w3.org/2000/svg'><g><path d='m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z' fill='black'/></g></svg>");
+        background-position: right center;
+        background-repeat: no-repeat;
+      }
+
+      .clear-assignee-filters-button {
+        visibility: hidden;
+        font-size: $small-font-size;
+        text-decoration: none;
+        background: lightgray;
+        @include legible-color-text(lightgray);
+        padding: 0.25em 0.5em;
+
+        &.visible {
+          visibility: visible;
+        }
+      }
+
+      .user-select-dropdown {
+        display: none;
+        padding: 0 0.5em;
+        box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
+          rgba(9, 30, 66, 0.31) 0px 0px 1px;
+        box-shadow: 0 2px 8px 0 $grey-2;
+        background: white;
+        border-left: solid 1px #eee;
+        border-right: solid 1px #eee;
+        border-bottom: solid 1px #eee;
+        height: 20px;
+        height: 10em;
+        width: 40px;
+        width: 14em;
+        overflow-y: scroll;
+        position: absolute;
+        left: 0;
+        top: 0;
+        resize: both;
+        overflow: auto;
+
+        $dropdown-item-height: 32px;
+        .user-select-dropdown__item {
+          height: $dropdown-item-height;
+
+          .name {
+            font-size: 16px;
+            line-height: $dropdown-item-height;
+          }
+        }
+      }
+
+      &.show-dropdown {
+        .user-select-dropdown {
+          display: block;
+          z-index: 1000;
+        }
+      }
+    }
+  }
+  .tasklist.truncate {
+    bottom: 50%;
+  }
+  #tasklist-container {
+    position: absolute;
+    //top: 85px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  .tasklist {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0 15px;
+    overflow: auto;
+    table {
+      //table-layout: fixed;
+      min-width: 500px;
+      th {
+        padding: 6px 0;
+      }
+      td,
+      th {
+        white-space: nowrap;
+        font-size: 16px;
+        overflow: hidden;
+        vertical-align: top;
+        text-overflow: ellipsis;
+        min-width: 50px;
+        border-bottom: 2px solid $grey-4;
+      }
+      tbody tr {
+        &:hover {
+          background-color: darken($white, 3%);
+        }
+        &.selected {
+          background-color: $light-blue-25;
+          &:hover {
+            background-color: darken($light-blue-25, 2%);
+          }
+        }
+      }
+      .overdue {
+        color: $white;
+        background: $bright-red;
+        border-radius: 10px;
+        padding: 0 3px;
+      }
+    }
+    .task-card {
+      position: relative;
+      padding: 10px 10px 10px 45px;
+      clear: both;
+      font-size: 16px;
+      min-width: 300px;
+      border-bottom: 1px solid $grey-3;
+      transition: box-shadow 0.2s;
+      overflow: hidden;
+      &:hover {
+        box-shadow: 0 2px 8px 0 $grey-2;
+        cursor: pointer;
+      }
+      .description {
+        color: $grey-1;
+      }
+      .assignee {
+        position: absolute;
+        top: 12px;
+        left: 9px;
+      }
+    }
+    .projection-graph {
+      position: absolute;
+      left: 40px;
+      right: 30px;
+      top: 20px;
+      bottom: 40px;
+      border-left: 2px solid;
+      border-bottom: 2px solid black;
+      &.multi {
+        position: relative;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        height: 100px;
+        margin-left: 40px;
+      }
+      .bar {
+        position: absolute;
+        bottom: 0;
+        background: $govuk-blue;
+        display: inline-block;
+        border-left: 1px solid lighten($govuk-blue, 10%);
+      }
+      .yscale > div {
+        position: absolute;
+        margin-bottom: -8px;
+        left: -40px;
+        width: 35px;
+        text-align: right;
+        font-size: 12px;
+        text-align: right;
+      }
+      .xscale > div {
+        position: absolute;
+        bottom: -20px;
+        font-size: 12px;
+        white-space: nowrap;
+        margin-left: -6px;
+      }
+    }
+    $day_width: 35px;
+    $calendar_border_colour: $grey-3;
+
+    .calendar {
+      position: absolute;
+      left: 70px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      overflow: hidden;
+
+      .day-scale {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1px;
+        bottom: 0;
+        color: $grey-1;
+        border-top: 1px solid $calendar_border_colour;
+        border-bottom: 1px solid $calendar_border_colour;
+        overflow: hidden;
+        > div {
+          float: left;
+          width: $day_width * 7;
+          font-size: 14px;
+          height: 100%;
+          > div.week-header {
+            background-image: linear-gradient($grey-4, darken($grey-4, 5%));
+            text-align: center;
+            border-left: 1px solid $calendar_border_colour;
+            border-bottom: 1px solid $calendar_border_colour;
+            padding: 6px 0;
+          }
+          > div.day {
+            float: left;
+            width: $day_width - 1px;
+            text-align: center;
+            padding: 3px 0;
+            height: 100%;
+            border-left: 1px solid $calendar_border_colour;
+            &.weekend {
+              background-color: darken($grey-4, 5%);
+            }
+            &.today {
+              box-shadow: inset 0 0 6px 0px $govuk-blue;
+            }
+          }
+        }
+      }
+      .calendar-body {
+        position: absolute;
+        top: 54px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: auto;
+        .person-graph {
+          float: left;
+          position: relative;
+          margin-top: 20px;
+          width: 100%;
+          height: 100px;
+          min-height: 100px;
+          max-height: 400px;
+          border-bottom: 1px solid $grey-2;
+          &:last-child {
+            margin-bottom: 20px;
+          }
+          > div.block {
+            float: left;
+            width: $day_width;
+            font-size: 14px;
+            overflow: hidden;
+            position: absolute;
+            text-align: center;
+            height: 100%;
+            > div {
+              background-image: linear-gradient(#ffffff40, transparent);
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              opacity: 0.8;
+              border-radius: 10px;
+              &.non-working {
+                border-radius: 0;
+                height: 30%;
+                background-color: $calendar_border_colour;
+                background-image: linear-gradient(
+                  45deg,
+                  #ffffff50 25%,
+                  transparent 25%,
+                  transparent 50%,
+                  #ffffff50 50%,
+                  #ffffff50 75%,
+                  transparent 75%,
+                  transparent
+                );
+                background-size: 60px 60px;
+                > span {
+                  margin-top: 5px;
+                }
+              }
+              > span {
+                z-index: 1;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                margin-top: -20px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                padding: 0 4px;
+                &.high {
+                  color: $white;
+                  margin-top: 5px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .person-scale {
+      // absolute to the left of the calendar and scroll driven by js
+      position: absolute;
+      left: 26px;
+      top: 54px;
+      bottom: 10px;
+      overflow: hidden;
+      width: 45px;
+      > div.person-label {
+        height: 100px;
+        min-height: 101px;
+        max-height: 400px;
+        margin-top: 20px;
+        position: relative;
+        &:last-child {
+          margin-bottom: 21px;
+        }
+        > .circular-badge {
+          margin-top: 50%;
+        }
+        .overdue {
+          position: absolute;
+          top: -28px;
+          background-color: $bright-red;
+        }
+        > .assignee-list {
+          position: absolute;
+          margin-top: 25px;
+        }
+      }
+    }
+    .accumulate-box {
+      margin-top: 9px;
+      > .multiple-choice {
+        padding: 0 0 0 4px;
+        margin: 0 0 0 23px;
+        > label {
+          margin: -3px 0 0 -23px;
+        }
+      }
+    }
+  }
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: $grey-2;
+    margin: 5px 0;
+    > div {
+      height: 7px;
+      background-color: $green;
+      border-radius: 4px;
+      position: relative;
+      top: -2px;
+    }
+  }
+  .task-viewer-container.open .task-viewer.slide {
+    right: 0;
+  }
+  .task-viewer-container .task-viewer:not(.slide) {
+    display: none;
+    top: 50%;
+    z-index: 2;
+  }
+  .task-viewer-container.open .task-viewer {
+    display: block;
+  }
+  .task-viewer {
+    border: 1px solid $grey-3;
+    max-height: 50%; // probably temporary
+    margin: 13px 9px;
+    position: absolute;
+    overflow: hidden;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: $white;
+    min-width: 373px;
+    box-shadow: 1px 2px 8px 2px #ccc;
+    padding: 10px 0;
+  }
+
+  .date-small {
+    font-size: 13px;
+    position: relative;
+    background: $grey-4;
+    box-shadow: 0 1px 3px 0 $grey-1;
+    display: inline-block;
+    padding: 4px 0px 3px 20px;
+    margin: 0 0 0 5px;
+    width: 55px;
+    &:hover {
+      background: transparent;
+      box-shadow: 0 1px 3px 0 $grey-3;
+    }
+    &:before {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      left: 7px;
+      top: 6px;
+      background-image: url(images/sprite@2x.png);
+      background-size: 10px 500px;
+      background-position: 0px -80px;
+    }
+    &.overdue {
+      box-shadow: 0 1px 3px 1px $red;
+      width: 70px;
+    }
+  }
+  .menu-icon {
+    right: 15px;
+    top: 2px;
+    position: absolute;
+    z-index: 1;
+    height: 27px;
+    width: 28px;
+    padding: 0;
+    background: $white;
+    &:after {
+      right: 2px;
+      top: 4px;
+      width: 23px;
+      height: 4px;
+    }
+  }
+  .function-menu {
+    top: 25px;
+    > div {
+      button {
+        font-size: $small-font-size;
+        font-weight: normal;
+        color: $link-colour;
+        padding: 0 10px;
+        background: none;
+        border: none;
+        outline: none;
+        &:hover {
+          background: $yellow;
+        }
+      }
+      padding: 5px;
+      &:after,
+      &:before {
+        right: 11px;
+      }
+    }
+  }
+  .task-filters {
+    min-width: $task-filters-container-min-width;
+    margin: 10px 0 0 30px;
+    .multiple-choice {
+      padding: 0;
+      margin: 5px 5px 5px 0;
+      float: left;
+      clear: None;
+      label {
+        font-size: 14px;
+      }
+    }
+    select {
+      font-size: $small-font-size;
+      padding: 2px;
+      width: auto;
+    }
+  }
+  .assignee-filter {
+    > label {
+      margin: 0;
+      float: left;
+      cursor: pointer;
+    }
+    input[type="checkbox"]:checked + div.circular-badge:after {
+      content: "";
+      display: block;
+      width: 27px;
+      position: absolute;
+      bottom: -7px;
+      left: 0px;
+      border-bottom: 3px solid $govuk-blue;
+    }
+    .circular-badge {
+      position: relative;
+      transition: top 0.1s;
+      &:hover {
+        top: -4px;
+      }
+    }
+  }
+  .view-selector {
+    padding: 12px 0 5px 14px;
+    // width: 128px;
+    > label {
+      margin: 0 2px;
+      cursor: pointer;
+      > i {
+        position: relative;
+        transition: top 0.1s;
+        top: 0px;
+        &:hover {
+          top: -4px;
+        }
+      }
+    }
+    input[type="radio"] {
+      position: absolute;
+      z-index: -2;
+      opacity: 0;
+    }
+    input[type="radio"]:focus + i.icon:after,
+    input[type="radio"]:checked + i.icon:after {
+      content: "";
+      display: block;
+      height: 36px;
+      width: 36px;
+      position: absolute;
+      background: $yellow;
+      z-index: -1;
+      margin-left: -6px;
+      margin-top: -5px;
+      border-radius: 50%;
+    }
+  }
+}
+// *******   End of taskbar
+
+.task-viewer {
+  &.slide {
+    z-index: 1;
+    width: 100%;
+    margin: 0;
+    top: 0px;
+    right: 100%;
+    left: auto;
+    max-height: none;
+    transition: right 0.5s cubic-bezier(1, 0, 0, 1);
+  }
+  .task-viewer-client {
+    padding: 3px 15px 0 20px;
+    overflow: auto;
+    position: absolute;
+    top: 35px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .small-font {
+    font-size: $small-font-size;
+    color: lighten($black, 10%);
+  }
+
+  .form-half {
+    padding: 0;
+    float: left;
+    &.left {
+      width: 215px;
+    }
+    &.right {
+      width: 270px;
+    }
+  }
+  .form-row {
+    overflow: hidden;
+    width: 100%;
+    padding: 3px;
+  }
+  label.form-label {
+    margin: 3px 0;
+    float: left;
+    width: 100%;
+    font-size: 14px;
+    position: relative;
+    > span {
+      float: left;
+      font-size: $small-font-size;
+      width: 69px;
+      margin: 6px 8px 0 0;
+      white-space: nowrap;
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      color: $grey-1;
+    }
+    > .date-widget {
+      float: left;
+      clear: both;
+      input.form-control {
+        clear: none;
+      }
+    }
+    > .form-control {
+      width: auto;
+      max-width: 75%;
+    }
+    div.date-widget {
+      overflow: hidden;
+      .datepicker-trigger {
+        margin: 0;
+      }
+    }
+  }
+  input,
+  select,
+  textarea {
+    float: left;
+    font-size: $small-font-size;
+    padding: 2px;
+    clear: both;
+  }
+  a.button-link {
+    background: $govuk-blue;
+    color: white !important;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 3px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    &:hover {
+      background-color: darken($govuk-blue, 5%);
+      text-decoration: underline;
+    }
+    &[disabled] {
+      background-color: $grey-1;
+      text-decoration: none;
+      cursor: default;
+    }
+  }
+  .close {
+    position: relative;
+    width: 24px;
+    height: 28px;
+    padding: 3px 4px 0 3px;
+    margin: -4px 5px 0 5px;
+    &:before {
+      content: "";
+      position: absolute;
+      transition: opacity 0.2s;
+      opacity: 0;
+      background-color: $grey-3;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      z-index: -1;
+      border-radius: 50%;
+    }
+    z-index: 1;
+    &:hover:before {
+      opacity: 1;
+    }
+  }
+}
+
+.scroll-shadow {
+  box-shadow: inset 0 19px 15px -20px #979393;
+}
+.scroll-shadow-left {
+  box-shadow: inset 19px 0 15px -20px #979393;
+  &.scroll-shadow {
+    box-shadow: inset 19px 19px 15px -20px #979393;
+  }
+}
+
+// general things
+button.icon {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.priority-icon {
+  width: 20px;
+  height: 20px;
+  &:after,
+  &:before {
+    content: "";
+    display: block;
+    border-bottom: 9px solid transparent;
+    border-top: 9px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    margin-top: -5px;
+    border-radius: 5px;
+  }
+  &.high:after {
+    border-bottom-color: $bright-red;
+  }
+  &.medium {
+    &:after {
+      border-bottom-color: #ffd73a;
+      margin-top: -10px;
+    }
+    &:before {
+      border-top-color: #ffd73a;
+      margin-top: 10px;
+    }
+  }
+  &.low:before {
+    border-top-color: green;
+    margin-top: 5px;
+  }
+}
+.alert-container {
+  position: fixed;
+  bottom: 20px;
+  right: 50px;
+  z-index: 2;
+  .bouncy {
+    animation: shake 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    position: relative;
+    background: $grey-4;
+    padding: 3px 20px 3px 54px;
+    h1 {
+      font-size: 19px;
+      font-weight: bold;
+    }
+    .icon {
+      position: absolute;
+      left: 18px;
+      top: 3px;
+    }
+    color: black;
+    margin-top: 20px;
+    border-radius: 6px;
+    box-shadow: 2px 2px 6px 0 #000;
+  }
+}
+@keyframes shake {
+  0% {
+    margin-bottom: -50px;
+  }
+  20% {
+    margin-bottom: 5px;
+  }
+  30% {
+    margin-bottom: -3px;
+  }
+  40% {
+    margin-bottom: 2px;
+  }
+  50% {
+    margin-bottom: -1px;
+  }
+  60% {
+    margin-bottom: 0px;
+  }
+}

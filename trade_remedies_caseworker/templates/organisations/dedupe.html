@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block heading %}Dedupe organisations{% endblock %}
+
+{% block main_content %}
+{% if organisations %}
+  <form action="/organisations/dedupe/" method="POST">
+    {% csrf_token %}
+    <div class="grid-row">
+      <div class="column-one-third">
+        {{organisations.0.name}}
+        <ul>
+          <h2 class="heading-small">Cases</h2>
+          {% for case in organisations.0.cases %}
+            <LI>{{case.name}}</LI>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="column-one-third" style="text-align: center;">
+          <button class="primary">Merge the right to the left</button>
+          <p/>
+          <button class="primary">Merge the left to the right</button>
+      </div>
+      <div class="column-one-third">
+        {{organisations.1.name}}
+        <h2 class="heading-small">Cases</h2>
+        <ul>
+          {% for case in organisations.1.cases %}
+            <li>{{case.name}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+  </form>
+  <hr>
+  <a href="/organisations/dedupe/">
+    <button>Cancel</button>
+  </a>
+  <hr>
+{% endif %}
+
+<h2 class="heading-medium">Duplicate Organisations</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Occurences</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for duplicate in duplicates %}
+      <tr>
+          <td>{{duplicate.name}}</td>
+          <td>{{duplicate.count}}</td>
+          <td>
+            <a href="/organisations/dedupe/?left={{duplicate.name}}">
+              <button class="primary">Merge</button>
+            </a>
+          </td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2 class="heading-medium">Similar Organisations</h2>
+<form action="" method="GET">
+  Similarity: <input type="text" name="limit" value="{{limit}}" class="form-control" style="width: 50px;"/>%
+  <button type="submit" class="button">Filter</button>
+</form>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Similar to</th>
+      <th>Similarity score</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for sim in similar %}
+      <tr>
+          <td>{{sim.1}}</td>
+          <td>{{sim.2}}</td>
+          <td>{{sim.0}}</td>
+          <td>
+            <a href="/organisations/dedupe/?left={{sim.1}}&right={{sim.2}}">
+              <button class="primary">Merge</button>
+            </a>
+          </td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

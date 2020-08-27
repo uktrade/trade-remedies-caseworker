@@ -1,0 +1,36 @@
+{% load custom_filters %}
+<div class="section {% if populated %}populated{% endif %}">
+    {% set 'object' object|_or:submission %}
+    {% if populated %}
+        <div class="grey-box">
+            <div class="column-full">
+                <span class="label">Publish anonymously</span>
+                {% include "cases/submissions/bundle_builder_edit_button.html" %}   
+                {% if object.issue_anonymously == 'yes' %}
+                    <span class="value">The business name will be withheld</span>
+                {% elif object.issue_anonymously == 'no' %}
+                    <span class="value">The business name will be visible</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    <div class="edit-section"> 
+        <div id="response-window-yn" class="column-full ">
+            <div class="form-group">    
+                <label class="form-label">Anonymous publication
+                    <span class="form-hint">
+                        Should this submission be published anonymously?
+                    </span>
+                </label>
+                <div class="multiple-choice">
+                    <input id="response-window-1" type="radio" name="{{name_prefix}}issue_anonymously" value="yes" {% if object.issue_anonymously == 'yes' %} checked="checked" {% endif %}>
+                    <label for="response-window-1">Yes</label>
+                </div>
+                <div class="multiple-choice">
+                    <input id="response-window-2" type="radio" name="{{name_prefix}}issue_anonymously" value="no" {% if object.issue_anonymously == 'no' %} checked="checked" {% endif %}>
+                    <label for="response-window-2">No</label>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>       

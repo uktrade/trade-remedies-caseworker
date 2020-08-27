@@ -1,0 +1,46 @@
+from django.urls import path
+from organisations.views import (
+    OrganisationView,
+    OrganisationsView,
+    OrganisationFormView,
+    ContactFormView,
+    ContactDeleteView,
+    ContactPrimaryView,
+    ToggleOrganisationSampledView,
+    ToggleOrganisationNonResponsiveView,
+    OrganisationCaseRoleView,
+    OrganisationDedupeView,
+    OrganisationDeleteView,
+    OrganisationMergeView,
+    OrganisationMatchView,
+    OrganisationDuplicatesView,
+    ToggleUserAdmin,
+    OrganisationRemoveView,
+)
+
+
+urlpatterns = [
+    path('', OrganisationsView.as_view(), name='organisations'),
+    path('<uuid:organisation_id>/', OrganisationView.as_view(), name='edit_organisation'),
+    #path('<uuid:organisation_id>/name/', OrganisationNameChangeView.as_view(), name='edit_organisation'),
+    path('case/<uuid:case_id>/create/<str:organisation_type>/', OrganisationFormView.as_view(), name='create_organisation'),
+    path('case/<uuid:case_id>/<str:organisation_type>/organisation/<uuid:organisation_id>/', OrganisationFormView.as_view(), name='create_organisation'),
+    path('<uuid:organisation_id>/edit/', OrganisationFormView.as_view(), name='edit_organisation'),
+    path('<uuid:organisation_id>/case/<uuid:case_id>/sampled/', ToggleOrganisationSampledView.as_view(), name='toggle_samples'),
+    path('<uuid:organisation_id>/case/<uuid:case_id>/nonresponsive/', ToggleOrganisationNonResponsiveView.as_view(), name='toggle_nonresponsive'),
+    path('case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/add/', ContactFormView.as_view(), name='add_contact'),
+    path('case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/', ContactFormView.as_view(), name='edit_contact'),
+    path('case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/delete/', ContactDeleteView.as_view(), name='delete_contact'),
+    path('<uuid:organisation_id>/user/<uuid:user_id>/admin/toggle/', ToggleUserAdmin.as_view(), name='toggle_user_admin'),
+    path('case/<uuid:case_id>/organisation/<uuid:organisation_id>/delete/', OrganisationDeleteView.as_view(), name='delete_organisation'),
+    path('case/<uuid:case_id>/organisation/<uuid:organisation_id>/remove_from_case/', OrganisationRemoveView.as_view(), name='remove_organisation'),
+    path('<uuid:organisation_id>/delete/', OrganisationDeleteView.as_view(), name='delete_organisation'),
+    path('<uuid:organisation_id>/merge/', OrganisationMergeView.as_view(), name='merge_organisation'),
+    path('case/<uuid:case_id>/organisation/<uuid:organisation_id>/change/', OrganisationCaseRoleView.as_view()),
+    path('case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/set/primary/', ContactPrimaryView.as_view(), name='set_primary_contact'),
+    path('<uuid:organisation_id>/case/<uuid:case_id>/role/', OrganisationCaseRoleView.as_view(), name='org_case_role'),
+    path('<uuid:organisation_id>/duplicates/', OrganisationDuplicatesView.as_view(), name='match'),
+    path('dedupe/', OrganisationDedupeView.as_view(), name='dedupe'),
+    path('match/', OrganisationMatchView.as_view(), name='match'),
+
+]

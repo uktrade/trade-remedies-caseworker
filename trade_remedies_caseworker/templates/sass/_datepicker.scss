@@ -1,0 +1,56 @@
+.type-label {
+  float: left;
+  margin: 0 9px 0 0px;
+  background: #999;
+  color: white;
+  padding: 2px 6px 0px 6px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+.date-widget {
+  .form-control {
+    max-width: 2em;
+    &.year {
+      max-width: 4em;
+    }
+    float: left;
+    margin-right: 10px;
+  }
+  .datepicker-trigger {
+    float: left;
+    margin: 5px 0 0 10px;
+  }
+}
+.ui-datepicker {
+  width: 220px;
+  .ui-datepicker-header {
+    font-size: 18px;
+    background: $grey-1;
+    border-color: $grey-1;
+    border-radius: 0;
+    .ui-datepicker-prev,
+    .ui-datepicker-next {
+      //top: 3px !important;
+      .ui-icon {
+        margin: -13px 0px 0 -12px;
+        @include icon(24px);
+        &.ui-icon-circle-triangle-w {
+          background-position: 0 -550px;
+        }
+        &.ui-icon-circle-triangle-e {
+          background-position: 0 -574px;
+        }
+      }
+      &.ui-state-hover {
+        background: none;
+      }
+    }
+  }
+  .ui-datepicker-calendar {
+    table.th,
+    table.td {
+      font-size: 16px;
+      line-height: 1;
+    }
+  }
+}

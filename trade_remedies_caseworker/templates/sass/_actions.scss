@@ -1,0 +1,187 @@
+.action-form {
+  .header-row {
+    margin-bottom: 15px;
+    label {
+      margin-left: 48px;
+      &:first-child {
+        margin-left: 2px;
+      }
+    }
+  }
+  .form-info {
+    padding: 40px 20px 40px 90px;
+    background: $jamie-panel-colour;
+    display: block;
+    line-height: 1.8em;
+    &:before {
+      content: "";
+      @include icon(24px);
+      position: absolute;
+      background-position-y: -600px;
+      margin-left: -46px;
+      margin-top: 4px;
+    }
+  }
+  textarea {
+    width: 100%;
+    min-height: 6em;
+  }
+}
+
+/* push radio buttons to right on inline action forms */
+.form-group.inline {
+  .multiple-choice {
+    padding: 0 0 0 38px;
+    margin: 0 !important;
+  }
+}
+
+.multiple-choice {
+  input.na-check + label {
+    position: absolute;
+    right: 0;
+  }
+  input.na-check + label::before {
+    content: "";
+    display: block;
+    height: 34px;
+    width: 34px;
+    border: 2px solid $black;
+    position: absolute;
+  }
+  input.na-check:checked + label::after {
+    content: "\2715";
+    position: absolute;
+    font-size: 30px;
+    margin: -8px 0 0 -1px;
+    border: none;
+    transform: none;
+  }
+}
+
+.form-group.disabled > div label.dim-on-disable {
+  opacity: 0.4;
+}
+
+.action-list-user {
+  ul {
+    padding: 0;
+  }
+  li {
+    padding: 0;
+    border-top: 1px solid $grey-2;
+    border-bottom: none;
+  }
+  > li:last-child {
+    border-bottom: 1px solid $grey-2;
+  }
+  li > div.column-one-third {
+    padding: 2px 15px 0 0;
+  }
+  > li > div.column-full {
+    padding: 10px 0;
+    a.link {
+      font-weight: bold;
+    }
+  }
+  > li > ul > li > div.column-full {
+    padding: 0 0 0 40px;
+  }
+  li > div.column-full > div {
+    display: table-cell;
+    padding: 10px 0;
+  }
+  span.task-name {
+    color: $grey-1;
+  }
+
+  li.highlight:before {
+    content: "";
+    background: #44a65b;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    display: block;
+    margin: 11px -26px 0 6px;
+    float: left;
+  }
+  .expander {
+    margin-left: 40px;
+  }
+  .expander::before {
+    background-position: 0px -94px;
+    position: absolute;
+    margin: -1px 0px 0 -34px;
+  }
+  .expander.expanded::before {
+    transform: rotate(90deg);
+  }
+  .due-date {
+    white-space: nowrap;
+  }
+}
+
+/*  Old task-list styling  */
+.task-list {
+  ul.task-list-items .task-completed {
+    background-color: $govuk-blue;
+    white-space: nowrap;
+    margin: 0 0 0 10px;
+    &.progress {
+      background-color: $in-progress-colour;
+      color: $black;
+    }
+    &.new {
+      background: #b10e1e;
+    }
+  }
+  ul.task-list-items.action-list {
+    li.task-list-item {
+      a {
+        font-weight: bold;
+      }
+    }
+  }
+  .task-list-item.task-list-item {
+    /* line-height: 50px; */
+  }
+  .task-name {
+    float: none;
+  }
+}
+.table-status {
+  float: none;
+}
+.task-list div.task-upload {
+  color: #26a65b;
+  font-weight: bold;
+}
+
+.task-list span.uploaded-count {
+  color: white;
+  background: #26a65b;
+  padding: 3px 11px;
+  border-radius: 35px;
+}
+
+.task-list-section-number {
+  float: left;
+}
+.task-list-section-title {
+  margin-left: 36px;
+  display: block;
+}
+
+/* expanding area for ajax version */
+.action-list-target {
+  display: none;
+  background: white;
+}
+.task-list.show-block {
+  > ul {
+    display: none;
+  }
+  > .action-list-target {
+    display: block;
+  }
+}

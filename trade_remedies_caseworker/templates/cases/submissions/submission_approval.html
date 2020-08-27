@@ -1,0 +1,100 @@
+<div class="column-full">
+
+  {% include "./submission_details.html" %}
+
+<form
+    action="/case/{{case.id}}/submission/{{submission.id}}/status/?__prefix={{case_id}}"
+    method="POST"
+    enctype="multipart/form-data"
+    class="dd-form">
+    {% csrf_token %}
+    <h1 class="heading-medium">Submission Approval</h1>
+    {% if submission.status.evaluate_deficiency or not submission.deficiency_sent_at %}
+
+        {% if False and submission.status.review %}
+            <input type="hidden" name="stage_change_if_sufficient" value="SUFFICIENT_TO_PROCEED"/>
+            <input type="hidden" name="stage_change_if_deficient" value="INSUFFICIENT_TO_PROCEED"/>
+        {% endif %}
+        <div class="form-group edit-item">
+            <div class="column-full">
+                <h3 class="heading-small">Is the submission sufficient to proceed?</h3>
+            </div>
+            <div class="column-full">
+                <div class="multiple-choice">
+                    <input type="radio" id="status-yes" name="submission_status_id" value="{{status_context.YES}}" onClick="toggleDeficiencyDocument()"  />
+                    <label for="status-yes">Yes, it includes all the information requested</label>
+                </div>
+                <div class="multiple-choice">
+                    <input type="radio" id="status-no" name="submission_status_id" value="{{status_context.NO}}" onClick="toggleDeficiencyDocument()" {% if submission.deficiency_documents %}checked{% endif %}/>
+                    <label for="status-no">No, this submission is deficient. A deficiency document will be required and the deficient documents marked as such below. The submission will be marked as deficient once the customer is notified.</label>
+                </div>
+            </div>
+        </div>
+        <div id="sufficientStatusButton">
+            <button class="button button-blue" type="submit">Set Status</button>
+        </div>
+</form>
+        <div class="form-group" id="deficiencyDocumentField" {% if submission.status.id == status_context.YES %}style="display: none;"{% endif %}>
+        <form
+            action="/case/{{case.id}}/submission/{{submission.id}}/documents/?__prefix={{case_id}}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="dd-form">
+            <input type="hidden" name="next" value="/case/{{case_id}}/submission/{{submission.id}}/approval/"/>
+            <input type="hidden" name="submission_document_type" value="deficiency"/>
+            {% csrf_token %}
+
+                <h1 class="heading-small">1. Upload deficiency document</h1>
+                <input type="file" class="form-control" name="file"><br/>
+                <input type="file" class="form-control" name="file">
+                {% if submission.deficiency_documents %}
+                    <br/>Current deficiency documents:
+                    <UL>
+                    {% for deficiency_document in submission.deficiency_documents %}
+                        <LI><a href="/cases/{{case.id}}/submission/{{submission.id}}/document/{{deficiency_document.id}}/download/">{{deficiency_document.name}}</a></LI>
+                    {% endfor %}
+                    </UL>
+                {% endif %}
+
+            <button class="button button-blue" type="submit">Upload</button>
+        </form>
+        <hr/>
+        </div>
+    {% endif %}
+
+    <div id="documentApproval">
+        <h1 class="heading-small">2. Mark the deficient documents below. This will be surfaced to the user</h1>
+        {% include "./document_approval.html" %}
+
+    </div>
+
+     {% if not submission.deficiency_sent_at %}
+        <div id="deficiencyNotice">
+            <h1 class="heading-small">3. Send a deficiency notice to the user</h1>
+            <p>Once all the details have been provided and deficient documents marked, send a notice of deficiency to the customer to complete the process.</p>
+            <button
+                class="button modal-form button-blue "
+                data-url="/case/{{case.id}}/submission/{{submission.id}}/status/notify/"
+                type="button">
+                    Send Deficiency Notice
+            </button>
+            <br/><br/>
+        </div>
+    {% endif %}
+</div>
+<script>
+    function toggleDeficiencyDocument() {
+        var statusNo = $('#status-no');
+        if (statusNo[0].checked) {
+            $('#deficiencyDocumentField').show();
+            $('#documentApproval').show();
+            $('#deficiencyNotice').show();
+            $('#sufficientStatusButton').hide();
+        } else {
+            $('#deficiencyDocumentField').hide();
+            $('#documentApproval').hide();
+            $('#deficiencyNotice').hide();
+            $('#sufficientStatusButton').show();
+        }
+    }
+</script>

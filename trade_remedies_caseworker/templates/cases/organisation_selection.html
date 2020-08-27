@@ -1,0 +1,20 @@
+
+{% load to_json %}
+{% load text_element %}
+{% load pluralize %}
+
+{% block case_page_content %}
+{% if not org_matches or org_matches|length == 0 %}
+	<p>No matching organisations found %}
+{% else %}
+	<p>{{ org_matches|length }} matching organisation{% pluralize org_matches|length %} already exist{% pluralize org_matches|length 's' '' %} in the system.</p>
+	<p>Select the best match from the organisations below.</p>
+	<form class="organisation-selector"
+		method="POST">
+	    {% csrf_token %}
+	    <div class="organisation-selector">
+	        {% include 'widgets/organisation_carousel_inner.html' with match_list=org_matches %}
+	    </div>
+	</form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+<!-- enter LOA details tha get saved into json packet on submission  -->
+{% load text_element %}
+<form action="">
+	<div class="edit-section">
+		<div class="grid-row">
+			<div class="column-full_">
+				<div>Select the documemnt that corresponds to the letter of authority for this party</div>
+				{% for document in documents.respondent %}
+					<div class="multiple-choice">
+		                <input type="radio" name="document_id" value="{{document.id}}" id="documentId"/>
+		                <label class="form-label"><a class="link" href="/document/{{document.id}}/download/" target="_blank">{{document.name}}</a></label>
+		            </div>
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="button-group form-group margin-top-1">
+	    <span class="issue-button-group pull-left">
+	        <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Save</button>
+	    </span>
+	    <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
+	</div>
+</form>
+

@@ -1,0 +1,83 @@
+.case-sequence {
+  padding-right: 10px;
+}
+
+.nav-section-content {
+  width: 66.66667%;
+}
+// RHS on case summary page with two columns
+.case-page-content {
+  display: table-row;
+  > div {
+    vertical-align: top;
+    padding-top: 40px;
+    display: table-cell;
+    position: relative;
+  }
+  .case-page-right {
+    width: 360px;
+    .party-details {
+      padding: 20px 27px;
+      width: auto;
+    }
+  }
+  .case-page-middle {
+    .pad {
+      height: 0;
+      overflow: hidden;
+      font-size: 30px;
+    }
+    padding-right: 20px;
+    .top-strap {
+      position: absolute;
+      left: 0;
+      right: 20px;
+      top: 10px;
+      font-size: 17px;
+      > span {
+        margin-top: 5px;
+      }
+    }
+  }
+  .compact-section {
+    overflow: hidden;
+    padding: 20px;
+    background: $jamie-panel-colour;
+    .heading-medium {
+      margin: 0;
+    }
+    .cell {
+      width: auto;
+      &.date {
+        white-space: nowrap;
+        padding: 4px 20px 4px 0;
+      }
+    }
+    .audit-block {
+      float: left;
+      clear: both;
+      height: 147px; // This is the collapsed height. Expands to auto.
+      width: 100%;
+      transition: height 0.3s;
+      overflow: hidden;
+      display: block !important;
+    }
+    .team-block {
+      display: block !important;
+      h2 {
+        white-space: nobreak;
+        margin: 10px 0 0 0;
+      }
+      .heading-cell {
+        width: 205px;
+      }
+    }
+    .expander {
+      margin: 5px 0 -10px 0;
+    }
+    .link-list {
+      line-height: 1.5em;
+      margin-top: 0.5em;
+    }
+  }
+}

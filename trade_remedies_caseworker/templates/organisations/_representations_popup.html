@@ -1,0 +1,62 @@
+{% comment %}
+The popup content showing a list of third-party representations for the party and verify pages
+Pass cases list
+{% endcomment %}
+{% load pluralize %}
+<div class="hidden js-pop-up-title">{{title|default:'Case representations'}}</div>
+<div class="hidden js-pop-up-content">
+  {% if mode == 'verification_list' %}
+    <p class="info">{{party.name}} has been verified in the following cases</p>
+  {% elif mode == 'representation_list' %}
+    <p class="info">There are {{cases|length}} case{% pluralize cases|length %} where members of {{party.name}}<br> have represented other parties</p>
+  {% elif mode == 'participation_list' %}
+    <p class="info">There are {{cases|length}} case{% pluralize cases|length %} where <strong class="bold">{{party.name}}</strong><br>has been accepted to participate</p>
+  {% endif %}
+  <table class="sortable align-top" data-attach="TableSort">
+    <thead>
+      <tr>
+        {% if mode == 'verification_list' %}
+          <th>Verify Date</th><th>Verified by</th><th>Representing</th><th>Case</th><th class="no-sort">User</th>
+        {% elif mode == 'participation_list' %}
+          <th>Case</th><th>Represented</th><th>Role</th><th>User</th><th>Verified</th>
+        {% elif mode == 'representation_list' %}
+          <th>Case</th><th>Represented</th><th>Role</th><th>User</th><th>Verified</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for uc in cases %}
+        <tr>
+          {% if mode == 'verification_list' %}
+            <td data_sortby="{{uc.caserole.validated_at}}" class="nobreak"><i class="icon icon-green-tick"></i>{% format_date uc.caserole.validated_at '%d %b %Y' %}</td>
+            <td>{{uc.caserole.validated_by.name}}</td>
+            <td>{{uc.organisation.name}}</td>
+            <td><a class="link" href="/case/{{uc.case.id}}/organisation/{{uc.organisation.id}}/" target="_blank">{{ uc.case.name }}</a></td>
+            <td>
+              {% for usercase in uc.usercases %}
+                <div class="nobreak" title="{{usercase.user.name}}&nbsp;({{usercase.user.email}})">{{usercase.user.name}}</div>
+              {% endfor %}
+            </td>
+          {% else %}  
+            <td><a class="link" href="/case/{{uc.case.id}}/organisation/{{uc.organisation.id}}/" target="_blank">{{ uc.case.name }}</a></td>
+            <td>{{uc.organisation.name}}</td>
+            <td>
+                {{ uc.caserole.role.name }}
+            </td>
+            <td>
+              {% for usercase in uc.usercases %}
+                <div class="nobreak" title="{{usercase.user.name}}&nbsp;({{usercase.user.email}})">{{usercase.user.name}}</div>
+              {% endfor %}
+            </td>
+            <td>
+              {% if uc.caserole.validated_at %}
+                {{ uc.caserole.validated_at|format_date }}
+                <i class="icon icon-green-tick correct pull-left" title="Validated by {{uc.caserole.validated_by.name}} ({%format_date uc.caserole.validated_at %})"></i>
+              {% endif %}
+            </td>
+          {% endif %}
+          </tr>          
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,19 @@
+{% comment %}
+==============================================
+	A row in the party card.
+	<party>, <field>, <label>
+==============================================
+{% endcomment %}
+{% load custom_filters %}
+
+<div class="row" data-field="{{field}}" data-value="{{ party|_get:field|default:'' }}">
+	<div class="c3 cell">
+        <strong class="bold label">{{ label }}</strong>
+	</div>
+	<div class="c23 cell">
+		<span class="value" >
+  			{{ party|_get:field|default:'-' }}
+  		</span>
+  	</div>
+</div>
+	

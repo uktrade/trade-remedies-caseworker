@@ -1,0 +1,16 @@
+.user-list-container {
+  .user-active__False {
+    display: none;
+  }
+
+  &.show-all-users {
+    .user-active__False {
+      opacity: 0.5;
+      display: block;
+    }
+
+    tr.user-active__False {
+      display: table-row;
+    }
+  }
+}

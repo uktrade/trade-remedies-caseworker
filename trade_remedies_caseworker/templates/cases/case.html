@@ -1,0 +1,46 @@
+{% extends "cases/_case_template.html" %}
+{% load to_json %}
+
+{% block case_page_content %}
+<script>
+window.dit.page='case_page';
+</script>
+
+<div class="case-page-content" >
+  <div class="case-page-middle">
+    {% include "cases/case_centre_section.html" %}
+  </div>
+  <div class="case-page-right">
+    {% if case.parent and case.parent.id != case.id %}
+    <div class="compact-section margin-bottom-1">
+      <h2 class="heading-medium">Linked case</h2>
+      <div class="margin-top-1 bold">
+        <span title="{{case.parent.type.name}}" >
+            {% case_type_badge case.parent.type %} {{case.parent.reference}}:
+        </span>
+        <a href="/case/{{case.parent.id}}">{{case.parent.name|default:'Un-assigned'}}</a>
+      </div>
+      <div class="margin-top-1">
+        <button class="pull-right button button-blue compact modal-form" data-url="/cases/{{case.id}}/update_parent/">Change</button>
+        {% if case.workflow_state.LINKED_CASE_CONFIRM.0 != 'yes' %}
+          <div>
+            <i class="icon icon-amber-warning correct margin-right-5px"></i>Confirmation needed
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="compact-section">
+      <h2 class="heading-medium">Applicant</h2>
+      <a class="organisation link bold" href="/case/{{case.id}}/organisation/{{case.applicant.organisation.id}}/">
+        {{ case.applicant.organisation.name }}
+      </a>
+      <div class="party-details">
+        {% include "widgets/contact_block.html" with contact=case.applicant.organisation.primary_contact organisation=case.applicant hide_controls=True expand_addresses=True %}
+      </div>
+    </div>    
+  </div>
+</div>
+
+{% endblock %}

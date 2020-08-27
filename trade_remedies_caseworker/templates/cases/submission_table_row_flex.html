@@ -1,0 +1,89 @@
+{% load format_date %}
+{% load ascii %}
+
+{# Set up useful vars #}
+{% if submission.received_at %}
+	{% set 'date' submission.received_at %}
+	{% set 'date_action' 'Received' %}
+	{% set 'date_by' submission.received_from %}
+	{% set 'date_icon' 'in-tray' %}
+{% elif submission.sent_at %}
+	{% set 'date' submission.sent_at %}
+	{% set 'date_action' 'Sent' %}
+	{% set 'date_by' submission.sent_by %}
+	{% set 'date_icon' 'out-tray' %}
+{% else %}
+	{% set 'date' submission.created_at %}
+	{% set 'date_action' 'Created' %}
+	{% set 'date_by' submission.created_by %}
+	{% set 'date_icon' 'star' %}
+{% endif %}
+
+<tr>
+	{% for col in columns %}
+		{% if col == 'organisation' %}
+			<td><a class="link" href="/case/{{case.id}}/organisation/{{participant.id}}/" title="{{participant.name}}">{{participant.name}}</a></td>
+		{% elif col == 'type' %}
+			<td>
+			{% if submission.tra_editable %}
+				<a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/">
+				{% endif %}
+				{{submission.type.name}}
+				{% if submission.review %} (review) {% endif %}
+				{% if submission.version > 1 %}(version {{submission.version}}){% endif %}
+			{% if submission.tra_editable %}</a>{% endif %}
+			</td>
+		{% elif col == 'name' %}
+			<td>
+				{{submission.name|default:'-'}}
+			</td>
+		{% elif col == 'type_name' %}
+			<td>
+				{% if submission.tra_editable %}
+				<a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/" title="{{submission.name}}">
+				{% endif %}
+				{% if submisson.name %}
+					{{submission.name}}
+				{% else %}
+					{{submission.type.name}}
+				{% endif %}
+				{% if submission.review %} (review) {% endif %}
+				{% if submission.version > 1 %}(version {{submission.version}}){% endif %}
+				{% if submission.tra_editable %}</a>{% endif %}
+			</td>
+		{% elif col == 'status' %}
+			<td>{{submission.status.name}}</td>
+		{% elif col == 'sent' %}
+			<td sortVal="{% if submission.sent_at %}{% format_date submission.sent_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+				{{ submission.sent_at|format_date:'%d %b %Y' }}
+			</td>
+		{% elif col == 'received' %}
+			<td sortVal="{% if submission.received_at %}{% format_date submission.received_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+				{{ submission.received_at|format_date:'%d %b %Y' }}
+			</td>
+		{% elif col == 'due' %}
+			<td  sortVal="{% if submission.due_at %}{% format_date submission.due_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+				<a href="javascript:void(0)" data-handler="editDueDate" class="link" data-caseid="{{case_id}}" data-submissionid="{{ submission.id }}" data-value="{{submission.due_at}}">{% format_date submission.due_at '%d %b %Y' %}</a>
+			</td>
+		{% elif col == 'created' %}
+			<td  sortVal="{% if submission.created_at %}{% format_date submission.created_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+				{{ submission.created_at|format_date:'%d %b %Y' }}
+			</td>
+		{% elif col == 'last_date' %}
+			<td  sortVal="{% if date %}{% format_date date '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+				<div class="nobreak" title="{{date_action}}">
+					<i class="icon correct icon-{{ date_icon }}"></i>
+					{{ date|format_date:'%d %b %Y' }}
+				</div>
+			</td>
+		{% elif col == 'last_action' %}
+			<td>{{ date_action }}</td>
+		{% elif col == 'last_by' %}
+			<td>{{ date_by.name }}</td>
+		{% elif col == 'created_by' %}
+			<td>
+				{{ submission.created_by.name }}
+			</td>
+		{% endif %}
+	{% endfor %}
+</tr>

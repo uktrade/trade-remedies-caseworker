@@ -1,0 +1,24 @@
+{% load set %}
+{% set 'selected_participants' json_data.send_to %}
+<div class="section {% if populated %}populated{% endif %}">
+    <div class="grey-box">
+        <div class="column-full">
+            <span class="label">Type</span>
+            <span class="value">{{submission.type.name}}</span>
+        </div>            
+    </div>
+    {% if public %}<input type="hidden" name="public" value="true">{% endif %}
+    <div class="column-full edit-section">
+        {# Submission type #}
+        {% if not submission.id %}
+        <div class="form-group edit-item type-textarea ">
+            <label class="form-label" for="submissionType">Type of {{ submission_group_name|default:'Request' }}</label>
+            <select class="form-control auto-width" id="submissionType" name="submission_type_id">
+                {% for submission_type in submission_types %}
+                    <option value="{{submission_type.id}}">{{submission_type.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+    </div>
+</div>

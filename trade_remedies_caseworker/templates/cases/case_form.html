@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load form_error %}
+{% load set %}
+{% load text_element %}
+
+{% block heading %}
+    {% if case.sequence %}
+    Case {{case.sequence}}: {{case.name}}
+    {% else %}
+    Create a case
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+{% include "widgets/error_summary.html" with errors=errors %}
+<div class="grid-row">
+    <div class="column-three-quarters">
+        <form class="create-case" action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <h2 class="heading-medium">Case details</h2>
+            </div>
+            {% if submission.type.id %}
+                <input type="hidden" name="submission_type_id" value="{{submission.type.id}}"/>
+            {% else %}
+                <div class="form-group type-text" >
+                    <label class="form-label" for="submission_type">Submission type</label>
+                    <select name="submission_type_id" id="submission_type" class="form-control">
+                        {% for submission_type in submission_types %}
+                          <option
+                            value="{{submission_type.id}}"
+                            {% if submission_type.id == submission.type.id %}selected{% endif %}
+                          >{{submission_type.name}}</option>
+                        {% endfor %}
+                    </select> {% form_error 'submission_type_id' errors %}
+                </div>
+            {% endif %}
+            <div class="form-group type-text type-select {% form_group_error 'case_type_id' errors %}" >
+                <label class="form-label" for="case_type">Case type</label>
+                {% form_error 'case_type_id' errors %}
+                <select name="case_type_id" id="case_type" class="form-control">
+                    <option value="">Please select ...</option>
+                    {% for case_type in case_types %}
+                      <option
+                        value="{{case_type.id}}"
+                        {% if case_type.id == case_type_id %}selected{% endif %}
+                      >{{case_type.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% text_element id='case_name' label='Case name' errors=errors value=case_name hint='If you don\'t enter a name here, one will be generated automatically'%}
+            <div class="form-group">
+                <h2 class="heading-medium">Applicant (TRA)</h2>
+            </div>
+
+            <div class="form-group" >
+                <label class="form-label" for="companySelectField">Company</label>
+                <div id="companySelector" class="company-selector">
+                    <select name="organisation_id" class="form-control" id="companySelectField">
+                        {% for organisation in organisations %}
+                            <option value="{{organisation.id}}" {% if organisation.id == organisation_id %}selected{% endif %}>{{organisation.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <a onClick="toggleCompanyEntry('entry')">Other</a>
+                </div>
+                <div id="companyEntry" class="company-entry" style="display: none;">
+                    <input class="form-control" id="companyEntryField" type="text"  name="organisation_name" value="{{organisation_name | default:'Secretary of State'}}" autocomplete="off">
+                    <a onClick="toggleCompanyEntry('select')">Other</a>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <h2 class="heading-medium">Product details</h2>
+            </div>
+            <div class="form-group {% form_group_error 'sector_id' errors %}" >
+                <label class="form-label" for="product_sector">Product sector</label>
+                {% form_error 'sector_id' errors %}
+                <select class="form-control" name="sector_id" id="product_sector">
+                    <option value="">Please select ...</option>
+                        {% for sector in sectors %}
+                            <option
+                              value="{{sector.id}}"
+                              {% if sector_id == sector.code %}selected{% endif %}
+                            >{{sector.code}}: {{sector.name}}</option>
+                        {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group {% form_group_error 'hs_code' errors %}" >
+                <label class="form-label" for="hs_code">Product classification code
+                    <span class="form-hint">
+                        Start with the 6 digit HS code for the product. Optionally you can add the 2 digit CN heading code followed by the 2 digit Taric code. The final product classification code has a maximum of 10 characters
+                    </span>
+                </label>
+                {% form_error 'hs_code' errors %}
+                <div class="hs-code-list list">
+                   {% for hs_code_value in hs_code %}
+                        <div class="product-classification-code margin-bottom-1 template row">
+                            <fieldset>
+                                <input class="form-control" type="text" name="hs_code" value="{{hs_code_value}}" maxlength="14"/>
+                                <a class="icon icon-bin" href="javascript:void(0)" data-handler="deleteRow" ><span class="visually-hidden">Delete hs code <span class="replace-with-value">{{hs_code_value}}</span></span></a>
+                            </fieldset>
+                        </div>
+                    {% empty %}
+                        <div class="product-classification-code margin-bottom-1 template row">
+                            <fieldset>
+                                <input class="form-control" data-handler="copyValToLink" type="text" name="hs_code" value="" maxlength="14"/>
+                                <a class="icon icon-bin" href="javascript:void(0)" data-handler="deleteRow" ><span class="visually-hidden">Delete hs code <span class="replace-with-value">{{hs_code_value}}</span></span></a>
+                            </fieldset>
+                        </div>
+                    {% endfor %}
+                </div>
+                <span class="error-message"></span>
+                <a class="link bold" href="javascript:void(0)" data-handler="templateClone" >&#x2795 Add code</a>
+
+            </div>
+
+            {% text_element id='product_name' label='Product name' errors=errors value=product_name %}
+            {% text_element id='product_description' label='Product description' errors=errors value=product_description textarea=True %}
+
+            <div class="form-group">
+                <h2 class="heading-medium">The source of exports</h2>
+            </div>
+
+            <div class="export-source form-group {% form_group_error 'export_country_code' errors %}">
+                <label class="form-label" for="export_country">
+                    Source of exports
+                    <spa class="form-hint">Not needed for safeguarding and safeguarding reviews</span>
+                </label>
+                {% form_error 'export_country_code' errors %}
+                <ul>
+                    <div class="hidden template">
+                        <li data-code="((country_code))">
+                            ((name))
+                            <input type="hidden" value="((country_code))">
+                            <a class="icon icon-bin pull-right" href="javascript:void(0)" data-handler="deleteRow" ></a>
+                        </li>
+                    </div>
+                    {% for country_code in export_country_code %}
+                        <li data-code="{{country_code}}">
+                            {{ country_dict|get_item:country_code }}
+                            <input type="hidden" name="export_country_code" value="{{country_code}}">
+                            <a class="icon icon-bin pull-right" href="javascript:void(0)" data-handler="deleteRow" ></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <select class="form-control pull-left" name="export_country_code">
+                    <option value="">Please select ...</option>
+                    {% for country_code, country_name in country_dict.items %}
+                        <option
+                            value="{{country_code}}"
+                            {% if source.country_code == country_code %}selected{% endif %}
+                        >{{country_name}}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="button button-grey pull-left margin-left-1" data-handler="addCountry">Add<span class="visually-hidden">another source of exports</span></button>
+
+            </div>
+
+            <div class="pull-left">
+                <button class="button button-blue" type="submit">Create case</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function toggleCompanyEntry(mode) {
+        if (mode == 'select') {
+            $('#companyEntryField').attr('disabled');
+            $('#companySelectField').removeAttr('disabled')
+        } else {
+            $('#companyEntryField').removeAttr('disabled');
+            $('#companySelectField').attr('disabled');
+        }
+        $('#companyEntry').toggle(mode == 'entry');
+        $('#companySelector').toggle(mode == 'select');
+    }
+</script>
+{% endblock %}

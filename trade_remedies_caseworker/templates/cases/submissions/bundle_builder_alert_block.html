@@ -1,0 +1,19 @@
+{% load set %}
+{% if alert %}
+    {% if submission.status.deficiency_notice %}
+        {% set 'submission_group_name' 'deficiency notice' %}
+    {% endif %}
+    <div class="govuk-box-highlight">
+        {% if alert == 'publish' %}
+            Your {{submission_group_name}} has been published
+        {% elif alert == 'withdraw' %}
+            Your {{submission_group_name}} has been withdrawn
+        {% elif alert == 'send' %}
+            Your {{submission_group_name}} has been created
+        {% elif alert == 'finalised' %}
+            Your {{submission_group_name}} has been finalised
+        {% else %}
+            {{alert}}
+        {% endif %}
+    </div>
+{% endif %}

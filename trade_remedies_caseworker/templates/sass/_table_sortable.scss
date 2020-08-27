@@ -1,0 +1,50 @@
+@mixin sort-arrow {
+  content: "";
+  display: block;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  margin-top: 2px;
+}
+
+table.sortable {
+  th {
+    color: black;
+    opacity: 0.5;
+    transition: opacity 0.5s;
+    table-layout: fixed;
+    padding: 0 26px 0 0;
+    cursor: pointer;
+    &:hover,
+    &.sort-active {
+      opacity: 1;
+      .sort-indicator:focus {
+        outline: none;
+      }
+    }
+
+    .sort-indicator {
+      margin: 1px 0 0 5px;
+      position: absolute;
+
+      &:focus {
+        background: none;
+      }
+      &:before {
+        @include sort-arrow;
+        border-bottom: 7px solid #000;
+      }
+      &:after {
+        @include sort-arrow;
+        border-top: 7px solid #000;
+      }
+    }
+    &.sort-active {
+      &:not(.asc) .sort-indicator:after {
+        opacity: 0;
+      }
+      &.asc .sort-indicator:before {
+        opacity: 0;
+      }
+    }
+  }
+}

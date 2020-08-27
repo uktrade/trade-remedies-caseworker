@@ -1,0 +1,210 @@
+/***********   The carousel that allows selection and merging of organisations  **********/
+
+.carousel-surround {
+  margin: 0 -15px;
+  position: relative;
+  padding-top: 30px; // for the controls - absolute
+  > .carousel-table {
+    display: table;
+    table-layout: fixed;
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    > .row {
+      > .cell {
+        width: 50%;
+        vertical-align: middle;
+        padding: 0 15px;
+        > div {
+          overflow: hidden;
+          > div.table {
+            table-layout: fixed;
+            transition: margin-left 0.5s;
+            &.width-1 {
+              width: 100%;
+            }
+            &.width-2 {
+              width: 200%;
+            }
+            &.width-3 {
+              width: 300%;
+            }
+            &.width-4 {
+              width: 400%;
+            }
+            &.width-5 {
+              width: 500%;
+            }
+            &.width-6 {
+              width: 600%;
+            }
+            &.width-7 {
+              width: 700%;
+            }
+            &.width-8 {
+              width: 800%;
+            }
+            &.width-9 {
+              width: 900%;
+            }
+            &.width-10 {
+              width: 1000%;
+            }
+            &.width-11 {
+              width: 1100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .carousel-viewport {
+    position: relative;
+
+    > .carousel-button {
+      height: 30px;
+      width: 21px;
+      left: 5px;
+      background-position: -5px -107px;
+      position: absolute;
+      display: block;
+      top: 180px;
+      background-image: url(images/sprite@2x.png);
+      z-index: 1;
+      background-color: $grey-3;
+      padding: 4px;
+      border-radius: 5px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+      &::hover {
+        opacity: 1;
+      }
+      &.next {
+        left: auto;
+        right: 5px;
+        background-position: 0px -143px;
+      }
+    }
+    &::after {
+    }
+    &:hover .carousel-button {
+      opacity: 0.8;
+    }
+  }
+
+  .controls {
+    display: block;
+    width: 50%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    > .blob-container {
+      float: left;
+      margin-left: 50%;
+      > .blob-inner-container {
+        position: relative;
+        left: -50%;
+        .blob {
+          border: 2px solid black;
+          display: block;
+          background: #0000;
+          height: 8px;
+          width: 8px;
+          border-radius: 50%;
+          float: left;
+          margin: 0px 6px 10px;
+          &.active,
+          &:hover {
+            background: black;
+            outline: none !important;
+          }
+        }
+      }
+    }
+  }
+  .lower-controls {
+    margin-left: 16px;
+    padding: 1px 0 0 50%;
+    height: 50px;
+
+    button {
+      margin: 19px 0;
+    }
+    .merge-denied-message {
+      padding-top: 5px;
+      display: inline-block;
+      .details {
+        font-size: 17px;
+        color: $grey-1;
+      }
+    }
+  }
+}
+
+.party-card {
+  box-shadow: 3px 6px 13px 3px #0000007a;
+  .party-card-inner {
+    position: relative;
+    padding: 15px;
+    overflow: hidden;
+    > i.pull-right {
+      position: absolute;
+      right: 20px;
+    }
+    .equal {
+      position: relative;
+      > .cell:last-child:after {
+        background-position: 0px 0px;
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        @include icon(24px);
+      }
+    }
+    .cell:last-child {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 154px;
+      padding: 0 30px 0 0;
+      position: relative;
+    }
+  }
+  button.link {
+    font-weight: normal;
+  }
+}
+
+.table.merge-selection {
+  .cell {
+    width: auto;
+    max-width: 400px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 15px;
+    overflow: hidden;
+  }
+}
+
+.organisation-selector {
+  > .row.selection-row {
+    padding: 20px;
+    .party-card {
+      width: 500px;
+    }
+    > .cell:first-child {
+      .multiple-choice {
+        position: relative;
+        top: 150px;
+      }
+    }
+    > .cell {
+      padding: 20px 0;
+    }
+  }
+}

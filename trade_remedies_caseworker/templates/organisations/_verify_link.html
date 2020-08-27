@@ -1,0 +1,38 @@
+{% load format_date %}
+{% comment %}
+***********************************************
+Add a verify state summary or link to verify based on
+the submission passed in.  We assume this submission is the ROI or application for
+this organisation in the case
+***********************************************
+{% endcomment %}
+
+{% comment %} *****   is the validation done?  *****{% endcomment %}
+{% set 'caserole' submission.organisation_case_role_outer %}
+{% if caserole.validated_at or caserole.role.key == 'rejected' %}
+  {% if submission.deficiency_notice_params.notification_sent_at or caserole.role.key == 'applicant' %}
+    {% set 'validation_complete' True %}
+  {% endif %}
+{% endif %}
+
+{% if not party.fraudulent or not validation_complete %}
+  {% if submission.type.id == 7 or submission.type.id == 1 %}
+    <div class="margin-top-1 margin-bottom-1">
+      {% if validation_complete %}
+        {% if caserole.role.key == 'rejected' %}
+          <i class="icon icon-restricted-case correct margin-right-1"></i>This organisation's participation in the case was rejected. <button type="button" class="link modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/verify_caserole_tasks/">View verification</button>
+        {% else %}
+          <i class="icon icon-green-tick correct margin-right-1"></i>This organisation's participation in the case was verified on {{caserole.validated_at|format_date}} by {{caserole.validated_by.name}}. <button type="button" class="link modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/verify_caserole_tasks/">View verification</button>
+        {% endif %}
+      {% else %}
+        {% if caserole.approved_at and submission.type.id != 1 %}
+          Approved by {{submission.organisation_case_role_outer.approved_by.name}} on {{submission.organisation_case_role_outer.approved_at|format_date}}.
+        {% endif %}
+        <div class="warning">
+          <span>The verification process for this party is not yet complete.</span>
+          <button type="button" class="button compact pull-right button-blue modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/verify_caserole_tasks/">Verification process</button>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endif %}
