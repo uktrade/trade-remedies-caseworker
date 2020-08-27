@@ -15,6 +15,7 @@ exclude = '''
   | _build
   | env
   | .venv
+  | .js
   | tests-reports
 )/
 '''

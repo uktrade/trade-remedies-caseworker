@@ -9,7 +9,6 @@ define(["modules/logging"], function (logging) {
   const logger = logging.getLogger("slider");
 
   function constructor(el) {
-    logger.log("ctor");
     el.find("input").each(function () {
       el[$(this).prop("checked") ? "addClass" : "removeClass"]($(this).val());
     });
@@ -25,9 +24,7 @@ define(["modules/logging"], function (logging) {
     });
 
     el.on("click", function (evt) {
-      logger.log("slider click");
       el.find("input").each(function () {
-        logger.log("update state");
         el[$(this).prop("checked") ? "addClass" : "removeClass"]($(this).val());
       });
     });

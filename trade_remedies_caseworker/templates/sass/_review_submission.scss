@@ -2,33 +2,62 @@
   .review-buttons > button {
     display: none;
   }
+
   &.deficient {
     .review-buttons button[value="reject"] {
       display: block;
     }
+
     .review-buttons > span {
       display: none;
     }
   }
+
   &.sufficient {
     .review-buttons button[value="approve"] {
       display: block;
     }
+
     .review-buttons > span {
       display: none;
     }
   }
+
   button.correct {
     margin-top: 2px;
   }
+
   .compact-section {
     background: $grey-3;
     padding: 30px;
     margin: 20px 0;
+
     .expand-section {
       > div {
         margin-top: 10px;
       }
     }
+  }
+}
+
+.block-publication__edit-container {
+  overflow: hidden;
+  padding-left: 1em;
+  padding-bottom: 1em;
+  background-color: $jamie-panel-colour;
+  display: none;
+}
+
+.is-deficient {
+  .block-publication__edit-container {
+    display: block;
+  }
+}
+
+.blocked-publication__readonly-container {
+  background-color: $jamie-panel-colour;
+
+  .reason {
+    font-weight: bold;
   }
 }

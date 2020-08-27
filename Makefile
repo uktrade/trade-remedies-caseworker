@@ -38,6 +38,14 @@ build-docker-cli:
 frontend-code-style:
 		docker run -it --rm -v "$(CURDIR):/app" node:stretch-slim sh -c 'cd /app && npm i && npx prettier --check "trade_remedies_caseworker/templates/{static,sass}/**/*.{scss,js}"'
 
+
+flake8:
+		docker run -it --rm -v requirements:/usr/local -v "$(CURDIR):/app" python sh -c "cd /app && pip install -r requirements-dev.txt && flake8 --count" 
+
+black:
+		docker run -it --rm -v requirements:/usr/local -v "$(CURDIR):/app" python sh -c "cd /app && pip install -r requirements-dev.txt && black trade_remedies_caseworker --check"
+
+
 code-style:
 		docker-compose -f docker-compose-test.yml -p tr-case-code rm --force
 		docker-compose -f docker-compose-test.yml run code-style --rm 
