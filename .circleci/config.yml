@@ -19,7 +19,7 @@ jobs:
           command: |
             source env/bin/activate
             echo "this is where we run black"
-            # black trade_remedies_caseworker --check
+            # black trade_remedies_caseworker --check 
       - run:
           name: flake8
           command: |
