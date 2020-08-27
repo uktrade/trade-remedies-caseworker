@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Case-worker-facing UI for the Trade Remedies system",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Node is only used for front end asset building\" && exit 1",
     "gulp": "gulp",
     "watch": "gulp && gulp sass:watch",
-    "prettier": "prettier 'trade_remedies_caseworker/templates/{static,sass}/**/*.{scss,js}' --check",
-    "postinstall": "gulp"
+    "prettier": "prettier 'trade_remedies_caseworker/templates/{static,sass}/**/*.{scss,js}' --check"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "gulp-sourcemaps": "^2.6.5"
   },
   "devDependencies": {
+    "all-contributors-cli": "^6.17.2",
     "prettier": "^2.0.5"
   }
 }
