@@ -1,2 +1,2 @@
-gevent
-gunicorn
+gevent==1.4.0
+gunicorn==20.0.4
