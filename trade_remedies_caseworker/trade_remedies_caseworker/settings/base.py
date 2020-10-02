@@ -20,7 +20,7 @@ root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
 )
-environ.Env.read_env(f'{root}/local.env')
+environ.Env.read_env()
 
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN'),
@@ -40,7 +40,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'FALSE').upper() == 'TRUE'
+DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
@@ -156,15 +156,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-redis_base_uri = json.loads(os.environ.get('VCAP_SERVICES'))['redis'][0]['credentials']['uri']
-redis_uri = redis_base_uri + '/' + os.environ.get('REDIS_DATABASE_NUMBER')
+_VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
+
+# Redis
+if 'redis' in _VCAP_SERVICES:
+    REDIS_BASE_URL = _VCAP_SERVICES['redis'][0]['credentials']['uri']
+else:
+    REDIS_BASE_URL = os.getenv('REDIS_BASE_URL')
+
 CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': redis_uri,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_BASE_URL,
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient",},
     },
 }
 
@@ -192,7 +196,9 @@ PUBLIC_BASE_URL = os.environ.get('PUBLIC_BASE_URL', 'http://localhost:8002')
 ENVIRONMENT_KEY = os.environ.get('ENVIRONMENT_KEY')
 APPEND_SLASH = True
 STATIC_URL = '/static/'
-STATIC_ROOT = f'{BASE_DIR}/../static'  # '/home/vcap/app/static'
+
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'static')) 
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '..', 'govuk_template', 'static'),
     os.path.join(BASE_DIR, '..', 'templates', 'static')

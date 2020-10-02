@@ -51,3 +51,16 @@ code-style:
 		docker-compose -f docker-compose-test.yml run code-style --rm 
 		docker-compose -f docker-compose-test.yml -p tr-case-code stop
 		docker-compose -f docker-compose-test.yml -p tr-case-code rm --force
+
+all-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
+	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
+
+dev-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
+
+prod-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
