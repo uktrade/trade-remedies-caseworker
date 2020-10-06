@@ -249,47 +249,25 @@ RAVEN_CONFIG = {
 
 if DEBUG:
     LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
-            }
-        },
-        'formatters': {
-            'verbose': {
-                'format': '%(asctime)s %(name)s - %(levelname)s - %(message)s'
-            },
-        },
+        "version": 1,
+        "disable_existing_loggers": False,
         'handlers': {
-            'console': {
-                'level': 'DEBUG',
+            'stdout': {
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
+                'stream': sys.stdout,
             },
+        },
+        'root': {
+            'handlers': ['stdout'],
+            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
         },
         'loggers': {
-            'django.request': {
-                'handlers': ['console'],
-                'level': 'ERROR',
+            'django': {
+                'handlers': ['stdout', ],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': True,
             },
-            'requests': {
-                'handlers': ['console'],
-                'level': 'WARNING',
-                'propagate': False,
-            },
-            'urllib3': {
-                'handlers': ['console'],
-                'level': 'WARNING',
-                'propagate': True,
-            },
-            '': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-                'propagate': False,
-            },
-        }
+        },
     }
 else:
     LOGGING = {
