@@ -9,6 +9,8 @@ Case-worker-facing UI for the Trade Remedies system
 Live Services Team use [Black](https://black.readthedocs.io/en/stable/index.html) for python code formatting and
 [flake8](https://flake8.pycqa.org/en/latest/) for code analysis. 
 
+This project uses prettier - https://prettier.io/ - for javascript and sass code formatting
+
 ## Development
 
 #### Set up
@@ -29,6 +31,13 @@ If you are not sure what to use for one of the values above, ask a colleague or 
 #### Running the project
 
 This project should be run using the Trade Remedies orchestration project available at: https://github.com/uktrade/trade-remedies-docker
+
+## Front end
+In order to run prettier on the front end part of this project, in the orchestration project run:
+ 
+```
+make frontend-code-style
+```
 
 ## Contributors ✨
 
