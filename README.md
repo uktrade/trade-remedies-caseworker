@@ -4,100 +4,31 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Case-worker-facing UI for the Trade Remedies system
 
-### Code style
+## Code Style
 
-We use the following tools to maintain a consistent coding style
+Live Services Team use [Black](https://black.readthedocs.io/en/stable/index.html) for python code formatting and
+[flake8](https://flake8.pycqa.org/en/latest/) for code analysis. 
 
-- [black](https://black.readthedocs.io/) - for python code formatting
-- [flake8](https://flake8.pycqa.org/en/latest/) - Python code style
-- [prettier](https://prettier.io/) - for javascript and sass code formatting
+## Development
 
-These style rules are enforced by CircleCI *so please check your code locally before pushing changes!*
+#### Set up
 
-### Quick code formatting locally
+Firstly, you should copy local.env.example to local.env and add the necessary environment variables for a local development environment.  local.env is in .gitignore and should not be committed to the repo.
 
-The quickest way is the run via docker containers.
-
-    make docker-code-style
-    make frontend-code-style
-
-These will create temporary containers install dependencies and run the code formatters
-
-
-### Running standalone
-
-It's possible to run the environment as a standalone local app, using virtualenv.
-This assumes you have virtualenvwrapper installed, and a virtual env is created (either
-via `mkvirtualenv trade-remedies-caseworker` for example).
-Use Python 3.6+ as your interpretor.
-
-```
-workon trade-remedies-caseworker
-./manage.py runserver
-```
-
-### Running via Docker
-
-Firstly, you should copy example.env to local.env and add the necessary
-environment variables for a local development environment.  local.env is in
-.gitignore and should not be committed to the repo.
-
-The caseworker can be brought up using docker-compose.  The API is similarly
-available via Docker and should already be running.
-
-```
-make docker-cli
-```
-
-This will drop you into a terminal session within the container where you can
-run the usual commands eg
-
-```
-python manage.py runserver_plus 0.0.0.0:8001
-
-python manage.py shell_plus
-```
-
-Any changes made to source files on your local computer will be reflected in
-the container.
-
-
-### Full Dockerised environment
-
-The repository at https://github.com/uktrade/trade-remedies-docker contains
-a fully dockerised environment containerised and integrated together.
-To use it, clone the repository at the same level of the api, caseworker and public
-repositories and run `docker-compose-up` to bring it up.
-More information is within the repository.
-
-
-## Deployment
-
-Trade Remedies Case Worker UI configuration is performed via the following environment variables:
-
+Populate the following environment variables in the local.env file:
 
 | Variable name | Required | Description |
 | ------------- | ------------- | ------------- |
-| `ALLOWED_HOSTS` | Yes | Comma-separated list of hostnames at which the app is accessible |
-| `DEBUG`  | Yes | Whether Django's debug mode should be enabled. |
-| `DJANGO_SECRET_KEY`  | Yes | |
-| `DJANGO_SETTINGS_MODULE`  | Yes | |
-| `TRADE_REMEDIES_API_ROOT_URL`  | Yes | |
-| `VCAP_SERVICES` | Yes | [CloudFoundry-compatible ](https://docs.run.pivotal.io/devguide/deploy-apps/environment-variable.html#VCAP-SERVICES)/[GDS PaaS-compatible](https://docs.cloud.service.gov.uk/deploying_apps.html#system-provided-environment-variables) configuration. The connection string at `redis[0].credentials.uri` is used to connect to Redis, which must include the password if required. It should _not_ end a forward slash. |
-| `REDIS_DATABASE_NUMBER` | Yes | The database number in the Redis instance connected to by the details in `VCAP_SERVICES`. |
+| `S3_BUCKET_NAME` | Yes | S3 bucket name of bucket used for local dev |
+| `S3_STORAGE_KEY`  | Yes | AWS access key ID |
+| `S3_STORAGE_SECRET`  | AWS secret access key | |
+| `AWS_REGION`  | Yes | Change if different from "eu-west" |
 
+If you are not sure what to use for one of the values above, ask a colleague or contact the SRE team.
 
-## Cloud Foundry
+#### Running the project
 
-The following steps will deploy the API to Cloud Foundry.
-Make sure to peform the `cf login` or `cf target` to select the org and space.
-
-```
-# cf login -a API-HERE -u YOUR-USER-HERE  # Select the org and space
-cf set-env traderemediescaseworker DISABLE_COLLECTSTATIC 1  # Temporary
-cf set-env traderemediescaseworker DJANGO_SECRET_KEY 'changeme'
-cf push
-```
+This project should be run using the Trade Remedies orchestration project available at: https://github.com/uktrade/trade-remedies-docker
 
 ## Contributors ✨
 
