@@ -40,8 +40,8 @@
 
 {% for document in file_list %}
     <tr>
-        <td class="nobreak" sortVal="{% format_date document.created_at '%Y-%m-%d' %}">
-            {{ document.created_at|format_date:'%d %b %Y' }}
+        <td class="nobreak" sortVal="{{ document.created_at|format_date_no_span:'%Y_%m_%d'}}"  >
+            {{ document.created_at|format_date:'%d %b %Y' }} 
         </td>
         <td>
             <a class="link" href="/document/{{document.id}}/download/" >{{ document.name }}</a>
@@ -54,8 +54,7 @@
             {% endif %}
         </td>
         {% if tab == 'respondent' %}
-            </td>
-        		<td>
+        	<td>
                 <a class="link" href="/case/{{case.id}}/organisation/{{document.submission.organisation.id}}/">{{ document.submission.organisation.name }}</a>
             </td>
             <td class="nobreak">
