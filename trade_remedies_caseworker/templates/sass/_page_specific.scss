@@ -1,4 +1,8 @@
 table.submissions.submissions {
+  .submission-is-published {
+    float: right;
+  }
+
   a,
   td {
     white-space: normal;
