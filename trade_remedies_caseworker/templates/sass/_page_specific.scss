@@ -1,6 +1,6 @@
 table.submissions.submissions {
   .submission-is-published {
-    float: right;
+    display: block;
   }
 
   a,
@@ -39,6 +39,11 @@ table.submissions.submissions {
   }
   tbody tr.odd-row {
     background: $jamie-panel-colour;
+    border-bottom: solid 1px white;
+  }
+
+  tbody tr.even-row {
+    border-bottom: solid 1px $jamie-panel-colour;
   }
 }
 
