@@ -3,6 +3,8 @@
 
 # add packages needed only for development
 
+ipython==7.10
+traitlets==4.2
 black
 flake8
 coverage

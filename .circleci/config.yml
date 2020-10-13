@@ -25,6 +25,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            cd trade_remedies_caseworker
             . venv/bin/activate
             python manage.py test
       - run:
