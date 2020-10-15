@@ -18,7 +18,7 @@ click==7.1.2              # via black
 coverage==5.3             # via -r requirements.in/dev.in, pytest-cov
 decorator==4.4.2          # via ipython, traitlets
 django-basicauth==0.5.2   # via -r requirements.in/../requirements/base.txt
-django-cache-memoize==0.1.6  # via -r requirements.in/../requirements/base.txt
+django-cache-memoize==0.1.6  # via -r requirements.in/../requirements/base.txt, trade-remedies-client
 django-countries==5.4     # via -r requirements.in/../requirements/base.txt
 django-environ==0.4.5     # via -r requirements.in/../requirements/base.txt
 django-extensions==2.2.1  # via -r requirements.in/../requirements/base.txt
@@ -29,7 +29,7 @@ django-redis==4.10.0      # via -r requirements.in/../requirements/base.txt
 django-session-timeout==0.0.3  # via -r requirements.in/../requirements/base.txt
 django-storages==1.9.1    # via -r requirements.in/../requirements/base.txt, s3chunkuploader
 django-timezone-field==2.0  # via -r requirements.in/../requirements/base.txt
-django==2.2.13            # via -r requirements.in/../requirements/base.txt, django-basicauth, django-govuk-forms, django-govuk-template, django-redis, django-session-timeout, django-storages, django-timezone-field, s3chunkuploader
+django==2.2.13            # via -r requirements.in/../requirements/base.txt, django-basicauth, django-govuk-forms, django-govuk-template, django-redis, django-session-timeout, django-storages, django-timezone-field, s3chunkuploader, trade-remedies-client
 docutils==0.15.2          # via -r requirements.in/../requirements/base.txt, botocore
 dpath==1.4.2              # via -r requirements.in/../requirements/base.txt
 execnet==1.7.1            # via pytest-xdist
@@ -65,13 +65,14 @@ python-dateutil==2.8.1    # via -r requirements.in/../requirements/base.txt, bot
 pytz==2020.1              # via -r requirements.in/../requirements/base.txt, django, django-timezone-field
 redis==3.2.0              # via -r requirements.in/../requirements/base.txt, django-redis
 regex==2020.9.27          # via black
-requests==2.24.0          # via -r requirements.in/../requirements/base.txt
+requests==2.24.0          # via -r requirements.in/../requirements/base.txt, trade-remedies-client
 s3chunkuploader==0.10     # via -r requirements.in/../requirements/base.txt
 s3transfer==0.3.3         # via -r requirements.in/../requirements/base.txt, boto3
 sentry-sdk==0.13.1        # via -r requirements.in/../requirements/base.txt
 six==1.15.0               # via -r requirements.in/../requirements/base.txt, django-extensions, django-session-timeout, packaging, python-dateutil
 sqlparse==0.3.1           # via -r requirements.in/../requirements/base.txt, django
 toml==0.10.1              # via black, pytest
+git+git://github.com/uktrade/trade-remedies-client.git@1.5  # via -r requirements.in/../requirements/base.txt
 traitlets==4.2.0          # via -r requirements.in/dev.in, ipython
 typed-ast==1.4.1          # via black
 typing-extensions==3.7.4.3  # via black
