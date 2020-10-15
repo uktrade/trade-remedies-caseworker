@@ -18,4 +18,4 @@ Usage:
 
 @register.simple_tag(takes_context=True)
 def get_feature_flag(context, key):
-    return Client(context['user'].token).is_feature_flag_enabled(key)
+    return Client(context["user"].token).is_feature_flag_enabled(key)

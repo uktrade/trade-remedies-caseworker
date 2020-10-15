@@ -12,5 +12,5 @@ Usage:
 @register.simple_tag
 def pluralize(value, if_one=None, if_several=None):
     if int(value) == 1:
-        return if_one if if_one != None else ''
-    return if_several if if_several != None else 's'
+        return if_one if if_one != None else ""
+    return if_several if if_several != None else "s"

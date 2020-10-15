@@ -11,5 +11,5 @@ def get_item(obj, key):
         val = obj.get(key)
     elif obj and hasattr(obj, key):
         val = getattr(obj, key)
-    val = val or ''
+    val = val or ""
     return val

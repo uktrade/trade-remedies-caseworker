@@ -6,7 +6,8 @@ from pathlib import Path
 from django.utils import timezone
 from django.core.files.uploadhandler import FileUploadHandler
 from django.core.files.uploadedfile import (
-    InMemoryUploadedFile, TemporaryUploadedFile,
+    InMemoryUploadedFile,
+    TemporaryUploadedFile,
 )
 from django.db.models import FileField
 from storages.backends.s3boto3 import S3Boto3StorageFile, S3Boto3Storage
@@ -23,11 +24,12 @@ class S3Wrapper(object):
     @classmethod
     def get_client(cls):
         if not cls._s3_client:
-            logger.info('Instantiating S3 client')
+            logger.info("Instantiating S3 client")
             cls._s3_client = boto3.client(
-                's3',
+                "s3",
                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
         return cls._s3_client
 
 
@@ -35,7 +37,8 @@ def s3_client():
     return S3Wrapper.get_client()
 
 
-UUID4_REGEX = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}')
+UUID4_REGEX = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")
+
 
 class S3FileField(FileField):
     def save(self, name, content, save=True):
@@ -47,6 +50,7 @@ class S3FileField(FileField):
         # Save the object because it has changed, unless save is False
         if save:
             self.instance.save()
+
     save.alters_data = True
 
 
@@ -58,9 +62,9 @@ def upload_document_to(request, filename):
     """
     filename_base, filename_ext = os.path.splitext(filename)
     _now = timezone.now().strftime("%Y%m%d%H%M%S")
-    _filename = f'{filename_base}_{_now}{filename_ext}'
+    _filename = f"{filename_base}_{_now}{filename_ext}"
     path = Path(settings.S3_DOCUMENT_ROOT_DIRECTORY)
-    prefix = request.GET.get('__prefix')
+    prefix = request.GET.get("__prefix")
     if prefix:
         path /= prefix
     # case_id = UUID4_REGEX.findall(request.path)
@@ -75,6 +79,7 @@ class ThreadedS3ChunkUploader(ThreadPoolExecutor):
     A specialised ThreadPoolExecutor to upload
     files into S3 using up to 10 concurrent threads
     """
+
     def __init__(self, client, bucket, key, upload_id, max_workers=None):
         """Initialise a new ThreadedS3ChunkUploader
 
@@ -130,7 +135,7 @@ class ThreadedS3ChunkUploader(ThreadPoolExecutor):
         Returns:
             [bytes] -- The current queue part
         """
-        body = b''.join(self.queue)
+        body = b"".join(self.queue)
         self.queue = []
         self.current_queue_size = 0
         return body
@@ -141,17 +146,14 @@ class ThreadedS3ChunkUploader(ThreadPoolExecutor):
         Returns:
             [list<dict>] -- S3 ready list of part dicts
         """
-        return [{
-            'PartNumber': part[0],
-            'ETag': part[1].result()['ETag'],
-            } for part in self.parts
-        ]
+        return [{"PartNumber": part[0], "ETag": part[1].result()["ETag"],} for part in self.parts]
 
 
 class S3FileUploadHandler(FileUploadHandler):
     """
     Upload handler that streams data direct into S3
     """
+
     def new_file(self, *args, **kwargs):
         """
         Create the file object to append to as data is coming in.
@@ -162,18 +164,15 @@ class S3FileUploadHandler(FileUploadHandler):
         self.s3_key = upload_document_to(self.request, self.file_name)
         self.client = s3_client()
         self.multipart = self.client.create_multipart_upload(
-            Bucket=self.bucket_name,
-            Key=self.s3_key
+            Bucket=self.bucket_name, Key=self.s3_key
         )
-        self.upload_id = self.multipart['UploadId']
+        self.upload_id = self.multipart["UploadId"]
         self.executor = ThreadedS3ChunkUploader(
-            self.client,
-            self.bucket_name,
-            key=self.s3_key,
-            upload_id=self.upload_id)
+            self.client, self.bucket_name, key=self.s3_key, upload_id=self.upload_id
+        )
         # prepare a storages object as a file placeholder
         self.storage = S3Boto3Storage()
-        self.file = S3Boto3StorageFile(self.s3_key, 'w', self.storage)
+        self.file = S3Boto3StorageFile(self.s3_key, "w", self.storage)
         self.file.original_name = self.file_name
 
     def handle_raw_input(self, input_data, META, content_length, boundary, encoding):
@@ -204,9 +203,7 @@ class S3FileUploadHandler(FileUploadHandler):
             Bucket=self.bucket_name,
             Key=self.s3_key,
             UploadId=self.upload_id,
-            MultipartUpload={
-                'Parts': parts
-            }
+            MultipartUpload={"Parts": parts},
         )
         # shutdown the executor and set the final file size on the file
         self.executor.shutdown()

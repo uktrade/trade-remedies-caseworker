@@ -18,15 +18,13 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 root = environ.Path(__file__) - 4
-env = environ.Env(
-    DEBUG=(bool, False),
-)
+env = environ.Env(DEBUG=(bool, False),)
 environ.Env.read_env()
 
 sentry_sdk.init(
-    dsn=os.environ.get('SENTRY_DSN'),
+    dsn=os.environ.get("SENTRY_DSN"),
     integrations=[DjangoIntegration()],
-    environment=os.environ.get('SENTRY_ENVIRONMENT'),
+    environment=os.environ.get("SENTRY_ENVIRONMENT"),
 )
 
 SITE_ROOT = root()
@@ -38,91 +36,89 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
-ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_extensions',
-    'django_countries',
-    'govuk_template_base',
-    'govuk_template',
-    'govuk_forms',
-    'core',
-    'cases',
-    'users',
-    'organisations',
-    'contacts',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django_extensions",
+    "django_countries",
+    "govuk_template_base",
+    "govuk_template",
+    "govuk_forms",
+    "core",
+    "cases",
+    "users",
+    "organisations",
+    "contacts",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.gzip.GZipMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'trade_remedies_caseworker.middleware.APIUserMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'trade_remedies_caseworker.middleware.CacheControlMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django_session_timeout.middleware.SessionTimeoutMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.gzip.GZipMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "trade_remedies_caseworker.middleware.APIUserMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "trade_remedies_caseworker.middleware.CacheControlMiddleware",
 ]
 
 # Add basic authentication if configured
-basic_auth_user = os.environ.get('BASIC_AUTH_USER')
+basic_auth_user = os.environ.get("BASIC_AUTH_USER")
 if basic_auth_user:
-    MIDDLEWARE.insert(0, 'basicauth.middleware.BasicAuthMiddleware')
+    MIDDLEWARE.insert(0, "basicauth.middleware.BasicAuthMiddleware")
 
-if os.environ.get('RESTRICT_IPS', 'FALSE').upper() == 'TRUE':
-    MIDDLEWARE.insert(0, 'ip_restriction.IpWhitelister')
+if os.environ.get("RESTRICT_IPS", "FALSE").upper() == "TRUE":
+    MIDDLEWARE.insert(0, "ip_restriction.IpWhitelister")
 
-ROOT_URLCONF = 'trade_remedies_caseworker.urls'
+ROOT_URLCONF = "trade_remedies_caseworker.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, '..', 'templates'),
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'govuk_template_base.context_processors.govuk_template_base',
-                'trade_remedies_caseworker.context_processors.user_context',
-                'trade_remedies_caseworker.context_processors.page_context',
-                'trade_remedies_caseworker.context_processors.version_context',
-                'trade_remedies_caseworker.context_processors.motd_context',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "..", "templates"),],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "govuk_template_base.context_processors.govuk_template_base",
+                "trade_remedies_caseworker.context_processors.user_context",
+                "trade_remedies_caseworker.context_processors.page_context",
+                "trade_remedies_caseworker.context_processors.version_context",
+                "trade_remedies_caseworker.context_processors.motd_context",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'trade_remedies_caseworker.wsgi.application'
+WSGI_APPLICATION = "trade_remedies_caseworker.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
@@ -130,26 +126,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Europe/London'
+TIME_ZONE = "Europe/London"
 
 USE_I18N = True
 
@@ -157,13 +145,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-_VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
+_VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
 
 # Redis
-if 'redis' in _VCAP_SERVICES:
+if "redis" in _VCAP_SERVICES:
     REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/1"
 else:
-    REDIS_BASE_URL = os.getenv('REDIS_BASE_URL')
+    REDIS_BASE_URL = os.getenv("REDIS_BASE_URL")
 
 CACHES = {
     "default": {
@@ -174,135 +162,117 @@ CACHES = {
 }
 
 # Session configuration
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = os.environ.get('SECURE_COOKIE', 'FALSE').upper() == 'TRUE'
-SESSION_EXPIRE_SECONDS = int(os.environ.get('SESSION_LENGTH_MINUTES') or 30) * 60
+SESSION_COOKIE_SECURE = os.environ.get("SECURE_COOKIE", "FALSE").upper() == "TRUE"
+SESSION_EXPIRE_SECONDS = int(os.environ.get("SESSION_LENGTH_MINUTES") or 30) * 60
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-CSRF_COOKIE_SECURE = os.environ.get('SECURE_CSRF_COOKIE', 'FALSE').upper() == 'TRUE'
-CSRF_COOKIE_HTTPONLY = os.environ.get('CSRF_COOKIE_HTTPONLY', 'FALSE').upper() == 'TRUE'
-SESSION_COOKIE_AGE = int(os.environ.get('SESSION_LENGTH_MINUTES') or 30) * 60
-RESTRICT_IPS = os.environ.get('RESTRICT_IPS', 'FALSE').upper() == 'TRUE'
-USE_2FA = os.environ.get('USE_2FA', 'TRUE').upper() == 'TRUE'
-TRUSTED_USER_TOKEN = os.environ.get('HEALTH_CHECK_TOKEN')
-LOGOUT_REDIRECT_URL = '/'
-FRIENDLY_DATE_FORMAT = '%-d %B %Y'
-API_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
+CSRF_COOKIE_SECURE = os.environ.get("SECURE_CSRF_COOKIE", "FALSE").upper() == "TRUE"
+CSRF_COOKIE_HTTPONLY = os.environ.get("CSRF_COOKIE_HTTPONLY", "FALSE").upper() == "TRUE"
+SESSION_COOKIE_AGE = int(os.environ.get("SESSION_LENGTH_MINUTES") or 30) * 60
+RESTRICT_IPS = os.environ.get("RESTRICT_IPS", "FALSE").upper() == "TRUE"
+USE_2FA = os.environ.get("USE_2FA", "TRUE").upper() == "TRUE"
+TRUSTED_USER_TOKEN = os.environ.get("HEALTH_CHECK_TOKEN")
+LOGOUT_REDIRECT_URL = "/"
+FRIENDLY_DATE_FORMAT = "%-d %B %Y"
+API_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-API_BASE_URL = os.environ.get('API_BASE_URL')
-API_PREFIX = 'api/v1'
-API_URL = f'{API_BASE_URL}/{API_PREFIX}'
-PUBLIC_BASE_URL = os.environ.get('PUBLIC_BASE_URL', 'http://localhost:8002')
-ENVIRONMENT_KEY = os.environ.get('ENVIRONMENT_KEY')
+API_BASE_URL = os.environ.get("API_BASE_URL")
+API_PREFIX = "api/v1"
+API_URL = f"{API_BASE_URL}/{API_PREFIX}"
+PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "http://localhost:8002")
+ENVIRONMENT_KEY = os.environ.get("ENVIRONMENT_KEY")
 APPEND_SLASH = True
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'static')) 
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", "static"))
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '..', 'govuk_template', 'static'),
-    os.path.join(BASE_DIR, '..', 'templates', 'static')
+    os.path.join(BASE_DIR, "..", "govuk_template", "static"),
+    os.path.join(BASE_DIR, "..", "templates", "static"),
 ]
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Max upload size - 2GB
 MAX_UPLOAD_SIZE = 2 * (1024 * 1024 * 1024)
-AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = os.environ.get('S3_STORAGE_KEY')
-AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = os.environ.get('S3_STORAGE_SECRET')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-AWS_REGION = AWS_S3_REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1')
-AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = os.environ.get("S3_STORAGE_KEY")
+AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = os.environ.get("S3_STORAGE_SECRET")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
+AWS_REGION = AWS_S3_REGION_NAME = os.environ.get("AWS_REGION", "eu-west-1")
+AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
 # S3 client library to use
-S3_CLIENT = 'boto3'
+S3_CLIENT = "boto3"
 # S3 Root directory name
-S3_DOCUMENT_ROOT_DIRECTORY = 'documents'
+S3_DOCUMENT_ROOT_DIRECTORY = "documents"
 # Time before S3 download links expire
 S3_DOWNLOAD_LINK_EXPIREY_SECONDS = 30
 # Asynchronous document uploads/checks
 ASYNC_DOC_PREPARE = True
 
-FILE_UPLOAD_HANDLERS = (
-    's3chunkuploader.file_handler.S3FileUploadHandler',
-)
+FILE_UPLOAD_HANDLERS = ("s3chunkuploader.file_handler.S3FileUploadHandler",)
 
 # Temporary basic auth
 BASICAUTH_USERS = {
-    'trade': 'injury',
+    "trade": "injury",
 }
 
 # Add the EU as a country
 COUNTRIES_OVERRIDE = {
-    'EU': 'EU Customs Union',
+    "EU": "EU Customs Union",
 }
 
-FEATURE_FLAGS_TTL = os.environ.get('FEATURE_FLAGS_TTL', 5 * 60)
+FEATURE_FLAGS_TTL = os.environ.get("FEATURE_FLAGS_TTL", 5 * 60)
 
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
 
 RAVEN_CONFIG = {
-    'dsn': os.environ.get('SENTRY_DSN'),
-    'environment': os.environ.get('SENTRY_ENVIRONMENT'),
+    "dsn": os.environ.get("SENTRY_DSN"),
+    "environment": os.environ.get("SENTRY_ENVIRONMENT"),
 }
 
 if DEBUG:
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
-        'handlers': {
-            'stdout': {
-                'class': 'logging.StreamHandler',
-                'stream': sys.stdout,
-            },
-        },
-        'root': {
-            'handlers': ['stdout'],
-            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['stdout', ],
-                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-                'propagate': True,
+        "handlers": {"stdout": {"class": "logging.StreamHandler", "stream": sys.stdout,},},
+        "root": {"handlers": ["stdout"], "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),},
+        "loggers": {
+            "django": {
+                "handlers": ["stdout",],
+                "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+                "propagate": True,
             },
         },
     }
 else:
     LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'root': {
-            'level': 'WARNING',
+        "version": 1,
+        "disable_existing_loggers": False,
+        "root": {
+            "level": "WARNING",
             # 'handlers': ['sentry'],
         },
-        'formatters': {
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s '
-                          '%(process)d %(thread)d %(message)s'
+        "formatters": {
+            "verbose": {
+                "format": "%(levelname)s %(asctime)s %(module)s "
+                "%(process)d %(thread)d %(message)s"
             },
         },
-        'handlers': {
+        "handlers": {
             # 'sentry': {
             #     'level': 'WARNING',
             #     'class': (
             #         'raven.contrib.django.raven_compat.handlers.SentryHandler'
             #     ),
             # },
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            }
+            "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose"}
         },
-        'loggers': {
-            'django.db.backends': {
-                'level': 'ERROR',
-                'handlers': ['console'],
-                'propagate': False,
-            },
+        "loggers": {
+            "django.db.backends": {"level": "ERROR", "handlers": ["console"], "propagate": False,},
             # 'raven': {
             #     'level': 'DEBUG',
             #     'handlers': ['console'],
@@ -313,17 +283,13 @@ else:
             #     'handlers': ['console'],
             #     'propagate': False,
             # },
-            'botocore.endpoint': {
-                'level': 'INFO',
-                'handlers': ['console'],
-                'propagate': True,
-            }
+            "botocore.endpoint": {"level": "INFO", "handlers": ["console"], "propagate": True,},
         },
     }
 
 
-SHOW_ENV_BANNER = os.getenv('SHOW_ENV_BANNER', False)
-ENV_NAME = os.getenv('ENV_NAME', 'production')
+SHOW_ENV_BANNER = os.getenv("SHOW_ENV_BANNER", False)
+ENV_NAME = os.getenv("ENV_NAME", "production")
 
-GIT_BRANCH = os.getenv('GIT_BRANCH', '')
-GIT_COMMIT = os.getenv('GIT_COMMIT', '')
+GIT_BRANCH = os.getenv("GIT_BRANCH", "")
+GIT_COMMIT = os.getenv("GIT_COMMIT", "")

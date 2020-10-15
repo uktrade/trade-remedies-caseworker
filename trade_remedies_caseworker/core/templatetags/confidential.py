@@ -10,4 +10,4 @@ Usage:
 
 @register.simple_tag
 def confidential(confidential):
-    return '[CONF]' if confidential else '[NONCONF]'
+    return "[CONF]" if confidential else "[NONCONF]"

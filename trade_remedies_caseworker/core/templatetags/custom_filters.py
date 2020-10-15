@@ -66,19 +66,19 @@ def _int(arg1):
 
 
 def suffix(d):
-    return 'th' if 11 <= d <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(d % 10, 'th')
+    return "th" if 11 <= d <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(d % 10, "th")
 
 
 @register.filter
 def format_date(date_str, format_str="%d %b %Y"):
     if isinstance(date_str, str) and len(date_str) > 18:
         date = datetime.datetime.strptime(date_str[:19], "%Y-%m-%dT%H:%M:%S")
-        out = date.strftime(format_str).replace('{S}', str(date.day) + suffix(date.day))
-        time = date.strftime('%d %b %Y %H:%M:%S')
+        out = date.strftime(format_str).replace("{S}", str(date.day) + suffix(date.day))
+        time = date.strftime("%d %b %Y %H:%M:%S")
         if out != time:
             return mark_safe(f'<span title="{time}">{out}</span>')
-        return mark_safe(f'{out}')
-    return 'n/a'
+        return mark_safe(f"{out}")
+    return "n/a"
 
 
 @register.filter
@@ -100,13 +100,13 @@ def add_days(date, days):
     days = int(days or 0)
     if isinstance(date, str) and len(date) > 18:
         date = datetime.datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")
-        return mark_safe((date + timezone.timedelta(days)).strftime('%Y-%m-%dT%H:%M:%S'))
-    return 'n/a'
+        return mark_safe((date + timezone.timedelta(days)).strftime("%Y-%m-%dT%H:%M:%S"))
+    return "n/a"
 
 
 @register.filter
 def now(dummy):
-    return mark_safe(timezone.now().strftime('%Y-%m-%dT%H:%M:%S'))
+    return mark_safe(timezone.now().strftime("%Y-%m-%dT%H:%M:%S"))
 
 
 @register.filter
@@ -116,4 +116,4 @@ def split(str):
 
 @register.filter
 def splitlines(str):
-    return (str or '').splitlines()
+    return (str or "").splitlines()

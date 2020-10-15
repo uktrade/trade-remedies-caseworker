@@ -7,6 +7,7 @@ class TransientUser:
     persist anywhere. Insetad it is created on the fly by the
     APIUserMiddleware middleware using session data.
     """
+
     def __init__(self, **kwargs):
         self.is_authenticated = True
         self.transient_user = True
@@ -29,7 +30,7 @@ class TransientUser:
     def is_admin(self):
         return any([grp in self.groups for grp in SECURITY_GROUPS_TRA_ADMINS])
 
-    @property 
+    @property
     def is_top_admin(self):
         """
         To resolve TR-2639, adding this check for higher admin access. 
@@ -43,7 +44,7 @@ class TransientUser:
         Reload the user from the API
         """
         user = get_user(request.user.token, self.id)
-        request.session['user'] = user
+        request.session["user"] = user
         request.session.modified = True
         self.init_fields(**user)
         return user

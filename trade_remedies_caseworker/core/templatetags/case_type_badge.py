@@ -15,4 +15,4 @@ def case_type_badge(case_type):
         badge = f"""<div class="circular-badge" style="background: {case_type['colour']};" title="{case_type['name']}">{case_type['acronym']}</div>"""
         return mark_safe(badge)
     else:
-        return 'N/A'
+        return "N/A"
