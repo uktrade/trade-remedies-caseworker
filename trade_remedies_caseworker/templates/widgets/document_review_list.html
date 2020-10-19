@@ -99,13 +99,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if document.parent.checksum == document.checksum %}
-                        &nbsp;
-                    {% elif document.parent.deficient %}
-                        Deficient/replaced
-                    {% elif document.parent %}
-                        Replaced
-                    {% else %}
+                    {% if not document.deficient and not document.sufficient and document.safe %}
                         New
                     {% endif %}
                 </td>

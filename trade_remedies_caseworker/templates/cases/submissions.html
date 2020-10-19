@@ -102,6 +102,11 @@
                                             <i class="icon icon-green-tick"></i>Published
                                         </span>
                                     {% endif %}
+                                    {% if submission.new_submission %}
+                                        <span class="submission-has-new-file">
+                                            New
+                                        </span>
+                                    {% endif %}
                                 </td>
                                 <td>{{ submission.status.name }}</td>
                                 <td>
