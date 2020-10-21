@@ -22,7 +22,7 @@ jobs:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
           paths:
             - env
-            
+
       - run:
           name: Run tests
           command: |
@@ -33,10 +33,12 @@ jobs:
       - run:
           name: Run black
           command: |
+            . env/bin/activate
             black trade_remedies_api --check
       - run:
           name: Run Flake8
           command: |
+            . env/bin/activate
             python -m flake8
   front_end:
     docker:
