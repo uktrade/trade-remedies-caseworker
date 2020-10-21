@@ -243,14 +243,16 @@ class CaseBaseView(
             for document in document_list:
                 safe = document.get("safe")
                 if not safe:
-                    if safe == False:
+                    if safe is False:
                         counts[document_source]["virus"] += 1
                     else:
                         counts[document_source]["unscanned"] += 1
 
         # Get the deficiency documents from the previous version if applicable
         # if submission and (submission.get('previous_version') or {}).get('deficiency_sent_at'):
-        #    previous_submission = self._client.get_submission_documents(self.case_id, submission['previous_version']['id'])
+        #    previous_submission =
+        #    self._client.get_submission_documents
+        #    (self.case_id, submission['previous_version']['id'])
         #    deficiency_documents = [
         #        pdoc for pdoc in previous_submission.get('documents', [])
         #        if pdoc['type']['key'] == 'deficiency'
@@ -454,7 +456,7 @@ class CaseTeamView(CaseBaseView):
             "tra_users": all_users,
             "grouped_users": users_by_group,
             "groups": SECURITY_GROUPS_TRA[1:],
-            "inactive_user_count": sum(user["active"] == False for user in all_users),
+            "inactive_user_count": sum(user["active"] is False for user in all_users),
             "singleton_groups": [
                 SECURITY_GROUP_TRA_HEAD_OF_INVESTIGATION,
                 SECURITY_GROUP_TRA_ADMINISTRATOR,
@@ -569,7 +571,8 @@ class SubmissionsView(CaseBaseView):
         )
         submissions_by_type = deep_index_items_by(all_submissions, "type/name")
 
-        # Get submissions that have just been created by customer or are still in draft after creation
+        # Get submissions that have just been created by customer
+        # or are still in draft after creation
         draft_submissions = deep_index_items_by(all_submissions, "status/default").get("true") or []
         # Remove any that are back with the customer following deficiency
         draft_first_version_submissions = (
@@ -579,7 +582,8 @@ class SubmissionsView(CaseBaseView):
         non_draft_submissions = [
             sub for sub in all_submissions if sub not in draft_first_version_submissions
         ]
-        # draft applications are included to allow a heads up view to the caseworker before it's submitted
+        # draft applications are included to allow a heads up view
+        # to the caseworker before it's submitted
         if submissions_by_type.get("application", [{}])[0].get("status", {}).get("default") is True:
             submissions_by_type["application"][0]["tra_editable"] = True
             non_draft_submissions += submissions_by_type["application"]
@@ -593,7 +597,7 @@ class SubmissionsView(CaseBaseView):
             self.template_name = f"cases/submissions_{self.sub_page}.html"
             tab = self.request.GET.get("tab", "incoming").lower()
         elif self._client.get_system_boolean("PRE_NEW_SUBMISSION_PAGE"):
-            self.template_name = f"cases/submissions_new.html"
+            self.template_name = "cases/submissions_new.html"
 
         context = {
             "raw_participants": participants,
@@ -649,7 +653,7 @@ class SubmissionView(CaseBaseView):
             submission_context = SUBMISSION_TYPE_HELPERS[submission_type["key"]](
                 submission, self.request.user
             ).get_context()
-        self.template_name = f"cases/submission.html"
+        self.template_name = "cases/submission.html"
         case_extras = self._client.get_case(self.case_id, fields=self.extra_case_fields)
         context = {
             "submission": submission,
@@ -729,7 +733,8 @@ class SubmissionView(CaseBaseView):
             draft_submissions = (
                 deep_index_items_by(all_submissions, "status/default").get("true") or []
             )
-            # draft_submissions_this_role = deep_index_items_by(draft_submissions, 'organisation_case_role/key').get('' if role == 'public' else role)
+            # draft_submissions_this_role = deep_index_items_by(draft_submissions,
+            # 'organisation_case_role/key').get('' if role == 'public' else role)
             draft_submissions_this_role = deep_index_items_by(
                 draft_submissions, "organisation_id"
             ).get("")
@@ -793,7 +798,9 @@ class SubmissionView(CaseBaseView):
         ret.update({"template_name": template_name, "mode": "form"})
         return ret
 
-    def post(self, request, case_id, submission_id=None, organisation_id=None, *args, **kwargs):
+    def post(  # noqa: C901
+        self, request, case_id, submission_id=None, organisation_id=None, *args, **kwargs
+    ):
         """
         Update an existing submission
         """
@@ -830,7 +837,7 @@ class SubmissionView(CaseBaseView):
             or not submission["contact"]
             or submission.get("contact", {}).get("id") != contact_id
         ):
-            if name != None and not name:
+            if name is not None and not name:
                 return_data.update({"errors": '{"name":"You must enter a name"}'})
             if due_at and not re.match(REGEX_ISO_DATE, due_at):
                 return_data.update({"errors": '{"due_date":"Invalid date"}'})
@@ -872,7 +879,8 @@ class SubmissionView(CaseBaseView):
                     return HttpResponse(
                         json.dumps(
                             {
-                                "redirect_url": f"/case/{case_id}/submission/{submission_id}/edit/?error=up"
+                                "redirect_url":
+                                    f"/case/{case_id}/submission/{submission_id}/edit/?error=up"
                             }
                         ),
                         content_type="application/json",
@@ -905,7 +913,8 @@ class SubmissionView(CaseBaseView):
                     )
                 return_data.update(
                     {
-                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/?alert={btn_value}"
+                        "redirect_url":
+                            f"/case/{case_id}/submission/{submission['id']}/?alert={btn_value}"
                     }
                 )
 
@@ -1189,7 +1198,7 @@ class SubmissionDeficiencyView(CaseBaseView):
             )
         # If there's no deficiency state for this submission type, return an error
         return HttpResponse(
-            json.dumps({"error": f"No deficiency status for this submission type",}),
+            json.dumps({"error": "No deficiency status for this submission type",}),
             content_type="application/json",
         )
 
@@ -1200,7 +1209,8 @@ class SubmissionVerifyBaseView(CaseBaseView):
     def get_submission_id(self, case_id=None, organisation_id=None):
         submission_id = self.kwargs.get("submission_id")
         if not submission_id:
-            # If this is called from the party page - there is no submission id - so find from the org/case
+            # If this is called from the party page - there is no submission id
+            # so find from the org/case
             submissions = self._client.get_submissions_public(
                 organisation_id=organisation_id,
                 case_id=case_id,
@@ -1269,7 +1279,8 @@ class SubmissionVerifyViewTasks(SubmissionVerifyBaseView):
             return HttpResponse(
                 json.dumps(
                     {
-                        "error": f"You cannot verify this organisation as they have not yet registered interest in this case.",
+                        "error": "You cannot verify this organisation "
+                        "as they have not yet registered interest in this case.",
                     }
                 ),
                 content_type="application/json",
@@ -1591,7 +1602,8 @@ class SubmissionNotifyView(CaseBaseView):
         case = self._client.get_case(case_id)
         json_data = from_json(submission.get("deficiency_notice_params"))
         send_to = json_data.get("send_to")
-        # We need to know which is the last party in the list so we can modify the existing sub rather than clone it.
+        # We need to know which is the last party in the list
+        # so we can modify the existing sub rather than clone it.
         party_counter = len(send_to)
         for case_role, participant_list in (
             self._client.get_case_participants(case_id) or {}
@@ -1881,7 +1893,7 @@ class ActionView(CaseBaseView):
         arr[0] = value
         self.state_map[key] = arr
 
-    def post(self, request, case_id, action_id=None, *args, **kwargs):
+    def post(self, request, case_id, action_id=None, *args, **kwargs):  # noqa: C901
         values = {}
         node_keys = []
         action_key = request.POST.get("action-key")
@@ -1991,7 +2003,7 @@ class CaseAuditExport(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
     def get(self, request, case_id, *args, **kwargs):
         file = self.client(request.user).get_audit_export(case_id)
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
-        response["Content-Disposition"] = f"attachment; filename=trade_remedies_export.xls"
+        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xls"
         return response
 
 
@@ -2221,12 +2233,12 @@ class InviteContactView(CaseBaseView):
             organisation = self._client.get_organisation(self.kwargs.get("organisation_id"))
         if self.kwargs.get("contact_id"):
             contact = self._client.get_contact(self.kwargs["contact_id"])
-            form_url = f"/case/{self.case['id']}/invite/{self.kwargs['contact_id']}/as/{self.kwargs['case_role_id']}/"
+            form_url = f"/case/{self.case['id']}/invite/{self.kwargs['contact_id']}/as/{self.kwargs['case_role_id']}/"  # noqa: E501
             if organisation:
                 form_url = f"{form_url}for/{organisation['id']}/"
         elif self.kwargs.get("organisation_id"):
             contact = self.get_organisation_admin_user_contact(self.kwargs["organisation_id"])
-            form_url = f"/case/{self.case['id']}/invite/organisation/{self.kwargs['organisation_id']}/as/{self.kwargs['case_role_id']}/"
+            form_url = f"/case/{self.case['id']}/invite/organisation/{self.kwargs['organisation_id']}/as/{self.kwargs['case_role_id']}/"  # noqa: E501
         if not organisation:
             organisation = contact["organisation"]
         notification_template = self._client.get_notification_template(
@@ -2364,7 +2376,7 @@ class CaseBundleView(CaseBaseView):
             for document in bundle.get("documents", {}):
                 safe = document.get("safe")
                 if not safe:
-                    if safe == False:
+                    if safe is False:
                         counts["virus"] += 1
                     else:
                         counts["unscanned"] += 1
@@ -2375,7 +2387,7 @@ class CaseBundleView(CaseBaseView):
             "counts": counts,
         }
 
-    def post(self, request, case_id, bundle_id=None, *args, **kwargs):
+    def post(self, request, case_id, bundle_id=None, *args, **kwargs):  # noqa: C901
         name = request.POST.get("name")
         data = pluck(request.POST, ["name", "description"])
         btn_value = request.POST.get("btn-value")
@@ -2403,11 +2415,12 @@ class CaseBundleView(CaseBaseView):
                                 "file_size": _file.file_size,
                             },
                         )
+                        # TODO Fix undefined 'submission_id'.
                     except Exception as ex:
                         return HttpResponse(
                             json.dumps(
                                 {
-                                    "redirect_url": f"/case/{case_id}/submission/{submission_id}/edit/?error=up"
+                                    "redirect_url": f"/case/{case_id}/submission/{submission_id}/edit/?error=up"  # noqa: F821, E501
                                 }
                             ),
                             content_type="application/json",
@@ -2463,8 +2476,8 @@ class SubmissionInviteNotifyView(CaseBaseView):
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
 
         context = {
-            "form_action": f"/case/{case_id}/submission/{submission_id}/invite/{contact_id}/notify/",
-            "form_title": f"Invite 3rd party to {case['name']} on behalf of {inviting_organisation['name']}",
+            "form_action": f"/case/{case_id}/submission/{submission_id}/invite/{contact_id}/notify/",   # noqa: E501
+            "form_title": f"Invite 3rd party to {case['name']} on behalf of {inviting_organisation['name']}",   # noqa: E501
             "cancel_redirect_url": f"/case/{case_id}/submission/{submission_id}/",
             "editable_fields": {
                 "full_name": {"title": "Name"},
