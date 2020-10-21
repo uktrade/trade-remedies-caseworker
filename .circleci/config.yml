@@ -34,7 +34,7 @@ jobs:
           name: Run black
           command: |
             . env/bin/activate
-            black trade_remedies_api --check
+            black trade_remedies_caseworker --check
       - run:
           name: Run Flake8
           command: |
