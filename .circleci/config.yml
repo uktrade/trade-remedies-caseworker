@@ -33,11 +33,11 @@ jobs:
       - run:
           name: Run black
           command: |
-            # black trade_remedies_api --check
+            black trade_remedies_api --check
       - run:
           name: Run Flake8
           command: |
-            # python -m flake8
+            python -m flake8
   front_end:
     docker:
       - image: "circleci/node:latest"
