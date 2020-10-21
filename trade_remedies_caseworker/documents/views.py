@@ -123,7 +123,7 @@ class ApplicationBundleDocumentsFormView(
         for document in bundle.get("documents") or []:
             safe = document.get("safe")
             if not safe:
-                if safe == False:
+                if safe is False:
                     counts["virus"] += 1
                 else:
                     counts["unscanned"] += 1
@@ -138,7 +138,7 @@ class ApplicationBundleDocumentsFormView(
         }
         return render(request, template_name, context)
 
-    def post(self, request, bundle_id=None, *args, **kwargs):
+    def post(self, request, bundle_id=None, *args, **kwargs):  # noqa: C901
         client = self.client(request.user)
         case_type_id = request.POST.get("case_type_id")
         submission_type_id = None
@@ -180,7 +180,7 @@ class ApplicationBundleDocumentsFormView(
                     )
             elif bundle_id:
                 update_kwargs = {}
-                if description != None:
+                if description is not None:
                     update_kwargs["description"] = description
                 if finalise:
                     update_kwargs["status"] = "LIVE"
