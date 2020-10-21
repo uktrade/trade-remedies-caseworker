@@ -15,7 +15,7 @@ def ellipsis_short(text, max_length=30):
         half_point = int(char_len / 2)
         parts = [text[0:half_point]]
         parts.append("...")
-        parts.append(text[-1 * (char_len - half_point) :])
+        parts.append(text[-1 * (char_len - half_point):])
         return "".join(parts)
     else:
         return text

@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 """
 Template tag to display the heading in a sortable table.
 
-title = title, 
+title = title,
 key = sort key
 qstr = other query string parameters excluding the trailing '&'
 asc for ascending sort

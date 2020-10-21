@@ -39,22 +39,22 @@ def text_element(
     output.append(f'<label class="form-label" for="{ id }">{ label }')
     if hint:
         output.append(f'<span class="form-hint">{ hint }</span>')
-    output.append(f"</label>")
+    output.append("</label>")
     name = name or id
     if name and errors and name in errors:
         message = errors[name]
         output.append(f'<span class="error-message" id="{ name }_error">{ message }</span>')
     if data_mode:  # for typeahead elements
         output.append(
-            f'<input { autocomplete } class="form-control" id="{ id }" type="text" data-mode="{ data_mode }" name="{ name }" { readonly } value="{ value }">'
+            f'<input { autocomplete } class="form-control" id="{ id }" type="text" data-mode="{ data_mode }" name="{ name }" { readonly } value="{ value }">'   # noqa: E501
         )
     elif textarea:
         output.append(
-            f'<textarea class="form-control" id="{ id }" name="{ name }" { readonly }>{ value }</textarea>'
+            f'<textarea class="form-control" id="{ id }" name="{ name }" { readonly }>{ value }</textarea>'   # noqa: E501
         )
     else:
         output.append(
-            f'<input { autocomplete }class="form-control" id="{ id }" type="{ type }" name="{ name }" value="{ value }" { readonly }>'
+            f'<input { autocomplete }class="form-control" id="{ id }" type="{ type }" name="{ name }" value="{ value }" { readonly }>'   # noqa: E501
         )
     output.append("</div>")
     return mark_safe("".join(output))

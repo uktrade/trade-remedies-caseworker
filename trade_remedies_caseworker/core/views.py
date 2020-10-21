@@ -86,7 +86,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
             except Exception:
                 reason = str(exc)
             request.session["errors"] = reason
-            return redirect(f"/accounts/login/?error=1")
+            return redirect("/accounts/login/?error=1")
 
 
 class BaseCaseView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
@@ -124,7 +124,8 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
                         twofactor_error = result["error"]
                         locked_until = result.get("locked_until")
                 except Exception as exc:
-                    twofactor_error = f"We could not send the code to your phone ({request.user.phone}). Please select to use email delivery of the access code."
+                    twofactor_error = f"We could not send the code to your phone ({request.user.phone}). " \
+                                      f"Please select to use email delivery of the access code."
                     result = "An error occured"
 
             return render(
@@ -277,5 +278,5 @@ class FeedbackFormExportView(
     def get(self, request, form_id=None):
         file = self.client(request.user).export_feedback(form_id)
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
-        response["Content-Disposition"] = f"attachment; filename=trade_remedies_export.xls"
+        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xls"
         return response

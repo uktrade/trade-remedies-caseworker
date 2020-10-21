@@ -2,7 +2,8 @@ from core.templatetags import register
 from django.utils.safestring import mark_safe
 
 """
-Template tag to display a link - if the given path is different from the current url - or a simple span otherwise
+Template tag to display a link - if the given path is different from the current url -
+or a simple span otherwise
 Usage:
     {% link_or_not <title> <path> %}
 """
