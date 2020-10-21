@@ -22,7 +22,6 @@ from organisations.views import (
 urlpatterns = [
     path("", OrganisationsView.as_view(), name="organisations"),
     path("<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"),
-    # path('<uuid:organisation_id>/name/', OrganisationNameChangeView.as_view(), name='edit_organisation'),
     path(
         "case/<uuid:case_id>/create/<str:organisation_type>/",
         OrganisationFormView.as_view(),
@@ -87,7 +86,7 @@ urlpatterns = [
         OrganisationCaseRoleView.as_view(),
     ),
     path(
-        "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/set/primary/",
+        "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/set/primary/",   # noqa: E501
         ContactPrimaryView.as_view(),
         name="set_primary_contact",
     ),

@@ -85,7 +85,8 @@ SUBMISSION_TYPE_HELPERS["assign"] = AssignUserSubmission
 
 
 def get_submission_deadline(submission, fmt=None):
-    """Return the submission deadline. If the submission has the deficiency notice params (i.e., being set up)
+    """Return the submission deadline.
+    If the submission has the deficiency notice params (i.e., being set up)
     use those to determine due date.
 
     Arguments:

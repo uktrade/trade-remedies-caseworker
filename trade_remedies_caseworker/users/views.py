@@ -40,7 +40,7 @@ class UserManagerView(UserBaseTemplateView):
             {
                 "user_group": user_group,
                 "users": users,
-                "inactive_user_count": sum(user["active"] == False for user in users),
+                "inactive_user_count": sum(user["active"] is False for user in users),
                 "body_classes": "full-width",
                 "tabs": tabs,
             },
@@ -108,7 +108,7 @@ class UserView(UserBaseTemplateView):
 
         if self.delete_user:
             result = client.delete_user(user_id=user_id)
-            return HttpResponse(json.dumps({"alert": f"User deleted.", "redirect_url": "reload"}))
+            return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
 
         required_fields = ["name", "email", "roles"]
         if not user_id:
@@ -221,7 +221,8 @@ class MyAccountView(UserBaseTemplateView):
                 response["redirect_url"] = "/accounts/logout/"
                 response[
                     "alert"
-                ] = "You have changed your password and will be logged out. Please log in using your updated password."
+                ] = "You have changed your password and will be logged out. " \
+                    "Please log in using your updated password."
                 response["pop_alert"] = True
                 return HttpResponse(json.dumps(response))
         else:
