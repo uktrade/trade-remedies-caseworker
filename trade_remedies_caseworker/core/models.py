@@ -33,7 +33,7 @@ class TransientUser:
     @property
     def is_top_admin(self):
         """
-        To resolve TR-2639, adding this check for higher admin access. 
+        To resolve TR-2639, adding this check for higher admin access.
         This is because lead inv. is considered admin currently. This can be changed
         but the implications are not clear.
         """
@@ -43,7 +43,8 @@ class TransientUser:
         """
         Reload the user from the API
         """
-        user = get_user(request.user.token, self.id)
+        # TODO fixed undefined 'get_user'
+        user = get_user(request.user.token, self.id)   # noqa: F821
         request.session["user"] = user
         request.session.modified = True
         self.init_fields(**user)

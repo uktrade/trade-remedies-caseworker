@@ -124,7 +124,8 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
                         twofactor_error = result["error"]
                         locked_until = result.get("locked_until")
                 except Exception as exc:
-                    twofactor_error = f"We could not send the code to your phone ({request.user.phone}). " \
+                    twofactor_error = f"We could not send the code " \
+                                      f"to your phone ({request.user.phone}). " \
                                       f"Please select to use email delivery of the access code."
                     result = "An error occured"
 

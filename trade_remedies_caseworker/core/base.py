@@ -21,7 +21,8 @@ class GroupRequiredMixin(AccessMixin):
         """
         if self.groups_required is None:
             raise ImproperlyConfigured(
-                "{0} is missing the groups_required attribute. Define {0}.groups_required, or override "
+                "{0} is missing the groups_required attribute. "
+                "Define {0}.groups_required, or override "
                 "{0}.get_groups_required().".format(self.__class__.__name__)
             )
         if isinstance(self.groups_required, str):

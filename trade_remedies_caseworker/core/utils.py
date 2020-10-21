@@ -43,7 +43,7 @@ def deep_index_items_by_exists(items, key):
 
 def deep_update(target, source):
     """
-    Deep merge two dicts 
+    Deep merge two dicts
     """
     if isinstance(source, dict):
         for key, item in source.items():
@@ -151,7 +151,8 @@ def is_int(value):
 
 def submission_contact(submission):
     """
-    Extract a contact from a submission. A primary contact is preferred, though otherwise the first contact is used.
+    Extract a contact from a submission.
+    A primary contact is preferred, though otherwise the first contact is used.
     """
     contact = submission.get("contact")
     if not contact:
@@ -187,11 +188,11 @@ def parse_notify_template(template, values):
         groups = match.groups()
         template = "".join(
             [
-                template[0 : match.start()],
-                '<blockquote style="Margin: 0 0 20px 0; border-left: 10px solid #BFC1C3;padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;">',
+                template[0: match.start()],
+                '<blockquote style="Margin: 0 0 20px 0; border-left: 10px solid #BFC1C3;padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;">',  # noqa: E501
                 groups[1],
                 "</blockquote>",
-                template[match.end() :],
+                template[match.end():],
             ]
         )
     return markdown.markdown(template)

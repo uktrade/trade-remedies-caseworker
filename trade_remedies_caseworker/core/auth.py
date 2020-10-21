@@ -15,8 +15,8 @@ class AuthenticationBackend:
         if response_data and response_data.get("token"):
             request.session["token"] = response_data["token"]
             request.session["user"] = response_data["user"]
-
-        user = TransientUser(username=email, token=response_data["token"])
+        # TODO Fix undefind 'email'
+        user = TransientUser(username=email, token=response_data["token"])  # noqa: F821
         user.is_authenticated = True
         user.backend = self
         user.groups = response_data["groups"]
