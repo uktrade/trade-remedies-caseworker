@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 jobs:
   python_steps:
     docker:
@@ -33,8 +33,8 @@ jobs:
           command: |
             # python -m flake8
   front_end:
-    docker: 
-      - image: 'circleci/node:latest'
+    docker:
+      - image: "circleci/node:latest"
     steps:
       - checkout
       - restore_cache:
@@ -51,7 +51,7 @@ jobs:
           paths:
             - node_modules
           key: npm-dependencies-{{ checksum "package-lock.json" }}
-          
+
 workflows:
   version: 2
   run_tests:
