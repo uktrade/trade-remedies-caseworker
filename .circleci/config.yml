@@ -8,6 +8,7 @@ jobs:
           DJANGO_SETTINGS_MODULE: trade_remedies_caseworker.settings.local
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
+
     steps:
       - checkout
       - restore_cache:
