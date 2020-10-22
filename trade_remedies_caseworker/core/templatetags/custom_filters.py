@@ -100,7 +100,9 @@ def add_days(date, days):
     days = int(days or 0)
     if isinstance(date, str) and len(date) > 18:
         date = datetime.datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")
-        return mark_safe((date + timezone.timedelta(days)).strftime("%Y-%m-%dT%H:%M:%S"))
+        return mark_safe(
+            (date + timezone.timedelta(days)).strftime("%Y-%m-%dT%H:%M:%S")
+        )
     return "n/a"
 
 

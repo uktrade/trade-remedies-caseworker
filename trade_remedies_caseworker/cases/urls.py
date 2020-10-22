@@ -10,26 +10,58 @@ urlpatterns = [
     path("create/", case_views.CaseFormView.as_view(), name="cases"),
     path("<uuid:case_id>/edit/", case_views.CaseFormView.as_view(), name="cases"),
     path("<uuid:case_id>/", case_views.CaseView.as_view(), name="cases"),
-    path("<uuid:case_id>/admin/", case_views.CaseAdminView.as_view(), name="case_admin"),
     path(
-        "<uuid:case_id>/milestones/", case_views.CaseMilestoneDatesView.as_view(), name="case_dates"
+        "<uuid:case_id>/admin/", case_views.CaseAdminView.as_view(), name="case_admin"
+    ),
+    path(
+        "<uuid:case_id>/milestones/",
+        case_views.CaseMilestoneDatesView.as_view(),
+        name="case_dates",
     ),
     path(
         "<uuid:case_id>/milestone/<str:milestone_key>/",
         case_views.CaseMilestoneDatesView.as_view(),
         name="case_date",
     ),
-    path("<uuid:organisation_id>/<uuid:case_id>/", case_views.CaseView.as_view(), name="cases"),
+    path(
+        "<uuid:organisation_id>/<uuid:case_id>/",
+        case_views.CaseView.as_view(),
+        name="cases",
+    ),
     path("<uuid:case_id>/parties/", case_views.PartiesView.as_view(), name="cases"),
     path("<uuid:case_id>/team/", case_views.CaseTeamView.as_view(), name="case_team"),
     path("<uuid:case_id>/files/", case_views.FilesView.as_view(), name="cases"),
-    path("<uuid:case_id>/files/browse/", case_views.FileBrowseView.as_view(), name="cases"),
+    path(
+        "<uuid:case_id>/files/browse/",
+        case_views.FileBrowseView.as_view(),
+        name="cases",
+    ),
     path("<uuid:case_id>/files/search/", case_views.DocumentSearchView.as_view()),
-    path("<uuid:case_id>/files/issue/", case_views.IssueFilesFormView.as_view(), name="cases"),
-    path("<uuid:case_id>/files/<str:source>/", case_views.FilesView.as_view(), name="cases"),
-    path("<uuid:case_id>/files/<str:source>/", case_views.FilesView.as_view(), name="cases"),
-    path("<uuid:case_id>/bundles/", case_views.CaseBundlesView.as_view(), name="case_bundles"),
-    path("<uuid:case_id>/bundle/create/", case_views.CaseBundleView.as_view(), name="case_bundle"),
+    path(
+        "<uuid:case_id>/files/issue/",
+        case_views.IssueFilesFormView.as_view(),
+        name="cases",
+    ),
+    path(
+        "<uuid:case_id>/files/<str:source>/",
+        case_views.FilesView.as_view(),
+        name="cases",
+    ),
+    path(
+        "<uuid:case_id>/files/<str:source>/",
+        case_views.FilesView.as_view(),
+        name="cases",
+    ),
+    path(
+        "<uuid:case_id>/bundles/",
+        case_views.CaseBundlesView.as_view(),
+        name="case_bundles",
+    ),
+    path(
+        "<uuid:case_id>/bundle/create/",
+        case_views.CaseBundleView.as_view(),
+        name="case_bundle",
+    ),
     path(
         "<uuid:case_id>/bundle/<uuid:bundle_id>/",
         case_views.CaseBundleView.as_view(),
@@ -122,7 +154,11 @@ urlpatterns = [
         case_views.SubmissionVerifyNotify.as_view(),
         name="notify_organisation",
     ),
-    path("<uuid:case_id>/submissions/", case_views.SubmissionsView.as_view(), name="submissions"),
+    path(
+        "<uuid:case_id>/submissions/",
+        case_views.SubmissionsView.as_view(),
+        name="submissions",
+    ),
     path(
         "<uuid:case_id>/submissions/new/",
         case_views.SubmissionsView.as_view(sub_page="new"),
@@ -140,18 +176,32 @@ urlpatterns = [
         name="cases",
     ),
     path("<uuid:case_id>/audit", case_views.AuditView.as_view(), name="case_audit"),
-    path("<uuid:case_id>/audit/export/", case_views.CaseAuditExport.as_view(), name="audit_export"),
+    path(
+        "<uuid:case_id>/audit/export/",
+        case_views.CaseAuditExport.as_view(),
+        name="audit_export",
+    ),
     path("<uuid:case_id>/actions/", case_views.ActionsView.as_view(), name="cases"),
     path(
-        "<uuid:case_id>/state/<str:state_key>/", case_views.StateView.as_view(), name="case_state"
+        "<uuid:case_id>/state/<str:state_key>/",
+        case_views.StateView.as_view(),
+        name="case_state",
     ),
     path(
         "<uuid:organisation_id>/<uuid:case_id>/actions/",
         case_views.ActionsView.as_view(),
         name="cases",
     ),
-    path("<uuid:case_id>/actions/edit/", case_views.WorkflowEditor.as_view(), name="cases"),
-    path("<uuid:case_id>/action/<str:action_key>/", case_views.ActionView.as_view(), name="cases"),
+    path(
+        "<uuid:case_id>/actions/edit/",
+        case_views.WorkflowEditor.as_view(),
+        name="cases",
+    ),
+    path(
+        "<uuid:case_id>/action/<str:action_key>/",
+        case_views.ActionView.as_view(),
+        name="cases",
+    ),
     path("<uuid:case_id>/note/", case_views.NoteView.as_view(), name="case_note"),
     path(
         "<uuid:case_id>/note/<str:content_type>/<str:model_id>/<str:model_key>/",
@@ -183,10 +233,24 @@ urlpatterns = [
         case_views.SubmissionInviteNotifyView.as_view(),
         name="invite_contact_notify",
     ),
-    path("<uuid:case_id>/note/<uuid:note_id>/", case_views.NoteView.as_view(), name="case_note"),
-    path("<uuid:case_id>/public/", case_views.PublicFileView.as_view(), name="public_file"),
     path(
-        "<uuid:case_id>/update_parent/", case_views.UpdateParentView.as_view(), name="update_parent"
+        "<uuid:case_id>/note/<uuid:note_id>/",
+        case_views.NoteView.as_view(),
+        name="case_note",
     ),
-    path("<uuid:case_id>/team/json/", case_views.CaseTeamJsonView.as_view(), name="case_team"),
+    path(
+        "<uuid:case_id>/public/",
+        case_views.PublicFileView.as_view(),
+        name="public_file",
+    ),
+    path(
+        "<uuid:case_id>/update_parent/",
+        case_views.UpdateParentView.as_view(),
+        name="update_parent",
+    ),
+    path(
+        "<uuid:case_id>/team/json/",
+        case_views.CaseTeamJsonView.as_view(),
+        name="case_team",
+    ),
 ]

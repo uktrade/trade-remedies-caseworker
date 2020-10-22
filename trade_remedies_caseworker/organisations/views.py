@@ -65,7 +65,8 @@ class BaseOrganisationTemplateView(
     def return_redirect(self, alert=None):
         coded_alert = urlencode({"alert": alert})
         return HttpResponse(
-            json.dumps({"redirect_url": f"?{coded_alert}"}), content_type="application/json"
+            json.dumps({"redirect_url": f"?{coded_alert}"}),
+            content_type="application/json",
         )
 
 
@@ -76,7 +77,10 @@ class OrganisationsView(BaseOrganisationTemplateView):
             "Organisation": {
                 "id": 0,
                 "name": 0,
-                "country": {"code": 0, "name": 0,},
+                "country": {
+                    "code": 0,
+                    "name": 0,
+                },
                 "created_at": 0,
                 "companies_house_id": 0,
                 "fraudulent": 0,
@@ -125,7 +129,11 @@ class OrganisationsView(BaseOrganisationTemplateView):
         return render(
             request,
             self.template_name,
-            {"tabs": tabs, "body_classes": "full-width", "organisations": groups.get(tab),},
+            {
+                "tabs": tabs,
+                "body_classes": "full-width",
+                "organisations": groups.get(tab),
+            },
         )
 
 
@@ -172,7 +180,9 @@ class OrganisationNameChangeView(BaseOrganisationTemplateView):
         organisation = self._client.get_organisation(organisation_id)
         org_request_fields = collect_request_fields(request, org_fields)
         if org_request_fields.get("organisation_name") != organisation.get("name"):
-            response = self._client.update_organisation(organisation_id, org_request_fields)
+            response = self._client.update_organisation(
+                organisation_id, org_request_fields
+            )
         return redirect(f"/organisations/{organisation_id}/")
 
 
@@ -181,17 +191,30 @@ class OrganisationFormView(BaseOrganisationTemplateView):
     raise_exception = True
 
     def get(
-        self, request, case_id=None, organisation_id=None, organisation_type=None, *args, **kwargs
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        organisation_type=None,
+        *args,
+        **kwargs,
     ):
         role = {}
         all_roles = self._client.get_case_roles()
         if organisation_id and case_id:
-            organisation = self._client.get_organisation(organisation_id, case_id=case_id)
+            organisation = self._client.get_organisation(
+                organisation_id, case_id=case_id
+            )
             role = organisation.get("case_role", {})
         elif organisation_id:
             organisation = self._client.get_organisation(organisation_id)
         else:
-            organisation = {"new": True, "id": "", "organisation": {"id": ""}, "contact": {}}
+            organisation = {
+                "new": True,
+                "id": "",
+                "organisation": {"id": ""},
+                "contact": {},
+            }
         if organisation_type and not role:
             role = self._client.get_case_role(organisation_type)
         elif role:
@@ -208,12 +231,20 @@ class OrganisationFormView(BaseOrganisationTemplateView):
         return render(request, self.template_name, context)
 
     def post(
-        self, request, case_id=None, organisation_id=None, organisation_type=None, *args, **kwargs
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        organisation_type=None,
+        *args,
+        **kwargs,
     ):
         extra_context = {"case_id": str(case_id)}
         org_request_fields = collect_request_fields(request, org_fields, extra_context)
         if organisation_id:
-            organisation = self._client.update_organisation(organisation_id, org_request_fields)
+            organisation = self._client.update_organisation(
+                organisation_id, org_request_fields
+            )
         else:
             # create new org and add to case
             organisation = get(
@@ -227,9 +258,9 @@ class OrganisationFormView(BaseOrganisationTemplateView):
                     request, contact_fields, extra_context
                 )
                 contact_request_fields["organisation_id"] = organisation["id"]
-                if contact_request_fields.get("contact_name") and contact_request_fields.get(
-                    "contact_email"
-                ):
+                if contact_request_fields.get(
+                    "contact_name"
+                ) and contact_request_fields.get("contact_email"):
                     contact = self._client.create_contact(contact_request_fields)
             return self.return_redirect("Created party " + organisation.get("name"))
         return HttpResponse(json.dumps({"organisation": organisation}))
@@ -239,7 +270,15 @@ class ContactFormView(BaseOrganisationTemplateView):
     template_name = "organisations/contact_form.html"
     raise_exception = True
 
-    def get(self, request, case_id=None, organisation_id=None, contact_id=None, *args, **kwargs):
+    def get(
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        contact_id=None,
+        *args,
+        **kwargs,
+    ):
         organisation = self._client.get_organisation(organisation_id)
         if contact_id:
             contact = self._client.get_contact(contact_id)
@@ -255,7 +294,15 @@ class ContactFormView(BaseOrganisationTemplateView):
         }
         return render(request, self.template_name, context)
 
-    def post(self, request, case_id=None, organisation_id=None, contact_id=None, *args, **kwargs):
+    def post(
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        contact_id=None,
+        *args,
+        **kwargs,
+    ):
         request_fields = [
             "contact_name",
             "contact_phone",
@@ -293,14 +340,26 @@ class ContactFormView(BaseOrganisationTemplateView):
 
 
 class ContactDeleteView(BaseOrganisationTemplateView):
-    def post(self, request, contact_id, case_id=None, organisation_id=None, *args, **kwargs):
+    def post(
+        self, request, contact_id, case_id=None, organisation_id=None, *args, **kwargs
+    ):
         response = self._client.delete_contact(contact_id)
         return HttpResponse(json.dumps(response))
 
 
 class ContactPrimaryView(BaseOrganisationTemplateView):
-    def post(self, request, organisation_id=None, contact_id=None, case_id=None, *args, **kwargs):
-        response = self._client.set_case_primary_contact(contact_id, organisation_id, case_id)
+    def post(
+        self,
+        request,
+        organisation_id=None,
+        contact_id=None,
+        case_id=None,
+        *args,
+        **kwargs,
+    ):
+        response = self._client.set_case_primary_contact(
+            contact_id, organisation_id, case_id
+        )
         name = response.get("name", "")
         return HttpResponse(json.dumps(response))
         return self.return_redirect(f'Primary contact set to "{name}"')
@@ -317,14 +376,18 @@ class ToggleOrganisationSampledView(BaseOrganisationTemplateView):
     def post(self, request, organisation_id, case_id, *args, **kwargs):
         response = self._client.toggle_organisation_sampled(organisation_id, case_id)
         org_name = (response.get("organisation") or {}).get("name")
-        sampled_str = "added to sample" if response.get("sampled") else "removed from sample"
+        sampled_str = (
+            "added to sample" if response.get("sampled") else "removed from sample"
+        )
         return self.return_redirect(f'Party "{org_name}" {sampled_str}')
 
 
 class ToggleOrganisationNonResponsiveView(BaseOrganisationTemplateView):
     def post(self, request, organisation_id, case_id, *args, **kwargs):
         redirect_path = request.GET.get("redirect", f"/case/{case_id}/parties/")
-        response = self._client.toggle_organisation_nonresponsive(organisation_id, case_id)
+        response = self._client.toggle_organisation_nonresponsive(
+            organisation_id, case_id
+        )
         org_name = (response.get("organisation") or {}).get("name")
         responsive_str = (
             "marked as non-cooperative"
@@ -377,7 +440,9 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
             "contact_id": contacts[0]["id"] if len(contacts) == 1 else None,
             "action": action,
             "roles": roles,
-            "parsed_template": parse_notify_template(notification_template["body"], values),
+            "parsed_template": parse_notify_template(
+                notification_template["body"], values
+            ),
             "notification_template": notification_template,
             "organisation_type": request.GET.get("organisation_type")
             or CASE_ROLE_AWAITING_APPROVAL,
@@ -467,7 +532,9 @@ class OrganisationMergeView(BaseOrganisationTemplateView):
         result = self.client(self.request.user).organisation_merge(
             organisation_id=organisation_id, merge_with=merge_with, params=parameter_map
         )
-        return HttpResponse(json.dumps({"result": result}), content_type="application/json")
+        return HttpResponse(
+            json.dumps({"result": result}), content_type="application/json"
+        )
 
 
 class OrganisationDuplicatesView(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
@@ -487,11 +554,18 @@ class OrganisationDuplicatesView(LoginRequiredMixin, View, TradeRemediesAPIClien
             else:
                 # This is not our org, so remove it if our org id is in its no-merge list
                 for nm_id, details in no_merge.items():
-                    if str(nm_id) == str(organisation_id) and str(match_id) in org_index:
+                    if (
+                        str(nm_id) == str(organisation_id)
+                        and str(match_id) in org_index
+                    ):
                         del org_index[str(match_id)]
 
         return HttpResponse(
-            json.dumps({"org_matches": [org_array[0] for org_array in org_index.values()],}),
+            json.dumps(
+                {
+                    "org_matches": [org_array[0] for org_array in org_index.values()],
+                }
+            ),
             content_type="application/json",
         )
 
@@ -508,7 +582,11 @@ class OrganisationMatchView(BaseOrganisationTemplateView):
         return render(
             request,
             self.template_name,
-            {"case": None, "organisation": None, "org_matches": matching_orgs,},
+            {
+                "case": None,
+                "organisation": None,
+                "org_matches": matching_orgs,
+            },
         )
         # return HttpResponse(json.dumps({
         #    'result': duplicate_orgs

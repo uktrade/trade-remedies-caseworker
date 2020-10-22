@@ -21,7 +21,9 @@ def form_error(key, errors=None):
             )
             return mark_safe(message)
         else:
-            return mark_safe(f'<span id="{key}_error" class="error-message">{errors[key]}</span>')
+            return mark_safe(
+                f'<span id="{key}_error" class="error-message">{errors[key]}</span>'
+            )
     return ""
 
 

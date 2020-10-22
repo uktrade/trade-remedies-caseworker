@@ -21,7 +21,9 @@ from organisations.views import (
 
 urlpatterns = [
     path("", OrganisationsView.as_view(), name="organisations"),
-    path("<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"),
+    path(
+        "<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"
+    ),
     path(
         "case/<uuid:case_id>/create/<str:organisation_type>/",
         OrganisationFormView.as_view(),
@@ -32,7 +34,11 @@ urlpatterns = [
         OrganisationFormView.as_view(),
         name="create_organisation",
     ),
-    path("<uuid:organisation_id>/edit/", OrganisationFormView.as_view(), name="edit_organisation"),
+    path(
+        "<uuid:organisation_id>/edit/",
+        OrganisationFormView.as_view(),
+        name="edit_organisation",
+    ),
     path(
         "<uuid:organisation_id>/case/<uuid:case_id>/sampled/",
         ToggleOrganisationSampledView.as_view(),
@@ -79,7 +85,9 @@ urlpatterns = [
         name="delete_organisation",
     ),
     path(
-        "<uuid:organisation_id>/merge/", OrganisationMergeView.as_view(), name="merge_organisation"
+        "<uuid:organisation_id>/merge/",
+        OrganisationMergeView.as_view(),
+        name="merge_organisation",
     ),
     path(
         "case/<uuid:case_id>/organisation/<uuid:organisation_id>/change/",
@@ -95,7 +103,11 @@ urlpatterns = [
         OrganisationCaseRoleView.as_view(),
         name="org_case_role",
     ),
-    path("<uuid:organisation_id>/duplicates/", OrganisationDuplicatesView.as_view(), name="match"),
+    path(
+        "<uuid:organisation_id>/duplicates/",
+        OrganisationDuplicatesView.as_view(),
+        name="match",
+    ),
     path("dedupe/", OrganisationDedupeView.as_view(), name="dedupe"),
     path("match/", OrganisationMatchView.as_view(), name="match"),
 ]

@@ -30,5 +30,7 @@ def document_link(document, with_link=True, with_confidential_mark=False):
             'title="This file is infected with a virus"></i>'
         )
     if safe and with_confidential_mark:
-        _link.append(" (confidential)" if document.get("confidential") else " (non-confidential)")
+        _link.append(
+            " (confidential)" if document.get("confidential") else " (non-confidential)"
+        )
     return mark_safe("".join(_link))

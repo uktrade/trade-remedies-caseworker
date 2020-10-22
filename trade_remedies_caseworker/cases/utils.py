@@ -38,7 +38,11 @@ def decorate_orgs(org_list, representing_org_id, exclude_case_id=None):
         usercases = org.get("collated_indirect_cases")
         if usercases:
             org["cases_for_org"] = list(
-                [case for case in usercases if get(case, "organisation/id") == representing_org_id]
+                [
+                    case
+                    for case in usercases
+                    if get(case, "organisation/id") == representing_org_id
+                ]
             )
         org["verified_usercases"] = list(verified_cases.values())
         org["verified_usercases"].sort(

@@ -12,7 +12,9 @@ from core.utils import validate_required_fields, pluck, get
 from core.constants import SECURITY_GROUP_SUPER_USER
 
 
-class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
+class UserBaseTemplateView(
+    LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+):
     pass
 
 
@@ -29,7 +31,11 @@ class UserManagerView(UserBaseTemplateView):
                 {"label": "Incomplete customer accounts", "value": "pending"},
             ],
         }
-        user_group = {"caseworker": "caseworker", "public": "public", "pending": "public",}[tab]
+        user_group = {
+            "caseworker": "caseworker",
+            "public": "public",
+            "pending": "public",
+        }[tab]
         client = self.client(request.user)
         users = client.get_all_users(group_name=user_group)
         users.sort(key=lambda user: user.get("created_at"), reverse=True)
@@ -72,7 +78,10 @@ class UserView(UserBaseTemplateView):
         cases = []
         if user_id:
             cases = client.get_user_cases(
-                archived="all", request_for=user_id, all_cases=False, fields=self.user_fields
+                archived="all",
+                request_for=user_id,
+                all_cases=False,
+                fields=self.user_fields,
             )
         str_now = timezone.now().strftime(settings.API_DATETIME_FORMAT)
         for case in cases:
@@ -108,7 +117,9 @@ class UserView(UserBaseTemplateView):
 
         if self.delete_user:
             result = client.delete_user(user_id=user_id)
-            return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
+            return HttpResponse(
+                json.dumps({"alert": "User deleted.", "redirect_url": "reload"})
+            )
 
         required_fields = ["name", "email", "roles"]
         if not user_id:
@@ -122,7 +133,15 @@ class UserView(UserBaseTemplateView):
         user.update(
             pluck(
                 request.POST,
-                ["name", "phone", "timezone", "roles", "job_title_id", "active", "set_verified"],
+                [
+                    "name",
+                    "phone",
+                    "timezone",
+                    "roles",
+                    "job_title_id",
+                    "active",
+                    "set_verified",
+                ],
             )
         )
         user["country"] = request.POST.get("country", user.get("country_code"))
@@ -148,7 +167,11 @@ class UserView(UserBaseTemplateView):
             except APIException as exc:
                 errors = exc.detail.get("errors", [])
                 return self.get(
-                    request, user_id=user_id, user_group=user_group, errors=errors, user=user
+                    request,
+                    user_id=user_id,
+                    user_group=user_group,
+                    errors=errors,
+                    user=user,
                 )
             else:
                 return HttpResponse(json.dumps({"result": response}))

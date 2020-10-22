@@ -12,4 +12,6 @@ Usage:
 
 @register.filter
 def to_json(data, indent=None):
-    return mark_safe(json.dumps(data, sort_keys=True, indent=indent).replace("'", "&#39;"))
+    return mark_safe(
+        json.dumps(data, sort_keys=True, indent=indent).replace("'", "&#39;")
+    )

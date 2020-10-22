@@ -11,7 +11,11 @@ from .views import (
 
 urlpatterns = [
     path("", DocumentsView.as_view(), name="documents"),
-    path("<uuid:document_id>/download/", DocumentStreamDownloadView.as_view(), name="document"),
+    path(
+        "<uuid:document_id>/download/",
+        DocumentStreamDownloadView.as_view(),
+        name="document",
+    ),
     # Search
     path("search/", DocumentSearchView.as_view()),
     # Bundles
