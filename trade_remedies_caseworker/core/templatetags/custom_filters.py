@@ -80,6 +80,16 @@ def format_date(date_str, format_str="%d %b %Y"):
         return mark_safe(f'{out}')
     return 'n/a'
 
+@register.filter
+def format_date_no_span(date_str, format_str="%d %b %Y"):
+    if isinstance(date_str, str) and len(date_str) > 18:
+        date = datetime.datetime.strptime(date_str[:19], "%Y-%m-%dT%H:%M:%S")
+        out = date.strftime(format_str).replace('{S}', str(date.day) + suffix(date.day))
+        time = date.strftime('%d %b %Y %H:%M:%S')
+        if out != time:
+            return mark_safe(f'{out}')
+        return mark_safe(f'{out}')
+    return 'n/a'
 
 @register.filter
 def _find(value, in_string):
