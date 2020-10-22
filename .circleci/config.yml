@@ -26,15 +26,18 @@ jobs:
       - run:
           name: Run tests
           command: |
+            . venv/bin/activate
             cd trade_remedies_caseworker
             python manage.py test
       - run:
           name: Run black
           command: |
+            . venv/bin/activate
             # black trade_remedies_api --check
       - run:
           name: Run Flake8
           command: |
+            . venv/bin/activate
             # python -m flake8
   front_end:
     docker: 
