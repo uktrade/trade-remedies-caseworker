@@ -188,11 +188,11 @@ def parse_notify_template(template, values):
         groups = match.groups()
         template = "".join(
             [
-                template[0: match.start()],
+                template[0 : match.start()],
                 '<blockquote style="Margin: 0 0 20px 0; border-left: 10px solid #BFC1C3;padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;">',  # noqa: E501
                 groups[1],
                 "</blockquote>",
-                template[match.end():],
+                template[match.end() :],
             ]
         )
     return markdown.markdown(template)

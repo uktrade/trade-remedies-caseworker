@@ -219,10 +219,10 @@ class MyAccountView(UserBaseTemplateView):
             else:
                 request.session["user"] = response
                 response["redirect_url"] = "/accounts/logout/"
-                response[
-                    "alert"
-                ] = "You have changed your password and will be logged out. " \
+                response["alert"] = (
+                    "You have changed your password and will be logged out. "
                     "Please log in using your updated password."
+                )
                 response["pop_alert"] = True
                 return HttpResponse(json.dumps(response))
         else:

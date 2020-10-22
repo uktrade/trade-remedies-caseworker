@@ -879,8 +879,7 @@ class SubmissionView(CaseBaseView):
                     return HttpResponse(
                         json.dumps(
                             {
-                                "redirect_url":
-                                    f"/case/{case_id}/submission/{submission_id}/edit/?error=up"
+                                "redirect_url": f"/case/{case_id}/submission/{submission_id}/edit/?error=up"
                             }
                         ),
                         content_type="application/json",
@@ -913,8 +912,7 @@ class SubmissionView(CaseBaseView):
                     )
                 return_data.update(
                     {
-                        "redirect_url":
-                            f"/case/{case_id}/submission/{submission['id']}/?alert={btn_value}"
+                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/?alert={btn_value}"
                     }
                 )
 
@@ -2476,8 +2474,8 @@ class SubmissionInviteNotifyView(CaseBaseView):
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
 
         context = {
-            "form_action": f"/case/{case_id}/submission/{submission_id}/invite/{contact_id}/notify/",   # noqa: E501
-            "form_title": f"Invite 3rd party to {case['name']} on behalf of {inviting_organisation['name']}",   # noqa: E501
+            "form_action": f"/case/{case_id}/submission/{submission_id}/invite/{contact_id}/notify/",  # noqa: E501
+            "form_title": f"Invite 3rd party to {case['name']} on behalf of {inviting_organisation['name']}",  # noqa: E501
             "cancel_redirect_url": f"/case/{case_id}/submission/{submission_id}/",
             "editable_fields": {
                 "full_name": {"title": "Name"},

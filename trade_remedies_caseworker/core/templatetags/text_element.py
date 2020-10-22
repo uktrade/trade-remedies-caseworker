@@ -46,15 +46,15 @@ def text_element(
         output.append(f'<span class="error-message" id="{ name }_error">{ message }</span>')
     if data_mode:  # for typeahead elements
         output.append(
-            f'<input { autocomplete } class="form-control" id="{ id }" type="text" data-mode="{ data_mode }" name="{ name }" { readonly } value="{ value }">'   # noqa: E501
+            f'<input { autocomplete } class="form-control" id="{ id }" type="text" data-mode="{ data_mode }" name="{ name }" { readonly } value="{ value }">'  # noqa: E501
         )
     elif textarea:
         output.append(
-            f'<textarea class="form-control" id="{ id }" name="{ name }" { readonly }>{ value }</textarea>'   # noqa: E501
+            f'<textarea class="form-control" id="{ id }" name="{ name }" { readonly }>{ value }</textarea>'  # noqa: E501
         )
     else:
         output.append(
-            f'<input { autocomplete }class="form-control" id="{ id }" type="{ type }" name="{ name }" value="{ value }" { readonly }>'   # noqa: E501
+            f'<input { autocomplete }class="form-control" id="{ id }" type="{ type }" name="{ name }" value="{ value }" { readonly }>'  # noqa: E501
         )
     output.append("</div>")
     return mark_safe("".join(output))

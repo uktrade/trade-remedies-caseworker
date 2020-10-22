@@ -86,7 +86,7 @@ urlpatterns = [
         OrganisationCaseRoleView.as_view(),
     ),
     path(
-        "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/set/primary/",   # noqa: E501
+        "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/set/primary/",  # noqa: E501
         ContactPrimaryView.as_view(),
         name="set_primary_contact",
     ),
