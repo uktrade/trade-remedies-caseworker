@@ -257,6 +257,9 @@ if DEBUG:
                 'class': 'logging.StreamHandler',
                 'stream': sys.stdout,
             },
+            'null': {
+                'class': 'logging.NullHandler',
+            },
         },
         'root': {
             'handlers': ['stdout'],
@@ -267,6 +270,10 @@ if DEBUG:
                 'handlers': ['stdout', ],
                 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': True,
+            },
+            'django.server': {
+                'handlers': ['null'],
+                'propagate': False,
             },
         },
     }
