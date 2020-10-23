@@ -158,9 +158,7 @@ def submission_contact(submission):
     if not contact:
         contacts = (submission.get("organisation") or {}).get("contacts")
         if contacts:
-            contacts = (
-                deep_index_items_by(contacts, "primary").get("true") or []
-            ) or contacts
+            contacts = (deep_index_items_by(contacts, "primary").get("true") or []) or contacts
             contact = contacts[0] if contacts else None
     if not contact:
         raise Exception("No contact supplied")

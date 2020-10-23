@@ -11,9 +11,7 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "trade_remedies_caseworker.settings.local"
-)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "trade_remedies_caseworker.settings.local")
 
 # from whitenoise.django import DjangoWhiteNoise  # noqa
 

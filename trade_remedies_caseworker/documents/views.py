@@ -8,9 +8,7 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.constants import SECURITY_GROUPS_TRA
 
 
-class BaseDocumentTemplateView(
-    LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
-):
+class BaseDocumentTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
     pass
 
 
@@ -34,10 +32,7 @@ class DocumentsView(BaseDocumentTemplateView):
         criteria = json.dumps({"confidential": False})
         content_type = request.META.get("CONTENT_TYPE")
         documents = (
-            self.client(request.user).get_system_documents(
-                fields=fields, criteria=criteria
-            )
-            or []
+            self.client(request.user).get_system_documents(fields=fields, criteria=criteria) or []
         )
         return HttpResponse(json.dumps(documents), content_type=content_type)
 
@@ -51,9 +46,7 @@ class DocumentStreamDownloadView(BaseDocumentTemplateView):
         document_stream = client.get_document_download_stream(
             document_id, submission_id=submission_id
         )
-        return proxy_stream_file_download(
-            document_stream, filename=document.get("name")
-        )
+        return proxy_stream_file_download(document_stream, filename=document.get("name"))
 
 
 class DocumentDownloadView(BaseDocumentTemplateView):
@@ -64,9 +57,7 @@ class DocumentDownloadView(BaseDocumentTemplateView):
         return redirect(document.get("download_url"))
 
 
-class ApplicationBundleView(
-    LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
-):
+class ApplicationBundleView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
     template_name = "cases/bundles/application_bundles.html"
 
     def get(self, request, *args, **kwargs):
@@ -92,9 +83,7 @@ class ApplicationBundleView(
         return render(request, self.template_name, context)
 
 
-class ApplicationBundleFormView(
-    LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
-):
+class ApplicationBundleFormView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
     template_name = "cases/bundles/bundle_form_type.html"
 
     def get(self, request, *args, **kwargs):
@@ -218,9 +207,7 @@ class ApplicationBundleDocumentsFormView(
         return redirect(redirect_path)
 
     def delete(self, request, bundle_id, document_id, *args, **kwargs):
-        response = self.client(request.user).remove_bundle_document(
-            bundle_id, document_id
-        )
+        response = self.client(request.user).remove_bundle_document(bundle_id, document_id)
         return HttpResponse("true")
 
 

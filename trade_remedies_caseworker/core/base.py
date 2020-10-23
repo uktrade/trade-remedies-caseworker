@@ -36,9 +36,7 @@ class GroupRequiredMixin(AccessMixin):
         Override this method to customize the way groups are checked.
         """
         groups = self.get_group_required()
-        return self.request.user.has_group(
-            self.super_user
-        ) or self.request.user.has_group(groups)
+        return self.request.user.has_group(self.super_user) or self.request.user.has_group(groups)
 
     def dispatch(self, request, *args, **kwargs):
         if not self.has_group():

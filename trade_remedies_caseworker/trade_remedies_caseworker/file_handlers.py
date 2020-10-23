@@ -37,17 +37,13 @@ def s3_client():
     return S3Wrapper.get_client()
 
 
-UUID4_REGEX = re.compile(
-    r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
-)
+UUID4_REGEX = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")
 
 
 class S3FileField(FileField):
     def save(self, name, content, save=True):
         name = self.field.generate_filename(self.instance, name)
-        self.name = (
-            name  # self.storage.save(name, content, max_length=self.field.max_length)
-        )
+        self.name = name  # self.storage.save(name, content, max_length=self.field.max_length)
         setattr(self.instance, self.field.name, self.name)
         self._committed = True
 

@@ -10,11 +10,7 @@ class APIUserMiddleware:
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
-        if (
-            request.session
-            and request.session.get("token")
-            and request.session.get("user")
-        ):
+        if request.session and request.session.get("token") and request.session.get("user"):
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
             request.args = args

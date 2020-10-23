@@ -12,9 +12,7 @@ from core.utils import validate_required_fields, pluck, get
 from core.constants import SECURITY_GROUP_SUPER_USER
 
 
-class UserBaseTemplateView(
-    LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
-):
+class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
     pass
 
 
@@ -117,9 +115,7 @@ class UserView(UserBaseTemplateView):
 
         if self.delete_user:
             result = client.delete_user(user_id=user_id)
-            return HttpResponse(
-                json.dumps({"alert": "User deleted.", "redirect_url": "reload"})
-            )
+            return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
 
         required_fields = ["name", "email", "roles"]
         if not user_id:
