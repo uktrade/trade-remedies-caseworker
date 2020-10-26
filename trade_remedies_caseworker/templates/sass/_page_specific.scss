@@ -1,4 +1,8 @@
 table.submissions.submissions {
+  .submission-is-published {
+    display: block;
+  }
+
   a,
   td {
     white-space: normal;
@@ -35,6 +39,11 @@ table.submissions.submissions {
   }
   tbody tr.odd-row {
     background: $jamie-panel-colour;
+    border-bottom: solid 1px white;
+  }
+
+  tbody tr.even-row {
+    border-bottom: solid 1px $jamie-panel-colour;
   }
 }
 
