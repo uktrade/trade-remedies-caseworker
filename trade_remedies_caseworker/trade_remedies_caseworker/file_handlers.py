@@ -5,10 +5,6 @@ import logging
 from pathlib import Path
 from django.utils import timezone
 from django.core.files.uploadhandler import FileUploadHandler
-from django.core.files.uploadedfile import (
-    InMemoryUploadedFile,
-    TemporaryUploadedFile,
-)
 from django.db.models import FileField
 from storages.backends.s3boto3 import S3Boto3StorageFile, S3Boto3Storage
 from django.conf import settings

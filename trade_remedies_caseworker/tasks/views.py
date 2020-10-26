@@ -1,18 +1,13 @@
 import re
 import json
 from django.views.generic import TemplateView
-from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from core.constants import SECURITY_GROUPS_TRA
 from django.core.cache import cache
 from django.utils import timezone
 from core.utils import (
-    deep_index_items_by,
     pluck,
-    to_json,
-    from_json,
     get,
 )
 

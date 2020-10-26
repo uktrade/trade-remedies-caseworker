@@ -1,6 +1,5 @@
 from django.urls import path
 from cases import views as case_views
-from documents import views as doc_views
 
 urlpatterns = [
     path("", case_views.CasesView.as_view(), name="cases"),

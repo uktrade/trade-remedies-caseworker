@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -17,7 +17,6 @@ from core.utils import (
     key_by,
     index_users_by_group,
     compact_list,
-    is_int,
     submission_contact,
     public_login_url,
     parse_notify_template,
@@ -27,38 +26,26 @@ from core.utils import (
     from_json,
     deep_update,
 )
-from django.template.loader import get_template
 from django_countries import countries
 from django.conf import settings
 from cases.submissions import SUBMISSION_TYPE_HELPERS, get_submission_deadline
 from cases.utils import decorate_orgs
 from core.constants import (
     ALL_REGION_ALLOWED_TYPE_IDS,
-    CASE_PARTICIPANT_TYPES,
-    SECURITY_GROUP_TRA_INVESTIGATOR,
     SECURITY_GROUP_TRA_HEAD_OF_INVESTIGATION,
-    SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUP_TRA_LEAD_INVESTIGATOR,
     SECURITY_GROUPS_TRA,
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUPS_TRA_ADMINS,
     SECURITY_GROUP_ORGANISATION_OWNER,
     SUBMISSION_TYPE_QUESTIONNAIRE,
-    SUBMISSION_STATUS_QUESTIONNAIRE_SUFFICIENT,
-    SUBMISSION_STATUS_QUESTIONNAIRE_DEFICIENT,
     SUBMISSION_TYPE_APPLICATION,
-    SUBMISSION_TYPE_ADHOC,
-    SUBMISSION_STATUS_ADHOC_SUFFICIENT,
-    SUBMISSION_STATUS_ADHOC_DEFICIENT,
     SUBMISSION_NOTICE_TYPE_INVITE,
     SUBMISSION_NOTICE_TYPE_DEFICIENCY,
-    SUBMISSION_TYPE_REGISTER_INTEREST,
-    SUBMISSION_STATUS_INTEREST_SUFFICIENT,
-    SUBMISSION_STATUS_INTEREST_DEFICIENT,
     CASE_ROLE_AWAITING_APPROVAL,
     CASE_ROLE_REJECTED,
     CASE_ROLE_APPLICANT,
     CASE_ROLE_PREPARING,
-    DIRECTION_BOTH,
     DIRECTION_TRA_TO_PUBLIC,
     TRUTHFUL_INPUT_VALUES,
     REGEX_ISO_DATE,

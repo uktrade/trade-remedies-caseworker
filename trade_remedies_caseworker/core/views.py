@@ -1,6 +1,5 @@
 import os
 import json
-import re
 from django.http import HttpResponse
 from django.views.generic import TemplateView, View
 from django.shortcuts import render, redirect

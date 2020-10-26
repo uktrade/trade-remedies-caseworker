@@ -9,14 +9,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from core.base import FeatureFlagMixin
 from core.constants import (
-    CASE_PARTICIPANT_TYPES,
     CASE_ROLE_AWAITING_APPROVAL,
     CASE_ROLE_REJECTED,
     CASE_ROLE_APPLICANT,
     CASE_ROLE_PREPARING,
 )
 from core.utils import (
-    key_by,
     collect_request_fields,
     parse_notify_template,
     public_login_url,
