@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import json
+import sys
 import os
 import environ
 import sentry_sdk
@@ -20,7 +21,7 @@ root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
 )
-environ.Env.read_env(f'{root}/local.env')
+environ.Env.read_env()
 
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN'),
@@ -40,7 +41,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'FALSE').upper() == 'TRUE'
+DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
@@ -156,15 +157,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-redis_base_uri = json.loads(os.environ.get('VCAP_SERVICES'))['redis'][0]['credentials']['uri']
-redis_uri = redis_base_uri + '/' + os.environ.get('REDIS_DATABASE_NUMBER')
+_VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
+
+# Redis
+if 'redis' in _VCAP_SERVICES:
+    REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/1"
+else:
+    REDIS_BASE_URL = os.getenv('REDIS_BASE_URL')
+
 CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': redis_uri,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_BASE_URL,
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient",},
     },
 }
 
@@ -192,7 +197,9 @@ PUBLIC_BASE_URL = os.environ.get('PUBLIC_BASE_URL', 'http://localhost:8002')
 ENVIRONMENT_KEY = os.environ.get('ENVIRONMENT_KEY')
 APPEND_SLASH = True
 STATIC_URL = '/static/'
-STATIC_ROOT = f'{BASE_DIR}/../static'  # '/home/vcap/app/static'
+
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'static')) 
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '..', 'govuk_template', 'static'),
     os.path.join(BASE_DIR, '..', 'templates', 'static')
@@ -204,7 +211,7 @@ MAX_UPLOAD_SIZE = 2 * (1024 * 1024 * 1024)
 AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = os.environ.get('S3_STORAGE_KEY')
 AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = os.environ.get('S3_STORAGE_SECRET')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-AWS_REGION = AWS_S3_REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1')
+AWS_REGION = AWS_S3_REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1') # "eu-west-1" looks like a legacy setting, TODO investigate if used in prod
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
@@ -243,47 +250,32 @@ RAVEN_CONFIG = {
 
 if DEBUG:
     LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
-            }
-        },
-        'formatters': {
-            'verbose': {
-                'format': '%(asctime)s %(name)s - %(levelname)s - %(message)s'
-            },
-        },
+        "version": 1,
+        "disable_existing_loggers": False,
         'handlers': {
-            'console': {
-                'level': 'DEBUG',
+            'stdout': {
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
+                'stream': sys.stdout,
             },
+            'null': {
+                'class': 'logging.NullHandler',
+            },
+        },
+        'root': {
+            'handlers': ['stdout'],
+            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
         },
         'loggers': {
-            'django.request': {
-                'handlers': ['console'],
-                'level': 'ERROR',
+            'django': {
+                'handlers': ['stdout', ],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': True,
             },
-            'requests': {
-                'handlers': ['console'],
-                'level': 'WARNING',
+            'django.server': {
+                'handlers': ['null'],
                 'propagate': False,
             },
-            'urllib3': {
-                'handlers': ['console'],
-                'level': 'WARNING',
-                'propagate': True,
-            },
-            '': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-                'propagate': False,
-            },
-        }
+        },
     }
 else:
     LOGGING = {
