@@ -262,13 +262,13 @@ if DEBUG:
             "null": {
                 "class": "logging.NullHandler",
             },
-            'null': {
-                'class': 'logging.NullHandler',
+            "null": {
+                "class": "logging.NullHandler",
             },
         },
-        'root': {
-            'handlers': ['stdout'],
-            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
+        "root": {
+            "handlers": ["stdout"],
+            "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
         },
         "root": {
             "handlers": ["stdout"],

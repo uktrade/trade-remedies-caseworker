@@ -582,9 +582,7 @@ class SubmissionsView(CaseBaseView):
             }
         )
 
-        all_submissions = self._client.get_submissions(
-            self.case_id, show_global=True
-        )
+        all_submissions = self._client.get_submissions(self.case_id, show_global=True)
         submissions_by_type = deep_index_items_by(all_submissions, "type/name")
 
         # Get submissions that have just been created by customer
