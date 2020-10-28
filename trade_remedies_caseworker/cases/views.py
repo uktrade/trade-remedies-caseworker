@@ -583,7 +583,7 @@ class SubmissionsView(CaseBaseView):
         )
 
         all_submissions = self._client.get_submissions(
-            self.case_id, show_global=True, fields=submission_fields
+            self.case_id, show_global=True
         )
         submissions_by_type = deep_index_items_by(all_submissions, "type/name")
 
