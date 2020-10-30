@@ -638,6 +638,7 @@ class SubmissionView(CaseBaseView):
         submission_id = self.kwargs.get("submission_id")
         if submission_id:
             submission = self._client.get_submission(self.case_id, submission_id)
+            print( "submission: " + str(submission) )
             submission_type = submission["type"]
             self.organisation_id = submission["organisation"]["id"]
             created_by_id = get(submission, "created_by/id")
@@ -797,6 +798,7 @@ class SubmissionView(CaseBaseView):
         """
         Update an existing submission
         """
+        print( "SubmissionView:post" )
         return_data = {"submission_id": str(submission_id)}
         contact_id = request.POST.get("contact_id")
         btn_value = request.POST.get("btn-value")
@@ -916,6 +918,10 @@ class SubmissionView(CaseBaseView):
                 submission_type = submission["type"]
                 type_helpers = SUBMISSION_TYPE_HELPERS.get(submission_type["key"])
                 if type_helpers:
+                    print("JonG was here....")
+                    print( str( type_helpers ) )
+                    print( str(submission) )
+                    print( str( self.request.user ) )
                     return_data.update(
                         type_helpers(submission, self.request.user).on_approve() or {}
                     )

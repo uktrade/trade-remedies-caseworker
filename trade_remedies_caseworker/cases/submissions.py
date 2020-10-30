@@ -48,6 +48,22 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
             'invites': invites,
         }
 
+    def on_approve(self, **kwargs):
+        print( " Third Party: Why do you need my approval? ")
+        user_organisation_id = self.submission['contact']['organisation']['id']
+        if self.submission['organisation']['id'] != user_organisation_id:
+            # make the case assignment now.
+            is_primary = self.submission.get('deficiency_notice_params', {}).get('assign_user', {}).get('contact_status') == 'primary'
+            self.client.assign_user_to_case(
+                user_organisation_id=user_organisation_id,
+                representing_id=self.submission['organisation']['id'],
+                user_id=self.submission['contact']['user']['id'],
+                case_id=self.case['id'],
+                primary=is_primary)
+        return {'alert':f'Assigned {get(self.submission,"contact/user/name")} to case'}
+
+
+
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []
@@ -61,6 +77,7 @@ class AssignUserSubmission(BaseSubmissionHelper):
         }
 
     def on_approve(self, **kwargs):
+        print( "AssignUserSubmission: Why do you need my approval? ")
         user_organisation_id = self.submission['contact']['organisation']['id']
         if self.submission['organisation']['id'] != user_organisation_id:
             # make the case assignment now.
