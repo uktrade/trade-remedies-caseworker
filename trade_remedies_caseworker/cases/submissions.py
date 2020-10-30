@@ -78,16 +78,22 @@ class AssignUserSubmission(BaseSubmissionHelper):
 
     def on_approve(self, **kwargs):
         print( "AssignUserSubmission: Why do you need my approval? ")
-        user_organisation_id = self.submission['contact']['organisation']['id']
+        print( self.submission['contact'] )
+        user_organisation_id = self.submission['contact']['user']['organisation']['id']
+        # user_organisation_id = self.submission['contact']['organisation']['id']
+        print( "AssignUserSubmission: got  user_organisation_id")
         if self.submission['organisation']['id'] != user_organisation_id:
             # make the case assignment now.
+            print( "user_organisation_id condition" )
             is_primary = self.submission.get('deficiency_notice_params', {}).get('assign_user', {}).get('contact_status') == 'primary'
+            print( "got is_primary" )
             self.client.assign_user_to_case(
                 user_organisation_id=user_organisation_id,
                 representing_id=self.submission['organisation']['id'],
                 user_id=self.submission['contact']['user']['id'],
                 case_id=self.case['id'],
                 primary=is_primary)
+        print( "about to return" )
         return {'alert':f'Assigned {get(self.submission,"contact/user/name")} to case'}
 
 
