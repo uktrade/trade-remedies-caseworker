@@ -1,21 +1,12 @@
-version: "2"
+version: "3"
 services:
-  cli:
+  caseworker:
     build: .
-    stdin_open: true
-    tty: true
     ports:
-      - "8001:8001"
+      - "8001:8000"
     volumes:
-      - .:/opt/traderemedies/caseworker
+      - ./trade_remedies_caseworker:/app/
+      - ./trade_remedies_caseworker:/app/trade_remedies_client/
     env_file:
       - local.env
-    environment:
-      DEBUG: 'True'
-      VCAP_SERVICES: '{"redis":[{"credentials":{"uri":"redis://localhost:6379"}}]}'
-      REDIS_DATABASE_NUMBER: 1
-      API_BASE_URL: http://localhost:8000
-    entrypoint:
-      - /opt/traderemedies/caseworker/start.sh
-      - cli
-    network_mode: host
+    command: python manage.py runserver 0.0.0.0:8000

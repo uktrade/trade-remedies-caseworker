@@ -97,6 +97,11 @@
                                     {% if not submission.organisation.id %}*{% endif %}
                                     {% if submission.version > 1 %}(version {{ submission.version }}){% endif %}
                                     {% if submission.tra_editable %}</a>{% endif %}
+                                    {% if submission.issued_at %}
+                                        <span class="submission-is-published">
+                                            <i class="icon icon-green-tick"></i>Published
+                                        </span>
+                                    {% endif %}
                                 </td>
                                 <td>{{ submission.status.name }}</td>
                                 <td>
