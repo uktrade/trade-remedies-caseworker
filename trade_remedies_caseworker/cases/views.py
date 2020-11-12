@@ -2493,7 +2493,6 @@ class CaseBundleView(CaseBaseView):
                                 "file_size": _file.file_size,
                             },
                         )
-                        # TODO Fix undefined 'submission_id'.
                     except Exception as ex:
                         return HttpResponse(
                             json.dumps(

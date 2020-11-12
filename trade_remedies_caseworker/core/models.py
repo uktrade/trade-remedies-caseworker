@@ -43,7 +43,6 @@ class TransientUser:
         """
         Reload the user from the API
         """
-        # TODO fixed undefined 'get_user'
         user = get_user(request.user.token, self.id)  # noqa: F821
         request.session["user"] = user
         request.session.modified = True
