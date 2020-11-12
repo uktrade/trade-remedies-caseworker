@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 import re
@@ -638,7 +639,6 @@ class SubmissionView(CaseBaseView):
         submission_id = self.kwargs.get("submission_id")
         if submission_id:
             submission = self._client.get_submission(self.case_id, submission_id)
-            print( "submission: " + str(submission) )
             submission_type = submission["type"]
             self.organisation_id = submission["organisation"]["id"]
             created_by_id = get(submission, "created_by/id")
@@ -798,7 +798,7 @@ class SubmissionView(CaseBaseView):
         """
         Update an existing submission
         """
-        print( "SubmissionView:post" )
+        logging.info( "SubmissionView:post" )
         return_data = {"submission_id": str(submission_id)}
         contact_id = request.POST.get("contact_id")
         btn_value = request.POST.get("btn-value")
@@ -918,10 +918,6 @@ class SubmissionView(CaseBaseView):
                 submission_type = submission["type"]
                 type_helpers = SUBMISSION_TYPE_HELPERS.get(submission_type["key"])
                 if type_helpers:
-                    print("JonG was here....")
-                    print( str( type_helpers ) )
-                    print( str(submission) )
-                    print( str( self.request.user ) )
                     return_data.update(
                         type_helpers(submission, self.request.user).on_approve() or {}
                     )
@@ -2459,12 +2455,17 @@ class SubmissionInviteNotifyView(CaseBaseView):
     raise_exception = True
 
     def get(self, request, case_id, submission_id, contact_id, *args, **kwargs):
+        logging.info( "SubmissionInviteNotifyView:get" )
         case = self._client.get_case(case_id)
         submission = self._client.get_submission(case_id, submission_id)
         submission_type = submission["type"]
         inviting_organisation = submission["organisation"]
         invited_contact = self._client.get_contact(contact_id)
+        logging.info( "invited_contact:")
+        logging.info( invited_contact )
         inviting_contact = submission.get("contact") or {}
+        logging.info( "inviting_contact:")
+        logging.info( inviting_contact )
         notification_template = self._client.get_notification_template("NOTIFY_THIRD_PARTY_INVITE")
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
 
@@ -2493,11 +2494,73 @@ class SubmissionInviteNotifyView(CaseBaseView):
         return render(request, template_name, context)
 
     def post(self, request, case_id, submission_id, contact_id, *args, **kwargs):
+        logging.info( "SubmissionInviteNotifyView:post" )
         notify_keys = ["full_name", "case_name", "invited_by_name", "invited_by_organisation"]
         notify_data = {key: request.POST.get(key) for key in notify_keys}
         response = self._client.action_third_party_invite(
             case_id=case_id, submission_id=submission_id, contact_id=contact_id, params=notify_data
         )
+
+
+        submission = self._client.get_submission(case_id, submission_id)
+        user_organisation_id = (
+            get(submission, "contact/organisation/id")
+             or get(submission, "contact/user/organisation/id")
+         )
+        user_id = get(submission, "contact/user/id")
+        # request.user
+
+        logging.info( "get_contact" )
+        invited_contact = self._client.get_contact(contact_id)
+        data = { "email": invited_contact['email'], "name": invited_contact['name'],
+                    "group": "Organisation User", "phone": invited_contact['phone'] }
+
+        # fails - no user returned
+        #logging.info( "create_and_invite_user" )
+        #return_value = self._client.create_and_invite_user(user_organisation_id, data )
+        #logging.info( "return value" )
+        #logging.info( return_value )
+
+        logging.info( "get_third_party_invites" )
+        invitations = self._client.get_third_party_invites(case_id=case_id, submission_id=submission_id)
+        for invitation in invitations:
+            params = {
+                "password": os.environ.get("THIRD_PARTY_PASSWORD_TEMP"), 
+                "password_confirm": os.environ.get("THIRD_PARTY_PASSWORD_TEMP"),
+                "email": invited_contact['email'],
+                "country_code": 'UK',
+                "phone": invited_contact['phone'],
+                "name": invited_contact['name'],
+                "terms": True,
+                # "group": "Third Party User", 
+                "group": "Organisation User", 
+            }
+
+            logging.info( str( invitation['id'] ) )
+            return_value = self._client.complete_user_registration( invitation['id'], user_organisation_id, params=params )
+            logging.info( "return value" )
+            logging.info( return_value )
+            user_id = return_value['id']
+            logging.info( "user_id" )
+            logging.info( user_id )
+
+
+        logging.info( "self._client.assign_user_to_case" )
+        is_primary = False
+        logging.info( user_organisation_id )
+        logging.info( get(submission, "organisation/id") )
+        logging.info( user_id )
+        logging.info( case_id )
+        return_value = self._client.assign_user_to_case(
+                user_organisation_id=user_organisation_id,
+                representing_id=get(submission, "organisation/id"),
+                user_id=user_id,
+                case_id=case_id,
+                primary=is_primary,
+        )
+        #logging.info( "SubmissionInviteNotifyView:post - return_value" )
+        #logging.info( str( return_value ) )
+        logging.info( "SubmissionInviteNotifyView:post - returning" )
         return redirect(f"/case/{case_id}/submission/{submission_id}/")
 
 

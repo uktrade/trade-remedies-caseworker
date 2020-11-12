@@ -6,6 +6,7 @@ from django.utils import timezone
 from trade_remedies_client.client import Client
 from core.utils import get
 
+import logging
 
 SUBMISSION_TYPE_HELPERS = {}
 
@@ -49,9 +50,11 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         }
 
     def on_approve(self, **kwargs):
-        print( " Third Party: Why do you need my approval? ")
+        logging.info( "InviteThirdPartySubmission:on_approve...")
+
         user_organisation_id = self.submission['contact']['organisation']['id']
         if self.submission['organisation']['id'] != user_organisation_id:
+            logging.info( "make the case assignment now")
             # make the case assignment now.
             is_primary = self.submission.get('deficiency_notice_params', {}).get('assign_user', {}).get('contact_status') == 'primary'
             self.client.assign_user_to_case(
@@ -60,6 +63,8 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
                 user_id=self.submission['contact']['user']['id'],
                 case_id=self.case['id'],
                 primary=is_primary)
+        else:
+            logging.info( "do not make the case assignment now")
         return {'alert':f'Assigned {get(self.submission,"contact/user/name")} to case'}
 
 
@@ -77,23 +82,23 @@ class AssignUserSubmission(BaseSubmissionHelper):
         }
 
     def on_approve(self, **kwargs):
-        print( "AssignUserSubmission: Why do you need my approval? ")
-        print( self.submission['contact'] )
+        logging.info( "AssignUserSubmission: Why do you need my approval? ")
+        logging.info( self.submission['contact'] )
         user_organisation_id = self.submission['contact']['user']['organisation']['id']
         # user_organisation_id = self.submission['contact']['organisation']['id']
-        print( "AssignUserSubmission: got  user_organisation_id")
+        logging.info( "AssignUserSubmission: got  user_organisation_id")
         if self.submission['organisation']['id'] != user_organisation_id:
             # make the case assignment now.
-            print( "user_organisation_id condition" )
+            logging.info( "user_organisation_id condition" )
             is_primary = self.submission.get('deficiency_notice_params', {}).get('assign_user', {}).get('contact_status') == 'primary'
-            print( "got is_primary" )
+            logging.info( "got is_primary" )
             self.client.assign_user_to_case(
                 user_organisation_id=user_organisation_id,
                 representing_id=self.submission['organisation']['id'],
                 user_id=self.submission['contact']['user']['id'],
                 case_id=self.case['id'],
                 primary=is_primary)
-        print( "about to return" )
+        logging.info( "about to return" )
         return {'alert':f'Assigned {get(self.submission,"contact/user/name")} to case'}
 
 
