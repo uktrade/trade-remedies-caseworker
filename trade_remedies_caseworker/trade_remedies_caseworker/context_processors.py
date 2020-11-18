@@ -30,7 +30,7 @@ def user_context(request):
 
 def page_context(request):
     return {
-        "global_header_text": "Trade Remedies Investigations Directorate",
+        "global_header_text": settings.ORGANISATION_NAME,
         "homepage_url": "/cases/",
         "logo_link_title": "Investigator caselist",
         "panel_side": request.COOKIES.get("panel_side"),
