@@ -1,3 +1,19 @@
+<script>
+	function showCase() 
+	{
+	  document.getElementById("case_tab").style.visibility = "visible";
+	  document.getElementById("task_tab").style.visibility = "hidden";
+	  document.getElementById("cases_link").style.textDecoration = 'underline';
+	  document.getElementById("tasks_link").style.textDecoration = 'none';
+	}
+	function showTask() 
+	{
+	  document.getElementById("case_tab").style.visibility = "hidden";
+	  document.getElementById("task_tab").style.visibility = "visible";
+	  document.getElementById("cases_link").style.textDecoration = 'none';
+	  document.getElementById("tasks_link").style.textDecoration = 'underline';
+	}
+</script>
 {% extends "base.html" %}
 {% load format_date %}
 {% load case_type_badge %}
@@ -15,7 +31,7 @@
 {% if tabs.value == 'archived' %}
 	{% set 'archive' True %}
 {% endif %}
-	<span class="heading-medium pull-left" style="margin-top:13px;">Cases</span>
+	<span class="heading-medium pull-left" style="margin-top:13px;"><a id="cases_link" style="text-decoration:underline;"  onclick="showCase()">Cases</a>&nbsp;|&nbsp;<a id="tasks_link" onclick="showTask()">Tasks</a></span>
 	<div class="pull-right margin-top-1">
 		<a href="javascript:void(0)" class="link bold menu-icon" data-attach="menuExpand">Other actions</a>
 		<span class="function-menu">
@@ -51,15 +67,15 @@
 		</span>
 	</div>
 <div class="stretch" style="top:50px;">
-	<div class="stretch tab-box case-list" style="height:38%;">
+	<div class="stretch tab-box case-list" id="case_tab">
 		{% include "widgets/tabs.html" with q=tabs %}
 		<div class="overflow-auto tabpage" data-attach="ScrollShadow">
 			{% include "widgets/case_list.html" with cases=cases archive=archive %}
 		</div>
 	</div>
 	{% from_json '{"value": "yt", "tabList": [{"label": "Your tasks", "value": "yt", "sr_text": "Show your tasks"}]}' as tasks_tab %}
-	<div  class="stretch tab-box" style="top:40%; bottom:20px;">
-		{% include "widgets/tabs.html" with q=tasks_tab %}
+	<div  class="stretch tab-box" id="task_tab" style="visibility:hidden">
+			{% include "widgets/tabs.html" with q=tasks_tab %}
 		<div id="taskbar" class="taskbar tabpage" data-attach="tasks/TaskManager" data-mode="my-tasks" data-viewer-mode="popup"></div>
 	</div>
 </div>
