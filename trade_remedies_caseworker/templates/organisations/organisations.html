@@ -5,7 +5,40 @@
 {% block main_content %}
 {% include "widgets/tabs.html" with q=tabs %}
 
-<table clas="sortable" data-attach="TableSort">
+<script>
+  function searchForOrganisation() 
+  {
+    var organisation_filter; // value used to filter by
+    var organisation_table_rows; // array of rows extracted from the table 
+    var organisation_item; // organisation item 
+
+    organisation_filter = document.getElementById("organisationSearchInput").value.toUpperCase();
+    organisation_table_rows = document.getElementById("organisationTable").getElementsByTagName("tr");
+    for ( var i = 0; i < organisation_table_rows.length; i++) 
+    {
+      organisation_item = organisation_table_rows[i].getElementsByTagName("td")[0];
+      if (organisation_item) 
+      {
+        if (organisation_item.textContent.toUpperCase().indexOf(organisation_filter) != -1) 
+        {
+          organisation_table_rows[i].style.display = "";  // not "block" - preserve table structure
+        } 
+        else 
+        {
+          organisation_table_rows[i].style.display = "none";
+        }
+      }
+      else
+      {
+        organisation_table_rows[i].style.display = "";   // see above
+      }
+    }
+  }
+</script>
+
+<input type="text" id="organisationSearchInput" onkeyup="searchForOrganisation()" placeholder="Search for names.." title="Search" style="margin-bottom:10px;" >
+
+<table class="sortable" data-attach="TableSort" id="organisationTable">
   <thead>
     <tr>
       <th class="sort-active asc">Organisation name</th>
