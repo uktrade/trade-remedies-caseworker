@@ -174,6 +174,7 @@ class CaseBaseView(
                 "Case": {
                     "id": 0,
                     "name": 0,
+                    "case_email": "investigations@traderemedies.gov.uk",
                     "initiated_at": 0,
                     "decision_to_initiate,name": 0,
                     "reference": 0,
@@ -321,6 +322,8 @@ class CaseAdminView(CaseBaseView):
             update_spec["stage_id"] = request.POST.get("stage_id")
         elif action == "set_name":
             update_spec["name"] = request.POST.get("name")
+        elif action == "set_case_email":
+            update_spec["case_email"] = request.POST.get("case_email")
         elif action == "set_case_type":
             update_spec["stage_id"] = ""
             update_spec["type_id"] = request.POST.get("type_id")
@@ -2247,6 +2250,7 @@ class CaseFormView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         non_required_fields = [
             "submission_status_id",
             "case_name",
+            "case_email",
             "organisation_name",
             "organisation_id",
             # 'organisation_address', 'organisation_post_code', 'companies_house_id',
@@ -2362,9 +2366,15 @@ class InviteContactView(CaseBaseView):
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             ),
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER_CASE_SPECIFIC")[
+                "value"
+            ].format(
+                self.case["case_email"]
+                or self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"]
+            ),
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
-            "email": self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"],
+            "email": self.case["case_email"]
+            or self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"],
             "login_url": f"{settings.PUBLIC_BASE_URL}",
         }
         context = {

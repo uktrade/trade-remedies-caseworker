@@ -97,7 +97,19 @@
         </button>
     </form>
 
-    <h3 class="heading-medium">Archived Case</h3>
+    <h3 class="heading-medium">Case email</h3>
+    <form action="/case/{{case.id}}/admin/" method="post">
+      {% csrf_token %}
+      <p>
+        The case email address is <em>{{case.case_email}}</em>.
+      </p>
+      <input type="text" class="form-control" name="case_email" value="{{case.case_email}}"/>
+      <button type="submit" class="button" name="action" value="set_case_email">
+        Update case email
+      </button>
+    </form>
+
+  <h3 class="heading-medium">Archived Case</h3>
     <form action="/case/{{case.id}}/admin/" method="post">
         {% csrf_token %}
         <p>
