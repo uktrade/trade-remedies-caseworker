@@ -1,5 +1,5 @@
 from core.templatetags import register
-from core.utils import deep_index_items_by, key_by
+from core.utils import deep_index_items_by
 
 
 @register.filter
