@@ -2,7 +2,9 @@ table.submissions.submissions {
   .submission-is-published {
     display: block;
   }
-
+  .submission-has-new-file {
+    float: right;
+  }
   a,
   td {
     white-space: normal;

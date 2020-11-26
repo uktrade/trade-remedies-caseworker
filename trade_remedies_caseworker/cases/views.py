@@ -602,6 +602,20 @@ class SubmissionsView(CaseBaseView):
             submissions_by_type["application"][0]["tra_editable"] = True
             non_draft_submissions += submissions_by_type["application"]
         submissions_by_party = deep_index_items_by(non_draft_submissions, "organisation/id")
+
+        for submission in non_draft_submissions:
+            new_submission = False
+            for document_type, documents in self.get_documents(submission=submission).items():
+                if document_type in ["nonconfidential", "confidential"]:
+                    for document in documents:
+                        if (
+                            not document["deficient"]
+                            and not document["sufficient"]
+                            and document["safe"]
+                        ):
+                            new_submission = True
+            submission["new_submission"] = new_submission
+
         case_enums = self._client.get_all_case_enums()
         invites = self._client.get_case_invite_submissions(self.case_id)
         participants = self._client.get_case_participants(self.case_id, fields=org_fields)
