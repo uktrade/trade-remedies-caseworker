@@ -2225,10 +2225,10 @@ class CaseFormView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             "contact_country": "GB",
             "submission": {"type": {"id": 4}},
             "tra_team_names": [
-                "Trade Remedies Investigations Directorate",
-                "TRID Team 1",
-                "TRID Team 2",
-                "TRID Team 3",
+                settings.ORGANISATION_NAME,
+                settings.ORGANISATION_INITIALISM + " Team 1",
+                settings.ORGANISATION_INITIALISM + " Team 2",
+                settings.ORGANISATION_INITIALISM + " Team 3",
             ],
         }
         context.update(enums)

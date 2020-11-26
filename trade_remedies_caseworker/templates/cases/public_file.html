@@ -5,6 +5,7 @@
 {% load confidential_toggle %}
 {% load badge %}
 {% load to_json %}
+{% load organisation_initialism %}
 {% block case_page_content %}
 
 
@@ -21,7 +22,7 @@
 {% if tabs.value == "all" %}
     Showing the entire public file
 {% elif tabs.value == "tra" %}
-    Showing notices published to the public file by the TRID
+    Showing notices published to the public file by the {% organisation_initialism %}
 {% elif tabs.value == "business" %}
     Showing submissions from businesses that have been published to the public file
 {% elif tabs.value == "withdrawn" %}
