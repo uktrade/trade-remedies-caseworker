@@ -1,4 +1,5 @@
 {% load format_date %}
+{% load organisation_initialism %}
 <div class="column-full" >
 
   {% include "./submission_details.html" %}
@@ -17,7 +18,7 @@
     {% include 'widgets/document_detail_list.html' with documents=documents.deficiency %}
   {% endif %}
   {% if documents.caseworker %}
-    <h3 class="heading-small">{% include "TRID_abbreviation.html" %} documents</h3>
+    <h3 class="heading-small">{% organisation_initialism %} documents</h3>
     {% include 'widgets/document_detail_list.html' with documents=documents.caseworker %}
   {% endif %}
   <h3 class="heading-small">Confidential documents</h3>

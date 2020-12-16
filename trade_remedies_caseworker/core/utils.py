@@ -14,10 +14,10 @@ def deep_index_items_by(items, key):
     index = {}
     for item in items or []:
         try:
-            index_key = str((dpath.util.get(item, key) or '')).lower()
+            index_key = str((dpath.util.get(item, key) or "")).lower()
         except KeyError:
             # NOTE: on key missing, this indexes as '', same as a None value.
-            index_key = ''
+            index_key = ""
         index.setdefault(index_key, [])
         index[index_key].append(item)
 
@@ -29,21 +29,21 @@ def deep_index_items_by_exists(items, key):
     Index a list of dicts by whether a key is present or not.
     Returns a dict of the arrays of items with elements ['true'] and ['false']
     """
-    index = {'true': [], 'false': []}
+    index = {"true": [], "false": []}
     for item in items or []:
         index_key = None
         try:
-            index_key = dpath.util.get(item, key) and 'true'
+            index_key = dpath.util.get(item, key) and "true"
         except KeyError:
             pass
-        index[index_key or 'false'].append(item)
+        index[index_key or "false"].append(item)
 
     return index
 
 
 def deep_update(target, source):
     """
-    Deep merge two dicts 
+    Deep merge two dicts
     """
     if isinstance(source, dict):
         for key, item in source.items():
@@ -76,7 +76,7 @@ def key_by(items, key, children_key=False):
     def inner(items, parent_key=None):
         for item in items:
             if parent_key:
-                item['parent_key'] = parent_key
+                item["parent_key"] = parent_key
             _item_key = item[key] if isinstance(item[key], int) else item[key].lower()
             index[_item_key] = item
             if item.get(children_key):
@@ -88,7 +88,7 @@ def key_by(items, key, children_key=False):
 
 def collect_request_fields(request, fields, extra_context=None):
     extra_context = extra_context or {}
-    request_data = request.GET if request.method == 'GET' else request.POST
+    request_data = request.GET if request.method == "GET" else request.POST
     data = {}
     for key in fields:
         if key in request_data:
@@ -104,11 +104,11 @@ def index_users_by_group(users):
     """
     index = {}
     for user in users:
-        for group in user.get('groups', []):
+        for group in user.get("groups", []):
             index.setdefault(group, [])
             index[group].append(user)
     for group_name, user_group in index.items():
-        user_group.sort(key=lambda user: (user.get('name') or '').upper())
+        user_group.sort(key=lambda user: (user.get("name") or "").upper())
     return index
 
 
@@ -116,7 +116,7 @@ def validate_required_fields(request, fields):
     errors = {}
     for field in fields:
         if not request.POST.get(field):
-            errors[field] = f'{field} is required'
+            errors[field] = f"{field} is required"
     return errors or None
 
 
@@ -151,21 +151,22 @@ def is_int(value):
 
 def submission_contact(submission):
     """
-    Extract a contact from a submission. A primary contact is preferred, though otherwise the first contact is used.
+    Extract a contact from a submission.
+    A primary contact is preferred, though otherwise the first contact is used.
     """
-    contact = submission.get('contact')
+    contact = submission.get("contact")
     if not contact:
-        contacts = (submission.get('organisation') or {}).get('contacts')
+        contacts = (submission.get("organisation") or {}).get("contacts")
         if contacts:
-            contacts = (deep_index_items_by(contacts, 'primary').get('true') or []) or contacts
+            contacts = (deep_index_items_by(contacts, "primary").get("true") or []) or contacts
             contact = contacts[0] if contacts else None
     if not contact:
-        raise Exception('No contact supplied')
+        raise Exception("No contact supplied")
     return contact
 
 
 def public_login_url():
-    return f'{settings.PUBLIC_BASE_URL}/'
+    return f"{settings.PUBLIC_BASE_URL}/"
 
 
 def parse_notify_template(template, values):
@@ -173,23 +174,27 @@ def parse_notify_template(template, values):
     Return a fully parsed notify template text with the given values dict.
     """
     for key, value in values.items():
-        value = value or ''
-        if key == 'footer':
-            template = template.replace(f'(({key}))', value.replace('\n', '</br>'))
+        value = value or ""
+        if key == "footer":
+            template = template.replace(f"(({key}))", value.replace("\n", "</br>"))
         else:
-            value = value.replace('<', '&lt;').replace('>', '&gt;')
-            template = template.replace(f'(({key}))', f'<span class="notify-tag" title="{key}">{value}</span>')
+            value = value.replace("<", "&lt;").replace(">", "&gt;")
+            template = template.replace(
+                f"(({key}))", f'<span class="notify-tag" title="{key}">{value}</span>'
+            )
     regex = r"([\^])(.+)$"
     matches = re.finditer(regex, template, re.MULTILINE)
     for match in matches:
         groups = match.groups()
-        template = ''.join([
-            template[0:match.start()],
-            '<blockquote style="Margin: 0 0 20px 0; border-left: 10px solid #BFC1C3;padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;">',
-            groups[1],
-            '</blockquote>',
-            template[match.end():]
-        ])
+        template = "".join(
+            [
+                template[0 : match.start()],
+                '<blockquote style="Margin: 0 0 20px 0; border-left: 10px solid #BFC1C3;padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;">',  # noqa: E501
+                groups[1],
+                "</blockquote>",
+                template[match.end() :],
+            ]
+        )
     return markdown.markdown(template)
 
 
@@ -200,7 +205,7 @@ def parse_api_datetime(api_date, result_format=None):
     try:
         dt = datetime.strptime(api_date, settings.API_DATETIME_FORMAT)
     except ValueError:
-        dt = datetime.strptime(api_date, '%Y-%m-%dT%H:%M:%S.%fZ')
+        dt = datetime.strptime(api_date, "%Y-%m-%dT%H:%M:%S.%fZ")
 
     if result_format:
         return dt.strftime(settings.FRIENDLY_DATE_FORMAT)

@@ -1,6 +1,7 @@
 {% extends "cases/_case_template.html" %}
 {% load get_item %}
 {% load format_date %}
+{% load organisation_initialism %}
 {% block case_page_content %}
   <div class="column-one-half">
     <h3 class="heading-medium">Case milestone dates</h3>
@@ -133,7 +134,7 @@
         </LI>
       {% endfor %}
       </UL>
-      <h3 class="heading-small">{% include "TRID_abbreviation.html" %} Users</h3>
+      <h3 class="heading-small">{% organisation_initialism %} Users</h3>
       <UL>
       {% for user in users.tra_users %}
         <LI>

@@ -7,9 +7,10 @@ Usage:
     {% number_blob <number> %}
 """
 
+
 @register.simple_tag
 def number_blob(number):
-	if not number:
-		return ""
-	output = ""
-	return mark_safe("<div class=\"number-circle\">"+str(number)+"</div>")
+    if not number:
+        return ""
+    output = ""
+    return mark_safe('<div class="number-circle">' + str(number) + "</div>")

@@ -9,8 +9,8 @@ Usage:
 
 @register.simple_tag
 def task_disabled(user, task):
-    active = task.get('active', True)
-    permission = task.get('permission')
+    active = task.get("active", True)
+    permission = task.get("permission")
 
     if permission:
         is_enabled = active and user.has_perm(permission)
@@ -20,6 +20,6 @@ def task_disabled(user, task):
         is_enabled = False
 
     if is_enabled:
-        return ''
+        return ""
     else:
         return 'disabled="disabled"'

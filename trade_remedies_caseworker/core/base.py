@@ -10,8 +10,9 @@ logger = logging.getLogger(__name__)
 
 class GroupRequiredMixin(AccessMixin):
     """Verify that the current user is a member of a group."""
+
     groups_required = None
-    super_user = 'Super User'
+    super_user = "Super User"
 
     def get_group_required(self):
         """
@@ -20,8 +21,9 @@ class GroupRequiredMixin(AccessMixin):
         """
         if self.groups_required is None:
             raise ImproperlyConfigured(
-                '{0} is missing the groups_required attribute. Define {0}.groups_required, or override '
-                '{0}.get_groups_required().'.format(self.__class__.__name__)
+                "{0} is missing the groups_required attribute. "
+                "Define {0}.groups_required, or override "
+                "{0}.get_groups_required().".format(self.__class__.__name__)
             )
         if isinstance(self.groups_required, str):
             groups = (self.groups_required,)
@@ -46,6 +48,7 @@ class FeatureFlags(TradeRemediesAPIClientMixin):
     """
     Maintains a cache of feature flag values.
     """
+
     def __init__(self, request):
         self._flag_map = {}
         self.request = request
@@ -70,6 +73,7 @@ class FeatureFlagMixin(object):
         if self.feature_flags('my_flag'):
             # some conditional behaviour.
     """
+
     def dispatch(self, request, *args, **kwargs):
         self.feature_flags = FeatureFlags(request)
         return super().dispatch(request, *args, **kwargs)
