@@ -40,9 +40,11 @@
 			{% endif %}
 		{% endfor %}
         {% for contact in third_party_contacts %}
-            <li>
-                {% include "widgets/contact_block.html" with hide_controls=False contact=contact user=contact.user party=party case=case case_role_id=case_role_id hide_primary=True %}
-            </li>
+            {% if contact.submission_sufficient %}
+                <li>
+                    {% include "widgets/contact_block.html" with hide_controls=False contact=contact user=contact.user party=party case=case case_role_id=case_role_id hide_primary=True %}
+                </li>
+            {% endif %}
         {% endfor %}
 	{% endif %}
 	{% if not store.has_in_case and not store.has_out_case %}
