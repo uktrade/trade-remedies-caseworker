@@ -1,3 +1,4 @@
+{% load custom_filters %}
 {% load format_date %}
 {% load to_json %}
 {% load set %}
@@ -181,7 +182,7 @@
         <a class="button button-grey pull-right" href="/case/{{case_id}}/submissions/">Exit without publishing</a>
       </div>
       <div class="edit-button-group">
-          <button class="button button-blue pull-left" type="submit" name="save" value="save">Save and continue</button>
+          <button class="button button-blue pull-left" type="submit" name="btn-value" value="save-exit">Save and continue</button>
       </div>
       <button type="button" id="modalButton" class="hidden modal-form" data-url="-" data-notify="/case/{{case.id}}/submission/{{submission.id}}/notify/"></button>
 
@@ -215,42 +216,11 @@
         <button class="button button-grey margin-top-1 pull-right" type="button" value="publish-cancel" >Cancel publishing</button>
     </div>
     <div class="form-group edit-button-group">
-        <button class="button button-blue margin-top-1" type="submit" name="save" value="save" disabled="disabled">Save and continue</button>
+        <button class="button button-blue margin-top-1" type="submit" name="save" value="save-exit" disabled="disabled">Save and continue</button>
         <button class="button button-grey margin-top-1 pull-right" type="button" value="publish-cancel" >Cancel publishing</button>
     </div>
   </div>
 {% endif %}
-
-  {% comment %}
-  <!--  Publishing form - Not used yet
-
-  <div class="hidden" id="form-publish">
-    <form action="/case/{{case_id}}/submission/{{submission.id}}/" method="post">
-      {% csrf_token %}
-      <div class="column-full ">
-          <h1 class="heading-medium">Publish submission</h1>
-          <div class="form-group">
-              <label class="form-label">Anonymous publication
-                  <span class="form-hint">
-                      Should this submission be published anonymously?
-                  </span>
-              </label>
-              <div class="multiple-choice">
-                  <input id="response-window-1" type="radio" name="{{name_prefix}}issue_anonymously" value="yes" {% if object.issue_anonymously == 'yes' %} checked="checked" {% endif %}>
-                  <label for="response-window-1">Yes</label>
-              </div>
-              <div class="multiple-choice">
-                  <input id="response-window-2" type="radio" name="{{name_prefix}}issue_anonymously" value="no" {% if object.issue_anonymously == 'no' %} checked="checked" {% endif %}>
-                  <label for="response-window-2">No</label>
-              </div>
-          </div>
-      </div>
-      <button class="button button-blue" name="btn-value" type="button" value="publish">Publish</button>
-      <button class="button button-grey dlg-close pull-right" type="button"  value="publish">Cancel</button>
-    </form>
-  </div>
--->
-{% endcomment %}
 
 </div>
 <div class="column-full">
