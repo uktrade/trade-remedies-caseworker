@@ -1031,7 +1031,7 @@ class SubmissionView(CaseBaseView):
                         document_id=doc_id,
                         status="sufficient" if new_status else "deficient",
                         block_from_public_file=submission_docs.get("block_from_public_file"),
-                        block_reason=submission_docs.get("block_reason")
+                        block_reason=submission_docs.get("block_reason"),
                     )
 
 
