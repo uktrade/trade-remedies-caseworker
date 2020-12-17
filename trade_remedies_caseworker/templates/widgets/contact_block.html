@@ -1,3 +1,4 @@
+{% load custom_filters %}
 {% load get_item %}
 
 {#******   Set up contact icon ******#}
@@ -50,7 +51,7 @@
 	<!--button type="button" class="button button-blue compact margin-top-1">Log in as this user</button-->
 	<div class="button-container">
 		{% if not hide_controls %}
-			{% if contact.id in invites %}
+			{% if contact.id in invites and not contact.is_third_party %}
 				<span class="margin-bottom-1">
 					{% with invited_contact=invites|get_item:contact.id %}
 						{% if invited_contact.0.accepted_at %}
