@@ -80,7 +80,7 @@ celerybeat-schedule
 *.sage.py
 
 # dotenv
-# .env
+.env
 
 # virtualenv
 .venv
@@ -101,7 +101,7 @@ ENV/
 .mypy_cache/
 
 # sqlite
-**/db_sqlite3
+db.sqlite3
 
 #sass compile cache
 .sass-cache/
