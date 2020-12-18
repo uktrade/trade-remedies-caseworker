@@ -897,10 +897,8 @@ class SubmissionView(CaseBaseView):
                     description=request.POST.get("description"),
                     url=request.POST.get("url"),
                 )
-                # TODO: API client `update_submission` call routes to
-                # TODO: APIs SubmissionsAPIView whose post method isn't written
-                # TODO: for updates so we re-fetch the submission here.
-                # TODO: We need to review how submissions are updated.
+                # API `update_submission` returns an incomplete submission
+                # (no documents) so we re-fetch the submission here.
                 submission = self._client.get_submission(case_id, submission_id)
                 return_data.update({"submission": submission})
         if submission.get("id"):
