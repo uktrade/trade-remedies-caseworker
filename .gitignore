@@ -101,7 +101,7 @@ ENV/
 .mypy_cache/
 
 # sqlite
-db.sqlite3
+**/db_sqlite3
 
 #sass compile cache
 .sass-cache/
