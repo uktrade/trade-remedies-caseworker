@@ -676,9 +676,11 @@ class SubmissionView(CaseBaseView):
         documents = []
         submission = {}
         submission_id = self.kwargs.get("submission_id")
+        third_party_invite = False
         if submission_id:
             submission = self._client.get_submission(self.case_id, submission_id)
             submission_type = submission["type"]
+            third_party_invite = submission_type["name"] == "Invite 3rd party"
             self.organisation_id = submission["organisation"]["id"]
             created_by_id = get(submission, "created_by/id")
             if created_by_id:
@@ -697,6 +699,7 @@ class SubmissionView(CaseBaseView):
             "documents": self.get_documents(submission=submission, all_versions=True),
             "alert": alert,
             "case": case_extras,
+            "third_party_invite": third_party_invite,
             **submission_context,
         }
         if (
@@ -884,7 +887,7 @@ class SubmissionView(CaseBaseView):
             if due_at and not re.match(REGEX_ISO_DATE, due_at):
                 return_data.update({"errors": '{"due_date":"Invalid date"}'})
             if not return_data.get("errors"):
-                update_submission_response = self._client.update_submission(
+                self._client.update_submission(
                     case_id=case_id,
                     submission_id=submission_id,
                     name=name,
@@ -894,7 +897,9 @@ class SubmissionView(CaseBaseView):
                     description=request.POST.get("description"),
                     url=request.POST.get("url"),
                 )
-                submission = update_submission_response.get("submission")
+                # API `update_submission` returns an incomplete submission
+                # (no documents) so we re-fetch the submission here.
+                submission = self._client.get_submission(case_id, submission_id)
                 return_data.update({"submission": submission})
         if submission.get("id"):
 
@@ -968,6 +973,10 @@ class SubmissionView(CaseBaseView):
                     return_data.update(
                         type_helpers(submission, self.request.user).on_approve() or {}
                     )
+
+            # Update submission document approvals
+            self.update_submission_status(request.POST, submission)
+
             # set any deficiency-notice parameters
             updated = False
             deficiency_notice_params = from_json(submission.get("deficiency_notice_params"))
@@ -997,6 +1006,31 @@ class SubmissionView(CaseBaseView):
                 return_data.update({"redirect_url": f"/case/{case_id}/submissions/"})
 
         return HttpResponse(json.dumps(return_data), content_type="application/json")
+
+    def update_submission_status(self, request_params, submission):
+        """Update submission document statuses.
+
+        For each document in the submission review, examine response to
+        establish if it was marked sufficient/deficient. Call API to update
+        submission document status if it has changed.
+
+        :param (dict) request_params: request parameters
+        :param (dict) submission: submission
+        """
+        submission_docs = {doc["id"]: doc for doc in submission.get("documents")}
+        for doc_id in request_params:
+            if doc_id in submission_docs:
+                current_status = submission_docs[doc_id]["sufficient"]
+                new_status = request_params[doc_id] == "yes"
+                if current_status != new_status:
+                    self._client.set_submission_document_state(
+                        case_id=submission["case"]["id"],
+                        submission_id=submission.get("id"),
+                        document_id=doc_id,
+                        status="sufficient" if new_status else "deficient",
+                        block_from_public_file=submission_docs.get("block_from_public_file"),
+                        block_reason=submission_docs.get("block_reason"),
+                    )
 
 
 class SubmissionCreateView(SubmissionView):
@@ -1726,22 +1760,30 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         item = request.GET.get("item")
         template = request.GET.get("template")
         result = {}
+        case_submissions = client.get_submissions(case_id)
+        idx_submissions = deep_index_items_by(case_submissions, "organisation/id")
+        org_id = str(organisation_id)
+        third_party_contacts = []
         if item == "contacts":
-            contacts = client.get_organisation_contacts(organisation_id, case_id)
+            contacts = client.get_organisation_contacts(org_id, case_id)
             for contact in contacts:
                 case = get(contact, "cases/" + str(case_id)) or {}
                 contact["primary"] = case.get("primary")
             all_case_invites = client.get_contact_case_invitations(case_id)
+            if org_id in idx_submissions:
+                org_submission_idx = deep_index_items_by(idx_submissions[org_id], "id")
+                third_party_contacts = self.get_third_party_contacts(
+                    org_id, org_submission_idx, all_case_invites
+                )
             result = {
                 "contacts": contacts,
                 "pre_release_invitations": client.get_system_boolean("PRE_RELEASE_INVITATIONS"),
                 "invites": deep_index_items_by(all_case_invites, "contact/id"),
+                "third_party_contacts": third_party_contacts,
                 "case_role_id": request.GET.get("caserole"),
             }
         elif item == "submissions":
-            case_submissions = client.get_submissions(case_id)
-            idx_submissions = deep_index_items_by(case_submissions, "organisation/id")
-            result["submissions"] = idx_submissions.get(str(organisation_id), [])
+            result["submissions"] = idx_submissions.get(org_id, [])
         elif item == "details":
             result["party"] = client.get_organisation(organisation_id=organisation_id)
         if template:
@@ -1750,11 +1792,39 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 {
                     "case_id": case_id,
                     "case": {"id": case_id},
-                    "organisation": {"id": organisation_id},
+                    "organisation": {"id": org_id},
                 },
             )
             return render(request, template, result)
         return HttpResponse(json.dumps({"result": result}), content_type="application/json")
+
+    @staticmethod
+    def get_third_party_contacts(organisation_id, submissions, invites):
+        """Get third party contacts.
+
+        Given an organisation, its submissions and all invitations for a case,
+        build a list of third party invite contacts.
+
+        :param (str) organisation_id: Organisation ID.
+        :param (dict) submissions: The organisation's submissions keyed on id.
+        :param (list) invites: All invites for a case.
+        :returns (list): Contacts arising from 3rd party invite submissions.
+        """
+        third_party_contacts = []
+        for invite in invites:
+            if invite["submission"] and invite["submission"]["name"] == "Invite 3rd party":
+                submission_id = invite["submission"]["id"]
+                full_submission = submissions.get(submission_id)
+                if not full_submission:
+                    # Submission not at this org
+                    continue
+                inviting_organisation = full_submission[0]["organisation"]["id"]
+                if inviting_organisation == organisation_id:
+                    invite_sufficient = full_submission[0]["status"]["sufficient"]
+                    invite["contact"]["is_third_party"] = True
+                    invite["contact"]["submission_sufficient"] = invite_sufficient
+                    third_party_contacts.append(invite["contact"])
+        return third_party_contacts
 
 
 class CaseOrganisationView(CaseBaseView):

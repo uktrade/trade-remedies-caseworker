@@ -1,57 +1,32 @@
-{% load format_date %}
-{% load organisation_initialism %}
-<div class="column-full" >
-
-    {% include "../submission_details.html" %}
-    <h3 class="heading-medium">Invitees</h3>
-
-    <table class="cases sortable" data-attach="TableSort">
-        <thead>
-            <tr>
-                <th class="case-name">Name</th>
-                <th class="case-name">Email</th>
-                <th class="case-name">Organisation</th>
-                <th class="applicant">Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for invite in invites %}
-            <tr>
-                <td>{{invite.contact.name}}</td>
-                <td>{{invite.email}}</td>
-                <td>
-                    {{invite.contact.organisation.name}}
-                </td>
-                <td>
-                    {% if invite.sent_at and invite.approved_by %}
-                        Sent at {% format_date invite.sent_at '%d %b %Y' %} by {{invite.approved_by.name}}
-                    {% endif %}
-                </td>
-                <td nowrap>
-                    {% if invite.sent_at and invite.approved_by %}
-                        &nbsp;
-                    {% else %}
-                        <button
-                            class="button modal-form button-blue "
-                            data-url="/case/{{case.id}}/submission/{{submission.id}}/invite/{{invite.contact.id}}/notify/"
-                            class="button">Invite</button>
-                        <button class="button">Decline</button>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-  {% if documents.caseworker %}
-    <h3 class="heading-small">{% organisation_initialism %} documents</h3>
-    {% include 'widgets/document_detail_list.html' with documents=documents.caseworker %}
-  {% endif %}
-  <h3 class="heading-small">Confidential documents</h3>
-  {% include 'widgets/document_detail_list.html' with documents=documents.confidential %}
-
-
-  <p>&nbsp;</p>
-  {% include 'widgets/notesWidget.html' with notes=notes contentType='cases.submission' modelId=submission.id %}
-</div>
+{% extends '../review.html' %}
+{% load set %}
+{% block upper_info_block %}
+    <div class="info">
+        <p>Approval of this request will give the user access to the case page
+           for the organisation. They will be able to submit evidence to the case.
+        </p>
+        <p>An email confirming your approval will be sent to the admin and the
+           new user.
+        </p>
+    </div>
+{% endblock %}
+{% block lower_info_block %}
+    <div class="info">
+        <p>
+            <span class="bold">{{submission.created_by.name}}
+            </span> of
+            <span class="bold">{{submission.created_by.organisation.name}}
+            </span> is requesting access for
+            <span class="bold">{{invites.0.contact.name}}
+            </span> of
+            <span class="bold">{{invites.0.contact.organisation.name}}
+            </span> to represent
+            <span class="bold">{{submission.organisation.name}}
+            </span> in this case.
+        </p>
+    </div>
+{% endblock %}
+{% block case_page_content %}
+    {% set 'submission_group_name' '3rd party invite' %}
+    {{ block.super }}
+{% endblock %}

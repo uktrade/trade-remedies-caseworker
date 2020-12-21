@@ -129,27 +129,4 @@
             <hr/>
         {% endfor %}
     </div>
-
-    {% if invites %}
-        <h2 class="heading-medium">3rd Party Invites</h2>
-        <table class="compact-table submissions">
-            <thead>
-            <tr>
-                <th scope="col">Organisation</th>
-                <th scope="col">Created by</th>
-                <th scope="col">Created at</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for invite in invites %}
-                <tr class="{% cycle 'odd-row' 'even-row' %}">
-                    <td><a href="/case/{{ case.id }}/submission/{{ invite.id }}/">{{ invite.organisation.name }}</a>
-                    </td>
-                    <td>{{ invite.created_by.name }}</td>
-                    <td>{% format_date invite.created_at '%d %b' %}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
 {% endblock %}

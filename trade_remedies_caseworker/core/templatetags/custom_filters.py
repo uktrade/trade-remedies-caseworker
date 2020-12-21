@@ -44,7 +44,7 @@ def _notequals(arg1, arg2):
 @register.filter
 def _captalize(arg1):
     """Returns the string with an initial capital"""
-    return str(arg1).captalize()
+    return str(arg1).title()
 
 
 @register.filter
