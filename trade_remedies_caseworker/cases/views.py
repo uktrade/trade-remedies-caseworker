@@ -1003,8 +1003,11 @@ class SubmissionView(CaseBaseView):
                     deficiency_notice_params=to_json(deficiency_notice_params),
                 )
             if btn_value == "save-exit":
-                return_data.update({"redirect_url": f"/case/{case_id}/submissions/"})
-
+                return_data.update({"redirect_url": f"/case/{case_id}/submissions"})
+                if deficiency_notice_params:
+                    return_data.update(
+                        {"redirect_url": f"/case/{case_id}/submission/{submission_id}"}
+                    )
         return HttpResponse(json.dumps(return_data), content_type="application/json")
 
     def update_submission_status(self, request_params, submission):
@@ -1822,6 +1825,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 if inviting_organisation == organisation_id:
                     invite_sufficient = full_submission[0]["status"]["sufficient"]
                     invite["contact"]["is_third_party"] = True
+                    invite["contact"]["submission_id"] = submission_id
                     invite["contact"]["submission_sufficient"] = invite_sufficient
                     third_party_contacts.append(invite["contact"])
         return third_party_contacts
@@ -2625,56 +2629,61 @@ class SubmissionInviteNotifyView(CaseBaseView):
 
     groups_required = SECURITY_GROUPS_TRA
     raise_exception = True
+    template_name = "cases/invite.html"
 
-    def get(self, request, case_id, submission_id, contact_id, *args, **kwargs):
+    def add_page_data(self):
+        """Add page data.
+
+        CaseBaseView override.
+        """
+        case_id = self.kwargs.get("case_id")
+        submission_id = self.kwargs.get("submission_id")
+        contact_id = self.kwargs.get("contact_id")
         case = self._client.get_case(case_id)
         submission = self._client.get_submission(case_id, submission_id)
-        submission_type = submission["type"]
         inviting_organisation = submission["organisation"]
         invited_contact = self._client.get_contact(contact_id)
         inviting_contact = submission.get("contact") or {}
         notification_template = self._client.get_notification_template("NOTIFY_THIRD_PARTY_INVITE")
-        template_name = f"cases/submissions/{submission_type['key']}/notify.html"
+        form_url = f"/case/{case_id}/submission/{submission_id}/invite/{contact_id}/notify/"
+
+        values = {
+            "full_name": invited_contact["name"],
+            "case_name": case["name"],
+            "invited_by_organisation": inviting_organisation["name"],
+            "invited_by_name": inviting_contact["name"],
+            "notice_of_initiation_url": self.case.get("latest_notice_of_initiation_url"),
+            "deadline": parse_api_datetime(
+                get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
+            ),
+            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "email": self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"],
+        }
 
         context = {
-            "form_action": f"/case/{case_id}/submission/{submission_id}/invite/{contact_id}/notify/",  # noqa: E501
-            "form_title": f"Invite 3rd party to {case['name']} on behalf of {inviting_organisation['name']}",  # noqa: E501
-            "cancel_redirect_url": f"/case/{case_id}/submission/{submission_id}/",
-            "editable_fields": {
-                "full_name": {"title": "Name"},
-                "invited_by_name": {"title": "Invited by"},
-                "invited_by_organisation": {"title": "Inviting Organisation"},
-                "case_name": {"title": "Case"},
-                "note": {"type": "textarea", "title": "Note"},
-            },
+            "form_url": form_url,
             "notification_template": notification_template,
             "submission": submission,
-            "case_id": str(case_id),
+            "case": case,
             "contact": invited_contact,
-            "values": {
-                "full_name": invited_contact["name"],
-                "case_name": case["name"],
-                "invited_by_organisation": inviting_organisation["name"],
-                "invited_by_name": inviting_contact["name"],
-            },
+            "parsed_template": parse_notify_template(notification_template["body"], values),
+            "values": values,
         }
-        return render(request, template_name, context)
+        return context
 
     def post(self, request, case_id, submission_id, contact_id, *args, **kwargs):
-        notify_keys = [
-            "full_name",
-            "case_name",
-            "invited_by_name",
-            "invited_by_organisation",
-        ]
-        notify_data = {key: request.POST.get(key) for key in notify_keys}
+        notify_data = {
+            "case_id": case_id,
+            "submission_id": submission_id,
+            "contact_id": contact_id,
+        }
         response = self._client.action_third_party_invite(
             case_id=case_id,
             submission_id=submission_id,
             contact_id=contact_id,
             params=notify_data,
         )
-        return redirect(f"/case/{case_id}/submission/{submission_id}/")
+        return HttpResponse(json.dumps(response), content_type="application/json")
 
 
 class UpdateParentView(CaseBaseView):
