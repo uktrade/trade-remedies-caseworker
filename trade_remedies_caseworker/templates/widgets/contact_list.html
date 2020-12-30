@@ -17,6 +17,9 @@
 		{% if contact.primary %}
 			{% set 'primary_count' store.primary_count|_plus:'1' %}
 		{% endif %}
+        {% if third_party_contacts|length > 0 %}
+            {% set 'has_out_case' True %}
+        {% endif %}
 	{% endfor %}
 	{% if store.has_in_case %}
 		<div class="section-heading">Contacts involved in this case</div>

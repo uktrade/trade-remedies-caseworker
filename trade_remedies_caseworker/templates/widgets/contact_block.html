@@ -67,9 +67,27 @@
 
 			{% elif pre_release_invitations and not organisation.users %}
 				{% if not contact.cases|_get:case_id or not contact.has_user %}
-					<button type="button" class="button modal-form button-blue compact margin-top-1" data-event-update="party-updated" data-url="/case/{{case.id}}/invite/{{contact.id}}/as/{{case_role_id}}/for/{{organisation.id}}/">Invite <span class="visually-hidden"> {{contact.name}}</span>to case</button>
-				{% endif %}
-			{% endif %}
+                    {% if contact.is_third_party %}
+                        <button type="button"
+                                class="button modal-form button-blue compact margin-top-1"
+                                data-event-update="party-updated"
+                                data-url="/case/{{case.id}}/submission/{{contact.submission_id}}/invite/{{contact.id}}/notify/">
+                            Invite
+                            <span class="visually-hidden">{{contact.name}}
+                            </span>to case
+                        </button>
+                    {% else %}
+                        <button type="button"
+                                class="button modal-form button-blue compact margin-top-1"
+                                data-event-update="party-updated"
+                                data-url="/case/{{case.id}}/invite/{{contact.id}}/as/{{case_role_id}}/for/{{organisation.id}}/">
+                            Invite
+                            <span class="visually-hidden">{{contact.name}}
+                            </span>to case
+                        </button>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
 
 			{% if not hide_primary and case_id and contact.has_user %}
 				{# If we have a case id, we can set the primary contact #}
