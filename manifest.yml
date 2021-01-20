@@ -2,5 +2,5 @@
 applications:
 - name: traderemediescaseworker
   memory: 512M
-- buildpacks:
-    - https://github.com/cloudfoundry/python-buildpack.git
+  buildpacks:
+  - https://github.com/cloudfoundry/python-buildpack.git
