@@ -4,7 +4,7 @@
     <thead>
     <tr>
         <th colspan={% if hide_headings %}4{% else %}2{% endif %}>{{ title|default:'Documents' }}
-            {% if hide_headings and not editable %}
+            {% if hide_headings and not editable and not third_party_invite %}
                 {% if not submission.organisation_case_role_outer.validated_at %}
                     <span class="pull-right">Publication available after verification</span>
                 {% else %}
@@ -21,7 +21,7 @@
                             by {{ submission.issued_by.name }}</span>
                     {% else %}
                         {% if user.permissions.publish_public %}
-                            <button class="link pull-right" type value="publish-start">
+                            <button class="link pull-right" type="button" value="publish-start">
                                 Publish current version
                             </button>
                         {% endif %}

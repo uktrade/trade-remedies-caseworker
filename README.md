@@ -49,6 +49,18 @@ In order to run prettier on the front end part of this project, in the orchestra
 make frontend-code-style
 ```
 
+## BDD testing
+
+Behavioural testing is provided by [Behave Django](https://github.com/behave/behave-django) and can be triggered by running:
+
+`make bdd`
+
+from the Trade Remedies orchestration project directory.
+
+You can make test objects available for BDD testing by creating views that create them in the 'api_test' app in the [Trade Remedies API](https://github.com/uktrade/trade-remedies-api) project.
+
+For more information on the setup of BDD tests see the readme at https://github.com/uktrade/trade-remedies-docker
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people who contributed to the original private repo ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
