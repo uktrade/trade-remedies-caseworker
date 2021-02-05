@@ -28,15 +28,14 @@ define(["modules/Events"], function (Events) {
     var self = this;
     var target = $(evt.target);
     if (target.attr("data-method")) {
-      var message;
-      if ((message = target.attr("data-message"))) {
+      var message = target.attr("data-message") || "Are you sure?";
+      var title = target.attr("data-title") || "Confirm action";
+      if (message) {
         // it needs a confirm box before trigger
         require(["modules/popUps"], function (popups) {
-          popups
-            .confirm(message, target.attr("data-message") || "Confirm")
-            .then(function () {
-              postQuery.call(self, target);
-            });
+          popups.confirm(target.attr("data-message"), title).then(function () {
+            postQuery.call(self, target);
+          });
         });
       } else {
         postQuery.call(self, target);

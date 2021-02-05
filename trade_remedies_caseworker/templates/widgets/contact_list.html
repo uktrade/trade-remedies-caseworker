@@ -2,9 +2,9 @@
 {% load set %}
 {% load custom_filters %}
 <ul class="contact-list">
-	{# Do some counting #}
 	{% set 'has_in_case' False %}
 	{% set 'has_out_case' False %}
+    {% set 'has_third_parties' False %}
 	{% set 'primary_count' '0' %}
 	{% for contact in contacts %}
 		{% if contact.cases|_get:case_id|_get:'in_case' or contact.cases|_get:case_id|_get:'case_contact' %}
@@ -17,9 +17,13 @@
 		{% if contact.primary %}
 			{% set 'primary_count' store.primary_count|_plus:'1' %}
 		{% endif %}
-        {% if third_party_contacts|length > 0 %}
-            {% set 'has_out_case' True %}
-        {% endif %}
+        {% for contact in third_party_contacts %}
+            {% if contact.has_user %}
+                {% set 'has_in_case' True %}
+            {% elif contact.submission_sufficient %}
+                {% set 'has_third_parties' True %}
+            {% endif %}
+        {%  endfor %}
 	{% endfor %}
 	{% if store.has_in_case %}
 		<div class="section-heading">Contacts involved in this case</div>
@@ -30,26 +34,36 @@
 				</li>
 			{% endif %}
 		{% endfor %}
-	{% endif %}
-	{% if store.has_out_case %}
-	<div class="section-heading" >Contacts not involved in this case</div>
-		{% for contact in contacts %}
-			{% if not contact.cases|_get:case_id|_get:'in_case' and not contact.cases|_get:case_id|_get:'case_contact' %}
-				{% if contact.user.organisation.id|_equals:organisation.id or contact.loa or contact.organisation_contact %}
-					<li>
-						{% include "widgets/contact_block.html" with contact=contact user=contact.user party=party case=case case_role_id=case_role_id hide_primary=True %}
-					</li>
-				{% endif %}
-			{% endif %}
-		{% endfor %}
         {% for contact in third_party_contacts %}
-            {% if contact.submission_sufficient %}
+            {% if contact.has_user %}
                 <li>
                     {% include "widgets/contact_block.html" with hide_controls=False contact=contact user=contact.user party=party case=case case_role_id=case_role_id hide_primary=True %}
                 </li>
             {% endif %}
         {% endfor %}
 	{% endif %}
+	{% if store.has_out_case or store.has_third_parties %}
+	<div class="section-heading" >Contacts not involved in this case</div>
+        {% if store.has_out_case %}
+            {% for contact in contacts %}
+                {% if not contact.cases|_get:case_id|_get:'in_case' and not contact.cases|_get:case_id|_get:'case_contact' %}
+                    {% if contact.user.organisation.id|_equals:organisation.id or contact.loa or contact.organisation_contact %}
+                        <li>
+                            {% include "widgets/contact_block.html" with contact=contact user=contact.user party=party case=case case_role_id=case_role_id hide_primary=True %}
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for contact in third_party_contacts %}
+                {% if not contact.has_user %}
+                    <li>
+                        {% include "widgets/contact_block.html" with hide_controls=False contact=contact user=contact.user party=party case=case case_role_id=case_role_id hide_primary=True %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+	    {% endif %}
+    {% endif %}
 	{% if not store.has_in_case and not store.has_out_case %}
 	    <li class="add-block">
 	        <div class="modal-form" data-url="/organisations/case/{{case_id}}/organisation/{{organisation.id}}/contact/add/">

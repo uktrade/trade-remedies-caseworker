@@ -4,9 +4,11 @@
 {#******   Set up contact icon ******#}
 {% if contact.has_user %}
 	{% set 'icon_class' 'icon-user-hollow' %}
-	{% if contact.user.organisation.id|_equals:organisation.id %}
-		{% set 'icon_class' 'icon-user' %}
-	{% endif %}
+    {% if not contact.is_third_party %}
+        {% if contact.user.organisation.id|_equals:organisation.id %}
+            {% set 'icon_class' 'icon-user' %}
+        {% endif %}
+    {% endif %}
 {% endif %}
 <div class="contact-block {% if contact.primary and not hide_controls and not hide_primary%} primary{% endif %}
 {% if not icon_class %} grey{% endif %}">
@@ -48,10 +50,15 @@
 		{% endif %}
 	</div>
 
-	<!--button type="button" class="button button-blue compact margin-top-1">Log in as this user</button-->
 	<div class="button-container">
 		{% if not hide_controls %}
-			{% if contact.id in invites and not contact.is_third_party %}
+            {% if contact.is_third_party and contact.invited %}
+                {% if not contact.has_user %}
+                    <span class="margin-bottom-1">
+                        <i class="icon icon-timer"></i>Invite Sent
+                    </span>
+                {% endif %}
+            {% elif contact.id in invites and not contact.is_third_party %}
 				<span class="margin-bottom-1">
 					{% with invited_contact=invites|get_item:contact.id %}
 						{% if invited_contact.0.accepted_at %}
@@ -64,7 +71,6 @@
 						{% endif %}
 					{% endwith %}
 				</span>
-
 			{% elif pre_release_invitations and not organisation.users %}
 				{% if not contact.cases|_get:case_id or not contact.has_user %}
                     {% if contact.is_third_party %}
@@ -106,7 +112,7 @@
 					{% endif %}
 				</form>
 			{% endif %}
-			{% if not contact.has_user %}
+			{% if not contact.has_user and not contact.is_third_party %}
 					<button type="button" class="button button-blue compact margin-top-1" name="delete"
 						data-title="Confirm delete"
 						data-message="Are you sure you want to delete &quot;{{contact.name}}&quot;<br>This action cannot be undone."
