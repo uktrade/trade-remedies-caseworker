@@ -1781,9 +1781,13 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 )
             # `contacts` may also contain on-boarded third-party contacts that
             # have a user, so wee need to prune these out.
-            third_party_contact_ids = set([i['id'] for i in third_party_contacts])
-            contacts = [i for i in itertools.filterfalse(
-                lambda x: x["id"] in third_party_contact_ids, contacts)]
+            third_party_contact_ids = set([i["id"] for i in third_party_contacts])
+            contacts = [
+                i
+                for i in itertools.filterfalse(
+                    lambda x: x["id"] in third_party_contact_ids, contacts
+                )
+            ]
             result = {
                 "contacts": contacts,
                 "pre_release_invitations": client.get_system_boolean("PRE_RELEASE_INVITATIONS"),
