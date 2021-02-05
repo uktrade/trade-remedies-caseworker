@@ -1780,7 +1780,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     org_id, org_submission_idx, all_case_invites
                 )
             # `contacts` may also contain on-boarded third-party contacts that
-            # have a user, so wee need to prune these out.
+            # have a user, so we need to prune these out.
             third_party_contact_ids = set([i["id"] for i in third_party_contacts])
             contacts = [
                 i
