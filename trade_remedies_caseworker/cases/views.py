@@ -1,3 +1,4 @@
+import itertools
 import json
 import logging
 import re
@@ -1778,6 +1779,11 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 third_party_contacts = self.get_third_party_contacts(
                     org_id, org_submission_idx, all_case_invites
                 )
+            # `contacts` may also contain on-boarded third-party contacts that
+            # have a user, so wee need to prune these out.
+            third_party_contact_ids = set([i['id'] for i in third_party_contacts])
+            contacts = [i for i in itertools.filterfalse(
+                lambda x: x["id"] in third_party_contact_ids, contacts)]
             result = {
                 "contacts": contacts,
                 "pre_release_invitations": client.get_system_boolean("PRE_RELEASE_INVITATIONS"),
@@ -1827,6 +1833,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     invite["contact"]["is_third_party"] = True
                     invite["contact"]["submission_id"] = submission_id
                     invite["contact"]["submission_sufficient"] = invite_sufficient
+                    invite["contact"]["invited"] = invite["email_sent"]
                     third_party_contacts.append(invite["contact"])
         return third_party_contacts
 
@@ -2647,12 +2654,23 @@ class SubmissionInviteNotifyView(CaseBaseView):
         notification_template = self._client.get_notification_template("NOTIFY_THIRD_PARTY_INVITE")
         form_url = f"/case/{case_id}/submission/{submission_id}/invite/{contact_id}/notify/"
 
+        # Attempt to infer the invite URL
+        login_url = f"{settings.PUBLIC_BASE_URL}"
+        invites = self._client.get_invitations(case_id, submission_id)
+        for i in invites:
+            if i["contact"]["id"] == str(contact_id):
+                invite = self._client.get_invite_details(i["id"])
+                code = invite.get("code")
+                login_url = f"{login_url}/invitation/{code}/{case_id}/"
+                break
+
         values = {
             "full_name": invited_contact["name"],
             "case_name": case["name"],
             "invited_by_organisation": inviting_organisation["name"],
             "invited_by_name": inviting_contact["name"],
             "notice_of_initiation_url": self.case.get("latest_notice_of_initiation_url"),
+            "login_url": login_url,
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             ),
