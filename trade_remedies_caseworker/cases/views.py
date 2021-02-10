@@ -2167,7 +2167,7 @@ class CaseAuditExport(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
     def get(self, request, case_id, *args, **kwargs):
         file = self.client(request.user).get_audit_export(case_id)
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
-        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xls"
+        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xlsx"
         return response
 
 
