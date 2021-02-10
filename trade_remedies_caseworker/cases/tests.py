@@ -91,25 +91,21 @@ class TestAuditView:
     def test_add_page_data_client_call(self, audit_view, case):
         audit_view.request.GET = {}
         audit_view.add_page_data()
-        audit_view._client.get_audit.assert_called_with(case_id=case.id,
-                                                        start=0,
-                                                        limit=20,
-                                                        milestone=True)
+        audit_view._client.get_audit.assert_called_with(
+            case_id=case.id, start=0, limit=20, milestone=True
+        )
 
     def test_add_page_data_client_call_params(self, audit_view, case):
         audit_view.request.GET = {"milestone": "false", "limit": 100}
         audit_view.add_page_data()
-        audit_view._client.get_audit.assert_called_with(case_id=case.id,
-                                                        start=0,
-                                                        limit=100,
-                                                        milestone=False)
+        audit_view._client.get_audit.assert_called_with(
+            case_id=case.id, start=0, limit=100, milestone=False
+        )
 
     def test_add_page_data_client_call_offset(self, audit_view, case):
         audit_view.request.GET = {}
         audit_view.start = 25
         audit_view.add_page_data()
-        audit_view._client.get_audit.assert_called_with(case_id=case.id,
-                                                        start=25,
-                                                        limit=20,
-                                                        milestone=True)
-
+        audit_view._client.get_audit.assert_called_with(
+            case_id=case.id, start=25, limit=20, milestone=True
+        )
