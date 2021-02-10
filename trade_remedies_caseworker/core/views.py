@@ -295,5 +295,5 @@ class FeedbackFormExportView(
     def get(self, request, form_id=None):
         file = self.client(request.user).export_feedback(form_id)
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
-        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xls"
+        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xlsx"
         return response
