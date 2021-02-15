@@ -1045,12 +1045,13 @@ class SubmissionCreateView(SubmissionView):
         btn_value = request.POST.get("btn-value")
         send_to = request.POST.getlist("send_to")
         organisation_id = request.POST.get("organisation_id")
-
+        extra_info = request.POST.get("extra_info", "")
         submission_data = {
             "submission_type": int(
                 request.POST.get("submission_type_id", SUBMISSION_TYPE_QUESTIONNAIRE)
             ),
             "case_id": str(case_id),
+            "extra_info":str(extra_info),
             "organisation_id": str(organisation_id) if organisation_id else None,
             "contact_id": request.POST.getlist("contact_id"),
             "public": request.POST.get("public"),

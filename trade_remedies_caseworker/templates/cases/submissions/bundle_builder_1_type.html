@@ -4,7 +4,7 @@
     <div class="grey-box">
         <div class="column-full">
             <span class="label">Type</span>
-            <span class="value">{{submission.type.name}}</span>
+            <span class="value">{{submission.type_display}}</span>
         </div>            
     </div>
     {% if public %}<input type="hidden" name="public" value="true">{% endif %}
@@ -18,6 +18,7 @@
                     <option value="{{submission_type.id}}">{{submission_type.name}}</option>
                 {% endfor %}
             </select>
+            <input type="text" name="extra_info">
         </div>
         {% endif %}
     </div>
