@@ -13,13 +13,27 @@
         {% if not submission.id %}
         <div class="form-group edit-item type-textarea ">
             <label class="form-label" for="submissionType">Type of {{ submission_group_name|default:'Request' }}</label>
-            <select class="form-control auto-width" id="submissionType" name="submission_type_id">
+         <script>
+          function display_extra() {
+                var dict = {};
                 {% for submission_type in submission_types %}
-                    <option value="{{submission_type.id}}">{{submission_type.name}}</option>
+                    dict[{{ submission_type.id }}] = "{{ submission_type.extra_info_required }}";
+                {% endfor %}
+                var selected_type = document.getElementById("submissionType").value;
+                var hide_div = (dict[selected_type] == "False");
+				document.getElementById("extra_info_div_id").hidden = hide_div;
+            }
+        </script>
+
+           <select class="form-control auto-width" onchange="display_extra()" id="submissionType" name="submission_type_id">
+                {% for submission_type in submission_types %}
+                    <option value="{{submission_type.id}}" >{{submission_type.name}}</option>
                 {% endfor %}
             </select>
-            <input type="text" name="extra_info">
-        </div>
+             <div id="extra_info_div_id"  hidden>
+                    <input type="text" name="extra_info" id="extra_info_id" >
+             </div>
+         </div>
         {% endif %}
     </div>
 </div>
