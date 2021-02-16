@@ -30,10 +30,11 @@
                     <option value="{{submission_type.id}}" >{{submission_type.name}}</option>
                 {% endfor %}
             </select>
-             <div id="extra_info_div_id"  hidden>
-                    <input type="text" name="extra_info" id="extra_info_id" >
-             </div>
          </div>
-        {% endif %}
+          <div id="extra_info_div_id" class="form-group edit-item type-textarea " hidden>
+                <label class="form-label" for="extra_info_id">Enter more details about the General Submission:</label>
+               <input type="text" name="extra_info" id="extra_info_id" class="form-control" >
+         </div>
+       {% endif %}
     </div>
 </div>
