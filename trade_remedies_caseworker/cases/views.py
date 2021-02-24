@@ -8,6 +8,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from core.base import GroupRequiredMixin
@@ -193,8 +194,8 @@ class CaseBaseView(
 
         self.case = self._client.get_case(self.case_id, fields=case_fields)
         self.document_count = self._client.get_case_document_count(self.case_id)
-        self.start = request.GET.get("start", 0)
-        self.limit = request.GET.get("limit", 20)
+        self.start = int(request.GET.get("start", 0))
+        self.limit = int(request.GET.get("limit", 20))
         content_id = self.kwargs.get("nav_section_id")
         context = {
             "case": self.case,
@@ -2141,23 +2142,30 @@ class AuditView(CaseBaseView):
 
     def add_page_data(self):
         milestone = self.request.GET.get("milestone", "true") == "true"
-        limit = self.request.GET.get("limit")
+        limit = int(self.request.GET.get("limit", self.limit))
         audit_data = self._client.get_audit(
             case_id=self.case_id, start=self.start, limit=limit, milestone=milestone
         )
-        next_page = prev_page = 0
-        if limit and len(audit_data) >= int(limit):
-            next_page = int(self.start) + int(limit)
-            prev_page = int(self.start) - int(limit)
-            if prev_page < 0:
-                prev_page = None
+        url = reverse("case_audit", kwargs={"case_id": self.case_id})
+        prev_url = next_url = None
+        prev_page = max(0, self.start - limit)
+        milestone_flag = f"milestone={milestone}".lower()
+        if len(audit_data) >= limit:
+            next_page = max(0, self.start + limit)
+            next_url = f"{url}?{milestone_flag}&start={next_page}"
+            if next_page > limit:
+                prev_url = f"{url}?{milestone_flag}&start={prev_page}"
+            self.start = next_page
+        else:
+            self.start = prev_page + len(audit_data)
+            if prev_page:
+                prev_url = f"{url}?{milestone_flag}&start={prev_page}"
+
         return {
             "milestone": milestone,
             "events": audit_data,
-            "limit": limit,
-            "start": self.start,
-            "next_page": next_page,
-            "prev_page": prev_page,
+            "next_url": next_url,
+            "prev_url": prev_url,
         }
 
 
@@ -2167,7 +2175,7 @@ class CaseAuditExport(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
     def get(self, request, case_id, *args, **kwargs):
         file = self.client(request.user).get_audit_export(case_id)
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
-        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xls"
+        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xlsx"
         return response
 
 
