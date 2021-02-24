@@ -14,6 +14,9 @@ import json
 import sys
 import os
 import environ
+
+from django_log_formatter_ecs import ECSFormatter
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -254,98 +257,72 @@ RAVEN_CONFIG = {
     "environment": os.environ.get("SENTRY_ENVIRONMENT"),
 }
 
-if DEBUG:
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "handlers": {
-            "stdout": {
-                "class": "logging.StreamHandler",
-                "stream": sys.stdout,
-            },
-            "null": {
-                "class": "logging.NullHandler",
-            },
-            "null": {
-                "class": "logging.NullHandler",
-            },
-        },
-        "root": {
-            "handlers": ["stdout"],
-            "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
-        },
-        "root": {
-            "handlers": ["stdout"],
-            "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
-        },
-        "loggers": {
-            "django": {
-                "handlers": [
-                    "stdout",
-                ],
-                "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-                "propagate": True,
-            },
-            "django.server": {
-                "handlers": ["null"],
-                "propagate": False,
-            },
-        },
-    }
-else:
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "root": {
-            "level": "WARNING",
-            # 'handlers': ['sentry'],
-        },
-        "formatters": {
-            "verbose": {
-                "format": "%(levelname)s %(asctime)s %(module)s "
-                "%(process)d %(thread)d %(message)s"
-            },
-        },
-        "handlers": {
-            # 'sentry': {
-            #     'level': 'WARNING',
-            #     'class': (
-            #         'raven.contrib.django.raven_compat.handlers.SentryHandler'
-            #     ),
-            # },
-            "console": {
-                "level": "DEBUG",
-                "class": "logging.StreamHandler",
-                "formatter": "verbose",
-            }
-        },
-        "loggers": {
-            "django.db.backends": {
-                "level": "ERROR",
-                "handlers": ["console"],
-                "propagate": False,
-            },
-            # 'raven': {
-            #     'level': 'DEBUG',
-            #     'handlers': ['console'],
-            #     'propagate': False,
-            # },
-            # 'sentry.errors': {
-            #     'level': 'DEBUG',
-            #     'handlers': ['console'],
-            #     'propagate': False,
-            # },
-            "botocore.endpoint": {
-                "level": "INFO",
-                "handlers": ["console"],
-                "propagate": True,
-            },
-        },
-    }
-
 
 SHOW_ENV_BANNER = os.getenv("SHOW_ENV_BANNER", False)
 ENV_NAME = os.getenv("ENV_NAME", "production")
 
 GIT_BRANCH = os.getenv("GIT_BRANCH", "")
 GIT_COMMIT = os.getenv("GIT_COMMIT", "")
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"simple": {"format": "{asctime} {levelname} {message}", "style": "{", }, },
+    "handlers": {
+        "stdout": {"class": "logging.StreamHandler", "stream": sys.stdout, "formatter": "simple", },
+    },
+    "root": {"handlers": ["stdout"], "level": os.getenv("ROOT_LOG_LEVEL", "INFO"), },
+    "loggers": {
+        "django": {
+            "handlers": ["stdout", ],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": True,
+        },
+        "django.server": {
+            "handlers": ["stdout", ],
+            "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["stdout", ],
+            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
+            "propagate": True,
+        },
+    },
+}
+
+
+ENVIRONMENT_LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "ecs_formatter": {"()": ECSFormatter, },
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "ecs": {
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "ecs_formatter",
+        },
+    },
+    "root": {"handlers": ["ecs", ], "level": os.getenv("ROOT_LOG_LEVEL", "INFO"), },
+    "loggers": {
+        "django": {
+            "handlers": ["ecs", ],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+        "django.server": {
+            "handlers": ["ecs", ],
+            "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "ERROR"),
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["ecs", ],
+            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "ERROR"),
+            "propagate": False,
+        },
+    },
+}
