@@ -8,6 +8,7 @@ django-extensions==2.2.1
 django-govuk-forms==0.5
 django-govuk-template==0.6
 django-ip-restriction==1.1.1
+django-log-formatter-ecs==0.0.5
 django-redis==4.10.0
 django-session-timeout==0.0.3
 django-timezone-field==2.0
