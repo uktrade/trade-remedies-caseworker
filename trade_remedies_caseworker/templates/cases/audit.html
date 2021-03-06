@@ -56,7 +56,15 @@
   </tbody>
 </table>
 <div style="text-align: right;">
-  <a href="/case/{{case_id}}/audit?milestone={{milestone|lower}}&start={{prev_page}}&limit={{limit}}">Previous</a> --
-  <a href="/case/{{case_id}}/audit?milestone={{milestone|lower}}&start={{next_page}}&limit={{limit}}">Next</a>
+{% if prev_url %}
+  <a href="{{ prev_url }}">Previous</a> --
+{% else %}
+  Previous --
+{% endif %}
+{% if next_url %}
+   <a href="{{ next_url }}">Next</a>
+{% else %}
+    Next
+{% endif %}
 </div>
 {% endblock %}
