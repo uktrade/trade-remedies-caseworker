@@ -20,16 +20,22 @@ from django_log_formatter_ecs import ECSFormatter
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+# We use django-environ but do not read a `.env` file. Locally we feed
+# docker-compose an environment from a local.env file in the project root.
+# In our PaaS the service's environment is supplied from Vault.
+#
+# NB: Some settings acquired using `env()` deliberately *do not* have defaults
+# as we want to get an `ImproperlyConfigured` exception to avoid a badly
+# configured deployment.
 root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
 )
-environ.Env.read_env()
 
 sentry_sdk.init(
-    dsn=os.environ.get("SENTRY_DSN"),
+    dsn=env("SENTRY_DSN", default=""),
     integrations=[DjangoIntegration()],
-    environment=os.environ.get("SENTRY_ENVIRONMENT"),
+    environment=env("SENTRY_ENVIRONMENT", default="local"),
 )
 
 SITE_ROOT = root()
@@ -41,19 +47,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost"])
 
-ORGANISATION_NAME = os.environ.get("ORGANISATION_NAME", "Organisation name placeholder")
+ORGANISATION_NAME = env("ORGANISATION_NAME", default="Organisation name placeholder")
 
-ORGANISATION_INITIALISM = os.environ.get("ORGANISATION_INITIALISM", "PLACEHOLDER")
+ORGANISATION_INITIALISM = env("ORGANISATION_INITIALISM", default="PLACEHOLDER")
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -89,11 +94,11 @@ MIDDLEWARE = [
 ]
 
 # Add basic authentication if configured
-basic_auth_user = os.environ.get("BASIC_AUTH_USER")
+basic_auth_user = env("BASIC_AUTH_USER", default=False)
 if basic_auth_user:
     MIDDLEWARE.insert(0, "basicauth.middleware.BasicAuthMiddleware")
 
-if os.environ.get("RESTRICT_IPS", "FALSE").upper() == "TRUE":
+if env("RESTRICT_IPS", default=False):
     MIDDLEWARE.insert(0, "ip_restriction.IpWhitelister")
 
 ROOT_URLCONF = "trade_remedies_caseworker.urls"
@@ -123,6 +128,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "trade_remedies_caseworker.wsgi.application"
 
+
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -132,6 +138,7 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -153,29 +160,28 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Europe/London"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 _VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
 
-# Redis
+# Redis - Trade remedies uses different redis database numbers for the Django Cache
+# API:        0
+# Caseworker: 1
+# Public:     2
+REDIS_DATABASE_NUMBER = env("REDIS_DATABASE_NUMBER", default=1)
 if "redis" in _VCAP_SERVICES:
-    REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/1"
+    REDIS_BASE_URL = _VCAP_SERVICES["redis"][0]["credentials"]["uri"]
 else:
-    REDIS_BASE_URL = os.getenv("REDIS_BASE_URL")
+    REDIS_BASE_URL = env("REDIS_BASE_URL", default="redis://redis:6379")
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_BASE_URL,
+        "LOCATION": f"{REDIS_BASE_URL}/{REDIS_DATABASE_NUMBER}",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -185,44 +191,39 @@ CACHES = {
 # Session configuration
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = os.environ.get("SECURE_COOKIE", "FALSE").upper() == "TRUE"
-SESSION_EXPIRE_SECONDS = int(os.environ.get("SESSION_LENGTH_MINUTES") or 30) * 60
+SESSION_COOKIE_SECURE = env("SECURE_COOKIE", default=False)
+SESSION_EXPIRE_SECONDS = env("SESSION_LENGTH_MINUTES", default=30) * 60
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-CSRF_COOKIE_SECURE = os.environ.get("SECURE_CSRF_COOKIE", "FALSE").upper() == "TRUE"
-CSRF_COOKIE_HTTPONLY = os.environ.get("CSRF_COOKIE_HTTPONLY", "FALSE").upper() == "TRUE"
-SESSION_COOKIE_AGE = int(os.environ.get("SESSION_LENGTH_MINUTES") or 30) * 60
-RESTRICT_IPS = os.environ.get("RESTRICT_IPS", "FALSE").upper() == "TRUE"
-USE_2FA = os.environ.get("USE_2FA", "TRUE").upper() == "TRUE"
-TRUSTED_USER_TOKEN = os.environ.get("HEALTH_CHECK_TOKEN")
+CSRF_COOKIE_SECURE = env("SECURE_CSRF_COOKIE", default=False)
+CSRF_COOKIE_HTTPONLY = env("CSRF_COOKIE_HTTPONLY", default=False)
+SESSION_COOKIE_AGE = env("SESSION_LENGTH_MINUTES", default=30) * 60
+RESTRICT_IPS = env("RESTRICT_IPS", default=False)
+USE_2FA = env("USE_2FA", default=True)
 LOGOUT_REDIRECT_URL = "/"
 FRIENDLY_DATE_FORMAT = "%-d %B %Y"
 API_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
-API_BASE_URL = os.environ.get("API_BASE_URL")
+
+API_BASE_URL = env("API_BASE_URL", default="http://localhost:8000")
 API_PREFIX = "api/v1"
 API_URL = f"{API_BASE_URL}/{API_PREFIX}"
-PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "http://localhost:8002")
-ENVIRONMENT_KEY = os.environ.get("ENVIRONMENT_KEY")
+TRUSTED_USER_TOKEN = env("HEALTH_CHECK_TOKEN")
+PUBLIC_BASE_URL = env("PUBLIC_BASE_URL", default="http://localhost:8002")
+ENVIRONMENT_KEY = env("ENVIRONMENT_KEY", default="CW-ENV")
 APPEND_SLASH = True
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATIC_URL = "/static/"
-
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", "static"))
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "govuk_template", "static"),
     os.path.join(BASE_DIR, "..", "templates", "static"),
 ]
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Max upload size - 2GB
-MAX_UPLOAD_SIZE = 2 * (1024 * 1024 * 1024)
-AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = os.environ.get("S3_STORAGE_KEY")
-AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = os.environ.get("S3_STORAGE_SECRET")
-AWS_STORAGE_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
-AWS_REGION = AWS_S3_REGION_NAME = os.environ.get(
-    "AWS_REGION", "eu-west-1"
-)  # "eu-west-1" looks like a legacy setting, TODO investigate if used in prod
+AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = env("S3_STORAGE_KEY", default=None)
+AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env("S3_STORAGE_SECRET", default=None)
+AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME", default=None)
+AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-1")
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
@@ -230,10 +231,6 @@ AWS_DEFAULT_ACL = None
 S3_CLIENT = "boto3"
 # S3 Root directory name
 S3_DOCUMENT_ROOT_DIRECTORY = "documents"
-# Time before S3 download links expire
-S3_DOWNLOAD_LINK_EXPIREY_SECONDS = 30
-# Asynchronous document uploads/checks
-ASYNC_DOC_PREPARE = True
 
 FILE_UPLOAD_HANDLERS = ("s3chunkuploader.file_handler.S3FileUploadHandler",)
 
@@ -247,23 +244,14 @@ COUNTRIES_OVERRIDE = {
     "EU": "EU Customs Union",
 }
 
-FEATURE_FLAGS_TTL = os.environ.get("FEATURE_FLAGS_TTL", 5 * 60)
-
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
 
-RAVEN_CONFIG = {
-    "dsn": os.environ.get("SENTRY_DSN"),
-    "environment": os.environ.get("SENTRY_ENVIRONMENT"),
-}
+SHOW_ENV_BANNER = env("SHOW_ENV_BANNER", default=False)
+ENV_NAME = env("ENV_NAME", default="production")
 
-
-SHOW_ENV_BANNER = os.getenv("SHOW_ENV_BANNER", False)
-ENV_NAME = os.getenv("ENV_NAME", "production")
-
-GIT_BRANCH = os.getenv("GIT_BRANCH", "")
-GIT_COMMIT = os.getenv("GIT_COMMIT", "")
-
+GIT_BRANCH = env("GIT_BRANCH", default="")
+GIT_COMMIT = env("GIT_COMMIT", default="")
 
 LOGGING = {
     "version": 1,
@@ -283,28 +271,28 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
+        "level": env("ROOT_LOG_LEVEL", default="INFO"),
     },
     "loggers": {
         "django": {
             "handlers": [
                 "stdout",
             ],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
             "propagate": True,
         },
         "django.server": {
             "handlers": [
                 "stdout",
             ],
-            "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_SERVER_LOG_LEVEL", default="INFO"),
             "propagate": False,
         },
         "django.db.backends": {
             "handlers": [
                 "stdout",
             ],
-            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_DB_LOG_LEVEL", default="INFO"),
             "propagate": True,
         },
     },
@@ -331,28 +319,28 @@ ENVIRONMENT_LOGGING = {
         "handlers": [
             "ecs",
         ],
-        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
+        "level": env("ROOT_LOG_LEVEL", default="INFO"),
     },
     "loggers": {
         "django": {
             "handlers": [
                 "ecs",
             ],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
             "propagate": False,
         },
         "django.server": {
             "handlers": [
                 "ecs",
             ],
-            "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "ERROR"),
+            "level": env("DJANGO_SERVER_LOG_LEVEL", default="ERROR"),
             "propagate": False,
         },
         "django.db.backends": {
             "handlers": [
                 "ecs",
             ],
-            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "ERROR"),
+            "level": env("DJANGO_DB_LOG_LEVEL", default="ERROR"),
             "propagate": False,
         },
     },
