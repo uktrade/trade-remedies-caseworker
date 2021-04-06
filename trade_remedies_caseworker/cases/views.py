@@ -11,7 +11,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from cases.utils import is_date
 from core.base import GroupRequiredMixin
 from core.utils import (
     deep_index_items_by,
@@ -28,6 +27,7 @@ from core.utils import (
     to_json,
     from_json,
     deep_update,
+    is_date,
 )
 from django_countries import countries
 from django.conf import settings
