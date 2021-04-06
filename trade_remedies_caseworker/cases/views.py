@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from cases.utils import is_date
 from core.base import GroupRequiredMixin
 from core.utils import (
     deep_index_items_by,
@@ -50,7 +51,6 @@ from core.constants import (
     CASE_ROLE_PREPARING,
     DIRECTION_TRA_TO_PUBLIC,
     TRUTHFUL_INPUT_VALUES,
-    REGEX_ISO_DATE,
 )
 
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
@@ -886,7 +886,7 @@ class SubmissionView(CaseBaseView):
         ):
             if name is not None and not name:
                 return_data.update({"errors": '{"name":"You must enter a name"}'})
-            if due_at and not re.match(REGEX_ISO_DATE, due_at):
+            if due_at and not is_date(due_at):
                 return_data.update({"errors": '{"due_date":"Invalid date"}'})
             if not return_data.get("errors"):
                 self._client.update_submission(
