@@ -85,5 +85,3 @@ ALERT_MAP = {
     "pass_conf": "Password does not match the confirmation",
     "pass_reset": "Could not reset password. Please try again",
 }
-
-REGEX_ISO_DATE = "^\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3}[Z]?)$"

@@ -27,6 +27,7 @@ from core.utils import (
     to_json,
     from_json,
     deep_update,
+    is_date,
 )
 from django_countries import countries
 from django.conf import settings
@@ -49,7 +50,6 @@ from core.constants import (
     CASE_ROLE_APPLICANT,
     CASE_ROLE_PREPARING,
     DIRECTION_TRA_TO_PUBLIC,
-    REGEX_ISO_DATE,
 )
 
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
@@ -841,7 +841,7 @@ class SubmissionView(CaseBaseView):
         ):
             if name is not None and not name:
                 return_data.update({"errors": '{"name":"You must enter a name"}'})
-            if due_at and not re.match(REGEX_ISO_DATE, due_at):
+            if due_at and not is_date(due_at):
                 return_data.update({"errors": '{"due_date":"Invalid date"}'})
             if not return_data.get("errors"):
                 self._client.update_submission(
