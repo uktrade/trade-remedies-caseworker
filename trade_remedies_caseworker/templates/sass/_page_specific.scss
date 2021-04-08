@@ -2,8 +2,8 @@ table.submissions.submissions {
   .submission-is-published {
     display: block;
   }
-  .submission-has-new-file {
-    float: right;
+  .submission-is-new {
+    display: block;
   }
   a,
   td {
