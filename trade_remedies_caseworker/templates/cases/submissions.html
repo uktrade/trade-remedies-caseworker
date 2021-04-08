@@ -1,6 +1,7 @@
 {% extends "cases/_case_template.html" %}
 {% load format_date %}
 {% load ascii %}
+{% load custom_filters %}
 
 {% block case_page_content %}
     <script type="text/javascript">
@@ -36,10 +37,10 @@
         </div>
         {% comment %} ***********   Tabs {% endcomment %}
         <ul class="tabset">
-            {% include 'widgets/tab.html' with label='Rejected' value='rejected' current=tab number=counts.rejected %}
-            {% include 'widgets/tab.html' with label='Awaiting' value='awaiting_approval' current=tab number=counts.awaiting_approval %}
-            {% include 'widgets/tab.html' with label='Not sampled' value='not_sampled' current=tab number=counts.not_sampled %}
             {% include 'widgets/tab.html' with label='Sampled' value='sampled' current=tab number=counts.sampled %}
+            {% include 'widgets/tab.html' with label='Not sampled' value='not_sampled' current=tab number=counts.not_sampled %}
+            {% include 'widgets/tab.html' with label='Awaiting' value='awaiting_approval' current=tab number=counts.awaiting_approval %}
+            {% include 'widgets/tab.html' with label='Rejected' value='rejected' current=tab number=counts.rejected %}
         </ul>
 
         {% comment %} ***********   List of party types {% endcomment %}
@@ -62,9 +63,8 @@
                 </thead>
                 <tbody>
 
-                {% set 'odd' False %}
+                {% set 'odd' True %}
                 {% for participant in role.participants %}
-                    {% set 'odd' odd|_not %}
                     {% if participant.submissions|length == 0 %}
                         {% comment %} This is to remove the TRA in the case of ex-officio cases {% endcomment %}
                         <tr class="{% if odd %}odd-row{% else %}even-row{% endif %}">
@@ -102,13 +102,14 @@
                                             <i class="icon icon-green-tick"></i>Published
                                         </span>
                                     {% endif %}
-                                    {% if submission.new_submission %}
-                                        <span class="submission-has-new-file">
-                                            New
+                                    {% if submission.is_new_submission %}
+                                        <span class="submission-is-new">
+                                            <i class="icon icon-info"></i>New!
                                         </span>
                                     {% endif %}
                                 </td>
-                                <td>{{ submission.status.name }}</td>
+                                <td>{{ submission.status.name }}
+                                </td>
                                 <td>
                                     {{ submission.sent_at|format_date:'%d %b %Y' }}
                                 </td>
@@ -118,8 +119,10 @@
                                        data-value="{{ submission.due_at }}">{% format_date submission.due_at '%d %b %Y' %}</a>
                                 </td>
                             </tr>
+                            {% set 'odd' odd|_not %}
                         {% endfor %}
                     {% endif %}
+                    {% set 'odd' odd|_not %}
                 {% endfor %}
                 </tbody>
             {% else %}
