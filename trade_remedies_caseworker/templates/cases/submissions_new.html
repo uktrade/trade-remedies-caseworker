@@ -30,9 +30,9 @@
 	</div>
 	<div data-attach="Tabset">
 		<ul class="tabset">
-			{% include 'widgets/tab.html' with left=True label='Incoming' selected=True value='incoming'  number=submission_groups.incoming|length %}
-			{% include 'widgets/tab.html' with left=True label='Outgoing' value='outgoing'  number=submission_groups.outgoing|length %}
-			{% include 'widgets/tab.html' with left=True label='Draft' value='draft'  number=submission_groups.draft|length %}
+			{% include 'widgets/tab.html' with label='Incoming' selected=True value='incoming'  number=submission_groups.incoming|length %}
+			{% include 'widgets/tab.html' with label='Outgoing' value='outgoing'  number=submission_groups.outgoing|length %}
+			{% include 'widgets/tab.html' with label='Draft' value='draft' number=submission_groups.draft|length %}
 		</ul>
 		<div class="tab-page" data-tab="incoming">
 			{% set 'columns' 'received type_name organisation status'|split %}
