@@ -58,13 +58,6 @@
 						<li>
 							<button type="button" class="link modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/dedupe/" data-event-refresh="party-updated">View/merge duplicates</button>
 						</li>
-						{% comment %}<!--
-						{% if not validation_complete %}
-							<li>
-								<button type="button" class="link modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/verify_caserole/">Verify the organisation</button>
-							</li>
-						{% endif %}-->
-						{% endcomment %}
 		            </ul>
 		          </div>
 		        </span>
@@ -107,10 +100,10 @@
 	  		<div class="column-full margin-top-1">
 			  <div data-attach="Tabset">
 			    <ul class="tabset">
-			     {% include "widgets/tab.html" with value="submissions" label="Submissions" number=submissions|length selected=True sr_text="Party submissions" left=True %}
-			     {% include "widgets/tab.html" with value="contacts" label="Contacts" sr_text="Party contacts" left=True %}
-			     {% include "widgets/tab.html" with value="cases" label="Cases" number=cases_idx.false|length sr_text="Party cases" left=True %}
-			     {% include "widgets/tab.html" with value="notes" label="Notes" sr_text="Party notes" left=True %}
+			     {% include "widgets/tab.html" with value="submissions" label="Submissions" number=submissions|length selected=True sr_text="Party submissions" %}
+			     {% include "widgets/tab.html" with value="contacts" label="Contacts" sr_text="Party contacts" %}
+			     {% include "widgets/tab.html" with value="cases" label="Cases" number=cases_idx.false|length sr_text="Party cases" %}
+			     {% include "widgets/tab.html" with value="notes" label="Notes" sr_text="Party notes" %}
 			    </ul>
 
 		  <!--  Submissions section -->
@@ -137,21 +130,6 @@
 			{% include "widgets/auth_list.html" with user_cases=user_cases %}
 		  </div>
 
-		  <!--
-		  {% comment %}
-		  <div class="tab-page hidden party-details" data-tab="auth">
-		    <ul class="contact-list">
-		      {% for contact in auth_contacts %}
-		        <li>
-		          {% include "widgets/contact_block.html" with contact=contact case_id=None hide_controls=True %}
-		        </li>
-		      {% endfor %}
-		    </ul>
-		  </div>
-			{% endcomment %}
-		-->
-
-
 		  <!--  Notes section -->
 		  <div class="tab-page hidden" data-tab="notes">
 		    {% include "widgets/notesWidget.html" with modelId=organisation.id contentType="security.organisationcaserole" %}
@@ -170,8 +148,8 @@
 		    </div>
 		    <div class="expand-section" data-attach="Tabset">
 		      <ul class="tabset">
-		       {% include "widgets/tab.html" with value="current" label="Current" sr_text="Current cases" selected=True left=True %}
-		       {% include "widgets/tab.html" with value="archived" label="Archived" sr_text="Archived cases" left=True %}
+		       {% include "widgets/tab.html" with value="current" label="Current" sr_text="Current cases" selected=True %}
+		       {% include "widgets/tab.html" with value="archived" label="Archived" sr_text="Archived cases" %}
 		      </ul>
 		      <div class="tab-page" data-tab="current">
 		        {% include "widgets/case_list.html" with cases=cases_idx.false %}

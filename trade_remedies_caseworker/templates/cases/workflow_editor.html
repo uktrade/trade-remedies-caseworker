@@ -11,8 +11,8 @@
     <textarea id="state-json" class="hidden">{{ state|to_json }}</textarea>
     <div data-attach="Tabset">
         <ul class="tabset">
-    		{% include 'widgets/tab.html' with left=True label='Workflow' value='workflow' current=tab selected=1 %}
-    		{% include 'widgets/tab.html' with left=True label='State' value='state' current=tab %}
+    		{% include 'widgets/tab.html' with label='Workflow' value='workflow' current=tab selected=True %}
+    		{% include 'widgets/tab.html' with label='State' value='state' current=tab %}
     	</ul>
         <div class="tab-page" data-tab="workflow">
             <div class="workflow-page edit-item work-area">
