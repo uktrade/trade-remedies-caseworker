@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.parser import parse
 import dpath
 import re
 import markdown
@@ -223,3 +224,11 @@ def from_json(obj):
     if type(obj) is str:
         return json.loads(obj)
     return obj or {}
+
+
+def is_date(date_text):
+    try:
+        parse(date_text)
+        return True
+    except ValueError:
+        return False

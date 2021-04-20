@@ -27,6 +27,7 @@ from core.utils import (
     to_json,
     from_json,
     deep_update,
+    is_date,
 )
 from django_countries import countries
 from django.conf import settings
@@ -49,8 +50,6 @@ from core.constants import (
     CASE_ROLE_APPLICANT,
     CASE_ROLE_PREPARING,
     DIRECTION_TRA_TO_PUBLIC,
-    TRUTHFUL_INPUT_VALUES,
-    REGEX_ISO_DATE,
 )
 
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
@@ -218,7 +217,7 @@ class CaseBaseView(
     def add_page_data(self):
         return {}
 
-    def get_documents(self, submission=None, all_versions=None):
+    def get_documents(self, submission, all_versions=None):
         result = self._client.get_submission_documents(
             self.case_id, submission.get("id"), all_versions=all_versions
         )
@@ -265,16 +264,6 @@ class CaseBaseView(
                         counts[document_source]["virus"] += 1
                     else:
                         counts[document_source]["unscanned"] += 1
-
-        # Get the deficiency documents from the previous version if applicable
-        # if submission and (submission.get('previous_version') or {}).get('deficiency_sent_at'):
-        #    previous_submission =
-        #    self._client.get_submission_documents
-        #    (self.case_id, submission['previous_version']['id'])
-        #    deficiency_documents = [
-        #        pdoc for pdoc in previous_submission.get('documents', [])
-        #        if pdoc['type']['key'] == 'deficiency'
-        #    ]
         return {
             "caseworker": submission_documents.get("caseworker", []),
             "respondent": submission_documents.get("respondent", []),
@@ -563,27 +552,7 @@ class SubmissionsView(CaseBaseView):
         }
 
     def add_page_data(self):
-        sampled_only = self.request.GET.get("sampled", "true") in TRUTHFUL_INPUT_VALUES
         tab = self.request.GET.get("tab", "sampled").lower()
-        roles = self._client.get_case_roles()
-        submission_fields = json.dumps(
-            {
-                "Submission": {
-                    "id": 0,
-                    "name": 0,
-                    "type": {"name": 0},
-                    "version": 0,
-                    "status": {"name": 0, "draft": 0, "default": 0},
-                    "sent_at": 0,
-                    "received_at": 0,
-                    "created_at": 0,
-                    "due_at": 0,
-                    "tra_editable": 1,
-                    "organisation": {"id": 0},
-                }
-            }
-        )
-
         all_submissions = self._client.get_submissions(self.case_id, show_global=True)
         submissions_by_type = deep_index_items_by(all_submissions, "type/name")
 
@@ -604,20 +573,6 @@ class SubmissionsView(CaseBaseView):
             submissions_by_type["application"][0]["tra_editable"] = True
             non_draft_submissions += submissions_by_type["application"]
         submissions_by_party = deep_index_items_by(non_draft_submissions, "organisation/id")
-
-        for submission in non_draft_submissions:
-            new_submission = False
-            for document_type, documents in self.get_documents(submission=submission).items():
-                if document_type in ["nonconfidential", "confidential"]:
-                    for document in documents:
-                        if (
-                            not document["deficient"]
-                            and not document["sufficient"]
-                            and document["safe"]
-                        ):
-                            new_submission = True
-            submission["new_submission"] = new_submission
-
         case_enums = self._client.get_all_case_enums()
         invites = self._client.get_case_invite_submissions(self.case_id)
         participants = self._client.get_case_participants(self.case_id, fields=org_fields)
@@ -886,7 +841,7 @@ class SubmissionView(CaseBaseView):
         ):
             if name is not None and not name:
                 return_data.update({"errors": '{"name":"You must enter a name"}'})
-            if due_at and not re.match(REGEX_ISO_DATE, due_at):
+            if due_at and not is_date(due_at):
                 return_data.update({"errors": '{"due_date":"Invalid date"}'})
             if not return_data.get("errors"):
                 self._client.update_submission(
@@ -2826,7 +2781,6 @@ class DocumentSearchView(CaseBaseView):
             confidential_status=conf_status,
             user_type=user_type,
         )
-        # results = response.get('response', {}).pop('results', [])
         return {
             "body_classes": "full-width",
             "documents": response.pop("results", []),
