@@ -1,1 +1,1 @@
-web: cd trade_remedies_caseworker && python ./manage.py migrate && ./manage.py collectstatic --noinput && gunicorn trade_remedies_caseworker.wsgi --bind 0.0.0.0:8080 --config trade_remedies_caseworker/gunicorn.py
+web: cd trade_remedies_caseworker && python ./manage.py migrate && ./manage.py collectstatic --noinput && gunicorn trade_remedies_caseworker.wsgi --bind 0.0.0.0:8080 --capture-output --config trade_remedies_caseworker/gunicorn.py

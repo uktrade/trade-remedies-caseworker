@@ -1,6 +1,6 @@
 {
   "name": "trade-remedies-caseworker",
-  "version": "1.5.3",
+  "version": "1.5.9",
   "description": "Case-worker-facing UI for the Trade Remedies system",
   "main": "index.js",
   "private": true,
@@ -25,7 +25,8 @@
     "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^2.6.5"
+    "gulp-sourcemaps": "^2.6.5",
+    "yargs-parser": "^18.1.1"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.17.2",

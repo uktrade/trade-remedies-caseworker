@@ -3,7 +3,7 @@
 <table class="review-list empty margin-top-1">
     <thead>
     <tr>
-        <th colspan={% if hide_headings %}4{% else %}2{% endif %}>{{ title|default:'Documents' }}
+        <th colspan={% if hide_headings %}3{% else %}2{% endif %}>{{ title|default:'Documents' }}
             {% if hide_headings and not editable and not third_party_invite %}
                 {% if not submission.organisation_case_role_outer.validated_at %}
                     <span class="pull-right">Publication available after verification</span>
@@ -30,7 +30,6 @@
             {% endif %}
         </th>
         {% if not hide_headings %}
-            <th>Status</th>
             <th><span class="pull-right">Sufficient?</span></th>
         {% endif %}
     </tr>
@@ -98,12 +97,7 @@
 
                     {% endif %}
                 </td>
-                <td>
-                    {% if not document.deficient and not document.sufficient and document.safe %}
-                        New
-                    {% endif %}
-                </td>
-                <td>
+                <td style="white-space: nowrap;">
                     {% set 'doc_editable' editable %}
                     {% set 'value' '' %}
                     {% if document.deficient or not document.safe %}

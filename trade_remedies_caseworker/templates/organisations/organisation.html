@@ -17,8 +17,8 @@
 		  </div>
 		  <div class="expand-section" data-attach="Tabset">
 		    <ul class="tabset">
-		     {% include "widgets/tab.html" with value="current" label="Current" sr_text="Current cases" selected=True left=True %}
-		     {% include "widgets/tab.html" with value="archived" label="Archived" sr_text="Archived cases" left=True %}
+		     {% include "widgets/tab.html" with value="current" label="Current" sr_text="Current cases" selected=True %}
+		     {% include "widgets/tab.html" with value="archived" label="Archived" sr_text="Archived cases" %}
 		    </ul>
 		    <div class="tab-page" data-tab="current">
 		      {% include "widgets/case_list.html" with cases=cases_idx.false %}
