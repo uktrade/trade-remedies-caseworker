@@ -13,12 +13,12 @@ botocore==1.14.17
     #   -r requirements.in/../requirements/base.txt
     #   boto3
     #   s3transfer
-certifi==2020.6.20
+certifi==2020.12.5
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
     #   sentry-sdk
-chardet==3.0.4
+chardet==4.0.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
@@ -76,7 +76,7 @@ dpath==1.4.2
     # via -r requirements.in/../requirements/base.txt
 gevent==21.1.2
     # via -r requirements.in/prod.in
-greenlet==0.4.17
+greenlet==1.0.0
     # via gevent
 gunicorn==20.0.4
     # via -r requirements.in/prod.in
@@ -103,7 +103,7 @@ python-dateutil==2.8.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
-pytz==2020.1
+pytz==2021.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
@@ -112,13 +112,13 @@ redis==3.2.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-redis
-requests==2.24.0
+requests==2.25.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   trade-remedies-client
 s3chunkuploader==0.10
     # via -r requirements.in/../requirements/base.txt
-s3transfer==0.3.3
+s3transfer==0.3.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   boto3
@@ -130,13 +130,13 @@ six==1.15.0
     #   django-extensions
     #   django-session-timeout
     #   python-dateutil
-sqlparse==0.3.1
+sqlparse==0.4.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
 git+git://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/../requirements/base.txt
-urllib3==1.25.10
+urllib3==1.25.11
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
@@ -150,7 +150,7 @@ whitenoise==3.3.1
     # via -r requirements.in/../requirements/base.txt
 zope.event==4.5.0
     # via gevent
-zope.interface==5.2.0
+zope.interface==5.4.0
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:
