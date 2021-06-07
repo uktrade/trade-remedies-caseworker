@@ -4,11 +4,11 @@
 #
 #    pip-compile --output-file=requirements/prod.txt requirements.in/prod.in
 #
-boto3==1.11.14
+boto3==1.17.88
     # via
     #   -r requirements.in/../requirements/base.txt
     #   s3chunkuploader
-botocore==1.14.17
+botocore==1.20.88
     # via
     #   -r requirements.in/../requirements/base.txt
     #   boto3
@@ -56,7 +56,7 @@ django-storages==1.9.1
     #   s3chunkuploader
 django-timezone-field==2.0
     # via -r requirements.in/../requirements/base.txt
-django==2.2.20
+django==2.2.21
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-basicauth
@@ -68,10 +68,6 @@ django==2.2.20
     #   django-timezone-field
     #   s3chunkuploader
     #   trade-remedies-client
-docutils==0.15.2
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   botocore
 dpath==1.4.2
     # via -r requirements.in/../requirements/base.txt
 gevent==21.1.2
@@ -118,7 +114,7 @@ requests==2.25.1
     #   trade-remedies-client
 s3chunkuploader==0.10
     # via -r requirements.in/../requirements/base.txt
-s3transfer==0.3.7
+s3transfer==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   boto3
@@ -136,7 +132,7 @@ sqlparse==0.4.1
     #   django
 git+git://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/../requirements/base.txt
-urllib3==1.25.11
+urllib3==1.26.5
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
