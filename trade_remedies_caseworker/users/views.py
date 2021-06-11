@@ -140,7 +140,7 @@ class UserView(UserBaseTemplateView):
                 ],
             )
         )
-        user["country"] = request.POST.get("country", user.get("country_code"))
+        user["country_code"] = request.POST.get("country", user.get("country_code"))
         user["groups"] = request.POST.getlist(
             "roles"
         )  # translation needed as the create write key doesn't match the update
@@ -213,7 +213,7 @@ class MyAccountView(UserBaseTemplateView):
         client = self.client(request.user)
         user = client.get_my_account()
         user["name"] = request.POST.get("name")
-        user["country"] = request.POST.get("country", user.get("country_code"))
+        user["country_code"] = request.POST.get("country", user.get("country_code"))
         user["phone"] = request.POST.get("phone", user.get("phone"))
         user["timezone"] = request.POST.get("timezone", user.get("timezone"))
         user["job_title_id"] = request.POST.get("job_title_id") or None
