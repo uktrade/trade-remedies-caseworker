@@ -120,10 +120,11 @@ class UserView(UserBaseTemplateView):
         required_fields = ["name", "email", "roles"]
         if not user_id:
             required_fields += ["password", "password_confirm"]
-
         user = {}
         if user_id:
             user = client.get_user(user_id)
+            if user["tra"]:
+                required_fields.append("job_title_id")
         else:
             user["email"] = request.POST.get("email")  # Can't update email
         user.update(
@@ -160,13 +161,12 @@ class UserView(UserBaseTemplateView):
         if not errors:
             try:
                 response = client.create_or_update_user(user, user_id=user_id)
-            except APIException as exc:
-                errors = exc.detail.get("errors", [])
+            except APIException as e:
                 return self.get(
                     request,
                     user_id=user_id,
                     user_group=user_group,
-                    errors=errors,
+                    errors=[str(e)],
                     user=user,
                 )
             else:
