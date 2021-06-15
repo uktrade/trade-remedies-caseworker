@@ -30,7 +30,13 @@
             </div>
             <div class="column-one-half">
             	{% if edit_user.tra %}
-	                <div class="form-group type-text {% if 'job_title_id' in errors %}form-group-error{% endif %}">
+                    {% if 'job_title_id' in errors %}
+                        {% set 'job_title_error' True %}
+                    {% endif %}
+	                <div class="form-group type-text {% if job_title_error %}form-group-error{% endif %}">
+                        {% if job_title_error %}
+                            <span class="error-message">Job Title required</span>
+                        {% endif %}
 	                    <label for="job_title_id" class="form-label">Job Title </label>
 	                    <select name="job_title_id" class="form-control" id="job_title_id">
 	                        <option value="">Select Job Title</option>
