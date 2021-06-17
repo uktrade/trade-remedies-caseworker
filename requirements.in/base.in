@@ -14,7 +14,7 @@ django-redis==4.10.0
 django-session-timeout==0.0.3
 django-timezone-field==2.0
 django-storages==1.9.1
-Django==2.2.21
+Django==2.2.24
 dpath==1.4.2
 Markdown==2.6.11
 pytz
