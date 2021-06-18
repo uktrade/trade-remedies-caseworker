@@ -1,3 +1,4 @@
+import logging
 import pytz
 import json
 from django.views.generic import TemplateView
@@ -10,6 +11,9 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 from core.utils import validate_required_fields, pluck, get
 from core.constants import SECURITY_GROUP_SUPER_USER
+
+
+logger = logging.getLogger(__name__)
 
 
 class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
@@ -158,20 +162,7 @@ class UserView(UserBaseTemplateView):
             if password != request.POST.get("password_confirm"):
                 errors["password_confirm"] = "Confirmation password does not match"
 
-        if not errors:
-            try:
-                response = client.create_or_update_user(user, user_id=user_id)
-            except APIException as e:
-                return self.get(
-                    request,
-                    user_id=user_id,
-                    user_group=user_group,
-                    errors=[str(e)],
-                    user=user,
-                )
-            else:
-                return HttpResponse(json.dumps({"result": response}))
-        else:
+        if errors:
             return self.get(
                 request,
                 user_id=user_id,
@@ -181,6 +172,19 @@ class UserView(UserBaseTemplateView):
                 *args,
                 **kwargs,
             )
+        try:
+            response = client.create_or_update_user(user, user_id=user_id)
+        except APIException as e:
+            logger.warning(f"API Error when attempting user update: {e}")
+            return self.get(
+                request,
+                user_id=user_id,
+                user_group=user_group,
+                errors=[str(e)],
+                user=user,
+            )
+        else:
+            return HttpResponse(json.dumps({"result": response}))
 
 
 class MyAccountView(UserBaseTemplateView):
