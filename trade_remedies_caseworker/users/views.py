@@ -117,7 +117,7 @@ class UserView(UserBaseTemplateView):
             result = client.delete_user(user_id=user_id)
             return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
 
-        required_fields = ["name", "email", "roles"]
+        required_fields = ["name", "email", "roles", "country"]
         if not user_id:
             required_fields += ["password", "password_confirm"]
         user = {}

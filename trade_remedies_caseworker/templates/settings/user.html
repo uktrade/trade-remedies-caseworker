@@ -48,8 +48,11 @@
 	                    </select>
 	                </div>
 	            {% else %}
-	                <div class="form-group type-text {% if 'country' in errors %}form-group-error{% endif %}">
-	                    <label for="country" class="form-label">Country </label>
+	                <div class="form-group type-text {% if errors.country %}form-group-error{% endif %}">
+	                    <label for="country" class="form-label">Country</label>
+                        {% if errors.country %}
+                            <span class="error-message">Country required</span>
+                        {% endif %}
 	                    <select name="country" class="form-control" id="country">
 	                        <option value="">Select Country</option>
 	                        {% for country in countries %}
