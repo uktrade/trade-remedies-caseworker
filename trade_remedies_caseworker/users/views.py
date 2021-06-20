@@ -121,15 +121,16 @@ class UserView(UserBaseTemplateView):
             result = client.delete_user(user_id=user_id)
             return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
 
-        required_fields = ["name", "email", "roles", "country"]
-        if not user_id:
-            required_fields += ["password", "password_confirm"]
+        required_fields = ["name", "email", "roles", "phone"]
         user = {}
         if user_id:
             user = client.get_user(user_id)
             if user["tra"]:
                 required_fields.append("job_title_id")
+            else:
+                required_fields.append("country")
         else:
+            required_fields += ["password", "password_confirm"]
             user["email"] = request.POST.get("email")  # Can't update email
         user.update(
             pluck(
@@ -149,11 +150,6 @@ class UserView(UserBaseTemplateView):
         user["groups"] = request.POST.getlist(
             "roles"
         )  # translation needed as the create write key doesn't match the update
-        if not user_id:
-            user["country_code"] = request.POST.get(
-                "country"
-            )  # bodge as create doesn't match update
-
         errors = validate_required_fields(request, required_fields) or {}
         password = request.POST.get("password")
         if password:
@@ -161,7 +157,6 @@ class UserView(UserBaseTemplateView):
             user["password_confirm"] = request.POST.get("password_confirm")
             if password != request.POST.get("password_confirm"):
                 errors["password_confirm"] = "Confirmation password does not match"
-
         if errors:
             return self.get(
                 request,
@@ -183,8 +178,7 @@ class UserView(UserBaseTemplateView):
                 errors=[str(e)],
                 user=user,
             )
-        else:
-            return HttpResponse(json.dumps({"result": response}))
+        return HttpResponse(json.dumps({"result": response}))
 
 
 class MyAccountView(UserBaseTemplateView):
