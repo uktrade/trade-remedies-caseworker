@@ -11,6 +11,7 @@ from core.constants import (
     ALERT_MAP,
 )
 from core.base import GroupRequiredMixin
+from core.utils import internal_redirect
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 
