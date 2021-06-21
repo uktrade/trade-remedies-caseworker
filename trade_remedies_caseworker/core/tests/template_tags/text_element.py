@@ -4,7 +4,7 @@ from django.template import Template, Context
 from django.utils.html import escape
 
 
-class TextElementTests(TestCase):
+class TestTextElement(TestCase):
     def test_value_is_escaped(self):
         img_tag_str = '<img src="test" />'
 
