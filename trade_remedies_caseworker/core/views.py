@@ -80,7 +80,11 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
                 request.session["user"] = response["user"]
                 request.session["version"] = response.get("version")
                 request.session["errors"] = None
-                return redirect(next_url or "/cases/")
+
+                if next_url:
+                    return internal_redirect(next_url, "/cases/")
+                else:
+                    return redirect("/cases/")
             else:
                 return redirect("/accounts/login/?error=t")
         except Exception as exc:

@@ -27,6 +27,7 @@ from core.utils import (
     to_json,
     from_json,
     deep_update,
+    internal_redirect,
     is_date,
 )
 from django_countries import countries
@@ -408,7 +409,7 @@ class CaseView(CaseBaseView):
         self._client.set_case_data(case_id, {"name": request.POST.get("name")})
         redirect = request.POST.get("redirect")
         if redirect:
-            return redirect(request.POST.get("redirect"))
+            return internal_redirect(request.POST.get("redirect"), "/")
         else:
             return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
 
@@ -2203,7 +2204,7 @@ class NoteView(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
             )
         redirect_url = request.POST.get("redirect")
         if redirect_url:
-            return redirect(redirect_url)
+            return internal_redirect(redirect_url, "/")
         else:
             # Return note json to be rendered at the client
             return HttpResponse(json.dumps(result), content_type="application/json")
