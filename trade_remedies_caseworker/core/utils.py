@@ -4,6 +4,8 @@ import dpath
 import re
 import markdown
 from django.conf import settings
+from django.shortcuts import redirect
+from django.utils.http import is_safe_url
 import json
 
 
