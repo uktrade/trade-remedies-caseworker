@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from django.template import Template
+from django.template import Template, Context
 from django.utils.html import escape
 
 
@@ -9,7 +9,8 @@ class TextElementTests(TestCase):
         img_tag_str = '<img src="test" />'
 
         rendered = Template(
-            "{% load text_element %}" "{% text_element id='test' label='Test' value=img_tag_str %}"
+            "{% load text_element %} "
+            "{% text_element id='test' label='Test' value=img_tag_str %}"
         ).render(Context({"img_tag_str": img_tag_str}))
 
         assert escape(img_tag_str) in rendered
