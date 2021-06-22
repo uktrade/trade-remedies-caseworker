@@ -4,6 +4,8 @@ import dpath
 import re
 import markdown
 from django.conf import settings
+from django.shortcuts import redirect
+from django.utils.http import is_safe_url
 import json
 
 
@@ -232,3 +234,16 @@ def is_date(date_text):
         return True
     except ValueError:
         return False
+
+
+def internal_redirect(url, default_path):
+    """
+    Redirect to the specified URL after checking that
+    host is in the allowed hosts list
+    :param url: URL to redirect to
+    :param default_path: Default path to redirect to if url is unsafe
+    """
+    if not is_safe_url(url, settings.ALLOWED_HOSTS):
+        return redirect(default_path)
+
+    return redirect(url)
