@@ -53,6 +53,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
         password = request.GET.get("password")
         error = request.GET.get("error")
         request.session["next"] = request.GET.get("next")
+        request.session.cycle_key()
         return render(
             request,
             self.template_name,
@@ -80,6 +81,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
                 request.session["user"] = response["user"]
                 request.session["version"] = response.get("version")
                 request.session["errors"] = None
+                request.session.cycle_key()
                 return redirect(next_url or "/cases/")
             else:
                 return redirect("/accounts/login/?error=t")
