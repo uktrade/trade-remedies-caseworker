@@ -11,6 +11,7 @@ from core.constants import (
     ALERT_MAP,
 )
 from core.base import GroupRequiredMixin
+from core.utils import internal_redirect
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 
@@ -82,7 +83,10 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
                 request.session["version"] = response.get("version")
                 request.session["errors"] = None
                 request.session.cycle_key()
-                return redirect(next_url or "/cases/")
+                if next_url:
+                    return internal_redirect(next_url, "/cases/")
+                else:
+                    return redirect("/cases/")
             else:
                 return redirect("/accounts/login/?error=t")
         except Exception as exc:
