@@ -54,6 +54,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
         password = request.GET.get("password")
         error = request.GET.get("error")
         request.session["next"] = request.GET.get("next")
+        request.session.cycle_key()
         return render(
             request,
             self.template_name,
@@ -81,7 +82,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
                 request.session["user"] = response["user"]
                 request.session["version"] = response.get("version")
                 request.session["errors"] = None
-
+                request.session.cycle_key()
                 if next_url:
                     return internal_redirect(next_url, "/cases/")
                 else:
