@@ -39,7 +39,7 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
         }
         create_url = {
             "caseworker": {"url": reverse("create_investigator"), "label": "Investigator"},
-            "public":  {"url": reverse("create_customer"), "label": "Customer"},
+            "public": {"url": reverse("create_customer"), "label": "Customer"},
             "pending": {"url": reverse("create_customer"), "label": "Customer"},
         }[tab]
         client = self.client(request.user)
@@ -49,9 +49,9 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
         for user in users:
             user_id = user["id"]
             url = {
-                "caseworker": reverse("edit_investigator", args=(user_id, )),
-                "public": reverse("edit_customer", args=(user_id, )),
-                "pending": reverse("edit_customer", args=(user_id, )),
+                "caseworker": reverse("edit_investigator", args=(user_id,)),
+                "public": reverse("edit_customer", args=(user_id,)),
+                "pending": reverse("edit_customer", args=(user_id,)),
             }[tab]
             user["url"] = url
         return render(
@@ -63,6 +63,7 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
                 "inactive_user_count": sum(user["active"] is False for user in users),
                 "body_classes": "full-width",
                 "tabs": tabs,
+                "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
             },
         )
 
@@ -88,9 +89,9 @@ class UserView(UserBaseTemplateView):
         client = self.client(request.user)
         job_titles = client.get_all_job_titles()
         case_enums = client.get_all_case_enums()
-        group_name = 'customer'
-        if request.resolver_match.url_name.endswith('investigator'):
-            group_name = 'caseworker'
+        group_name = "customer"
+        if request.resolver_match.url_name.endswith("investigator"):
+            group_name = "caseworker"
         groups = client.get_security_groups(group_name)
         cases = []
         if user_id:
@@ -112,23 +113,26 @@ class UserView(UserBaseTemplateView):
             )
             if expiry and expiry < str_now:
                 cases.remove(case)
-        form_actions = {"create_investigator": reverse("create_investigator"),
-                        "create_customer": reverse("create_customer")
-                        }
+        form_actions = {
+            "create_investigator": reverse("create_investigator"),
+            "create_customer": reverse("create_customer"),
+        }
         can_edit = False
         editing_customer = group_name == "customer"
         if user_id and not user:
             user = client.get_user(user_id)
             can_edit = any(
-                [SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups,
-                 str(user_id) == request.user.id,
-                 editing_customer,
-                 ]
+                [
+                    SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups,
+                    str(user_id) == request.user.id,
+                    editing_customer,
+                ]
             )
             form_actions.update(
-                {"edit_investigator": reverse("edit_investigator", args=(user_id, )),
-                 "edit_customer": reverse("edit_customer", args=(user_id, )),
-                 }
+                {
+                    "edit_investigator": reverse("edit_investigator", args=(user_id,)),
+                    "edit_customer": reverse("edit_customer", args=(user_id,)),
+                }
             )
         else:
             user["country_code"] = user.get("country_code", "GB")
