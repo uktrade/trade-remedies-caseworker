@@ -151,13 +151,15 @@
                     {% endfor %}
                 </table>
             {% else %}
-                {% if not edit_user.tra %}
+                {% if not edit_user.tra and edit_user.id %}
 	                <p>This user has no active cases and therefore can be deleted.</p>
 	                <button type="button" data-handler="clickConfirm" 
 						data-message="Are you sure you want to delete this user?" 
 						data-title="Delete user" 
 						data-url="\users\{{edit_user.id}}\delete\" class="button button-grey compact" name="btn_val" value="delete"
 					>Delete user</button>
+                {% else %}
+                    <p>No active cases</p>
             	{% endif %}
             {% endif %}
         </div>
