@@ -100,7 +100,7 @@ class UserView(UserBaseTemplateView):
                 SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups,
                 str(user_id) == request.user.id,
                 editing_customer,
-                ]
+            ]
         )
         if user_id:
             cases = client.get_user_cases(
