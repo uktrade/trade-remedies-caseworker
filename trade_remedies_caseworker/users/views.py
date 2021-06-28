@@ -92,8 +92,16 @@ class UserView(UserBaseTemplateView):
         group_name = "customer"
         if request.resolver_match.url_name.endswith("investigator"):
             group_name = "caseworker"
+        editing_customer = group_name == "customer"
         groups = client.get_security_groups(group_name)
         cases = []
+        can_edit = any(
+            [
+                SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups,
+                str(user_id) == request.user.id,
+                editing_customer,
+                ]
+        )
         if user_id:
             cases = client.get_user_cases(
                 archived="all",
@@ -117,17 +125,8 @@ class UserView(UserBaseTemplateView):
             "create_investigator": reverse("create_investigator"),
             "create_customer": reverse("create_customer"),
         }
-        can_edit = False
-        editing_customer = group_name == "customer"
         if user_id and not user:
             user = client.get_user(user_id)
-            can_edit = any(
-                [
-                    SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups,
-                    str(user_id) == request.user.id,
-                    editing_customer,
-                ]
-            )
             form_actions.update(
                 {
                     "edit_investigator": reverse("edit_investigator", args=(user_id,)),
