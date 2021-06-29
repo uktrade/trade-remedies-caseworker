@@ -29,6 +29,8 @@
   },
   "devDependencies": {
     "all-contributors-cli": "^6.17.2",
-    "prettier": "^2.0.5"
+    "gulp-sass": "^5.0.0",
+    "prettier": "^2.3.2",
+    "sass": "^1.35.1"
   }
 }
