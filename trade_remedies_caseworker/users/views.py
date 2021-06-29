@@ -1,3 +1,4 @@
+import logging
 import pytz
 import json
 from django.views.generic import TemplateView
@@ -5,21 +6,28 @@ from django.utils import timezone
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
+from django.urls import reverse
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
+from core.base import GroupRequiredMixin
 from core.utils import validate_required_fields, pluck, get
-from core.constants import SECURITY_GROUP_SUPER_USER
+from core.constants import SECURITY_GROUP_TRA_ADMINISTRATOR, SECURITY_GROUPS_TRA_ADMINS
+
+
+logger = logging.getLogger(__name__)
 
 
 class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
     pass
 
 
-class UserManagerView(UserBaseTemplateView):
+class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
+
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "settings/users.html"
 
-    def get(self, request, user_group=None, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         tab = request.GET.get("tab", "caseworker")
         tabs = {
             "value": tab,
@@ -29,24 +37,33 @@ class UserManagerView(UserBaseTemplateView):
                 {"label": "Incomplete customer accounts", "value": "pending"},
             ],
         }
-        user_group = {
-            "caseworker": "caseworker",
-            "public": "public",
-            "pending": "public",
+        create_url = {
+            "caseworker": {"url": reverse("create_investigator"), "label": "Investigator"},
+            "public": {"url": reverse("create_customer"), "label": "Customer"},
+            "pending": {"url": reverse("create_customer"), "label": "Customer"},
         }[tab]
         client = self.client(request.user)
-        users = client.get_all_users(group_name=user_group)
-        users.sort(key=lambda user: user.get("created_at"), reverse=True)
-
+        group_name = "caseworker" if tab == "caseworker" else "public"
+        users = client.get_all_users(group_name=group_name)
+        users.sort(key=lambda usr: usr.get("created_at"), reverse=True)
+        for user in users:
+            user_id = user["id"]
+            url = {
+                "caseworker": reverse("edit_investigator", args=(user_id,)),
+                "public": reverse("edit_customer", args=(user_id,)),
+                "pending": reverse("edit_customer", args=(user_id,)),
+            }[tab]
+            user["url"] = url
         return render(
             request,
             self.template_name,
             {
-                "user_group": user_group,
+                "create_url": create_url,
                 "users": users,
                 "inactive_user_count": sum(user["active"] is False for user in users),
                 "body_classes": "full-width",
                 "tabs": tabs,
+                "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
             },
         )
 
@@ -67,13 +84,24 @@ class UserView(UserBaseTemplateView):
         }
     )
 
-    def get(self, request, user_id=None, user_group=None, *args, **kwargs):
+    def get(self, request, user_id=None, *args, **kwargs):
         user = kwargs.get("user", {})
         client = self.client(request.user)
         job_titles = client.get_all_job_titles()
         case_enums = client.get_all_case_enums()
-        groups = client.get_security_groups(user_group)
+        group_name = "customer"
+        if request.resolver_match.url_name.endswith("investigator"):
+            group_name = "caseworker"
+        editing_customer = group_name == "customer"
+        groups = client.get_security_groups(group_name)
         cases = []
+        can_edit = any(
+            [
+                SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups,
+                str(user_id) == request.user.id,
+                editing_customer,
+            ]
+        )
         if user_id:
             cases = client.get_user_cases(
                 archived="all",
@@ -81,6 +109,11 @@ class UserView(UserBaseTemplateView):
                 all_cases=False,
                 fields=self.user_fields,
             )
+        else:
+            # Create user attempt
+            if SECURITY_GROUP_TRA_ADMINISTRATOR not in request.user.groups:
+                logger.warning(f"Attempt by {request.user.email} to create user")
+                return HttpResponseForbidden()
         str_now = timezone.now().strftime(settings.API_DATETIME_FORMAT)
         for case in cases:
             expiry = get(case, "workflow_state/LATEST_MEASURE_EXPIRY/0") or get(
@@ -88,23 +121,36 @@ class UserView(UserBaseTemplateView):
             )
             if expiry and expiry < str_now:
                 cases.remove(case)
+        form_actions = {
+            "create_investigator": reverse("create_investigator"),
+            "create_customer": reverse("create_customer"),
+        }
         if user_id and not user:
             user = client.get_user(user_id)
+            form_actions.update(
+                {
+                    "edit_investigator": reverse("edit_investigator", args=(user_id,)),
+                    "edit_customer": reverse("edit_customer", args=(user_id,)),
+                }
+            )
         else:
             user["country_code"] = user.get("country_code", "GB")
             user["timezone"] = user.get("timezone", "Europe/London")
+        form_action = form_actions[request.resolver_match.url_name]
         return render(
             request,
             self.template_name,
             {
                 "body_classes": "full-width",
                 "job_titles": job_titles,
-                "user_group": user_group,
+                "form_action": form_action,
+                "editing_customer": editing_customer,
+                "read_only": not can_edit,
+                "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
                 "edit_user": user,
                 "timezones": pytz.common_timezones,
                 "groups": groups,
                 "errors": kwargs.get("errors", []),
-                "super_user_role": SECURITY_GROUP_SUPER_USER,
                 "countries": case_enums.get("countries", []),
                 "cases": cases,
             },
