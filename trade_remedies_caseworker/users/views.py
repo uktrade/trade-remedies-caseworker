@@ -249,7 +249,7 @@ class UserView(UserBaseTemplateView):
         if not user:
             user = {}
         create_mode = False
-        if request.resolver_match.url_name.startswith('create_'):
+        if request.resolver_match.url_name.startswith("create_"):
             create_mode = True
         is_admin = SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups
         password_update_attempt = any(
@@ -278,10 +278,10 @@ class UserView(UserBaseTemplateView):
 
         try:
             response = self.trusted_client.authenticate(
-                    user.get("email"),
-                    current_password,
-                    user_agent=request.META["HTTP_USER_AGENT"],
-                    ip_address=request.META["REMOTE_ADDR"],
+                user.get("email"),
+                current_password,
+                user_agent=request.META["HTTP_USER_AGENT"],
+                ip_address=request.META["REMOTE_ADDR"],
             )
         except HTTPError:
             errors["current_password"] = "Invalid current password"
