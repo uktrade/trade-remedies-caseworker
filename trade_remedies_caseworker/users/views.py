@@ -266,7 +266,14 @@ class UserView(UserBaseTemplateView):
         if password != password_confirm:
             errors["password_confirm"] = "Confirmation password does not match"
 
-        if create_mode or is_admin:  # No current password challenge required
+        skip_challenge = any(
+            [
+                create_mode,
+                is_admin,
+                not user["tra"],  # we're editing a customer
+            ]
+        )
+        if skip_challenge:
             return errors
 
         try:
