@@ -20,8 +20,11 @@
                 {% text_element id='email' label='Email' errors=errors value=edit_user.email readonly=edit_user.id autocomplete='new-email' %}
                 {% text_element id='name' label='Name' errors=errors value=edit_user.name readonly=read_only %}
                 {% text_element id='phone' label='Phone number' errors=errors value=edit_user.phone readonly=read_only %}
-                {% set 'password_label' 'Set password' %}
-                {% if edit_user.id %}{% set 'password_label' 'Change password' %}{% endif %}
+                {% set 'password_label' 'Password' %}
+                {% if challenge_password %}
+                    {% set 'password_label' 'New password' %}
+                    {% text_element id='current_password' label='Current password' errors=errors password=True autocomplete='new-password' readonly=read_only %}
+                {% endif %}
                 {% text_element id='password' label=password_label errors=errors value=edit_user.password password=True autocomplete='new-password' readonly=read_only %}
                 {% text_element id='password_confirm' label='Confirm password' errors=errors value=edit_user.password_confirm password=True  readonly=read_only %}
                 {% if not edit_user.tra %}
