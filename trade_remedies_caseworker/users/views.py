@@ -1,6 +1,7 @@
 import logging
 import pytz
 import json
+from requests.exceptions import HTTPError
 from django.views.generic import TemplateView
 from django.utils import timezone
 from django.shortcuts import render
@@ -95,14 +96,31 @@ class UserView(UserBaseTemplateView):
         editing_customer = group_name == "customer"
         groups = client.get_security_groups(group_name)
         cases = []
+        is_admin = SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups
         can_edit = any(
             [
-                SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups,
+                is_admin,
                 str(user_id) == request.user.id,
                 editing_customer,
             ]
         )
+        challenge_password = all(
+            [
+                not is_admin,
+                not editing_customer,
+            ]
+        )
+        form_actions = {
+            "create_investigator": reverse("create_investigator"),
+            "create_customer": reverse("create_customer"),
+        }
         if user_id:
+            form_actions.update(
+                {
+                    "edit_investigator": reverse("edit_investigator", args=(user_id,)),
+                    "edit_customer": reverse("edit_customer", args=(user_id,)),
+                }
+            )
             cases = client.get_user_cases(
                 archived="all",
                 request_for=user_id,
@@ -121,18 +139,8 @@ class UserView(UserBaseTemplateView):
             )
             if expiry and expiry < str_now:
                 cases.remove(case)
-        form_actions = {
-            "create_investigator": reverse("create_investigator"),
-            "create_customer": reverse("create_customer"),
-        }
         if user_id and not user:
             user = client.get_user(user_id)
-            form_actions.update(
-                {
-                    "edit_investigator": reverse("edit_investigator", args=(user_id,)),
-                    "edit_customer": reverse("edit_customer", args=(user_id,)),
-                }
-            )
         else:
             user["country_code"] = user.get("country_code", "GB")
             user["timezone"] = user.get("timezone", "Europe/London")
@@ -145,6 +153,7 @@ class UserView(UserBaseTemplateView):
                 "job_titles": job_titles,
                 "form_action": form_action,
                 "editing_customer": editing_customer,
+                "challenge_password": challenge_password,
                 "read_only": not can_edit,
                 "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
                 "edit_user": user,
@@ -163,15 +172,15 @@ class UserView(UserBaseTemplateView):
             result = client.delete_user(user_id=user_id)
             return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
 
-        required_fields = ["name", "email", "roles"]
-        if not user_id:
-            required_fields += ["password", "password_confirm"]
-
+        required_fields = ["name", "email"]
+        if SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups:
+            required_fields.append("roles")
         user = {}
         if user_id:
             user = client.get_user(user_id)
         else:
             user["email"] = request.POST.get("email")  # Can't update email
+            required_fields += ["password", "password_confirm"]
         user.update(
             pluck(
                 request.POST,
@@ -196,13 +205,11 @@ class UserView(UserBaseTemplateView):
             )  # bodge as create doesn't match update
 
         errors = validate_required_fields(request, required_fields) or {}
-        password = request.POST.get("password")
-        if password:
-            user["password"] = password
-            user["password_confirm"] = request.POST.get("password_confirm")
-            if password != request.POST.get("password_confirm"):
-                errors["password_confirm"] = "Confirmation password does not match"
-
+        if password_errors := self.validate_password(request, user):
+            errors.update(password_errors)
+        else:
+            if pwd := request.POST.get("password"):
+                user["password"] = pwd
         if not errors:
             try:
                 response = client.create_or_update_user(user, user_id=user_id)
@@ -227,6 +234,63 @@ class UserView(UserBaseTemplateView):
                 *args,
                 **kwargs,
             )
+
+    def validate_password(self, request, user=None):
+        """Validate password.
+
+        Checks if this is a user create or update and validates
+        password fields accordingly.
+
+        :param (HTTPRequest) request: in flight request.
+        :param (dict) user: user being updated.
+        :returns (dict): errors dict.
+        """
+        errors = {}
+        if not user:
+            user = {}
+        create_mode = False
+        if request.resolver_match.url_name.startswith("create_"):
+            create_mode = True
+        is_admin = SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups
+        password_update_attempt = any(
+            [
+                current_password := request.POST.get("current_password"),
+                password := request.POST.get("password"),
+                password_confirm := request.POST.get("password_confirm"),
+                create_mode,
+            ]
+        )
+        if not password_update_attempt:
+            return errors
+
+        if password != password_confirm:
+            errors["password_confirm"] = "Confirmation password does not match"
+
+        skip_challenge = any(
+            [
+                create_mode,
+                is_admin,
+                not user["tra"],  # we're editing a customer
+            ]
+        )
+        if skip_challenge:
+            return errors
+
+        try:
+            response = self.trusted_client.authenticate(
+                user.get("email"),
+                current_password,
+                user_agent=request.META["HTTP_USER_AGENT"],
+                ip_address=request.META["REMOTE_ADDR"],
+            )
+        except HTTPError:
+            errors["current_password"] = "Invalid current password"
+        except APIException:
+            errors["current_password"] = "Failed to validate current password"
+        else:
+            if not response.get("token"):
+                errors["current_password"] = "Invalid current password"
+        return errors
 
 
 class MyAccountView(UserBaseTemplateView):
