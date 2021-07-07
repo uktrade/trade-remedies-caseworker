@@ -29,7 +29,7 @@ def logout_view(request):
 
 
 class SystemView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
-    groups_required = (SECURITY_GROUP_TRA_ADMINISTRATOR, )
+    groups_required = (SECURITY_GROUP_TRA_ADMINISTRATOR,)
     template_name = "system_info.html"
 
     def get(self, request, *args, **kwargs):
