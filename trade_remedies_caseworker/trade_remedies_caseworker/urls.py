@@ -19,11 +19,10 @@ from cases.views import CasesView
 
 urlpatterns = [
     path("", CasesView.as_view(), name="cases"),
-    # path('accounts/', include('django.contrib.auth.urls')),
     path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
     path("accounts/login/", core_views.LoginView.as_view(), name="login"),
     path("accounts/logout/", core_views.logout_view, name="logout"),
-    path("system/", core_views.system_view, name="system"),
+    path("system/", core_views.SystemView.as_view(), name="system"),
     path(
         "accounts/forgotpassword/",
         core_views.ForgotPasswordView.as_view(),
