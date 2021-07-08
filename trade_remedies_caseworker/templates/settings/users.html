@@ -20,16 +20,15 @@
                 </div>
             </div>
         {% endif %}
-        <div class="right-of-tabs">
-            {% if user_group == 'caseworker' %}
-                <a class="link bold modal-form" href="/users/create/caseworker/" data-url="/users/create/caseworker/">&#x2795;
-                    New investigator</a>
-            {% elif user_group == 'public' %}
-                <a class="link bold modal-form" href="/users/create/public/" data-url="/users/create/caseworker/">&#x2795;
-                    New investigator</a>
-            {% endif %}
-        </div>
-
+        {% if tra_admin_role in user.groups %}
+            <div class="right-of-tabs">
+                    <a class="link bold modal-form"
+                       href="{{ create_url.url }}"
+                       data-url="{{ create_url.url }}">&#x2795;
+                        {{ create_url.label }}
+                    </a>
+            </div>
+        {% endif %}
         {% include "widgets/tabs.html" with q=tabs %}
         {{ tab }}
         <table class="sortable margin-top-1" data-attach="TableSort">
@@ -63,8 +62,9 @@
                             <td class="nobreak"
                                 sortVal="{{ user.created_at }}">{{ user.created_at|format_date:'%d %b %Y' }}</td>
                             <td>
-                                <a href="/users/{{ user_group }}/{{ user.id }}/" class="modal-form"
-                                   data-url="/users/{{ user_group }}/{{ user.id }}/"
+                                <a href="{{ user.url }}"
+                                   data-url="{{ user.url }}"
+                                   class="modal-form"
                                    {% if not user.active %}style="text-decoration: line-through;"{% endif %}
                                    }>{{ user.name }}</a>
                             </td>

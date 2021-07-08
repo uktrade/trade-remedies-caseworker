@@ -1,3 +1,5 @@
+from django.utils.html import escape
+
 from core.templatetags import register
 from django.utils.safestring import mark_safe
 
@@ -27,8 +29,12 @@ def text_element(
         autocomplete = f'autocomplete="{autocomplete}" '
     else:
         autocomplete = ""
+
     if value is None:
         value = context.get(id, "")
+    else:
+        value = escape(value)
+
     output.append('<div class="form-group type-text ')
     if id and errors and id in errors:
         output.append("form-group-error ")
