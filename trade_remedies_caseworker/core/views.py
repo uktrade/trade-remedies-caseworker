@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout
 from core.constants import (
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUPS_TRA,
     SECURITY_GROUPS_TRA_ADMINS,
     ALERT_MAP,
@@ -27,14 +28,13 @@ def logout_view(request):
     return redirect("/")
 
 
-def system_view(request):
-    return render(
-        request,
-        "system_info.html",
-        {
-            "body_classes": "full-width",
-        },
-    )
+class SystemView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
+    groups_required = (SECURITY_GROUP_TRA_ADMINISTRATOR,)
+    template_name = "system_info.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {"body_classes": "full-width"}
+        return render(request, self.template_name, context=context)
 
 
 class HealthCheckView(View, TradeRemediesAPIClientMixin):
