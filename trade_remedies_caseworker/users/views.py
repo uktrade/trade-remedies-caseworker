@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 
 class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
-
     def validate_password(self, request, user=None):
         """Validate password.
 
