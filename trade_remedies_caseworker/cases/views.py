@@ -1773,7 +1773,8 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         """Get third party contacts.
 
         Given an organisation, its submissions and all invitations for a case,
-        build a list of third party invite contacts.
+        build a list of third party invite contacts. We include the invite submissions
+        yet to be approved but flag the contact with `submission_sufficient`
 
         :param (str) organisation_id: Organisation ID.
         :param (dict) submissions: The organisation's submissions keyed on id.
@@ -1790,10 +1791,10 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     continue
                 inviting_organisation = full_submission[0]["organisation"]["id"]
                 if inviting_organisation == organisation_id:
-                    invite_sufficient = full_submission[0]["status"]["sufficient"]
+                    submission_sufficient = full_submission[0]["status"]["sufficient"]
                     invite["contact"]["is_third_party"] = True
                     invite["contact"]["submission_id"] = submission_id
-                    invite["contact"]["submission_sufficient"] = invite_sufficient
+                    invite["contact"]["submission_sufficient"] = submission_sufficient
                     invite["contact"]["invited"] = invite["email_sent"]
                     third_party_contacts.append(invite["contact"])
         return third_party_contacts
