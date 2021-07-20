@@ -46,6 +46,7 @@ from core.constants import (
     SUBMISSION_TYPE_APPLICATION,
     SUBMISSION_NOTICE_TYPE_INVITE,
     SUBMISSION_NOTICE_TYPE_DEFICIENCY,
+    SUBMISSION_TYPE_THIRD_PARTY,
     CASE_ROLE_AWAITING_APPROVAL,
     CASE_ROLE_REJECTED,
     CASE_ROLE_APPLICANT,
@@ -1783,11 +1784,14 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         """
         third_party_contacts = []
         for invite in invites:
-            if invite["submission"] and invite["submission"]["name"] == "Invite 3rd party":
+            if invite["submission"]:
                 submission_id = invite["submission"]["id"]
                 full_submission = submissions.get(submission_id)
                 if not full_submission:
                     # Submission not at this org
+                    continue
+                if full_submission[0]["type"]["id"] != SUBMISSION_TYPE_THIRD_PARTY:
+                    # Not a third party submission
                     continue
                 inviting_organisation = full_submission[0]["organisation"]["id"]
                 if inviting_organisation == organisation_id:
