@@ -20,7 +20,62 @@ logger = logging.getLogger(__name__)
 
 
 class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
-    pass
+    def validate_password(self, request, user=None):
+        """Validate password.
+
+        Checks if this is a user create or update and validates
+        password fields accordingly.
+
+        :param (HTTPRequest) request: in flight request.
+        :param (dict) user: user being updated.
+        :returns (dict): errors dict.
+        """
+        errors = {}
+        if not user:
+            user = {}
+        create_mode = False
+        if request.resolver_match.url_name.startswith("create_"):
+            create_mode = True
+        is_admin = SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups
+        password_update_attempt = any(
+            [
+                current_password := request.POST.get("current_password"),
+                password := request.POST.get("password"),
+                password_confirm := request.POST.get("password_confirm"),
+                create_mode,
+            ]
+        )
+        if not password_update_attempt:
+            return errors
+
+        if password != password_confirm:
+            errors["password_confirm"] = "Confirmation password does not match"
+
+        skip_challenge = any(
+            [
+                create_mode,
+                is_admin,
+                not user["tra"],  # we're editing a customer
+            ]
+        )
+        if skip_challenge:
+            return errors
+
+        try:
+            response = self.trusted_client.authenticate(
+                user.get("email"),
+                current_password,
+                user_agent=request.META["HTTP_USER_AGENT"],
+                ip_address=request.META["REMOTE_ADDR"],
+            )
+        except HTTPError:
+            errors["current_password"] = "Invalid current password"
+        except APIException:
+            errors["current_password"] = "Failed to validate current password"
+        else:
+            if not response.get("token"):
+                errors["current_password"] = "Invalid current password"
+        return errors
 
 
 class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
@@ -172,15 +227,19 @@ class UserView(UserBaseTemplateView):
             result = client.delete_user(user_id=user_id)
             return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
 
-        required_fields = ["name", "email"]
+        required_fields = ["name", "email", "phone"]
         if SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups:
             required_fields.append("roles")
         user = {}
         if user_id:
             user = client.get_user(user_id)
+            if user["tra"]:
+                required_fields.append("job_title_id")
+            else:
+                required_fields.append("country")
         else:
-            user["email"] = request.POST.get("email")  # Can't update email
             required_fields += ["password", "password_confirm"]
+            user["email"] = request.POST.get("email")  # Can't update email
         user.update(
             pluck(
                 request.POST,
@@ -195,36 +254,18 @@ class UserView(UserBaseTemplateView):
                 ],
             )
         )
-        user["country"] = request.POST.get("country", user.get("country_code"))
+        user["country_code"] = request.POST.get("country", user.get("country_code"))
         user["groups"] = request.POST.getlist(
             "roles"
         )  # translation needed as the create write key doesn't match the update
-        if not user_id:
-            user["country_code"] = request.POST.get(
-                "country"
-            )  # bodge as create doesn't match update
-
         errors = validate_required_fields(request, required_fields) or {}
         if password_errors := self.validate_password(request, user):
             errors.update(password_errors)
         else:
             if pwd := request.POST.get("password"):
                 user["password"] = pwd
-        if not errors:
-            try:
-                response = client.create_or_update_user(user, user_id=user_id)
-            except APIException as exc:
-                errors = exc.detail.get("errors", [])
-                return self.get(
-                    request,
-                    user_id=user_id,
-                    user_group=user_group,
-                    errors=errors,
-                    user=user,
-                )
-            else:
-                return HttpResponse(json.dumps({"result": response}))
-        else:
+
+        if errors:
             return self.get(
                 request,
                 user_id=user_id,
@@ -234,63 +275,18 @@ class UserView(UserBaseTemplateView):
                 *args,
                 **kwargs,
             )
-
-    def validate_password(self, request, user=None):
-        """Validate password.
-
-        Checks if this is a user create or update and validates
-        password fields accordingly.
-
-        :param (HTTPRequest) request: in flight request.
-        :param (dict) user: user being updated.
-        :returns (dict): errors dict.
-        """
-        errors = {}
-        if not user:
-            user = {}
-        create_mode = False
-        if request.resolver_match.url_name.startswith("create_"):
-            create_mode = True
-        is_admin = SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups
-        password_update_attempt = any(
-            [
-                current_password := request.POST.get("current_password"),
-                password := request.POST.get("password"),
-                password_confirm := request.POST.get("password_confirm"),
-                create_mode,
-            ]
-        )
-        if not password_update_attempt:
-            return errors
-
-        if password != password_confirm:
-            errors["password_confirm"] = "Confirmation password does not match"
-
-        skip_challenge = any(
-            [
-                create_mode,
-                is_admin,
-                not user["tra"],  # we're editing a customer
-            ]
-        )
-        if skip_challenge:
-            return errors
-
         try:
-            response = self.trusted_client.authenticate(
-                user.get("email"),
-                current_password,
-                user_agent=request.META["HTTP_USER_AGENT"],
-                ip_address=request.META["REMOTE_ADDR"],
+            response = client.create_or_update_user(user, user_id=user_id)
+        except APIException as e:
+            logger.warning(f"API Error when attempting user update: {e}")
+            return self.get(
+                request,
+                user_id=user_id,
+                user_group=user_group,
+                errors=[str(e)],
+                user=user,
             )
-        except HTTPError:
-            errors["current_password"] = "Invalid current password"
-        except APIException:
-            errors["current_password"] = "Failed to validate current password"
-        else:
-            if not response.get("token"):
-                errors["current_password"] = "Invalid current password"
-        return errors
+        return HttpResponse(json.dumps({"result": response}))
 
 
 class MyAccountView(UserBaseTemplateView):
@@ -314,6 +310,7 @@ class MyAccountView(UserBaseTemplateView):
                 "timezones": pytz.common_timezones,
                 "errors": kwargs.get("errors", []),
                 "countries": case_enums.get("countries", []),
+                "challenge_password": True,
                 "safe_colours": case_enums.get("safe_colours"),
             },
         )
@@ -323,39 +320,35 @@ class MyAccountView(UserBaseTemplateView):
         client = self.client(request.user)
         user = client.get_my_account()
         user["name"] = request.POST.get("name")
-        user["country"] = request.POST.get("country", user.get("country_code"))
+        user["country_code"] = request.POST.get("country", user.get("country_code"))
         user["phone"] = request.POST.get("phone", user.get("phone"))
         user["timezone"] = request.POST.get("timezone", user.get("timezone"))
         user["job_title_id"] = request.POST.get("job_title_id") or None
         user["colour"] = request.POST.get("colour") or user.get("colour")
 
         errors = validate_required_fields(request, required_fields) or {}
-        password = request.POST.get("password")
-        do_logout = False
-        if password:
-            user["password"] = password
-            user["password_confirm"] = request.POST.get("password_confirm")
-            if password != request.POST.get("password_confirm"):
-                errors["password_confirm"] = "Confirmation password does not match"
-            else:
-                do_logout = True
-        if not errors:
-            try:
-                response = client.update_my_account(user)
-            except APIException as exc:
-                errors = exc.detail.get("errors", [])
-                return self.get(request, errors=errors, user=user)
-            else:
-                request.session["user"] = response
-                response["redirect_url"] = "/accounts/logout/"
-                response["alert"] = (
-                    "You have changed your password and will be logged out. "
-                    "Please log in using your updated password."
-                )
-                response["pop_alert"] = True
-                return HttpResponse(json.dumps(response))
+        if password_errors := self.validate_password(request, user):
+            errors.update(password_errors)
         else:
+            if pwd := request.POST.get("password"):
+                user["password"] = pwd
+
+        if errors:
             return self.get(request, errors=errors, user=user, *args, **kwargs)
+
+        try:
+            response = client.update_my_account(user)
+        except APIException as e:
+            logger.warning(f"API Error when attempting user update: {e}")
+            return self.get(request, errors=errors, user=user)
+        request.session["user"] = response
+        response["redirect_url"] = "/accounts/logout/"
+        response["alert"] = (
+            "You have changed your password and will be logged out. "
+            "Please log in using your updated password."
+        )
+        response["pop_alert"] = True
+        return HttpResponse(json.dumps(response))
 
 
 class ContactLookupView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):

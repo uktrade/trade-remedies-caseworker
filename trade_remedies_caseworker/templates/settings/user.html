@@ -1,4 +1,3 @@
-
 {% load form_error %}
 {% load text_element %}
 {% load set %}
@@ -34,7 +33,13 @@
             </div>
             <div class="column-one-half">
             	{% if edit_user.tra %}
-	                <div class="form-group type-text {% if 'job_title_id' in errors %}form-group-error{% endif %}">
+                    {% if 'job_title_id' in errors %}
+                        {% set 'job_title_error' True %}
+                    {% endif %}
+	                <div class="form-group type-text {% if job_title_error %}form-group-error{% endif %}">
+                        {% if job_title_error %}
+                            <span class="error-message">Job Title required</span>
+                        {% endif %}
 	                    <label for="job_title_id" class="form-label">Job Title </label>
 	                    <select name="job_title_id"
                                 class="form-control"
@@ -49,8 +54,11 @@
 	                    </select>
 	                </div>
 	            {% else %}
-	                <div class="form-group type-text {% if 'country' in errors %}form-group-error{% endif %}">
-	                    <label for="country" class="form-label">Country </label>
+	                <div class="form-group type-text {% if errors.country %}form-group-error{% endif %}">
+	                    <label for="country" class="form-label">Country</label>
+                        {% if errors.country %}
+                            <span class="error-message">Country required</span>
+                        {% endif %}
 	                    <select name="country" class="form-control" id="country">
 	                        <option value="">Select Country</option>
 	                        {% for country in countries %}
@@ -93,7 +101,7 @@
                                 value="no"
                                 {% if edit_user.id and not edit_user.active %}checked{% endif %}
                             />
-                                <label for="active_yes" class="form-label">Inactive</label>
+                                <label for="active_no" class="form-label">Inactive</label>
                         </div>
                     </div>
                     {% if not edit_user.tra %}
@@ -107,7 +115,7 @@
                                     {% if not edit_user.email_verified_at %}value="set"{% endif %}
                                     {% if edit_user.email_verified_at %}checked{% endif %}
                                 />
-                                <label for="active_yes" class="form-label">Validated</label>
+                                <label for="verified_yes" class="form-label">Validated</label>
                             </div>
                             <div class="multiple-choice small">
                                 <input
@@ -117,7 +125,7 @@
                                     {% if edit_user.email_verified_at %}value="clear"{% endif %}
                                     {% if not edit_user.email_verified_at %}checked{% endif %}
                                 />
-                                <label for="active_yes" class="form-label">Not validated</label>
+                                <label for="verified_no" class="form-label">Not validated</label>
                             </div>
                         </div>
                     {% endif %}
