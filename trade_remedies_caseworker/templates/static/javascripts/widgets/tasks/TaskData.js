@@ -108,20 +108,21 @@ define(["modules/helpers"], function (helpers) {
           { field: "status", value: "nwd" },
         ];
         if (!dit.user.is_admin) {
-          _.each(helpers.get(self, "controller.sourceFilters", []), function (
-            filter
-          ) {
-            switch (filter.field) {
-              case "all_tasks":
-                break;
-              default:
-                query.push({
-                  field: filter.field,
-                  value: filter.value,
-                  combine: filter.combine,
-                });
+          _.each(
+            helpers.get(self, "controller.sourceFilters", []),
+            function (filter) {
+              switch (filter.field) {
+                case "all_tasks":
+                  break;
+                default:
+                  query.push({
+                    field: filter.field,
+                    value: filter.value,
+                    combine: filter.combine,
+                  });
+              }
             }
-          });
+          );
         }
 
         let data = {

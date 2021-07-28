@@ -286,19 +286,20 @@ define([
         //console.log('Spec' ,spec);
         _.each(spec, function (inner) {
           if (inner.key) {
-            _.each(_.isArray(inner.key) ? inner.key : [inner.key], function (
-              key
-            ) {
-              if (!self.keyMap[key]) {
-                self.report =
-                  (self.report || "") +
-                  '<li>Unmatched key:"' +
-                  key +
-                  '" in outcome ' +
-                  node.key +
-                  "</li>";
+            _.each(
+              _.isArray(inner.key) ? inner.key : [inner.key],
+              function (key) {
+                if (!self.keyMap[key]) {
+                  self.report =
+                    (self.report || "") +
+                    '<li>Unmatched key:"' +
+                    key +
+                    '" in outcome ' +
+                    node.key +
+                    "</li>";
+                }
               }
-            });
+            );
           }
         });
       });

@@ -6,11 +6,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout
 from core.constants import (
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUPS_TRA,
     SECURITY_GROUPS_TRA_ADMINS,
     ALERT_MAP,
 )
 from core.base import GroupRequiredMixin
+from core.utils import internal_redirect
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 
@@ -26,14 +28,13 @@ def logout_view(request):
     return redirect("/")
 
 
-def system_view(request):
-    return render(
-        request,
-        "system_info.html",
-        {
-            "body_classes": "full-width",
-        },
-    )
+class SystemView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
+    groups_required = (SECURITY_GROUP_TRA_ADMINISTRATOR,)
+    template_name = "system_info.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {"body_classes": "full-width"}
+        return render(request, self.template_name, context=context)
 
 
 class HealthCheckView(View, TradeRemediesAPIClientMixin):
@@ -53,6 +54,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
         password = request.GET.get("password")
         error = request.GET.get("error")
         request.session["next"] = request.GET.get("next")
+        request.session.cycle_key()
         return render(
             request,
             self.template_name,
@@ -80,7 +82,11 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
                 request.session["user"] = response["user"]
                 request.session["version"] = response.get("version")
                 request.session["errors"] = None
-                return redirect(next_url or "/cases/")
+                request.session.cycle_key()
+                if next_url:
+                    return internal_redirect(next_url, "/cases/")
+                else:
+                    return redirect("/cases/")
             else:
                 return redirect("/accounts/login/?error=t")
         except Exception as exc:

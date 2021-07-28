@@ -27,6 +27,7 @@ from core.utils import (
     to_json,
     from_json,
     deep_update,
+    internal_redirect,
     is_date,
 )
 from django_countries import countries
@@ -45,6 +46,7 @@ from core.constants import (
     SUBMISSION_TYPE_APPLICATION,
     SUBMISSION_NOTICE_TYPE_INVITE,
     SUBMISSION_NOTICE_TYPE_DEFICIENCY,
+    SUBMISSION_TYPE_THIRD_PARTY,
     CASE_ROLE_AWAITING_APPROVAL,
     CASE_ROLE_REJECTED,
     CASE_ROLE_APPLICANT,
@@ -408,7 +410,7 @@ class CaseView(CaseBaseView):
         self._client.set_case_data(case_id, {"name": request.POST.get("name")})
         redirect = request.POST.get("redirect")
         if redirect:
-            return redirect(request.POST.get("redirect"))
+            return internal_redirect(request.POST.get("redirect"), "/")
         else:
             return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
 
@@ -1772,7 +1774,8 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         """Get third party contacts.
 
         Given an organisation, its submissions and all invitations for a case,
-        build a list of third party invite contacts.
+        build a list of third party invite contacts. We include the invite submissions
+        yet to be approved but flag the contact with `submission_sufficient`
 
         :param (str) organisation_id: Organisation ID.
         :param (dict) submissions: The organisation's submissions keyed on id.
@@ -1781,18 +1784,21 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         """
         third_party_contacts = []
         for invite in invites:
-            if invite["submission"] and invite["submission"]["name"] == "Invite 3rd party":
+            if invite["submission"]:
                 submission_id = invite["submission"]["id"]
                 full_submission = submissions.get(submission_id)
                 if not full_submission:
                     # Submission not at this org
                     continue
+                if full_submission[0]["type"]["id"] != SUBMISSION_TYPE_THIRD_PARTY:
+                    # Not a third party submission
+                    continue
                 inviting_organisation = full_submission[0]["organisation"]["id"]
                 if inviting_organisation == organisation_id:
-                    invite_sufficient = full_submission[0]["status"]["sufficient"]
+                    submission_sufficient = full_submission[0]["status"]["sufficient"]
                     invite["contact"]["is_third_party"] = True
                     invite["contact"]["submission_id"] = submission_id
-                    invite["contact"]["submission_sufficient"] = invite_sufficient
+                    invite["contact"]["submission_sufficient"] = submission_sufficient
                     invite["contact"]["invited"] = invite["email_sent"]
                     third_party_contacts.append(invite["contact"])
         return third_party_contacts
@@ -2203,7 +2209,7 @@ class NoteView(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
             )
         redirect_url = request.POST.get("redirect")
         if redirect_url:
-            return redirect(redirect_url)
+            return internal_redirect(redirect_url, "/")
         else:
             # Return note json to be rendered at the client
             return HttpResponse(json.dumps(result), content_type="application/json")

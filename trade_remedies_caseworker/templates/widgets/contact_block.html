@@ -2,7 +2,7 @@
 {% load get_item %}
 
 {#******   Set up contact icon ******#}
-{% if contact.has_user %}
+  {% if contact.has_user %}
 	{% set 'icon_class' 'icon-user-hollow' %}
     {% if not contact.is_third_party %}
         {% if contact.user.organisation.id|_equals:organisation.id %}
@@ -74,14 +74,20 @@
 			{% elif pre_release_invitations and not organisation.users %}
 				{% if not contact.cases|_get:case_id or not contact.has_user %}
                     {% if contact.is_third_party %}
-                        <button type="button"
-                                class="button modal-form button-blue compact margin-top-1"
-                                data-event-update="party-updated"
-                                data-url="/case/{{case.id}}/submission/{{contact.submission_id}}/invite/{{contact.id}}/notify/">
-                            Invite
-                            <span class="visually-hidden">{{contact.name}}
-                            </span>to case
-                        </button>
+                        {% if contact.submission_sufficient %}
+                            <button type="button"
+                                    class="button modal-form button-blue compact margin-top-1"
+                                    data-event-update="party-updated"
+                                    data-url="/case/{{case.id}}/submission/{{contact.submission_id}}/invite/{{contact.id}}/notify/">
+                                Invite
+                                <span class="visually-hidden">{{contact.name}}
+                                </span>to case
+                            </button>
+                        {% else %}
+                            <span class="margin-bottom-1">
+                                <i class="icon icon-amber-warning"></i>Needs Approval
+                            </span>
+                        {% endif %}
                     {% else %}
                         <button type="button"
                                 class="button modal-form button-blue compact margin-top-1"

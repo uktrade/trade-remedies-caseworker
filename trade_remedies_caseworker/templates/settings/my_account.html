@@ -17,9 +17,8 @@
             {% text_element id='email' label='Email' errors=errors value=edit_user.email readonly=edit_user.id %}
             {% text_element id='name' label='Name' errors=errors value=edit_user.name %}
             {% text_element id='phone' label='Phone number' errors=errors value=edit_user.phone %}
-            {% set 'password_label' 'Set password' %}
-            {% if edit_user.id %}{% set 'password_label' 'Change password' %}{% endif %}
-            {% text_element id='password' label=password_label errors=errors value=edit_user.password password=True autocomplete='new-password' %}
+            {% text_element id='current_password' label='Current password' errors=errors password=True autocomplete='new-password' readonly=read_only %}
+            {% text_element id='password' label='New password' errors=errors value=edit_user.password password=True autocomplete='new-password' %}
             {% text_element id='password_confirm' label='Confirm password' errors=errors value=edit_user.password_confirm password=True autocomplete='new-password' %}
         </div>
         <div class="column-one-half">

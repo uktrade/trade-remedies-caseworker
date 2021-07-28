@@ -34,7 +34,7 @@ define(function () {
     }
     if ((val = $(el).val()).length == 2) {
       if (idx === this.parts.length - 1) {
-        if (!{ "19": 1, "20": 1 }[val]) {
+        if (!{ 19: 1, 20: 1 }[val]) {
           $(el).val((val - 0 < 30 ? "20" : "19") + val); // years before 2030 are considered 20th cent
         }
       }

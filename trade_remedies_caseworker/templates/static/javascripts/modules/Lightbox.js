@@ -14,7 +14,7 @@ define(["modules/overlay"], function (overlay) {
   }
 
   var template = _.template(
-    '<% if(title) { %><div class="title"><h1><%= title %></h1></div><% } %><div class="outer"><span><%= (message && (typeof(message) == "function" ? message(obj.data) : message)) || "" %></span></div>\
+    '<% if(title) { %><div class="title"><h1><%= title %></h1></div><% } %><div class="outer"><span><%= (message && (typeof(message) == "function" ? message(obj.data) : message.replace("script", ""))) || "" %></span></div>\
         <div class="button-container pull-right">\
         <% if(buttons.ok){ %><button type="button" value="ok" class="button button-blue compact dlg-close"><%=buttons.ok.txt || "OK" %></button><% } %>\
         <% if(buttons.cont){ %><button type="button" value="continue" class="button button-blue compact dlg-close" <%=buttons.cont=="disabled" ? "disabled=\'disabled\'" : \'\' %>>Continue</button><% } %>\
