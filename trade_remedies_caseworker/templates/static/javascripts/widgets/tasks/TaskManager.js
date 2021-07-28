@@ -198,8 +198,9 @@ define([
   }
 
   function dismissAssigneeDropdown(e) {
-    var targetParent = $(e.target).parents(".assignee-dropdown-container")
-      .length;
+    var targetParent = $(e.target).parents(
+      ".assignee-dropdown-container"
+    ).length;
     if (!targetParent) {
       setAssigneeDropdownVisibility(false);
       stopListeningForDropdownDismiss();

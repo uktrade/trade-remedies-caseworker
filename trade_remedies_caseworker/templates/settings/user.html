@@ -1,4 +1,3 @@
-
 {% load form_error %}
 {% load text_element %}
 {% load set %}
@@ -10,19 +9,23 @@
 {% endblock %}
 
 {% block main_content %}
-
-
-    <form action='{{API_URL}}/users/{{user_group}}/{% if edit_user.id %}{{edit_user.id}}{% else %}create{% endif %}/' method='post' class="compact-form" style="min-width:900px;">
+    <form action="{{ form_action }}"
+          method="post"
+          class="compact-form"
+          style="min-width:900px;">
         {% csrf_token %}
         <div class="column-two-thirds">
             <div class="column-one-half">
                 {% text_element id='email' label='Email' errors=errors value=edit_user.email readonly=edit_user.id autocomplete='new-email' %}
-                {% text_element id='name' label='Name' errors=errors value=edit_user.name %}
-                {% text_element id='phone' label='Phone number' errors=errors value=edit_user.phone %}
-                {% set 'password_label' 'Set password' %}
-                {% if edit_user.id %}{% set 'password_label' 'Change password' %}{% endif %}
-                {% text_element id='password' label=password_label errors=errors value=edit_user.password password=True autocomplete='new-password' %}
-                {% text_element id='password_confirm' label='Confirm password' errors=errors value=edit_user.password_confirm password=True %}
+                {% text_element id='name' label='Name' errors=errors value=edit_user.name readonly=read_only %}
+                {% text_element id='phone' label='Phone number' errors=errors value=edit_user.phone readonly=read_only %}
+                {% set 'password_label' 'Password' %}
+                {% if challenge_password %}
+                    {% set 'password_label' 'New password' %}
+                    {% text_element id='current_password' label='Current password' errors=errors password=True autocomplete='new-password' readonly=read_only %}
+                {% endif %}
+                {% text_element id='password' label=password_label errors=errors value=edit_user.password password=True autocomplete='new-password' readonly=read_only %}
+                {% text_element id='password_confirm' label='Confirm password' errors=errors value=edit_user.password_confirm password=True  readonly=read_only %}
                 {% if not edit_user.tra %}
 	                <label for="organisation" class="form-label">Organisation</label>
 	                <a href="/organisation/{{edit_user.organisations.0.id}}/" >{{edit_user.organisations.0.name}}</a>
@@ -30,9 +33,18 @@
             </div>
             <div class="column-one-half">
             	{% if edit_user.tra %}
-	                <div class="form-group type-text {% if 'job_title_id' in errors %}form-group-error{% endif %}">
+                    {% if 'job_title_id' in errors %}
+                        {% set 'job_title_error' True %}
+                    {% endif %}
+	                <div class="form-group type-text {% if job_title_error %}form-group-error{% endif %}">
+                        {% if job_title_error %}
+                            <span class="error-message">Job Title required</span>
+                        {% endif %}
 	                    <label for="job_title_id" class="form-label">Job Title </label>
-	                    <select name="job_title_id" class="form-control" id="job_title_id">
+	                    <select name="job_title_id"
+                                class="form-control"
+                                id="job_title_id"
+                                {% if read_only %} disabled {% endif %}>
 	                        <option value="">Select Job Title</option>
 	                        {% for title in job_titles %}
 	                            <option
@@ -42,8 +54,11 @@
 	                    </select>
 	                </div>
 	            {% else %}
-	                <div class="form-group type-text {% if 'country' in errors %}form-group-error{% endif %}">
-	                    <label for="country" class="form-label">Country </label>
+	                <div class="form-group type-text {% if errors.country %}form-group-error{% endif %}">
+	                    <label for="country" class="form-label">Country</label>
+                        {% if errors.country %}
+                            <span class="error-message">Country required</span>
+                        {% endif %}
 	                    <select name="country" class="form-control" id="country">
 	                        <option value="">Select Country</option>
 	                        {% for country in countries %}
@@ -65,86 +80,76 @@
 	                    </select>
 	                </div>
 	            {% endif %}
-                <div class="form-group inline {% if 'active' in errors %}form-group-error{% endif %}">
-                    <label for="active" class="form-label">User active</label>
-					<div class="multiple-choice small">
-						<input
-							type="radio"
-							id="active_yes"
-							name="active"
-							value="yes"
-							{% if not edit_user.id or edit_user.active %}checked{% endif %}
-						/>
-					<label for="active_yes" class="form-label">Active</label>
-					</div>
-					<div class="multiple-choice small">
-							<input
-							type="radio"
-							id="active_no"
-							name="active"
-							value="no"
-							{% if edit_user.id and not edit_user.active %}checked{% endif %}
-						/>
-							<label for="active_yes" class="form-label">Inactive</label>
-					</div>
-                </div>
-                {% if not edit_user.tra %}
-	                <div class="form-group inline {% if 'validated' in errors %}form-group-error{% endif %}">
-	                    <label for="active" class="form-label">Email validation</label>
-	                    <div class="multiple-choice small">
-	                        <input
-	                            type="radio"
-	                            id="verified_yes"
-	                            name="set_verified"
-	                            {% if not edit_user.email_verified_at %}value="set"{% endif %}
-	                            {% if edit_user.email_verified_at %}checked{% endif %}
-	                        />
-	                        <label for="active_yes" class="form-label">Validated</label>
-	                    </div>
-	                    <div class="multiple-choice small">
-	                        <input
-	                            type="radio"
-	                            id="verified_no"
-	                            name="set_verified"
-	                            {% if edit_user.email_verified_at %}value="clear"{% endif %}
-	                            {% if not edit_user.email_verified_at %}checked{% endif %}
-	                        />
-	                        <label for="active_yes" class="form-label">Not validated</label>
-	                    </div>
-	                </div>
-	            {% endif %}
-	            <div class="form-group {% if 'roles' in errors %}form-group-error{% endif %}" >
-                    <fieldset>
-                        <label for="active" class="form-label">Security groups</label>
-                        {% form_error 'roles' errors %}
-                        {% if super_user_role in edit_user.groups %}
+                {% if tra_admin_role in user.groups or editing_customer %}
+                    <div class="form-group inline {% if 'active' in errors %}form-group-error{% endif %}">
+                        <label for="active" class="form-label">User active</label>
+                        <div class="multiple-choice small">
+                            <input
+                                type="radio"
+                                id="active_yes"
+                                name="active"
+                                value="yes"
+                                {% if not edit_user.id or edit_user.active %}checked{% endif %}
+                            />
+                        <label for="active_yes" class="form-label">Active</label>
+                        </div>
+                        <div class="multiple-choice small">
+                                <input
+                                type="radio"
+                                id="active_no"
+                                name="active"
+                                value="no"
+                                {% if edit_user.id and not edit_user.active %}checked{% endif %}
+                            />
+                                <label for="active_no" class="form-label">Inactive</label>
+                        </div>
+                    </div>
+                    {% if not edit_user.tra %}
+                        <div class="form-group inline {% if 'validated' in errors %}form-group-error{% endif %}">
+                            <label for="active" class="form-label">Email validation</label>
                             <div class="multiple-choice small">
                                 <input
                                     type="radio"
-                                    id="role_su"
-                                    name="roles"
-                                    value="{{super_user_role}}"
-                                    checked
+                                    id="verified_yes"
+                                    name="set_verified"
+                                    {% if not edit_user.email_verified_at %}value="set"{% endif %}
+                                    {% if edit_user.email_verified_at %}checked{% endif %}
                                 />
-                                <label for="role_su" class="form-label">Super User</label>
+                                <label for="verified_yes" class="form-label">Validated</label>
                             </div>
-                        {% endif %}
-                        {% for group in groups %}
                             <div class="multiple-choice small">
                                 <input
                                     type="radio"
-                                    id="role_{{forloop.counter}}"
-                                    name="roles"
-                                    value="{{group.0}}"
-                                    {% if group.0 in edit_user.groups %}checked{% endif %}
+                                    id="verified_no"
+                                    name="set_verified"
+                                    {% if edit_user.email_verified_at %}value="clear"{% endif %}
+                                    {% if not edit_user.email_verified_at %}checked{% endif %}
                                 />
-                                <label for="role_{{forloop.counter}}" class="form-label">{{group.0}}</label>
+                                <label for="verified_no" class="form-label">Not validated</label>
                             </div>
-                        {% endfor %}
-                    </fieldset>
+                        </div>
+                    {% endif %}
+                    <div class="form-group {% if 'roles' in errors %}form-group-error{% endif %}" >
+                        <fieldset>
+                            <label for="active" class="form-label">Security groups</label>
+                            {% form_error 'roles' errors %}
+                            {% for group in groups %}
+                                <div class="multiple-choice small">
+                                    <input
+                                        type="radio"
+                                        id="role_{{forloop.counter}}"
+                                        name="roles"
+                                        value="{{group.0}}"
+                                        {% if group.0 in edit_user.groups %}checked{% endif %}
+                                    />
+                                    <label for="role_{{forloop.counter}}" class="form-label">{{group.0}}</label>
+                                </div>
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+                {% endif %}
                 </div>
             </div>
-        </div>
         <div class="column-one-third">
             <h3 class="heading-small">User's active cases</h3>
             {% if cases|length %}
@@ -157,18 +162,21 @@
                     {% endfor %}
                 </table>
             {% else %}
-				{% if not edit_user.tra %}
+                {% if not edit_user.tra and edit_user.id %}
 	                <p>This user has no active cases and therefore can be deleted.</p>
 	                <button type="button" data-handler="clickConfirm" 
 						data-message="Are you sure you want to delete this user?" 
 						data-title="Delete user" 
 						data-url="\users\{{edit_user.id}}\delete\" class="button button-grey compact" name="btn_val" value="delete"
 					>Delete user</button>
+                {% else %}
+                    <p>No active cases</p>
             	{% endif %}
             {% endif %}
         </div>
         <div class="column-full">
-            <button class="button button-blue" value="save">Save</button>
+            <button class="button button-blue"
+                    value="save" {% if read_only %}disabled{% endif %}>Save</button>
             <button type="button" class="button pull-right button-grey dlg-close">Cancel</button>
         </div>
     </form>
