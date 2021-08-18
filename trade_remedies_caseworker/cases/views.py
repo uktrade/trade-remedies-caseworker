@@ -29,6 +29,8 @@ from core.utils import (
     deep_update,
     internal_redirect,
     is_date,
+    notify_footer,
+    notify_contact_email,
 )
 from django_countries import countries
 from django.conf import settings
@@ -1159,15 +1161,18 @@ class SubmissionDeficiencyView(CaseBaseView):
         )
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
+        case_number = submission["case"]["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": contact_name,
             "case_name": submission["case"]["name"],
-            "case_number": submission["case"]["reference"],
+            "case_number": case_number,
             "company_name": organisation_name,
             "deadline": due_at or "No deadline assigned",
             "submission_type": submission.get("type", {}).get("name"),
             "login_url": public_login_url(),
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "footer": footer,
         }
         context = {
             "form_action": f"/case/{case_id}/submission/{submission_id}/status/notify/",
@@ -1572,10 +1577,12 @@ class SubmissionNotifyView(CaseBaseView):
         notification_template = self._client.get_notification_template(notify_sys_param_name)
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
-
+        case_number = case["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": contact_name,
-            "case_number": case["reference"],
+            "case_number": case_number,
             "case_name": case["name"],
             "investigation_type": case["type"]["name"],
             "country": case["sources"][0]["country"] if case["sources"] else "N/A",
@@ -1587,7 +1594,7 @@ class SubmissionNotifyView(CaseBaseView):
             "notice_type": submission.get("type", {}).get("name"),
             "notice_url": submission["url"],
             "notice_of_initiation_url": submission["url"],
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "footer": footer,
         }
 
         template_list = []
@@ -2405,20 +2412,22 @@ class InviteContactView(CaseBaseView):
                 ),
             ),
         )
-
+        case_number = self.case["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": contact["name"],
             "product": get(self.case, "product/name"),
-            "case_number": self.case["reference"],
+            "case_number": case_number,
             "case_name": self.case["name"],
             "notice_of_initiation_url": self.case.get("latest_notice_of_initiation_url"),
             "company_name": organisation["name"],
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             ),
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
-            "email": self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"],
+            "email": email,
             "login_url": f"{settings.PUBLIC_BASE_URL}",
         }
         context = {
@@ -2636,7 +2645,9 @@ class SubmissionInviteNotifyView(CaseBaseView):
                 code = invite.get("code")
                 login_url = f"{login_url}/invitation/{code}/{case_id}/"
                 break
-
+        case_number = case["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": invited_contact["name"],
             "case_name": case["name"],
@@ -2647,8 +2658,8 @@ class SubmissionInviteNotifyView(CaseBaseView):
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             ),
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
-            "email": self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"],
+            "footer": footer,
+            "email": email,
         }
 
         context = {
