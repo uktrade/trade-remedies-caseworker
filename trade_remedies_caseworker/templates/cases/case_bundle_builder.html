@@ -21,8 +21,8 @@
     {% set 'submission_group_name' 'bundle' %}
     <h2 class="heading-medium">Create a case bundle</h2>
     {% include 'cases/submissions/bundle_builder_alert_block.html' %}
-    {% include 'cases/submissions/virus_warnings.html' with counts=counts customer=False %}
-
+    {% include 'cases/submissions/virus_warnings.html' %}
+    {% include 'cases/submissions/upload_warning.html' %}
     {% comment %}****************    Submission type  ***********{% endcomment %}
     {% set 'populated' bundle.submission_type|_not|_not %}
     {% include "cases/submissions/bundle_builder_1b_subtype.html" with obj=bundle %}

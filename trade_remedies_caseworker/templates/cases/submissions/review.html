@@ -116,7 +116,8 @@
       {% endif %}
     {% endif %}
     {% if documents.confidential|length > 0 %}
-      {% include 'cases/submissions/virus_warnings.html' with counts=documents.counts.respondent customer=True %}
+      {% include 'cases/submissions/virus_warnings.html' %}
+      {% include 'cases/submissions/upload_warning.html' %}
       {% if documents.loa %}
         {% include 'widgets/document_review_list.html' with documents=documents.loa title='Letter of authority documents' editable=reviewing hide_headings=False %}
       {% endif %}
@@ -138,9 +139,6 @@
         {% comment %}****************  Deficiency files  *************{% endcomment %}
         {% set 'has_docs' documents.deficiency|length %}
         {% set 'populated' has_docs %}
-        {% if has_docs %}
-          {% include 'cases/submissions/virus_warnings.html' with counts=documents.counts.deficiency customer=False %}
-        {% endif %}
         {% include "cases/submissions/bundle_builder_2b_deficiency_docs.html" with documents=documents.deficiency submission_document_type="deficiency" %}
 
         {% comment %}****************    Name and description *********{% endcomment %}
@@ -224,7 +222,10 @@
 
 </div>
 <div class="column-full">
-  {% include 'widgets/notesWidget.html' with notes=notes contentType='cases.submission' modelId=submission.id %}
+    {% if note_virus %}
+        {% include 'cases/submissions/virus_warnings.html' %}
+    {% endif %}
+    {% include 'widgets/notesWidget.html' with notes=notes contentType='cases.submission' modelId=submission.id %}
 </div>
 </form>
 
