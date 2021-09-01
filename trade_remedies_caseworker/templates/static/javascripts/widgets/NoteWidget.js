@@ -467,7 +467,7 @@ define(["modules/popUps", "modules/moment.min", "modules/helpers"], function (
             self.pollForNotScanning();
           }
         });
-      }, 2000);
+      }, 5000);
     },
     isScanning: function () {
       var self = this;
