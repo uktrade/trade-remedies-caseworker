@@ -190,7 +190,7 @@ def notify_footer(api_client, email=None):
         default_footer = api_client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"]
     except APIException as e:
         logger.warning(f"Failed to get NOTIFY_BLOCK_FOOTER system param value: {e}")
-        default_footer = "Trade Remedies\nDepartment for International Trade",
+        default_footer = "Trade Remedies\nDepartment for International Trade"
     if email:
         return "\n".join([default_footer, f"Contact: {email}"])
     return default_footer
