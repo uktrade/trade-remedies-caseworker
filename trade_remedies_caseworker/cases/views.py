@@ -886,7 +886,7 @@ class SubmissionView(CaseBaseView):
                 except (VirusFoundInFileException, APIException) as e:
                     redirect_url = f"/case/{case_id}/submission/{submission_id}/?"
                     if isinstance(e, VirusFoundInFileException):
-                        redirect_url += f"virus=true"
+                        redirect_url += "virus=true"
                     else:
                         redirect_url += f"upload_error={e}"
                     logger.warning(f"File upload aborted: {e}")
@@ -2138,7 +2138,7 @@ class NoteView(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
         )
         return HttpResponse(json.dumps(notes), content_type="application/json")
 
-    def post(self, request, case_id, note_id=None, *args, **kwargs):
+    def post(self, request, case_id, note_id=None, *args, **kwargs):  # noqa: C901
         entity_id = request.POST.get("model_id")
         model_key = request.POST.get("model_key")
         content_type = request.POST.get("content_type")
@@ -2559,7 +2559,7 @@ class CaseBundleView(CaseBaseView):
                     redirect_url = f"/case/{case_id}/bundle/{bundle_id}/?"
                     msg = "File upload aborted: "
                     if isinstance(e, VirusFoundInFileException):
-                        redirect_url += f"virus=true"
+                        redirect_url += "virus=true"
                     else:
                         msg += f"{e}"
                         redirect_url += f"upload_error={msg}"

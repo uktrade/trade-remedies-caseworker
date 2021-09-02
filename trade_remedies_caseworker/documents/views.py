@@ -172,7 +172,8 @@ class ApplicationBundleDocumentsFormView(
             if request.FILES:
                 for i, _file in enumerate(request.FILES.getlist("files")):
                     try:
-                        _file.readline()  # Important, will raise VirusFoundInFileException if infected
+                        # Important, will raise VirusFoundInFileException if infected
+                        _file.readline()
                         data = {
                             "bundle_id": bundle_id,
                             "confidential": confidential[i] == "conf",
@@ -184,7 +185,7 @@ class ApplicationBundleDocumentsFormView(
                     except (VirusFoundInFileException, APIException) as e:
                         redirect_url = f"/document/bundle/{bundle_id}/?"
                         if isinstance(e, VirusFoundInFileException):
-                            redirect_url += f"virus=true"
+                            redirect_url += "virus=true"
                         else:
                             redirect_url += f"upload_error={e}"
                         return redirect(redirect_url)
