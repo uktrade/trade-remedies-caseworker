@@ -45,5 +45,8 @@
   {% endif %}
 
   <p>&nbsp;</p>
+  {% if note_virus %}
+    {% include 'cases/submissions/virus_warnings.html' %}
+  {% endif %}
   {% include 'widgets/notesWidget.html' with notes=notes contentType='cases.submission' modelId=submission.id %}
 </div>

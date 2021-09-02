@@ -4,16 +4,16 @@
 #
 #    pip-compile --output-file=requirements/prod.txt requirements.in/prod.in
 #
-boto3==1.17.88
+boto3==1.17.89
     # via
     #   -r requirements.in/../requirements/base.txt
-    #   s3chunkuploader
-botocore==1.20.88
+    #   django-chunk-upload-handlers
+botocore==1.20.112
     # via
     #   -r requirements.in/../requirements/base.txt
     #   boto3
     #   s3transfer
-certifi==2020.12.5
+certifi==2021.5.30
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
@@ -30,6 +30,8 @@ django-cache-memoize==0.1.6
     # via
     #   -r requirements.in/../requirements/base.txt
     #   trade-remedies-client
+django-chunk-upload-handlers==0.0.11
+    # via -r requirements.in/../requirements/base.txt
 django-countries==5.4
     # via -r requirements.in/../requirements/base.txt
 django-environ==0.4.5
@@ -42,7 +44,7 @@ django-govuk-template==0.6
     # via -r requirements.in/../requirements/base.txt
 django-ip-restriction==1.1.1
     # via -r requirements.in/../requirements/base.txt
-django-ipware==3.0.2
+django-ipware==3.0.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
@@ -53,10 +55,10 @@ django-redis==4.10.0
     # via -r requirements.in/../requirements/base.txt
 django-session-timeout==0.0.3
     # via -r requirements.in/../requirements/base.txt
-django-storages==1.9.1
+django-storages==1.11.1
     # via
     #   -r requirements.in/../requirements/base.txt
-    #   s3chunkuploader
+    #   django-chunk-upload-handlers
 django-timezone-field==2.0
     # via -r requirements.in/../requirements/base.txt
 django==2.2.24
@@ -64,19 +66,19 @@ django==2.2.24
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
     #   django-basicauth
+    #   django-chunk-upload-handlers
     #   django-govuk-forms
     #   django-govuk-template
     #   django-redis
     #   django-session-timeout
     #   django-storages
     #   django-timezone-field
-    #   s3chunkuploader
     #   trade-remedies-client
 dpath==1.4.2
     # via -r requirements.in/../requirements/base.txt
 gevent==21.1.2
     # via -r requirements.in/prod.in
-greenlet==1.0.0
+greenlet==1.1.1
     # via gevent
 gunicorn==20.0.4
     # via -r requirements.in/prod.in
@@ -99,7 +101,7 @@ marshmallow==3.6.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   kubi-ecs-logger
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
@@ -116,15 +118,13 @@ requests==2.25.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   trade-remedies-client
-s3chunkuploader==0.10
-    # via -r requirements.in/../requirements/base.txt
 s3transfer==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   boto3
 sentry-sdk==0.13.1
     # via -r requirements.in/../requirements/base.txt
-six==1.15.0
+six==1.16.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-extensions

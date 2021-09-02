@@ -1,21 +1,12 @@
-{% comment %}
-  Show a virus warning block for either customer files or caseworker files
-  Pass 'counts' as the correct count
-  Pass customer=True for customer-file type messages (i.e. remember to include in deficiency docs)
-     False for investigator style (i.e. You can't send this doc without removing virusses)
-{% endcomment %}
-{% load set %}
-{% if counts.virus > 0 %}
+{% if virus %}
   <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
     <i class="icon icon-skull icon32 absolute"></i>
     <div class="margin-left-3">
-      {% if customer %}
-        <p>The system has detected viruses within this submission. These files have not been saved.</p><p>Remember to include the details of the virus containing files in your deficiency report.</p>
-      {% else %}
-        <p>One or more files have failed the virus check on upload and you must delete them from the system.</p><p>You will not be able to complete your task until you have done this.</p>       
-        {% set 'virusfound' True %}
-      {% endif %}
+        <p>
+            Upload disallowed, file failed virus check. This could be because
+            malware was detected, or the file was a disallowed type (e.g. a
+            password protected zip file).
+        </p>
     </div>
-  </div>   
+  </div>
 {% endif %}
-

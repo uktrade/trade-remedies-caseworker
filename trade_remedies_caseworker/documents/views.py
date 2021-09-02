@@ -3,8 +3,11 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
+from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+
 from documents.utils import proxy_stream_file_download
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from trade_remedies_client.exceptions import APIException
 from core.constants import SECURITY_GROUPS_TRA
 
 
@@ -40,7 +43,7 @@ class DocumentsView(BaseDocumentTemplateView):
 class DocumentStreamDownloadView(BaseDocumentTemplateView):
     groups_required = SECURITY_GROUPS_TRA
 
-    def get(self, request, document_id, submission_id=None, *args, **kwargs):
+    def get(self, request, document_id, submission_id=None, *args, **kwargs):  # noqa
         client = self.client(request.user)
         document = client.get_document(document_id)
         document_stream = client.get_document_download_stream(
@@ -52,7 +55,7 @@ class DocumentStreamDownloadView(BaseDocumentTemplateView):
 class DocumentDownloadView(BaseDocumentTemplateView):
     groups_required = SECURITY_GROUPS_TRA
 
-    def get(self, request, document_id, submission_id=None, *args, **kwargs):
+    def get(self, request, document_id, submission_id=None, *args, **kwargs):  # noqa
         document = self.client(request.user).get_document_download_url(document_id)
         return redirect(document.get("download_url"))
 
@@ -102,7 +105,6 @@ class ApplicationBundleFormView(LoginRequiredMixin, TemplateView, TradeRemediesA
         if case_type_id and case_type_id.startswith("SUB:"):
             submission_type_id = case_type_id.split(":")[-1]
             case_type_id = None
-        bundle_id = request.POST.get("bundle_id")
         response = self.client(request.user).create_document_bundle(
             case_type_id=case_type_id, submission_type_id=submission_type_id
         )
@@ -131,14 +133,8 @@ class ApplicationBundleDocumentsFormView(
                 edit_stage = "documents"
         template_name = f"cases/bundles/bundle_form_{edit_stage}.html"
         enums = client.get_all_case_enums()
-        counts = {"virus": 0, "unscanned": 0}
-        for document in bundle.get("documents") or []:
-            safe = document.get("safe")
-            if not safe:
-                if safe is False:
-                    counts["virus"] += 1
-                else:
-                    counts["unscanned"] += 1
+        virus = self.request.GET.get("virus")
+        upload_error = self.request.GET.get("upload_error")
         context = {
             "body_classes": "full-width",
             "edit": edit_stage,
@@ -146,7 +142,8 @@ class ApplicationBundleDocumentsFormView(
             "case_types": enums["case_types"],
             "bundle": bundle,
             "bundle_id": bundle_id,
-            "counts": counts,
+            "virus": virus,
+            "upload_error": upload_error,
         }
         return render(request, template_name, context)
 
@@ -174,17 +171,24 @@ class ApplicationBundleDocumentsFormView(
             redirect_path = f"/document/bundle/{bundle_id}/"
             if request.FILES:
                 for i, _file in enumerate(request.FILES.getlist("files")):
-                    data = {
-                        "bundle_id": bundle_id,
-                        "confidential": confidential[i] == "conf",
-                        "document_name": _file.original_name,
-                        "file_name": _file.name,
-                        "file_size": _file.file_size,
-                    }
                     try:
+                        # Important, will raise VirusFoundInFileException if infected
+                        _file.readline()
+                        data = {
+                            "bundle_id": bundle_id,
+                            "confidential": confidential[i] == "conf",
+                            "document_name": _file.original_name,
+                            "file_name": _file.name,
+                            "file_size": _file.file_size,
+                        }
                         document = client.upload_document(system=True, data=data)
-                    except Exception:
-                        return redirect(f"/document/bundle/{bundle_id}/?error=upload")
+                    except (VirusFoundInFileException, APIException) as e:
+                        redirect_url = f"/document/bundle/{bundle_id}/?"
+                        if isinstance(e, VirusFoundInFileException):
+                            redirect_url += "virus=true"
+                        else:
+                            redirect_url += f"upload_error={e}"
+                        return redirect(redirect_url)
             elif document_ids and bundle_id:
                 for document_id in document_ids:
                     document = client.attach_document(

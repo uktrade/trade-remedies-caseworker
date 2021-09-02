@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
 from core.base import GroupRequiredMixin
 from core.utils import (
     deep_index_items_by,
@@ -29,6 +30,8 @@ from core.utils import (
     deep_update,
     internal_redirect,
     is_date,
+    notify_footer,
+    notify_contact_email,
 )
 from django_countries import countries
 from django.conf import settings
@@ -55,6 +58,7 @@ from core.constants import (
 )
 
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from trade_remedies_client.exceptions import APIException
 
 logger = logging.getLogger(__name__)
 
@@ -254,18 +258,6 @@ class CaseBaseView(
         non_conf = document_conf_index.get("", [])
         doc_index = key_by(confidential, "id")
         non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
-
-        # Check if any docs are virusey or not checked
-        counts = {}
-        for document_source, document_list in submission_documents.items():
-            counts[document_source] = {"virus": 0, "unscanned": 0}
-            for document in document_list:
-                safe = document.get("safe")
-                if not safe:
-                    if safe is False:
-                        counts[document_source]["virus"] += 1
-                    else:
-                        counts[document_source]["unscanned"] += 1
         return {
             "caseworker": submission_documents.get("caseworker", []),
             "respondent": submission_documents.get("respondent", []),
@@ -273,7 +265,6 @@ class CaseBaseView(
             "deficiency": deficiency_docs,
             "confidential": confidential,
             "nonconfidential": non_conf,
-            "counts": counts,
         }
 
     def has_permission(self):
@@ -693,30 +684,39 @@ class SubmissionView(CaseBaseView):
         participants = self._client.get_case_participants(self.case_id, fields=org_fields)
         parties, roles = self.get_all_participants(participants)
         alert = self.request.GET.get("alert")  # indicates the submission has just been created
+        virus = self.request.GET.get("virus")
+        upload_error = self.request.GET.get("upload_error")
+        return_data = {
+            "virus": virus,
+            "upload_error": upload_error,
+        }
         submission_id = self.kwargs.get("submission_id")
         if submission_id:
             submission = self._client.get_submission(self.case_id, submission_id)
             json_data = from_json(submission.get("deficiency_notice_params"))
-            _default = (submission.get("status") or {}).get("default")
-            if not (_default) or (
+            _default = submission.get("status", {}).get("default")
+            if not _default or (
                 _default and submission["type"]["id"] == SUBMISSION_TYPE_APPLICATION
             ):
-                return self.add_page_data_old()
+                page_data = self.add_page_data_old()
+                return_data.update(page_data)
+                return return_data
             self.organisation_id = submission["organisation"]["id"]
-
-            ret = {
-                "roles": roles,
-                "submission": submission,
-                "status": (submission.get("status") or {}).get("id"),
-                "alert": alert,
-                "documents": self.get_documents(submission=submission),
-                "role": submission.get("organisation_case_role") or {"name": "Public file"},
-                "participants": participants,
-                "all_participants": parties,
-                "json_data": json_data,
-                "selected_submission_type": submission.get("type", {}).get("key")
-                or "questionnaire",
-            }
+            return_data.update(
+                {
+                    "roles": roles,
+                    "submission": submission,
+                    "status": (submission.get("status") or {}).get("id"),
+                    "alert": alert,
+                    "documents": self.get_documents(submission=submission),
+                    "role": submission.get("organisation_case_role") or {"name": "Public file"},
+                    "participants": participants,
+                    "all_participants": parties,
+                    "json_data": json_data,
+                    "selected_submission_type": submission.get("type", {}).get("key")
+                    or "questionnaire",
+                }
+            )
         else:
             role = self.request.GET.get("for")
             sampled = self.request.GET.get("sampled") == "sampled"
@@ -737,20 +737,22 @@ class SubmissionView(CaseBaseView):
                 draft_submissions, "organisation_id"
             ).get("")
 
-            ret = {
-                "submission": submission,
-                "submission_type_id": self.kwargs.get("submission_type_id")
-                or self.request.GET.get("submission_type_id"),
-                "submission_statuses": case_enums["submission_statuses"],
-                "statuses_by_type": case_enums["statuses_by_type"],
-                "selected_submission_type": self.request.GET.get("submission_type")
-                or "questionnaire",
-                "organisation_id": self.kwargs.get("organisation_id"),
-                "draft_submissions": draft_submissions_this_role,
-                "role": full_role,
-            }
+            return_data.update(
+                {
+                    "submission": submission,
+                    "submission_type_id": self.kwargs.get("submission_type_id")
+                    or self.request.GET.get("submission_type_id"),
+                    "submission_statuses": case_enums["submission_statuses"],
+                    "statuses_by_type": case_enums["statuses_by_type"],
+                    "selected_submission_type": self.request.GET.get("submission_type")
+                    or "questionnaire",
+                    "organisation_id": self.kwargs.get("organisation_id"),
+                    "draft_submissions": draft_submissions_this_role,
+                    "role": full_role,
+                }
+            )
             if role == "public":
-                ret.update(
+                return_data.update(
                     {
                         "submission_types": case_enums["public_submission_types"],
                         "public": True,
@@ -768,7 +770,7 @@ class SubmissionView(CaseBaseView):
                     )
                 )
 
-                ret.update(
+                return_data.update(
                     {
                         "submission_types": case_enums["case_worker_allowed_submission_types"],
                         "participants": participants,
@@ -778,13 +780,13 @@ class SubmissionView(CaseBaseView):
             self.organisation_id = self.organisation_id or self.request.GET.get("organisation_id")
         if self.organisation_id:
             self.organisation = self._client.get_organisation(self.organisation_id)
-            ret["organisation"] = self.organisation
-            ret["organisation_id"] = str(self.organisation["id"])
+            return_data["organisation"] = self.organisation
+            return_data["organisation_id"] = str(self.organisation["id"])
         # add errors from the url
         errors = self.request.GET.get("errors")
         if errors:
             try:
-                ret["errors"] = json.loads(errors)
+                return_data["errors"] = json.loads(errors)
             except Exception as ex:
                 pass
         # Set up template to use
@@ -793,8 +795,8 @@ class SubmissionView(CaseBaseView):
             if submission
             else (role if role == "public" else "questionnaire")
         )
-        ret.update({"template_name": template_name, "mode": "form"})
-        return ret
+        return_data.update({"template_name": template_name, "mode": "form"})
+        return return_data
 
     def post(  # noqa: C901
         self,
@@ -861,13 +863,13 @@ class SubmissionView(CaseBaseView):
                 submission = self._client.get_submission(case_id, submission_id)
                 return_data.update({"submission": submission})
         if submission.get("id"):
-
             for _file in request.FILES.getlist("files"):
-                original_file_name = _file.original_name
-                details = file_details.get(original_file_name.lower())[0]
-                confidential = details.get("confidential")
-                document_type = details.get("submission_document_type")
                 try:
+                    _file.readline()  # Important, will raise VirusFoundInFileException if infected
+                    original_file_name = _file.original_name
+                    details = file_details.get(original_file_name.lower())[0]
+                    confidential = details.get("confidential")
+                    document_type = details.get("submission_document_type")
                     document = self._client.upload_document(
                         case_id=str(case_id),
                         submission_id=submission_id,
@@ -881,18 +883,19 @@ class SubmissionView(CaseBaseView):
                             "file_size": _file.file_size,
                         },
                     )
-                except Exception as ex:
+                except (VirusFoundInFileException, APIException) as e:
+                    redirect_url = f"/case/{case_id}/submission/{submission_id}/?"
+                    if isinstance(e, VirusFoundInFileException):
+                        redirect_url += "virus=true"
+                    else:
+                        redirect_url += f"upload_error={e}"
+                    logger.warning(f"File upload aborted: {e}")
                     return HttpResponse(
-                        json.dumps(
-                            {
-                                "redirect_url": f"/case/{case_id}/submission/{submission_id}/edit/?error=up"  # noqa: E301,E501
-                            }
-                        ),
+                        json.dumps({"redirect_url": redirect_url}),
                         content_type="application/json",
                     )
 
-            case_files = request.POST.getlist("case_files")
-            if case_files:
+            if case_files := request.POST.getlist("case_files"):
                 for case_file_id in case_files:
                     details = (file_details_by_id.get(case_file_id) or [])[0]
                     document = self._client.attach_document(
@@ -1034,10 +1037,7 @@ class SubmissionDocumentView(CaseBaseView):
     groups_required = SECURITY_GROUPS_TRA
 
     def post(self, request, case_id, submission_id, organisation_id=None, *args, **kwargs):
-        btn_value = request.POST.get("btn-value")
         response = {}
-        error_message = None
-        files = request.FILES.getlist("file")
         document_list_json = request.POST.get("document_list")
 
         if document_list_json:
@@ -1053,31 +1053,6 @@ class SubmissionDocumentView(CaseBaseView):
                     block_from_public_file=doc_status["block_from_public_file"],
                     block_reason=doc_status["block_reason"],
                 )
-
-        if files:
-            redirect_to = request.POST.get("next", f"/case/{case_id}/submission/{submission_id}/")
-            for _file in files:
-                data = {
-                    "submission_document_type": request.POST.get("submission_document_type"),
-                    "document_name": _file.original_name,
-                    "file_name": _file.name,
-                    "file_size": _file.file_size,
-                }
-                try:
-                    response = self._client.upload_document(
-                        data=data,
-                        organisation_id=organisation_id,
-                        case_id=case_id,
-                        submission_id=submission_id,
-                    )
-                except Exception as ex:
-                    error_message = str(ex)
-                    try:
-                        error_message = ex.response.json().get("detail")
-                    except AttributeError:
-                        pass
-            if error_message:
-                redirect_to += f"?error={error_message}"
         return HttpResponse(json.dumps(response), content_type="application/json")
 
     def delete(self, request, case_id, submission_id, document_id, *args, **kwargs):
@@ -1159,15 +1134,18 @@ class SubmissionDeficiencyView(CaseBaseView):
         )
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
+        case_number = submission["case"]["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": contact_name,
             "case_name": submission["case"]["name"],
-            "case_number": submission["case"]["reference"],
+            "case_number": case_number,
             "company_name": organisation_name,
             "deadline": due_at or "No deadline assigned",
             "submission_type": submission.get("type", {}).get("name"),
             "login_url": public_login_url(),
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "footer": footer,
         }
         context = {
             "form_action": f"/case/{case_id}/submission/{submission_id}/status/notify/",
@@ -1572,10 +1550,12 @@ class SubmissionNotifyView(CaseBaseView):
         notification_template = self._client.get_notification_template(notify_sys_param_name)
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
-
+        case_number = case["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": contact_name,
-            "case_number": case["reference"],
+            "case_number": case_number,
             "case_name": case["name"],
             "investigation_type": case["type"]["name"],
             "country": case["sources"][0]["country"] if case["sources"] else "N/A",
@@ -1587,7 +1567,7 @@ class SubmissionNotifyView(CaseBaseView):
             "notice_type": submission.get("type", {}).get("name"),
             "notice_url": submission["url"],
             "notice_of_initiation_url": submission["url"],
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "footer": footer,
         }
 
         template_list = []
@@ -2158,7 +2138,7 @@ class NoteView(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
         )
         return HttpResponse(json.dumps(notes), content_type="application/json")
 
-    def post(self, request, case_id, note_id=None, *args, **kwargs):
+    def post(self, request, case_id, note_id=None, *args, **kwargs):  # noqa: C901
         entity_id = request.POST.get("model_id")
         model_key = request.POST.get("model_key")
         content_type = request.POST.get("content_type")
@@ -2196,17 +2176,29 @@ class NoteView(LoginRequiredMixin, View, TradeRemediesAPIClientMixin):
         file_meta = request.POST.getlist("file-meta")
         files = request.FILES.getlist("files")
         for idx, _file in enumerate(files):
-            document = {
-                "document_name": _file.original_name,
-                "name": _file.name,
-                "size": _file.file_size,
-            }
-            result = client.add_note_document(
-                case_id=case_id,
-                note_id=note_id,
-                document=json.dumps(document),
-                confidentiality=file_meta[idx],
-            )
+            try:
+                _file.readline()  # Important, will raise VirusFoundInFileException if infected
+            except VirusFoundInFileException:
+                # Display a fake doc in the widget until
+                # a poll for success clears it
+                msg = "File upload aborted: malware detected in file!"
+                document = {
+                    "name": msg,
+                    "safe": False,
+                }
+                result["documents"].append(document)
+            else:
+                document = {
+                    "document_name": _file.original_name,
+                    "name": _file.name,
+                    "size": _file.file_size,
+                }
+                result = client.add_note_document(
+                    case_id=case_id,
+                    note_id=note_id,
+                    document=json.dumps(document),
+                    confidentiality=file_meta[idx],
+                )
         redirect_url = request.POST.get("redirect")
         if redirect_url:
             return internal_redirect(redirect_url, "/")
@@ -2405,20 +2397,22 @@ class InviteContactView(CaseBaseView):
                 ),
             ),
         )
-
+        case_number = self.case["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": contact["name"],
             "product": get(self.case, "product/name"),
-            "case_number": self.case["reference"],
+            "case_number": case_number,
             "case_name": self.case["name"],
             "notice_of_initiation_url": self.case.get("latest_notice_of_initiation_url"),
             "company_name": organisation["name"],
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             ),
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
+            "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
-            "email": self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"],
+            "email": email,
             "login_url": f"{settings.PUBLIC_BASE_URL}",
         }
         context = {
@@ -2513,25 +2507,24 @@ class CaseBundleView(CaseBaseView):
     def add_page_data(self):
         case_enums = self._client.get_all_case_enums()
         bundle = None
-        counts = {"virus": 0, "unscanned": 0}
         bundle_id = self.kwargs.get("bundle_id")
+        virus = self.request.GET.get("virus")
+        upload_error = self.request.GET.get("upload_error")
+        return_data = {
+            "virus": virus,
+            "upload_error": upload_error,
+        }
         if bundle_id:
             bundle = self._client.get_case_submission_bundles(
                 case_id=self.case["id"], bundle_id=self.kwargs.get("bundle_id")
             )
-            for document in bundle.get("documents", {}):
-                safe = document.get("safe")
-                if not safe:
-                    if safe is False:
-                        counts["virus"] += 1
-                    else:
-                        counts["unscanned"] += 1
-        return {
-            "bundle": bundle,
-            "submission_types": case_enums["submission_types"],
-            "error": self.kwargs.get("error"),
-            "counts": counts,
-        }
+        return_data.update(
+            {
+                "bundle": bundle,
+                "submission_types": case_enums["submission_types"],
+            }
+        )
+        return return_data
 
     def post(self, request, case_id, bundle_id=None, *args, **kwargs):  # noqa: C901
         name = request.POST.get("name")
@@ -2545,34 +2538,39 @@ class CaseBundleView(CaseBaseView):
             meta = [json.loads(block) for block in meta_raw]
             file_details = deep_index_items_by(meta, "name")
             for _file in request.FILES.getlist("files"):
-                original_file_name = _file.original_name
-                details = file_details.get(original_file_name.lower())[0]
-                if details:
+                try:
+                    _file.readline()  # Important, will raise VirusFoundInFileException if infected
+                    original_file_name = _file.original_name
+                    details = file_details.get(original_file_name.lower())[0]
                     confidential = details.get("confidential")
                     document_type = details.get("submission_document_type")
-                    try:
-                        document = self._client.upload_document(
-                            case_id=str(case_id),
-                            data={
-                                "bundle_id": bundle_id,
-                                "confidential": confidential,
-                                "document_name": original_file_name,
-                                "file_name": _file.name,
-                                "file_size": _file.file_size,
-                            },
-                        )
-                    except Exception as ex:
-                        return HttpResponse(
-                            json.dumps(
-                                {
-                                    "redirect_url": f"/case/{case_id}/submission/{submission_id}/edit/?error=up"  # noqa: F821, E501
-                                }
-                            ),
-                            content_type="application/json",
-                        )
+                    document = self._client.upload_document(
+                        case_id=str(case_id),
+                        data={
+                            "bundle_id": bundle_id,
+                            "confidential": confidential,
+                            "submission_document_type": document_type,
+                            "document_name": original_file_name,
+                            "file_name": _file.name,
+                            "file_size": _file.file_size,
+                        },
+                    )
+                except (VirusFoundInFileException, APIException) as e:
+                    redirect_url = f"/case/{case_id}/bundle/{bundle_id}/?"
+                    msg = "File upload aborted: "
+                    if isinstance(e, VirusFoundInFileException):
+                        redirect_url += "virus=true"
+                    else:
+                        msg += f"{e}"
+                        redirect_url += f"upload_error={msg}"
+                    logger.warning(f"{msg}")
+                    return HttpResponse(
+                        json.dumps({"redirect_url": redirect_url}),
+                        content_type="application/json",
+                    )
+
             # Attach existing documents to this bundle
-            case_files = request.POST.getlist("case_files")
-            if case_files:
+            if case_files := request.POST.getlist("case_files"):
                 file_details_by_id = deep_index_items_by(meta, "file/id")
                 for case_file_id in case_files:
                     details = (file_details_by_id.get(case_file_id) or [])[0]
@@ -2636,7 +2634,9 @@ class SubmissionInviteNotifyView(CaseBaseView):
                 code = invite.get("code")
                 login_url = f"{login_url}/invitation/{code}/{case_id}/"
                 break
-
+        case_number = case["reference"]
+        email = notify_contact_email(self._client, case_number)
+        footer = notify_footer(self._client, email)
         values = {
             "full_name": invited_contact["name"],
             "case_name": case["name"],
@@ -2647,8 +2647,8 @@ class SubmissionInviteNotifyView(CaseBaseView):
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             ),
-            "footer": self._client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"],
-            "email": self._client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"],
+            "footer": footer,
+            "email": email,
         }
 
         context = {
