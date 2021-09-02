@@ -18,17 +18,12 @@
                 Review and finalise {{submission_group_name}}
                 {% endif %}
             </label>
-            {% include 'cases/submissions/virus_not_checked_warnings.html' with counts=counts %}
-            {% if store.virusfound %}
-                <span><i class="icon icon-amber-warning correct margin-right-5px"></i>You cannot issue a request until all the documents are virus-free</span>
-            {% else %}
                 {% if user.permissions.publish_public %}
                     <div class="multiple-choice">
                         <input id="issue_confirm" type="checkbox" name="issue-confirm" value="issue_confirm" data-handler="enableButton" data-selector="button[value={% if submission.type.key == 'public' %}publish{% else %}send{% endif %}]">
                         <label for="issue_confirm">I am happy to proceed with finalising this {{submission_group_name}}</label>
                     </div>
                 {% endif %}
-            {% endif %}
         </div>
     </div>
 </div>

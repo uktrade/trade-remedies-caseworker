@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "govuk_template_base",
     "govuk_template",
     "govuk_forms",
+    "django_chunk_upload_handlers",
     "core",
     "cases",
     "users",
@@ -221,7 +222,6 @@ STATICFILES_DIRS = [
 ]
 
 # Max upload size - 2GB
-MAX_UPLOAD_SIZE = 2 * (1024 * 1024 * 1024)
 AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = env("S3_STORAGE_KEY", default=None)
 AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env("S3_STORAGE_SECRET", default=None)
 AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME", default=None)
@@ -234,7 +234,14 @@ S3_CLIENT = "boto3"
 # S3 Root directory name
 S3_DOCUMENT_ROOT_DIRECTORY = "documents"
 
-FILE_UPLOAD_HANDLERS = ("s3chunkuploader.file_handler.S3FileUploadHandler",)
+CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
+CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
+CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
+
+FILE_UPLOAD_HANDLERS = (
+    "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
+    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
+)  # Order is important
 
 # Temporary basic auth
 BASICAUTH_USERS = {

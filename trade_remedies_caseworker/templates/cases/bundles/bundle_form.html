@@ -17,7 +17,8 @@
     >
     {% csrf_token %}
     {% set 'initialize' 0 %}
-    {% include 'cases/submissions/virus_warnings.html' with counts=counts customer=False %}
+    {% include 'cases/submissions/virus_warnings.html' %}
+    {% include 'cases/submissions/upload_warning.html' %}
 
     <div class="bundle-builder section populated">
         {% block bundle_type %}

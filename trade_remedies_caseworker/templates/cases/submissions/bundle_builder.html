@@ -18,8 +18,8 @@
     {% set 'editable' submission.tra_editable %}
     {% include 'cases/submissions/bundle_builder_alert_block.html' %}
     <h2 class="heading-medium">{% block heading %}Bundle builder{% endblock %}</h2>
-
-    {% include 'cases/submissions/virus_warnings.html' with counts=documents.counts.caseworker customer=False %}
+    {% include 'cases/submissions/virus_warnings.html' %}
+    {% include 'cases/submissions/upload_warning.html' %}
 
     {% comment %}****************    Recipient and type  ***********{% endcomment %}
     {% set 'populated' submission.type.id|_not|_not %}

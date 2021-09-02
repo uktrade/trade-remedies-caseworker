@@ -20,11 +20,11 @@ behave==1.2.6
     # via behave-django
 black==20.8b1
     # via -r requirements.in/dev.in
-boto3==1.17.88
+boto3==1.17.89
     # via
     #   -r requirements.in/base.in
-    #   s3chunkuploader
-botocore==1.20.88
+    #   django-chunk-upload-handlers
+botocore==1.20.112
     # via
     #   boto3
     #   s3transfer
@@ -54,6 +54,8 @@ django-cache-memoize==0.1.6
     # via
     #   -r requirements.in/base.in
     #   trade-remedies-client
+django-chunk-upload-handlers==0.0.11
+    # via -r requirements.in/base.in
 django-countries==5.4
     # via -r requirements.in/base.in
 django-environ==0.4.5
@@ -76,10 +78,10 @@ django-redis==4.10.0
     # via -r requirements.in/base.in
 django-session-timeout==0.0.3
     # via -r requirements.in/base.in
-django-storages==1.9.1
+django-storages==1.11.1
     # via
     #   -r requirements.in/base.in
-    #   s3chunkuploader
+    #   django-chunk-upload-handlers
 django-timezone-field==2.0
     # via -r requirements.in/base.in
 django==2.2.24
@@ -87,13 +89,13 @@ django==2.2.24
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
     #   django-basicauth
+    #   django-chunk-upload-handlers
     #   django-govuk-forms
     #   django-govuk-template
     #   django-redis
     #   django-session-timeout
     #   django-storages
     #   django-timezone-field
-    #   s3chunkuploader
     #   trade-remedies-client
 dpath==1.4.2
     # via -r requirements.in/base.in
@@ -197,8 +199,6 @@ requests==2.25.1
     # via
     #   -r requirements.in/base.in
     #   trade-remedies-client
-s3chunkuploader==0.10
-    # via -r requirements.in/base.in
 s3transfer==0.4.2
     # via boto3
 selenium==3.141.0
