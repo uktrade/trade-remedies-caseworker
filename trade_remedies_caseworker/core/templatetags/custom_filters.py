@@ -95,20 +95,20 @@ def format_date_no_span(date_str, format_str="%d %b %Y"):
 
 @register.filter
 def _find(value, in_string):
-    """ true if the value is in the string """
+    """true if the value is in the string"""
     str_value = str(value)
     return in_string.find(str_value) > -1
 
 
 @register.filter
 def _multi_line(in_string):
-    """ true if string has any linefeeds """
+    """true if string has any linefeeds"""
     return "\n" in str(in_string)
 
 
 @register.filter
 def add_days(date, days):
-    """ add integer days to date """
+    """add integer days to date"""
     days = int(days or 0)
     if isinstance(date, str) and len(date) > 18:
         date = datetime.datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")
