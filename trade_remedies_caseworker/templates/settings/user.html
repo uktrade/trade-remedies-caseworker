@@ -28,7 +28,11 @@
                 {% text_element id='password_confirm' label='Confirm password' errors=errors value=edit_user.password_confirm password=True  readonly=read_only %}
                 {% if not edit_user.tra %}
 	                <label for="organisation" class="form-label">Organisation</label>
-	                <a href="/organisation/{{edit_user.organisations.0.id}}/" >{{edit_user.organisations.0.name}}</a>
+                    {% if edit_user.organisations %}
+	                    <a href="/organisation/{{edit_user.organisations.0.id}}/" >{{edit_user.organisations.0.name}}</a>
+                    {% else %}
+                        Not set
+                    {% endif %}
 	            {% endif %}
             </div>
             <div class="column-one-half">

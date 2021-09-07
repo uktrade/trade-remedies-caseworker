@@ -199,7 +199,9 @@ class UserView(UserBaseTemplateView):
         else:
             user["country_code"] = user.get("country_code", "GB")
             user["timezone"] = user.get("timezone", "Europe/London")
-        form_action = form_actions[request.resolver_match.url_name]
+        action = request.resolver_match.url_name
+        user["tra"] = True if action.endswith("investigator") else False
+        form_action = form_actions[action]
         return render(
             request,
             self.template_name,
@@ -258,6 +260,8 @@ class UserView(UserBaseTemplateView):
         user["groups"] = request.POST.getlist(
             "roles"
         )  # translation needed as the create write key doesn't match the update
+        action = request.resolver_match.url_name
+        user["tra"] = True if action.endswith("investigator") else False
         errors = validate_required_fields(request, required_fields) or {}
         if password_errors := self.validate_password(request, user):
             errors.update(password_errors)
