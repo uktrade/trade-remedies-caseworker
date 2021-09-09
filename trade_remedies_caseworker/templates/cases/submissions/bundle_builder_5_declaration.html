@@ -23,11 +23,6 @@
                 Review and issue {{submission_group_name}}
                 {% endif %}
             </label>
-            {% include 'cases/submissions/virus_not_checked_warnings.html' with counts=counts_to_check %}
-
-            {% if store.virusfound %}
-                <span><i class="icon icon-amber-warning correct margin-right-5px"></i>You cannot {% if submission.type.key == 'public' %}publish{% else %}issue{% endif %} until all the documents are virus-free</span>
-            {% else %}
                 {% if user.permissions.publish_public %}
                     <div class="multiple-choice">
                         <input id="issue_confirm" type="checkbox" name="issue-confirm" value="issue_confirm" data-handler="enableButton" data-selector="button[value={% if submission.type.key == 'public' %}publish{% else %}send{% endif %}]">
@@ -36,7 +31,6 @@
                 {% else %}
                     <span><i class="icon icon-amber-warning correct"></i>This must be reviewed by a lead investigator before it can be published</span>
                 {% endif %}
-            {% endif %}
         </div>
     </div>
 </div>

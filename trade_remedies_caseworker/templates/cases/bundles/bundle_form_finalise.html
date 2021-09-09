@@ -40,10 +40,6 @@
         <span class="form-hint">
                 Once finalised this bundle will be available for future applicants
         </span>
-        {% include 'cases/submissions/virus_not_checked_warnings.html' with counts=counts %}
-        {% if store.virusfound %}
-            <span><i class="icon icon-amber-warning correct margin-right-5px"></i>You cannot issue a request until all the documents are virus-free</span>
-        {% else %}
             <div class="multiple-choice submit-widget">
 
                 <input class="pull-left" id="finalise" name="finalise" type="checkbox" value="1">
@@ -51,7 +47,6 @@
                     I am happy to proceed with finalising this bundle
                 </label>
             </div>
-        {% endif %}
     </div>
 
 {% endblock %}

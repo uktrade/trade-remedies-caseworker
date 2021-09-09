@@ -1,12 +1,18 @@
 from datetime import datetime
 from dateutil.parser import parse
 import dpath
-import re
+import logging
+import json
 import markdown
+import re
+
 from django.conf import settings
 from django.shortcuts import redirect
 from django.utils.http import is_safe_url
-import json
+
+from trade_remedies_client.exceptions import APIException
+
+logger = logging.getLogger(__name__)
 
 
 def deep_index_items_by(items, key):
@@ -170,6 +176,48 @@ def submission_contact(submission):
 
 def public_login_url():
     return f"{settings.PUBLIC_BASE_URL}/"
+
+
+def notify_footer(api_client, email=None):
+    """Build notify footer with specified email.
+
+    :param (Client) api_client: TR API Client.
+    :param (str) email: contact email for footer.
+    :returns (str): The NOTIFY_BLOCK_FOOTER value provided with email appended
+      if any.
+    """
+    try:
+        default_footer = api_client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"]
+    except APIException as e:
+        logger.warning(f"Failed to get NOTIFY_BLOCK_FOOTER system param value: {e}")
+        default_footer = "Trade Remedies\nDepartment for International Trade"
+    if email:
+        return "\n".join([default_footer, f"Contact: {email}"])
+    return default_footer
+
+
+def notify_contact_email(api_client, case_number=None):
+    """Build notify email address.
+
+    :param (Client) api_client: TR API Client.
+    :param (str) case_number: e.g. 'TD0001'
+    :returns (str): If a case is specified returns a case contact email built
+      using TRADE_REMEDIES_EMAIL_DOMAIN system parameter, otherwise returns
+      TRADE_REMEDIES_EMAIL system parameter.
+    """
+    if case_number:
+        try:
+            domain = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL_DOMAIN")["value"]
+        except APIException as e:
+            logger.warning(f"Failed to get TRADE_REMEDIES_EMAIL_DOMAIN system param value: {e}")
+        else:
+            return f"{case_number}@{domain}"
+    try:
+        default_email = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"]
+    except APIException as e:
+        logger.warning(f"Failed to get TRADE_REMEDIES_EMAIL system param value: {e}")
+        default_email = "investigations@traderemedies.gov.uk"
+    return default_email
 
 
 def parse_notify_template(template, values):
