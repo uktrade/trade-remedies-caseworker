@@ -221,7 +221,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "templates", "static"),
 ]
 
-# Max upload size - 2GB
 AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = env("S3_STORAGE_KEY", default=None)
 AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env("S3_STORAGE_SECRET", default=None)
 AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME", default=None)

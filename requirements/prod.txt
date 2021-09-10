@@ -13,7 +13,7 @@ botocore==1.20.112
     #   -r requirements.in/../requirements/base.txt
     #   boto3
     #   s3transfer
-certifi==2020.12.5
+certifi==2021.5.30
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
@@ -44,7 +44,7 @@ django-govuk-template==0.6
     # via -r requirements.in/../requirements/base.txt
 django-ip-restriction==1.1.1
     # via -r requirements.in/../requirements/base.txt
-django-ipware==3.0.2
+django-ipware==3.0.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
@@ -78,7 +78,7 @@ dpath==1.4.2
     # via -r requirements.in/../requirements/base.txt
 gevent==21.1.2
     # via -r requirements.in/prod.in
-greenlet==1.0.0
+greenlet==1.1.1
     # via gevent
 gunicorn==20.0.4
     # via -r requirements.in/prod.in
@@ -101,7 +101,7 @@ marshmallow==3.6.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   kubi-ecs-logger
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
@@ -124,7 +124,7 @@ s3transfer==0.4.2
     #   boto3
 sentry-sdk==0.13.1
     # via -r requirements.in/../requirements/base.txt
-six==1.15.0
+six==1.16.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-extensions

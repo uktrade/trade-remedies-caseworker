@@ -22,7 +22,6 @@ pytz
 sentry-sdk==0.13.1
 redis==3.2.0
 requests==2.25.1
-
 waitress==1.4.3
 werkzeug==0.15.3
 whitenoise==3.3.1
