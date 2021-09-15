@@ -74,6 +74,13 @@ define(["modules/helpers", "modules/popUps"], function (helpers, popups) {
             if (!result.year && !result.month && !result.day) {
               var due_at = "";
               var outStr = "n/a";
+            } else if (Date.parse(result.year +
+                  "-" +
+                  result.month +
+                  "-" +
+                  result.day +
+                  "T00:00:00.000Z"
+              ) < Date.now()) { alert("You have entered a date that is in the past - Please correct");
             } else {
               var ticks = Date.parse(
                 result.year +
