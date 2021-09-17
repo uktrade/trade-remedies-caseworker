@@ -69,7 +69,6 @@ define([], function () {
   }
 
   function constructTypeahead() {
-    return;
     var self = this;
     self.typeaheadEl = self.el.find("#file-typeahead");
     self.browseList = getBrowseList.call(self).then(function (list) {
