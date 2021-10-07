@@ -126,4 +126,5 @@ node_modules
 # static
 trade_remedies_caseworker/static/
 
-ner_out.txt
+# NER output
+ner_output_file.txt
