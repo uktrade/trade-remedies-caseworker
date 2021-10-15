@@ -298,6 +298,7 @@ class ContactFormView(BaseOrganisationTemplateView):
         request_fields = [
             "contact_name",
             "contact_phone",
+            "e_additional_invite_information",
             "contact_address",
             "contact_post_code",
             "contact_country",

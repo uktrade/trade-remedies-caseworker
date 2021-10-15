@@ -231,7 +231,7 @@ def parse_notify_template(template, values):
         else:
             value = value.replace("<", "&lt;").replace(">", "&gt;")
             template = template.replace(
-                f"(({key}))", f'<span class="notify-tag" title="{key}">{value}</span>'
+                f"(({key}))", f'<span class="notify-tag" title="{key}" contentEditable=true>{value}</span>'
             )
     regex = r"([\^])(.+)$"
     matches = re.finditer(regex, template, re.MULTILINE)
