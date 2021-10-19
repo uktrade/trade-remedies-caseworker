@@ -8,7 +8,9 @@ from django.conf import settings
 
 
 def motd_context(request):
-    return {"public_notice": Client().get_system_parameters("PUBLIC_NOTICE").get("value")}
+    return {
+        "public_notice": Client().get_system_parameters("PUBLIC_NOTICE").get("value")
+    }
 
 
 def user_context(request):

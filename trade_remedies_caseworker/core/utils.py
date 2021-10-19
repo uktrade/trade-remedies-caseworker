@@ -167,7 +167,9 @@ def submission_contact(submission):
     if not contact:
         contacts = (submission.get("organisation") or {}).get("contacts")
         if contacts:
-            contacts = (deep_index_items_by(contacts, "primary").get("true") or []) or contacts
+            contacts = (
+                deep_index_items_by(contacts, "primary").get("true") or []
+            ) or contacts
             contact = contacts[0] if contacts else None
     if not contact:
         raise Exception("No contact supplied")
@@ -187,7 +189,9 @@ def notify_footer(api_client, email=None):
       if any.
     """
     try:
-        default_footer = api_client.get_system_parameters("NOTIFY_BLOCK_FOOTER")["value"]
+        default_footer = api_client.get_system_parameters("NOTIFY_BLOCK_FOOTER")[
+            "value"
+        ]
     except APIException as e:
         logger.warning(f"Failed to get NOTIFY_BLOCK_FOOTER system param value: {e}")
         default_footer = "Trade Remedies\nDepartment for International Trade"
@@ -207,13 +211,19 @@ def notify_contact_email(api_client, case_number=None):
     """
     if case_number:
         try:
-            domain = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL_DOMAIN")["value"]
+            domain = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL_DOMAIN")[
+                "value"
+            ]
         except APIException as e:
-            logger.warning(f"Failed to get TRADE_REMEDIES_EMAIL_DOMAIN system param value: {e}")
+            logger.warning(
+                f"Failed to get TRADE_REMEDIES_EMAIL_DOMAIN system param value: {e}"
+            )
         else:
             return f"{case_number}@{domain}"
     try:
-        default_email = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"]
+        default_email = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL")[
+            "value"
+        ]
     except APIException as e:
         logger.warning(f"Failed to get TRADE_REMEDIES_EMAIL system param value: {e}")
         default_email = "investigations@traderemedies.gov.uk"  # /PS-IGNORE
@@ -231,7 +241,8 @@ def parse_notify_template(template, values):
         else:
             value = value.replace("<", "&lt;").replace(">", "&gt;")
             template = template.replace(
-                f"(({key}))", f'<span class="notify-tag" title="{key}" contentEditable=true>{value}</span>'
+                f"(({key}))",
+                f'<span class="notify-tag" title="{key}" contentEditable=true>{value}</span>',
             )
     regex = r"([\^])(.+)$"
     matches = re.finditer(regex, template, re.MULTILINE)

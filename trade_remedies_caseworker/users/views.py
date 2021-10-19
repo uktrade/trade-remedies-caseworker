@@ -19,7 +19,9 @@ from core.constants import SECURITY_GROUP_TRA_ADMINISTRATOR, SECURITY_GROUPS_TRA
 logger = logging.getLogger(__name__)
 
 
-class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
+class UserBaseTemplateView(
+    LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+):
     def validate_password(self, request, user=None):
         """Validate password.
 
@@ -94,7 +96,10 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
             ],
         }
         create_url = {
-            "caseworker": {"url": reverse("create_investigator"), "label": "Investigator"},
+            "caseworker": {
+                "url": reverse("create_investigator"),
+                "label": "Investigator",
+            },
             "public": {"url": reverse("create_customer"), "label": "Customer"},
             "pending": {"url": reverse("create_customer"), "label": "Customer"},
         }[tab]
@@ -227,7 +232,9 @@ class UserView(UserBaseTemplateView):
 
         if self.delete_user:
             result = client.delete_user(user_id=user_id)
-            return HttpResponse(json.dumps({"alert": "User deleted.", "redirect_url": "reload"}))
+            return HttpResponse(
+                json.dumps({"alert": "User deleted.", "redirect_url": "reload"})
+            )
 
         required_fields = ["name", "email", "phone"]
         if SECURITY_GROUP_TRA_ADMINISTRATOR in request.user.groups:

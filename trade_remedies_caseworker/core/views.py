@@ -178,7 +178,9 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
 
 class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
     def get(self, request, *args, **kwargs):
-        return render(request, "forgot_password.html", {"requested": "requested" in request.GET})
+        return render(
+            request, "forgot_password.html", {"requested": "requested" in request.GET}
+        )
 
     def post(self, request, *args, **kwargs):
         email = request.POST.get("email")
@@ -217,7 +219,9 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
         return redirect("/accounts/login/?next=/dashboard/")
 
 
-class CompaniesHouseSearch(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixin):
+class CompaniesHouseSearch(
+    TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixin
+):
     def get(self, request, *args, **kwargs):
         query = request.GET.get("term")
         results = self.client(request.user).companies_house_search(query)
@@ -230,7 +234,9 @@ class SystemParameterSettings(
     groups_required = SECURITY_GROUPS_TRA_ADMINS
 
     def get(self, request, *args, **kwargs):
-        system_parameters = self.client(request.user).get_system_parameters(editable=True)
+        system_parameters = self.client(request.user).get_system_parameters(
+            editable=True
+        )
         system_parameters.sort(key=(lambda p: p.get("key")))
 
         return render(
@@ -301,5 +307,7 @@ class FeedbackFormExportView(
     def get(self, request, form_id=None):
         file = self.client(request.user).export_feedback(form_id)
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
-        response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xlsx"
+        response[
+            "Content-Disposition"
+        ] = "attachment; filename=trade_remedies_export.xlsx"
         return response
