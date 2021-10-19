@@ -28,24 +28,18 @@ class TaskView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
     def get(self, request, task_id=None):
         last_update = cache.get("lasttaskupdate")
         if not last_update:
-            cache.set(
-                "lasttaskupdate", timezone.now().strftime("%Y-%m-%dT%H:%M:%S"), 60 * 60
-            )
+            cache.set("lasttaskupdate", timezone.now().strftime("%Y-%m-%dT%H:%M:%S"), 60 * 60)
             last_update = cache.get("lasttaskupdate")
 
         if request.GET.get("last"):
             return HttpResponse(
                 json.dumps({"result": last_update}), content_type="application/json"
             )
-        query = request.GET.get("query") or json.dumps(
-            [{"field": "id", "value": str(task_id)}]
-        )
+        query = request.GET.get("query") or json.dumps([{"field": "id", "value": str(task_id)}])
         fields = request.GET.get("fields") or json.dumps(self.fields)
         tasks = self.client(request.user).get_tasks(query=query, fields=fields)
         return HttpResponse(
-            json.dumps(
-                {"result": {"tasks": tasks, "lastupdate": cache.get("lasttaskupdate")}}
-            ),
+            json.dumps({"result": {"tasks": tasks, "lastupdate": cache.get("lasttaskupdate")}}),
             content_type="application/json",
         )
 
@@ -87,9 +81,7 @@ class TaskView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                     json_data[sub_key] = value
         data["data"] = json.dumps(json_data)
         if data.get("btn_value") == "save":
-            cache.set(
-                "lasttaskupdate", timezone.now().strftime("%Y-%m-%dT%H:%M:%S"), 60 * 60
-            )
+            cache.set("lasttaskupdate", timezone.now().strftime("%Y-%m-%dT%H:%M:%S"), 60 * 60)
             if not task_id:
                 # we need the object attachments to create task
                 result = self.client(request.user).create_update_task(
@@ -98,11 +90,7 @@ class TaskView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                     data=data,
                 )
             else:
-                result = self.client(request.user).create_update_task(
-                    task_id=task_id, data=data
-                )
+                result = self.client(request.user).create_update_task(task_id=task_id, data=data)
         elif get(data, "btn_value") == "delete":
             result = self.client(request.user).delete_task(task_id=get(data, "id"))
-        return HttpResponse(
-            json.dumps({"result": result}), content_type="application/json"
-        )
+        return HttpResponse(json.dumps({"result": result}), content_type="application/json")

@@ -9,8 +9,6 @@ def proxy_stream_file_download(stream, filename):
     :param chunk_size: Optional chunk size for sending the file [Default: 8192]
     :return: A StreamingHttpResponse streaming the file
     """
-    response = StreamingHttpResponse(
-        stream, content_type=stream.headers.get("Content-Type")
-    )
+    response = StreamingHttpResponse(stream, content_type=stream.headers.get("Content-Type"))
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
     return response

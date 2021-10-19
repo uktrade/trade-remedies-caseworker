@@ -49,9 +49,7 @@ def text_element(
     name = name or id
     if name and errors and name in errors:
         message = errors[name]
-        output.append(
-            f'<span class="error-message" id="{ name }_error">{ message }</span>'
-        )
+        output.append(f'<span class="error-message" id="{ name }_error">{ message }</span>')
     if data_mode:  # for typeahead elements
         output.append(
             f'<input { autocomplete } class="form-control" id="{ id }" type="text" data-mode="{ data_mode }" name="{ name }" { readonly } value="{ value }">'  # noqa: E501

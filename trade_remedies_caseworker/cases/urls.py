@@ -9,9 +9,7 @@ urlpatterns = [
     path("create/", case_views.CaseFormView.as_view(), name="cases"),
     path("<uuid:case_id>/edit/", case_views.CaseFormView.as_view(), name="cases"),
     path("<uuid:case_id>/", case_views.CaseView.as_view(), name="cases"),
-    path(
-        "<uuid:case_id>/admin/", case_views.CaseAdminView.as_view(), name="case_admin"
-    ),
+    path("<uuid:case_id>/admin/", case_views.CaseAdminView.as_view(), name="case_admin"),
     path(
         "<uuid:case_id>/milestones/",
         case_views.CaseMilestoneDatesView.as_view(),

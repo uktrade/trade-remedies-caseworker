@@ -42,9 +42,7 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         invites = []
         case_id = self.case["id"]
         if self.submission:
-            invites = self.client.get_third_party_invites(
-                case_id, self.submission["id"]
-            )
+            invites = self.client.get_third_party_invites(case_id, self.submission["id"])
         return {
             "invites": invites,
         }
@@ -105,9 +103,7 @@ def get_submission_deadline(submission, fmt=None):
         due_at = datetime.strptime(due_at, settings.API_DATETIME_FORMAT)
     else:
         time_window = (
-            int(dnp.get("time_window") or "0")
-            or int(submission.get("time_window") or "0")
-            or 0
+            int(dnp.get("time_window") or "0") or int(submission.get("time_window") or "0") or 0
         )
         if time_window > 0:
             due_at = (timezone.now() + timedelta(days=time_window)).date()
