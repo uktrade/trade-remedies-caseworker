@@ -1,15 +1,17 @@
 {% load get_item %}
-<h2 class="heading-medium">Invite {{organisation.name}}</h2>
+<h2 class="heading-medium">Invite {{ organisation.name }}</h2>
 <div class="pull-left clear">
-    The following content will be sent to <em>{{contact.name}} &lt;{{contact.email}}&gt;</em> with the following personalisations:
+    The following content will be sent to <em>{{ contact.name }} &lt;{{ contact.email }}&gt;</em> with the following
+    personalisations:
 </div>
-<form action="{{form_url}}" method="POST" data-attach="TemplateSubstitution">
+<form action="{{ form_url }}" method="POST" data-attach="TemplateSubstitution">
     {% csrf_token %}
     {% for item  in notification_template.personalisation %}
         {% if item in editable_fields %}
             <div class="form-group edit-item type-text ">
-                <label class="form-label" for="field-{{item}}">{{item}}</label>
-                <input class="form-control text" id="field-{{item}}"  type="text" name="{{item}}" value="{{values|get_item:item}}">
+                <label class="form-label" for="field-{{ item }}">{{ item }}</label>
+                <input class="form-control text" id="field-{{ item }}" type="text" name="{{ item }}"
+                       value="{{ values|get_item:item}}">
                 <!-- {{item}} <input type="text" name="{{item}}" value="{{values|get_item:item}}"/><br/> -->
             </div>
         {% endif %}
@@ -18,14 +20,59 @@
     <div class="form-group edit-item type-text ">
         {# <textarea readonly rows="10" cols="80">{{notification_template.body}}</textarea> #}
         {% if parsed_template %}
-            <div class="notify-preview" style="width:95%;">{{parsed_template|safe}}</div>
+            <div class="notify-preview" style="width:95%;">{{ parsed_template|safe }}</div>
         {% else %}
-            <textarea readonly rows="10" style="width:95%;">{{notification_template.body}}</textarea>
+            <textarea readonly rows="10" style="width:95%;">{{ notification_template.body }}</textarea>
         {% endif %}
     </div>
     <div class="button-set">
-        <button class="button button-blue" type="submit">Send</button>
+        <button class="button button-blue" id="sendButton" type="submit" onclick="saveButton(this)">Send</button>
         <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
     </div>
 </form>
 </div>
+
+<script>
+    jQuery('.notify-preview').bind('DOMSubtreeModified', function (event) {
+        const submitButton = jQuery('#sendButton');
+        submitButton[0].innerHTML = "Save"
+        submitButton[0].type = "button"
+    })
+
+    function saveButton(object) {
+        const dataElements = object.parentElement.parentElement.getElementsByTagName("span");
+        const dataElementsLength = dataElements.length;
+        const dataElementsDict = {};
+        for (var i = 0; i < dataElementsLength; i++) {
+            dataElementsDict[dataElements[i].title] = dataElements[i].innerText
+        }
+        dataElementsDict["contact_phone"] = "{{ contact.phone }}"
+        dataElementsDict["contact_id"] = "{{ contact.id }}"
+        dataElementsDict["contact_email"] = "{{ contact.email }}"
+        dataElementsDict["contact_address"] = "{{ contact.address }}"
+        dataElementsDict["organisation_id"] = "{{ organisation.id }}"
+        dataElementsDict["case_id"] = "{{ case.id }}"
+        dataElementsDict["submission_id"] = "{{ submission.id }}"
+
+        const csrf_token = object.parentElement.parentElement[0].value
+        const dataDict = {
+            data_dict: dataElementsDict,
+        };
+        if (object.innerHTML === "Save") {
+            console.log(dataDict)
+            $.ajax({
+                type: "POST",
+                headers: {
+                    "X-CSRFToken": csrf_token,
+                },
+                data: dataDict,
+                url: "{% url "invite_template_edit" %}",
+            }).then(function (result) {
+                alert(result)
+                object.innerHTML = "Send"
+                object.type = "submit"
+            });
+        }
+    }
+
+</script>

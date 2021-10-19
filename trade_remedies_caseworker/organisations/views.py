@@ -5,6 +5,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.utils.http import urlencode
 from django.http import HttpResponse
+from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from core.base import FeatureFlagMixin
@@ -187,13 +188,13 @@ class OrganisationFormView(BaseOrganisationTemplateView):
     raise_exception = True
 
     def get(
-        self,
-        request,
-        case_id=None,
-        organisation_id=None,
-        organisation_type=None,
-        *args,
-        **kwargs,
+            self,
+            request,
+            case_id=None,
+            organisation_id=None,
+            organisation_type=None,
+            *args,
+            **kwargs,
     ):
         role = {}
         all_roles = self._client.get_case_roles()
@@ -225,13 +226,13 @@ class OrganisationFormView(BaseOrganisationTemplateView):
         return render(request, self.template_name, context)
 
     def post(
-        self,
-        request,
-        case_id=None,
-        organisation_id=None,
-        organisation_type=None,
-        *args,
-        **kwargs,
+            self,
+            request,
+            case_id=None,
+            organisation_id=None,
+            organisation_type=None,
+            *args,
+            **kwargs,
     ):
         extra_context = {"case_id": str(case_id)}
         org_request_fields = collect_request_fields(request, org_fields, extra_context)
@@ -251,7 +252,7 @@ class OrganisationFormView(BaseOrganisationTemplateView):
                 )
                 contact_request_fields["organisation_id"] = organisation["id"]
                 if contact_request_fields.get("contact_name") and contact_request_fields.get(
-                    "contact_email"
+                        "contact_email"
                 ):
                     contact = self._client.create_contact(contact_request_fields)
             return self.return_redirect("Created party " + organisation.get("name"))
@@ -263,13 +264,13 @@ class ContactFormView(BaseOrganisationTemplateView):
     raise_exception = True
 
     def get(
-        self,
-        request,
-        case_id=None,
-        organisation_id=None,
-        contact_id=None,
-        *args,
-        **kwargs,
+            self,
+            request,
+            case_id=None,
+            organisation_id=None,
+            contact_id=None,
+            *args,
+            **kwargs,
     ):
         organisation = self._client.get_organisation(organisation_id)
         if contact_id:
@@ -287,13 +288,13 @@ class ContactFormView(BaseOrganisationTemplateView):
         return render(request, self.template_name, context)
 
     def post(
-        self,
-        request,
-        case_id=None,
-        organisation_id=None,
-        contact_id=None,
-        *args,
-        **kwargs,
+            self,
+            request,
+            case_id=None,
+            organisation_id=None,
+            contact_id=None,
+            *args,
+            **kwargs,
     ):
         request_fields = [
             "contact_name",
@@ -332,6 +333,54 @@ class ContactFormView(BaseOrganisationTemplateView):
         return HttpResponse(json.dumps({"updated": True}))
 
 
+from django.http import HttpResponseBadRequest
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def invite_template_change(request):
+    if request.method != "POST":
+        logger.error(f"invite_template_change expected POST but received {request.method}")
+        return HttpResponseBadRequest()
+
+    data_dict = request.POST.get("data_dict")
+    print('ggg')
+    print(data_dict)
+
+    contact_name = request.POST.get("data_dict[full_name]")
+    contact_phone = request.POST.get("data_dict[contact_phone]")
+    e_additional_invite_information = request.POST.get("data_dict[e_additional_invite_information]")
+    contact_address = request.POST.get("data_dict[contact_address]")
+    contact_id = request.POST.get("data_dict[contact_id]")
+    case_id = request.POST.get("data_dict[case_id]")
+    organisation_id = request.POST.get("data_dict[organisation_id]")
+    contact_email = request.POST.get("data_dict[contact_email]")
+
+    contact_request_fields = {"contact_name": contact_name,
+                              "contact_phone": contact_phone,
+                              "e_additional_invite_information": e_additional_invite_information,
+                              "contact_address": contact_address,
+                              "contact_id": contact_id,
+                              "contact_email": contact_email,
+                              }
+
+    case_request_fields = {"name": request.POST.get("data_dict[case_name]"), "initiated_at": datetime.strptime(request.POST.get("data_dict[deadline]"), '%d %b %Y')}
+
+    organisation_request_fields = {"name": request.POST.get("data_dict[company_name]")}
+
+    _client = None
+
+    if request.user.is_authenticated:
+        _client = TradeRemediesAPIClientMixin.client(request, request.user)
+
+    contact_response = _client.update_contact(contact_id, contact_request_fields)
+    case_response = _client.update_case(case_id, case_request_fields)
+    organisation_response = _client.update_organisation(organisation_id, organisation_request_fields)
+
+    return HttpResponse(json.dumps({"updated": True}))
+
+
 class ContactDeleteView(BaseOrganisationTemplateView):
     def post(self, request, contact_id, case_id=None, organisation_id=None, *args, **kwargs):
         response = self._client.delete_contact(contact_id)
@@ -340,13 +389,13 @@ class ContactDeleteView(BaseOrganisationTemplateView):
 
 class ContactPrimaryView(BaseOrganisationTemplateView):
     def post(
-        self,
-        request,
-        organisation_id=None,
-        contact_id=None,
-        case_id=None,
-        *args,
-        **kwargs,
+            self,
+            request,
+            organisation_id=None,
+            contact_id=None,
+            case_id=None,
+            *args,
+            **kwargs,
     ):
         response = self._client.set_case_primary_contact(contact_id, organisation_id, case_id)
         name = response.get("name", "")
@@ -428,7 +477,7 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
             "parsed_template": parse_notify_template(notification_template["body"], values),
             "notification_template": notification_template,
             "organisation_type": request.GET.get("organisation_type")
-            or CASE_ROLE_AWAITING_APPROVAL,
+                                 or CASE_ROLE_AWAITING_APPROVAL,
         }
         return render(request, self.template_name, context)
 
@@ -509,7 +558,6 @@ class OrganisationRemoveView(BaseOrganisationTemplateView):
 
 class OrganisationMergeView(BaseOrganisationTemplateView):
     def post(self, request, organisation_id, *args, **kwargs):
-
         merge_with = request.POST.getlist("merge_with")
         parameter_map = request.POST.get("parameter_map")
         result = self.client(self.request.user).organisation_merge(
