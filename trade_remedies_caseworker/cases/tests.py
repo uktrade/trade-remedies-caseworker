@@ -1,6 +1,6 @@
 import uuid
 import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock
 
 from .views import AuditView
 
