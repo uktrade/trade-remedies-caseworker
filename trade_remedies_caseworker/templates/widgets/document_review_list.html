@@ -100,11 +100,8 @@
                 <td style="white-space: nowrap;">
                     {% set 'doc_editable' editable %}
                     {% set 'value' '' %}
-                    {% if document.deficient or not document.safe %}
+                    {% if document.deficient %}
                         {% set 'value' 'no' %}
-                        {% if document.safe == False %}
-                            {% set 'doc_editable' False %}
-                        {% endif %}
                     {% elif document.sufficient %}
                         {% set 'value' 'yes' %}
                     {% endif %}
