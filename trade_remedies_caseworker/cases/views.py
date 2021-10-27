@@ -1918,7 +1918,8 @@ class FileBrowseView(View, TradeRemediesAPIClientMixin):
         _client = self.client(request.user)
         case_files = _client.get_case_documents(case_id=case_id, source="investigator")
         # Add application bundle documents
-        case_files.extend(_client.get_system_documents())
+        # I think this is the issue. I think it should just get case documents
+        # case_files.extend(_client.get_system_documents())
         return HttpResponse(json.dumps(case_files), content_type="application/json")
 
 
