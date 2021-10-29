@@ -11,11 +11,7 @@
 
       {% for document in documents %}
       <div class="">
-        {% if document.safe %}
-          <a class="link bold" href="/document/{{document.id}}/download/" target="_blank">{{ document.name }}</a>
-        {% else %}
-          <span class="bold">{{ document.name }}</span>
-        {% endif %}
+        <a class="link bold" href="/document/{{document.id}}/download/" target="_blank">{{ document.name }}</a>
       </div>
       {% endfor %}
     </div>
