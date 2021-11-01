@@ -26,7 +26,7 @@
                             {% if group in singleton_groups %}
                                 <input type="radio" id="user-{{user.id}}" name="user_id" value="{{user.id}}" {% if user.id in team %}checked{% endif %}/>
                             {% else %}
-                                <input type="checkbox" id="user-{{user.id}}" name="user_id" value="{{user.id}}" {% if user.id in team %}checked{% endif %} autocomplete="off"/>
+                                <input type="checkbox" id="user-{{user.id}}" name="user_id" value="{{user.id}}" {% if user.id in team %}checked{% endif %}/>
                             {% endif %}
                             <label for="user-{{user.id}}" {% if not user.active %}style="text-decoration: line-through;"{% endif %}>
                                 {{user.name}} &lt;{{user.email}}&gt;
