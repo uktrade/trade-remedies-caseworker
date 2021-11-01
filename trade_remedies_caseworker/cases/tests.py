@@ -1,7 +1,8 @@
 import uuid
 import pytest
+from unittest.mock import MagicMock
 
-from cases.views import AuditView
+from .views import AuditView
 
 
 @pytest.fixture
@@ -11,27 +12,27 @@ def audit_data():
 
 
 @pytest.fixture
-def case(mocker):
+def case():
     """Fake case."""
-    mock_case = mocker.MagicMock()
+    mock_case = MagicMock()
     mock_case.id = uuid.uuid4()
     return mock_case
 
 
 @pytest.fixture
-def api_client(mocker, monkeypatch, audit_data):
+def api_client(monkeypatch, audit_data):
     """Fake API client."""
-    mock_api = mocker.MagicMock()
-    mock_api.get_audit = mocker.MagicMock(return_value=audit_data)
+    mock_api = MagicMock()
+    mock_api.get_audit = MagicMock(return_value=audit_data)
     return mock_api
 
 
 @pytest.fixture
-def audit_view(mocker, api_client, case):
+def audit_view(api_client, case):
     """Basic audit view."""
     view = AuditView()
     view._client = api_client
-    view.request = mocker.MagicMock()
+    view.request = MagicMock()
     view.limit = 20
     view.start = 0
     view.case_id = case.id
@@ -74,15 +75,15 @@ class TestAuditView:
         assert result["next_url"] is None
         assert result["prev_url"] is None
 
-    def test_add_page_data_last_page(self, mocker, audit_view, case):
+    def test_add_page_data_last_page(self, audit_view, case):
         audit_view.start = 75
         audit_view.request.GET = {"limit": 20}
         result = audit_view.add_page_data()
         assert result["next_url"] == f"/cases/{case.id}/audit?milestone=true&start=95"
         assert audit_view.start == 95
         # Last page with just 5 items
-        audit_view._client = mocker.MagicMock()
-        audit_view._client.get_audit = mocker.MagicMock(return_value=["Audit data"] * 5)
+        audit_view._client = MagicMock()
+        audit_view._client.get_audit = MagicMock(return_value=["Audit data"] * 5)
         # Simulate clicking 'next'
         result = audit_view.add_page_data()
         assert result["next_url"] is None

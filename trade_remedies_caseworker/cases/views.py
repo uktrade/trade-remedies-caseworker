@@ -1918,7 +1918,7 @@ class FileBrowseView(View, TradeRemediesAPIClientMixin):
         _client = self.client(request.user)
         case_files = _client.get_case_documents(case_id=case_id, source="investigator")
         # Add application bundle documents
-        case_files.extend(_client.get_system_documents())
+        case_files.extend(_client.get_case_submission_bundles(case_id=case_id))
         return HttpResponse(json.dumps(case_files), content_type="application/json")
 
 

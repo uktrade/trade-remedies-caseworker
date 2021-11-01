@@ -67,8 +67,6 @@
                 {% set 'contact_org_verify_state' 'complete' %}
             {% elif submission.deficiency_notice_params.contact_org_verify == 'accepted' %}
                 {% set 'contact_org_verify_state' 'in-progress' %}
-            {% else %}
-                {% set 'approve_disabled' True %}
             {% endif %}
 
             {% if submission.contact.organisation.name %}
