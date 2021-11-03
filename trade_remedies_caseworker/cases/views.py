@@ -141,6 +141,14 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                 },
             ],
         }
+        case_should_be_view_only_to_investigator = False
+        for case in cases:
+            if case["stage"]["name"] == "Created":
+                case_should_be_view_only_to_investigator = True
+        can_view_case = True
+        for group in request.user.groups:
+            if group == "TRA Investigator" and case_should_be_view_only_to_investigator:
+                can_view_case = False
         template_name = self.template_name if panel_layout else "cases/cases_old.html"
         body_class = "full-width kill-footer" if panel_layout else "full-width"
         return render(
@@ -150,6 +158,7 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                 "body_classes": body_class,
                 "cases": cases,
                 "tabs": tabs,
+                "can_view_case": can_view_case,
             },
         )
 
