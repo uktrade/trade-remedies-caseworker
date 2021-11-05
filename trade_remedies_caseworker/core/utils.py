@@ -216,7 +216,7 @@ def notify_contact_email(api_client, case_number=None):
         default_email = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL")["value"]
     except APIException as e:
         logger.warning(f"Failed to get TRADE_REMEDIES_EMAIL system param value: {e}")
-        default_email = "investigations@traderemedies.gov.uk"
+        default_email = "investigations@traderemedies.gov.uk"  # /PS-IGNORE
     return default_email
 
 

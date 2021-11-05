@@ -1,0 +1,2343 @@
+JS Foundation
+e.nodeType},x=
+c={type:!0,src:!0,nonce:!0,noModule:!0};function b(e
+t=!!e&&"length"in e&&e.length
+n.call(e
+e)}))},slice
+function(){return
+e)if(!1===t.call(e[r],r
+u,l
+RegExp("^"+M+"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\("+M+"*((?:-\\d)?\\d*)"+M+"*\\)|)(?=[^-]|$)","i")},Y=/HTML$/i
+O.call(t))}:function(e
+Z.exec(t)))if(i
+u[1]){if(9===p){if(!(a
+e?"label"in
+a.appendChild(e).appendChild(C.createElement("div")),"undefined"!=typeof
+t.getElementById(e);return
+id='"+S+"-\r\\
+RegExp(s.join("|")),t
+u?P(u
+e)-P(u
+t){if(e===t)return l=!0,0;var n
+r=0,i=e.parentNode
+a=[e],s=[t];if(!i||!o)return
+t==C?1
+n&&j.call(b.attrHandle
+t,!E):void
+e[i++])t===e[i]&&(r
+n},(b
+ne),"~="===e[2]&&(e[3]=
+a[l])if(x?a.nodeName.toLowerCase()===f:1===a.nodeType)return!1;u
+d]),a===e))break;return(d-=v)===g||d%g==0&&0<=d/g}}},PSEUDO:
+s(r
+le(function(t){return
+Q.test(e.nodeName)},button
+r="";t
+l||u
+a[2]=r[2];if((i[c]=a)[2]=s(e
+n):l(e
+r}];s
+n)),n
+me.prototype
+a.slice(n.length)),b.filter)!(r
+u[o](r))||(n=
+x=0
+n);if(e){if(0
+a},g
+href='#'></a>","#"===e.firstChild.getAttribute("href")})||fe("type|href|height|width",function(e
+null==e.getAttribute("disabled")})||fe(R
+n.parentNode)if(n.nodeType<11&&(a?-1
+S.inArray(e
+n,r){var u=0;function l(i
+a.apply(n
+m(t)?s?t.call(e
+l(u
+S.Deferred(function(e){o[0][3].add(l(0,e
+e.notifyWith)),o[1][3].add(l(0,e
+m(n)?n
+i)}};if(n<=1&&(I(e
+n[s],!0,o
+r),t=
+u;s++)t(e[s],n
+J=/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,K=/[A-Z]/g;function Z(e
+J.test(i)?JSON.parse(i):i)}catch(e){}Q.set(e
+null,!0)},removeData
+Y.get(e
+e)},oe={composed:!0};re.getRootNode&&(ie
+c+l),n
+n&&(r
+t[s],o);return e}if(null==r&&null==i?(i
+i,!1),S.event.add(e
+r),t
+S.guid++),(u
+0}),l=(e=(e||"").match(P)||[""]).length;while(l--)d
+d+t[l],n
+o.data
+e.target;if(u&&l.nodeType&&!("click"===e.type&&1<=e.button))for(;l!==this;l
+a[i]=r.needsContext?-1<S(i,this).index(l):S.find(i
+u<t.length&&s.push({elem:
+pe.test(t.type)&&t.click&&A(t,"input")&&Ae(t,"click",Ce),!1},trigger
+t)})}});var Ne=/<script|<style|<link
+Y.remove(t,"handle events"),s)for(n=0,r
+S.map(a
+u.nonce||u.getAttribute("nonce")},l):b(u.textContent.replace(je,""),u
+o=0;void
+t)})},html
+RegExp("^("+ee+")(?!px)[a-z%]+$","i"),Ie
+Math.round(parseFloat(e))}var
+te.exec(t);return
+n+ne[a],!0,i)),r?("content"===n&&(u-=S.css(e,"padding"+ne[a],!0,i)),"margin"!==n&&(u-=S.css(e,"border"+ne[a]+"Width",!0,i))):(u+=S.css(e,"padding"+ne[a],!0,i),"padding"!==n?u+=S.css(e,"border"+ne[a]+"Width",!0,i):s+=S.css(e,"border"+ne[a]+"Width",!0,i));return!r&&0<=o&&(u+=Math.max(0,Math.ceil(e["offset"+t[0].toUpperCase()+t.slice(1)]-o-u-s-.5))||0),u}function
+n||(i?"border":"content"),o
+X(t),u
+n)&&(i
+i),o="number"),null!=n&&n==n&&("number"!==o||u||(n+=i&&i[3]||(S.cssNumber[s]?"":"px")),y.clearCloneStyle||""!==n||0!==t.indexOf("background")||(l[t]="inherit"),a&&"set"in
+a&&(i
+Qe&&(i
+Ye
+u,n
+C.setTimeout(function(){tt
+tt||ut(),t
+e.match(P);for(var n
+t||"height"in
+S.fx.off?r.duration=0:"number"!=typeof
+a,[]),r&&r.stop&&r.stop.call(this,!0),e=i.length;e--;)i[e].elem===this&&i[e].queue===a&&(i[e].anim.stop(!0),i.splice(e,1));for(e=0;e
+r){S.fn[e]=function(e
+e.nodeType;if(3!==o&&8!==o&&2!==o)return"undefined"==typeof e.getAttribute?S.prop(e
+n){return!1===t?S.removeAttr(e
+n),n}},S.each(S.expr.match.bool.source.match(/\w+/g),function(e
+S.propHooks[t]),void 0!==n?i&&"set"in
+yt(this)))});if((e
+0!==i&&"boolean"!==o||((e
+bt.test(s+d)||(o
+l.apply(o
+e.isPropagationStopped()&&f.addEventListener(d
+n,!0)}}),y.focusin||S.each({focus:"focusin",blur:"focusout"},function(n
+r);t||e.addEventListener(n
+i,!0),Y.access(e
+t):(e.removeEventListener(n
+C.DOMParser).parseFromString(e,"text/xml")}catch(e){t
+e[n],t
+S.param(this.serializeArray())},serializeArray
+Array.isArray(n)?S.map(n
+qt=/#.*$/,Lt=/([?&])_=[^&]*/,Ht=/^
+Ot=/^(?:GET|HEAD)$/,Pt=/^\/\//,Rt={},Mt={},It="*/".concat("*"),Wt
+t){"object"==typeof e&&(t
+q=0.01":""):v.accepts["*"]),v.headers)T.setRequestHeader(i
+n&&(s
+u=e.dataTypes;while("*"===u[0])u.shift(),void
+T.getResponseHeader("etag"))&&(S.etag[f]=u)),204===e||"HEAD"===v.type?l="nocontent":304===e?l="notmodified":(l
+T]):x.rejectWith(y,[T
+a]),T.statusCode(w),w
+S.get(e
+m(t)&&(r
+n.scriptCharset
+o),o&&o.length&&S(o).remove(),S.merge([],i.childNodes)));var
+e)});var
+i){var
+n),Me.test(t)?S(e).position()[n]+"px":t})}),S.each({Height:"height",Width:"width"},function(a
+o){S.fn[o]=function(e
+x(e)?0===o.indexOf("outer")?e["inner"+a]:e.document.documentElement["client"+a]:9===e.nodeType?(r
+keydown keypress keyup
+t&&(n
+case_id
+method="GET
+NONCONF
+TRA
+// Height
+_hasScrollEvt: false
+var
+cachedScrollTop
+cachedScrollTop + el.height
+&& el.$fixedEl.css('position'
+GOVUK
+MIT
+http://api.jqueryui.com/fold-effect/
+AMD
+Browser
+animation2.clip
+Chinese
+jQuery
+Cloudream
+HTML5
+h3
+article
+http://snook.ca/archives/html_and_css/font-size-with-rem
+Removes Android
+html {
+ColorVariable
+154px
+// Fieldset
+@extend
+Hack
+Chrome
+FF
+Firefox
+QualifyingElement
+f"""<div
+960px
+@media
+del
+dfn
+kbd
+sup
+dl
+0.9375em
+Consolas
+Ubuntu Mono
+min-width
+0.5625em
+alpha(opacity=100
+0.9em
+&quot;{{outer.name}}&quot;{%
+assert json_response["message
+/bundle_builder.html
+row.prop("checked
+APIException
+KeyError
+index.setdefault(index_key
+inner(items
+item.get(children_key
+request_data
+param
+NOTIFY_BLOCK_FOOTER
+Trade Remedies\nDepartment for International Trade
+TD0001'
+TRADE_REMEDIES_EMAIL_DOMAIN
+TRADE_REMEDIES_EMAIL
+title="{key}">{value}</span>'
+MULTILINE
+FRIENDLY_DATE_FORMAT
+is_date(date_text
+cases/_case_template.html
+Snippet
+// Base
+// Components
+UI
+// Bind
+IsCallable
+fNOP && oThis
+fBound
+Thai
+มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน
+@import
+@mixin
+580px
+180px
+f"""<button
+class="button
+mouse
+this.options.handle && !
+this._removeCurrentsFromItems
+o.cursorAt && this._adjustOffsetFromHelper
+o.cursor && o.cursor
+this.positionAbs
+this.document.scrollLeft
+&& $.ui.ddmanager && !
+Container
+.contains
+&& this.helper &&
+o.key &&
+( !str.length && o.key
+ret.push
+isOverElementHeight && isOverElementWidth
+verticalDirection &&
+" && !
+return verticalDirection && (
+" && isOverBottomHalf
+0 && (
+connectWith &&
+cur.length
+this && !
+queries.push
+addItems
+item.data
+this.offsetParent && this.helper
+this.currentContainer && this.currentContainer &&
+this.options.custom && this.options.custom.refreshContainers
+posProperty
+innermostContainer &&
+Math.abs
+dropOnEmpty
+itemWithLeastDistance &&
+" && $
+this.helper.outerWidth
+co.top
+// Click
+this.fromOutside && !
+DOM
+Changed
+Trigger
+inst.positionAbs
+Bjørn Johansen
+Lukk
+this.el =
+urlTemplate
+urlTemplate(this.data
+self.editPage.html(result
+result.new_role
+LoaDetails
+Sausis","Vasaris","Kovas","Balandis","Gegužė","Birželis
+Liepa","Rugpjūtis","Rugsėjis","Spalis","Lapkritis","Gruodis
+SAV
+class="grey-box
+publish{%
+submission_group_name}}</label
+notesWidget.html
+Japanese
+Kentaro SATO
+x3C;前
+Provide
+BACKSPACE
+DELETE
+Reset
+Edge
+IE
+el =
+100px
+class="icon
+this.saveCancel.find(".cancel").on("click
+editElement.val(source.html().replace(/\<br\>/g
+\n
+Haukur H. Thorsson
+Fyrri
+Næsti &#x3E
+Vika
+class="inner
+360px
+205px
+li><a
+role="main
+# govuk_frontend_toolkit
+keydown
+this.el.attr("data
+this.onClick
+class="main-content">\
+class="form-group">\
+function decodeHTMLEntities(str
+&&
+this.el.width
+activeInstance && activeInstance.cancel
+this.el.html
+require(["modules/Lightbox
+Lightbox
+&& clearTimeout(this.posTimer
+\n").replace(/\<\/div\>/g
+Convert
+French
+Keith Wood
+Stéphane Nahmani
+sam
+Pavel Selitskas
+datepicker.regional.be
+class="file
+Confidential{%
+TransientUser
+any([prm
+TR-2639
+API
+F821
+http://api.jqueryui.com/pulsate-effect/
+password</button
+class="strikethrough">{{label}}</span>
+http://api.jqueryui.com/fade-effect/
+Italian
+Antonello Pasella
+Chiudi
+Do","Lu","Ma","Me","Gi","Ve","Sa
+mode="representation_list
+validated.</a><i
+mode="verification_list
+target.prop("checked
+Flakron Bytyqi
+Jan","Shk","Mar","Pri","Maj","Qer
+Di","Hë","Ma","Më","En","Pr","Sh
+class="cell date">{%format_date event.created_at '%d %
+jamie-panel
+jamie-party
+jamie-red
+submission.due_at
+local.env
+SRE
+https://github.com/uktrade/trade-remedies-docker
+Trade Remedies
+BDD
+href="https://github.com
+Robert Meredith</b></sub></a><br /><a
+src="https://avatars3.githubusercontent.com
+Malka</b></sub></a><br
+📖</a
+Pull
+Paul Cooney</b></sub></a><br
+href="https://github.com/nao360"><img src="https://avatars3.githubusercontent.com/u/6898065?v=4?s=100
+Brendan Quinn</b></sub></a><br /><a href="https://github.com
+name="case_type_id
+label='Case
+TRA)</h2
+id="companyEntryField
+type="text"  name="organisation_name
+State
+form_group_error
+sector_id
+HS
+@function pem($px
+px
+traderemediescaseworker
+UTF-8
+Lado Lomidze
+წინა
+შემდეგი &#x3e
+მარტი
+იან","თებ","მარ","აპრ","მაი","ივნ
+darken($jamie-red
+201px
+li
+rotate(180deg
+950px
+value="send
+ALLOWED_HOSTS=
+F401
+class="heading-medium">Cases
+tab.html
+class="number-circle">{{organisation.users|length}}</div
+details</button
+>Status</span></th
+>Action</span></th
+>By</span></th>
+jqueryUI
+INPUT
+http://jqueryui.com/tooltip/
+Opera
+addDescribedBy
+removeDescribedBy
+parent.uniqueId
+this.options.track && event &&
+this.options.track && this.options.show && this.options.show.delay
+target.removeData
+this._removeDescribedBy
+wordcount"></div
+function keyup(evt
+this.counter.html
+name="review_case_id
+GOVUK.cookie('hobnob'
+GOVUK.setCookie
+expires=
+GOVUK.getCookie
+message && GOVUK.cookie('seen_cookie_message'
+GOVUK && GOVUK.addCookieMessage
+document.querySelectorAll && document.addEventListener
+els.length
+e.preventDefault
+sourceClass.replace(/(^|\s)js
+Super User
+Organisation User
+TRA Administrator
+top_of_page %
+}&#32;{%
+Forgotten
+Expat
+handlebars v5.0.0
+Yehuda Katz
+Software
+IMPLIED
+DAMAGES
+LIABILITY
+b){"object"==typeof
+b():"function"==typeof
+k.compile(b
+k.precompile(b
+k.Compiler
+a.JavaScriptCompiler
+Parser
+a)Object.prototype.hasOwnProperty.call(a
+n.extend(a
+p.template(b
+c(3),n
+2.0.0-alpha.x",6:">= 2.0.0-beta.1",7:">=
+h["default"]("Arg
+a}function e(a
+b["default"]=c
+c(9),m
+c(b
+h++);void 0!==l&&c(l
+c.fn
+b.fn;if(d.isEmpty(a))return
+h}),b.partials[e.args[0]]=e.fn
+r.
+REVISION_CHANGES[c],e=
+Handlebars
+c(c
+g)),f},data
+a},merge
+b.VM.noop
+d.isTop=!0,d}function h(a
+c)}function k(){return""}function l(a
+k;var
+new n.SourceLocation(b&&b.srcName
+c},c=[2,46],d=[1,20],e=[5,14,15,19,29,34,39,44,47,48,51,55,60],f=[1,35],g=[1,28],h=[1,29],i=[1,30],j=[1,31],k=[1,32],l=[1,34],m=[14,15,19,29,34,39,44,47,48,51,55,60],n=[14,15,19,29,34,44,47,48,51,55,60],o=[1,44],p=[14,15,19,29,34,47,48,51,55,60],q=[33,65,72,80,81,82,83,84,85],r=[23,33,54,65,68,72,75,80,81,82,83,84,85],s=[1,51],t=[23,33,54,65,68,72,75,80,81,82,83,84,85,87],u=[2,45],v=[54,65,72,80,81,82,83,84,85],w=[1,58],x=[1,59],y=[15,18],z=[1,67],A=[33,65,72,75,80,81,82,83,84,85],B=[23,65,72,80,81,82,83,84,85],C=[1,79],D=[65,68,72,80,81,82,83,84,85],E=[33,75],F=[23,33,54,68,72,75],G=[1,109],H=[1,121],I=[72,77],J={trace
+d,19:[1,23],29:[1,21],34:[1,22],48:[1,13],51:[1,14],55:[1,18],60:[1,24]}),{1:[2,1]},b(e,[2,47]),b(e,[2,3]),b(e,[2,4]),b(e,[2,5]),b(e,[2,6]),b(e,[2,7]),b(e,[2,8]),b(e,[2,9]),{20:25,72
+l,86:33},{20:36,72
+c,{6:3,4:45}),b([5,14,15,18,19,29,34,39,44,47,48,51,55,60],[2,10]),{20:46,72
+l,86:33},{20:48,72
+f,86:52},b(t
+l,86:33},{26:66,47
+o,69:74,70:77,71:78,72
+l,86:33},{26:84,47
+z},{47:[2,55]},b(m
+l,86:33},{33:[1,106]},b(q,[2,79]),{33:[2,81]},b(r,[2,27]),b(r,[2,28]),b([23,33,54,68,75],[2,30],{71:107,72:[1,108]}),b(F,[2,98]),b(t
+e.slice.call(arguments,1),n
+n.yylineno
+c.push(s),d.push(n.yytext),e.push(n.yylloc),c.push(v[1]),s
+function(){if(this.done)return
+this._currentRules(),f=0;f
+e[f]),a!==!1)return
+e(a
+this.popState(),54;case 30:return
+c}function g(a
+i(a
+c),n
+g(d
+b.close}},b["default"]=e
+DecoratorBlock
+PathExpression
+q["default"](a.path.original+
+d){e(a
+m(a
+d);var
+c.start.line
+b.prepareRawBlock
+b.prepareBlock=m
+c);return(new c.
+b)}function g(a
+c),e=(new c.
+Handlebars AST
+m["default"]("TrackIds
+c.parse(a
+b);return(new c.Compiler).compile(d
+b)}function j(a
+this.sourceNode.shift(),b},Program
+g(a
+a,";"]:c?["buffer
+Function.apply(this,["fn","props","container","depth0","data","blockParams","depths",this.decorators.merge()]):(this.decorators.prepend("function(fn
+k};this.decorators&&(l.main_d
+alias"+ ++d+"="+e
+h,"}"])},mergeSource
+function(a){this.pendingContent?a
+c)},lookupBlockParam
+b){this.useBlockParams=!0,this.push(["blockParams[",a[0],"][",a[1],"]"]),this.resolvePath("context",b,1)},lookupData
+b[c],a);return
+this.contextName(0),")"])},emptyHash
+this.useDepths||e.useDepths
+j["default"]("Invalid
+callParams:[g].concat(d)}},setupParams
+d={},e=!c
+RESERVED_WORDS[a]&&/^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(a)},b["default"]=f
+a.start.column
+function(a){return'"'+(a+"").replace(/\\/g,"\\\\").replace(/"/g,'\\"').replace(/\n/g,"\\n").replace(/\r/g,"\\r").replace(/\u2028/g,"\\u2028").replace(/\u2029
+JS and CSS
+lower_info_block
+Swedish
+Anders Ekdahl
+Jan","Feb","Mar","Apr","Maj","Jun
+Sön","Mån","Tis","Ons","Tor","Fre","Lör
+datepicker.regional.sv
+@include media($min-width
+tablet
+percentage($width
+@warn
+class="in
+MIT License
+Department for International Trade
+el.closest("body").on("click
+target.prop("type
+information{%
+sizes="152x152
+href="https://www.nationalarchives.gov.uk
+stated</p>{%
+class="copyright
+Crown
+templateStrings["Checkbox/NA
+inline">\
+hidden">\
+>Task - <
+obj.task.response_type && obj.task.response_type.name
+disabled<%
+task.response_type && task.response_type.name
+arr
+arr[1] &&
+//var data =
+function makeHtml(inStr
+issuing{%
+str && (
+el = e.target
+Galician
+Jorge Barreiro
+Xan","Feb","Mar","Abr","Mai","Xuñ
+@function
+class="checkbox
+name="document_id" value="{{document.id}}" id="documentId"/
+bundle_builder_alert_block.html
+submission_group_name}}</button
+class="publish
+submission?<br
+trade_remedies_caseworker &&
+collectstatic --noinput &&
+highlight{%
+Y'}}</td
+SCCY
+access_log_format = os.environ.get
+b)s
+Indonesian
+Deden Fathurahman
+hari ini
+Mg","Sn","Sl","Rb","Km","jm","Sb
+Malaysian
+Mohd Nawawi Mohamad Jamili
+Ah","Is","Se","Ra","Kh","Ju","Sa
+evt.target).closest(".tab
+full{%
+class="value">{{bundle.submission_type.name}}</span>
+class="cases
+A'}}</td
+திங்கட்கிழமை
+சனிக்கிழமை
+திங்கள்
+வெள்ளி
+label='Draft
+auditBlock.html
+audit=audit %
+correct"></i></button
+team_groups|length
+delete options.value
+gaClientId
+this.gaClientId
+global.innerWidth
+tracker.get('clientId
+Abdurahmon Saidov
+datepicker.regional.tj
+datestr
+title='{_full}'>{_formatted}</span
+http://api.jqueryui.com/transfer-effect/
+assert escape(img_tag_str
+assert
+alert("Bad
+data["deficiency_notice_params
+documentStates[id
+sufficient = sufficient && val
+target.closest("tr").attr("data
+result && result.alert
+Levon Zakaryan
+para la extensión '
+Sig&#x3E
+enero","febrero","marzo","abril","mayo","junio
+Checkbox
+checkbox
+Escape
+function escapeElementName
+str.replace
+ARIA
+Set aria-controls
+function getToggledContent
+content.hasClass('js-hidden'
+hideToggledContent($control
+// Prepare
+TaskView
+700px
+Size
+@include
+Safari
+@include ie(6
+Fixes
+blob.is("button
+this.lowerControls
+JSON.parse(disableJson
+secondaryRow
+//if(field &&
+value2 && !
+exit</button
+Events().fire("party
+JSON.stringify(parameter_map
+http://api.jqueryui.com/jQuery.widget/
+&& events.remove
+Redefine
+base._childConstructors.push
+Copy
+&& options
+&& methodValue
+methodValue && methodValue.jquery
+key.split
+curOption
+checkOption &&
+this._classes
+hasOptions && $.effects && $
+300px
+representing_org_id
+case_org_id = f"{case_id}:{org_id
+out.setdefault
+list(out.values
+org_list
+PrimaryList
+class="fold-controls"><div
+UI Datepicker
+Amir Hardon
+data|to_json
+indent=4).replace
+mark_safe(f"<textarea>{value}</textarea
+View
+SystemView(LoginRequiredMixin, GroupRequiredMixin
+HttpResponse(f"ERROR
+request.session.cycle_key
+POST.get("email
+exc
+JSONDecodeError
+BaseCaseView(LoginRequiredMixin, GroupRequiredMixin
+hasattr(request.user
+self.client(request.user).two_factor_request
+self.client(request.user).two_factor_auth
+f"{error_message}<br/>{kwargs['error
+SystemParameterSettings
+LoginRequiredMixin, GroupRequiredMixin
+self.client(request.user
+POST.get(field
+element && element.nodeName.toLowerCase
+attach="controllers/PartyDetails
+details</button>
+list{%
+case</button
+duplicates</button
+sr_text="Party
+refValue
+BIGGEST
+Distance / 3
+ref
+newEl
+Serbian
+Dejan Dimić
+x3E
+datepicker.regional.sr
+Retina
+reg_exp(regex
+Checkboxradio
+this.options.label && this.options.label
+this.options.icon && this.type
+this._unbindFormResetHandler
+name="day"
+submission.due_at && submission.due_at[1]%>"/>\
+!result.year && !
+isNaN(ticks
+result && result.submission
+if(!action.children &&
+title="Add
+class="button-container">\
+node-edit">\
+name="active
+print(f.renderOptions(responseTypes
+name="time_gate
+name="outcome_spec
+node.outcome_spec
+class="nobreak"><%=(due
+/span></td>\
+td><%=node && node.response_type && node.response_type.name %
+node.children
+child.children && renderLevel.call(this
+editItem.attr("data
+this.deleteItem(item
+createMap(nodeTypes
+this.responseTypeNameMap =
+delete node.parent
+delete node.order
+delete node.value
+node.children && node.children.length
+self.responseTypeNameMap
+node.response_type && node.response_type.name
+Selection
+NoteSection
+Label
+(nodeRef && nodeRef
+delete node.permission
+nodeTypes
+0 && newIdx
+state && typeof
+if(state && typeof(state
+row.find('span.value').html(txt
+(parent.children && parent.children.length
+rt && rt.name
+match_org.id
+class="blob
+found</span
+LOA
+650px
+to_json(data
+\w.]+/.exec
+class="form-label">Anonymous
+class="visually-hidden">{{sr_text}}</span
+Bulgarian
+Stoyan Kyosev
+днес
+NOTICES
+IE9
+// Interestingly
+popups.error(result.error
+hiddenEl &&
+self="undefined"!=typeof window?window:"undefined"!=typeof
+a(e.type
+e)e.hasOwnProperty(i)&&(t.call(e
+r)))}},plugins:{},highlightAll
+r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language
+n.tokenize(e
+Token
+r=[e],i
+h=!!u.greedy
+u.alias;if(h&&!u.pattern.global){var
+k];x&&j.push(x);var N
+a.stringify(n
+r),tag:"span",classes:["token",e.type],attributes:{},language
+document.addEventListener&&!r.hasAttribute("data-manual")&&("loading"!==document.readyState?window.requestAnimationFrame?window.requestAnimationFrame(n.highlightAll):window.setTimeout(n.highlightAll,16):document.addEventListener("DOMContentLoaded",n.highlightAll))),_self
+Prism.languages.markup={comment:/<!--[\w\W]*?-->/,prolog:/<\?[\w\W]+?\?>/,doctype:/<!DOCTYPE[\w\W]+?>/i
+cdata:/<!\[CDATA\[[\w\W]*?]]>/i,tag:{pattern:/<\/?(?!\d)[^\s>\/=$<]+(?:\s+[^\s>\/=]+(?:=(?:("|')(?:\\\1|\\?(?!\1)[\w\W])*\1|[^\s'">=]+))?)*\s*\/?>/i,inside:{tag:{pattern:/^<\/?[^\s>\/]+/i
+Prism.languages.extend("clike",{keyword:/\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/,number:/\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/,"function":/[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i
+Prism.languages.javascript}},string:/[\s\S]+/}}}),Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(<script[\w\W]*?>)[\w\W]*?(?=<\/script>)/i
+NormalizeWhitespace
+NA
+type="radio
+name=
+Checkbox/NA' %
+id={{task.key}}-na class="na-
+Timer' %
+task.due_date
+Label' %
+this.org_id
+this.org_caserole
+results && results.org_matches
+Michael Dawart
+मंगलवार
+शुक्रवार
+bundle_type
+class="label">Type</span>
+type</span>
+documents')">Edit</button
+DocumentsView
+DocumentStreamDownloadView
+DocumentSearchView.as_view
+href="/case/{{case_id}}/organisation/{{party.id}}/">{{party.name}}</a>
+needed"><span class="visually-hidden">Alert</span></i>
+accepted"><span class="visually-hidden">Invitation
+True  %
+party_type.case_role_id
+style="min-height:380px
+git+git://github.com/uktrade/trade-remedies-client.git
+django-basicauth==0.5.2
+django-extensions==2.2.1
+django-redis==4.10.0
+django-storages==1.11.1
+pytz
+waitress==1.4.3
+werkzeug==0.15.3
+PROJECT_DIR}/trade_remedies_caseworker
+gulp.series("clean
+Le Thanh Huy
+Tiếp&#x3E
+Hôm
+Tháng Một
+Tháng Hai
+Tháng Ba
+Tháng Năm
+Tháng Sáu
+Tháng Bảy
+Tháng Tám
+Tháng Chín
+Tháng Mười
+Tháng 1
+Tháng 2
+Tháng 4
+Tháng 5
+Tháng 7
+Tháng 8
+Tháng 9
+Tháng
+Tháng 11
+Chủ Nhật
+Thứ Hai
+Thứ Ba"
+Thứ Năm
+Thứ Sáu
+Thứ Bảy" ]
+options && options.opacity
+op66
+Stageprompt 2.0.1
+class="service
+Vojtech Rinik
+Nasledujúci&#x3E
+nedeľa","pondelok","utorok","streda","štvrtok","piatok","sobota
+Y'}}</span>
+value="{{object.time_window}}"/
+class="date">Date</th
+Mouse
+this._mouseStarted && this._mouseUp
+btnIsLeft || elIsCancel ||
+event.preventDefault
+Gecko & Opera
+that._mouseUp
+IE<9
+TOML
+py37
+ModalForm
+xhr.responseText.substr(1
+window.localStorage['open_panel
+body').on('click
+evtOptions
+b38d3b
+grey{%
+contact.name}}</span
+user</button
+contact.name}}</span></button
+contact.has_user
+delete &quot;{{contact.name}}&quot;<br
+E722
+trade_remedies_caseworker
+import_order_style
+no_chosen'
+class="form-label">Response
+getFormValues.call(this).values
+&& partyCard.attr("data-party
+TaskData
+class="person
+style="width:<%=((obj.weeks ||
+dayIdx
+if(day.nwd && day.nwd.name
+class="person-label
+if(block.peak
+title="<%=block.name%>"><%=block.name%></span>
+ATM
+Math.pow
+" + Math.round(grad * 10) / 10
+date.getDay
+dayCount
+tasks.length && peakIdx + 1
+var blockStart
+blockStart = blockStart
+blockStart
+assignees[id
+rec.blocks = wlMap
+maxPoints
+Date(now.format("yyyy-mm-dd
+startDate.addDays(60
+inner.scale
+for="submission_name">Name your bundle</label>
+value="{{submission.name}}"/
+} &lt;{{contact.email}}&gt
+this.setWidth(width
+Math.max(width
+width
+this.mouseUp
+AccessMixin
+ImproperlyConfigured
+GroupRequiredMixin(AccessMixin
+FeatureFlags(TradeRemediesAPIClientMixin
+769px
+@mixin ie-lte($version
+@mixin ie($version
+minLength
+default:"n
+due</span>
+hasScroll
+this.originalElement.css
+this._setupHandles
+wrapper.outerHeight
+this.elementIsWrapper &&
+this.helper.offset
+this.helper.width
+this.helper.height
+this._updateCache
+this._helper && this._proportionallyResizeElements.length
+pr.length &&
+ista && this._hasScroll
+that.size.width
+this._helper && !
+this.size.width
+pMinWidth
+pMaxWidth
+pMinHeight
+o.minWidth
+Infinity
+&& o.maxWidth &&
+&& o.minWidth &&
+isminw && cw
+isminh && ch
+ismaxh && ch
+data.width && !
+data.height && !data.left &&
+data.width && !data.height && !
+borderTopWidth
+" && this._trigger
+ista &&
+that.element.animate
+pr && pr.length
+ce.css
+cp.left
+isParent && isOffsetRelative
+that.prevSize.width
+that._helper && !o.animate &&
+ho.left - cop.left - co.left
+w
+that._helper && !o.animate && (
+el.data
+el.css
+sum &&
+cs.width
+that.ghost.appendTo
+that.size.height
+that.ghost && that.helper
+newWidth
+isMaxWidth
+&& (
+isMinWidth
+o.minWidth && (
+op.top
+UserView
+ContactLookupView.as_view
+name="delete_user
+name="edit_investigator
+name="edit_customer
+name="create_customer
+msg
+mark_safe(f'<span
+ul li
+> li
+label='EORI
+domain</strong
+U-N-S
+case{%
+Size Effect
+Vertical
+vProps
+factor.to.y
+hProps
+factor.to.x
+cProps
+factor.from.y
+* Kazakh
+Dmitriy Karasyov
+Қаңтар","Ақпан","Наурыз","Сәуір","Мамыр","Маусым
+Жексенбі","Дүйсенбі","Сейсенбі","Сәрсенбі","Бейсенбі","Жұма","Сенбі
+AuditView
+audit_data
+"Fake Audit
+case(mocker
+monkeypatch
+true&start=75
+Simulate
+audit_view.add_page_data
+audit_view._client.get_audit.assert_called_with
+limit=20
+define && define.amd
+h(e
+var n
+Object.prototype.hasOwnProperty.call(e
+n) &&
+e[n
+t.empty &&
+t.invalidMonth &&
+t.invalidWeekday &&
+t.weekdayMismatch &&
+t.nullInput &&
+t.invalidFormat &&
+t.userInvalidated &&
+t.meridiem && n
+e._strict &&
+t && e.call(this
+l(t._locale
+e[s
+n && e[s
+n && D(e[s
+c.suppressDeprecationWarnings &&
+console.warn &&
+c.deprecationHandler && c.deprecationHandler(null
+t.push(e
+function T(e
+c.deprecationHandler && c.deprecationHandler(e
+Function ||
+n) && u(e[n]) &&
+i)).toString().substr(1
+I(e
+e && (E[e
+t &&
+n &&
+j(e
+n && G.test(e
+/\d{4}/
+ie = /Z|[+-]\d\d:?\d\d/gi
+b(n
+e && s
+e && (
+h(n) &&
+n._w = n._w
+i(e
+n._w, n
+ge =
+0 && e %
+YYYYY
+ue("YY
+ue("YYYYYY
+ce(["YYYYY
+) &&
+Month
+function Ne
+WW
+e.slice(t
+I("d
+isoWeekday
+ue("d
+Su_Mo_Tu_We_Th_Fr_Sa".split
+o.push(i
+l.push(s
+Xe
+function et(e
+ue("hh
+t[ge
+D(e.substr(0
+mm
+MM/DD
+LLL
+MMMM D
+MM
+it[e] && "
+e &&
+console.warn
+rt[e] &&
+e && e._locale && e._locale._abbr &&
+n && n.length
+t--
+function dt(e
+g(e).overflow &&
+ge
+g(e)._overflowDayOfYear &&
+g(e)._overflowWeeks && -1
+g(e)._overflowWeekday && -1
+e._w &&
+W
+e._d.getDay
+e._tzm && e._d.setUTCMinutes(e._d.getUTCMinutes
+e._nextDay &&
+YYYYYYMMDD
+YYYYDDD
+SSSS
+HHmmss
+Yt(e
+function kt(e
+return r && a.push(parseInt(r
+GMT
+CDT
+MDT
+MST
+PST
+function Dt(e
+function Yt(e
+l.substr(0, l.indexOf(n))).length &&
+n) && m(de
+e._strict && !n && g(e).unusedTokens.push(i
+g(e).bigHour &&
+k(r
+v(t) &&
+Date(n.valueOf
+delete s._isValid
+R(e._i
+e && parseInt(e
+h(n
+u(e) &&
+o(e) && 0
+M(dt(Ot(a))))._nextDay &&
+function bt(e
+RFC2822
+ISO
+Non RFC2822/ISO date
+c.
+&& o(t[0]) &&
+Math.round(e
+n._tzm = Nt(re
+function Nt(e
+n._d.setTime(n._d.valueOf
+Rt(e) && m(e
+&& parseFloat(e.replace
+M").isAfter(t) && --n.months
+&& c.updateOffset(e
+n).valueOf
+ue("gggg
+ue("ggggg
+I("D
+Te("Minutes
+1e6 *
+ue("SSS
+Gt(n
+k(e) && e.isValid
+b(this[(e
+millisecond
+this.clone().endOf(t).valueOf
+mn.startOf = function
+MMM DD
+GMT]ZZ
+this.week
+this.isoWeek
+un
+this._d.getDay
+this._isUTC && t &&
+mn.utc
+this._isUTC &&
+e && this.subtract(Vt(this
+this.utcOffset(e
+bt(e).utcOffset
+Coordinated Universal Time
+h(e) &&
+boolean
+h(t) &&
+this._months
+standalone"][e.month
+this._shortMonthsParse
+this._longMonthsParse[s] &&
+RegExp(r.replace
+n && "
+n && "MMM
+n && this._monthsParse[s].test(e
+this._monthsStrictRegex &&
+this._monthsShortStrictRegex &&
+je(n
+this._weekdaysParse[s
+this._fullWeekdaysParse[s] &&
+this._weekdaysParse[s]
+|^" +
+n && this._weekdaysParse[s].test(e
+this._weekdaysStrictRegex &&
+this._weekdaysShortStrictRegex &&
+this._weekdaysMinStrictRegex &&
+ut("en
+S((e
+S(n / 60
+S(i / 12
+= zn(this._days
+u || l ||
+qn.abs
+n / 3
+n / 12
+0 &&
+jn.ss &&
+jn.s &&
+jn.h &&
+1 &&
+u < jn.d &&
+Xt
+Date(1e3 * parseFloat(e
+c.min = function
+P((t =
+it[e] &&
+it[e] && delete
+lastDay
+SSS
+task'%></td
+sortval="<%=obj.self.pointsQuot(task
+period</button
+nwdListInner
+mon yyyy'
+Date(task.due_date).round().format('$due')%></div
+div>").text(inStr).html
+maxlength &&
+tableBody.length &&
+dit.model_id }
+filter && filter.length
+ResourceView(self.controller
+\2715
+div.task
+215px
+NameFormat
+NTA-Light
+@mixin core-80($line-height
+@mixin core-27($line-height
+@mixin core-24($line-height
+@mixin core-16($line-height
+@mixin bold-80($line-height
+@mixin bold-48($line-height
+@include core-48($line-height
+@mixin bold-24($line-height
+@include core-24($line-height
+@mixin bold-19($line-height
+@mixin bold-16($line-height
+Jeremy Ashkenas
+DocumentCloud
+Investigative Reporters & Editors
+u,i){var o=0,a
+n.call(t
+n.apply(t
+x(n
+n);else{var
+i.length;u
+x(t
+r):m.findKey(n
+r),m.each(n
+m.map(n
+u.apply(n
+m.filter(n
+m.find(n
+u=Array(e),i=0;e>i;i++)t
+e),m.each(t
+u]},m.first
+null==t||r?n[n.length-1]:m.rest(n
+Math.max(0,n.length
+l.call(n
+f)||(i.push(f),u.push(c)):m.contains(u
+O(n);u
+o=1;r
+n)})},m.zip=function(){return
+g.apply(n
+TypeError("Bind
+m.has(u
+n.apply(e
+m.partial(t
+arguments)),1>=n&&(t
+u.length;o
+m.allKeys(o),e=b(t
+t){return!m.contains(e
+t(n),n},m.isMatch
+m.keys(t),e
+n._wrapped),t
+a)&&"constructor"in
+e[c]===t;if(r.push(n),e.push(t),i){if(c
+m.keys(t).length!==c)return!1;for(;c--;)if(f
+null!=n&&p.call(n
+RegExp(r,"g");return
+K=/(.)^/,z={"'":"'","\\":"\\","\r":"r","\n":"n","\u2028":"u2028","\u2029":"u2029"},D=/\\|'|\r|\n|\u2028|\u2029
+function(){__p+=__j.call(arguments,'');};\n"+i+"return __
+f.apply(n
+t.apply(r
+r)}}),m.each(["concat","join","slice"],function(n){var
+define&&define.amd&&define("underscore",[],function(){return
+type="button">Add organisation</button
+onClick
+class="inner-content"><div
+850px
+Canadian
+100px 0
+Gaur
+","ar
+False and submission.status.review %
+NO}}"/
+Notice</button
+mql.matches && mqlListenerCount
+Arab
+Mohammed Alshehri
+يوليو
+أربعاء
+has_in_case' False %
+has_in_case' True %
+% elif contact.submission_sufficient %
+case</div
+that.elementPos
+pos.left
+this.selectees.removeData
+this.elementPos
+event.metaKey && !
+UN)SELECTING
+x1 > x2
+x2 - x1
+y2 - y1
+x1 &&
+x2 && offset.top > y1 &&
+event.ctrlKey && !
+&& $
+Blur
+//If
+this.options.revert ) &&
+this.handleElement.is
+helper.appendTo
+// Http://bugs.jqueryui.com/ticket/9446
+helperIsFunction && helper
+c.css
+sortable && !
+sortable._trigger
+draggable.offset.click
+ui.helper
+sortable._uiHash
+t.css
+0 ] &&
+inst.options.snap.release &&
+inst._uiHash
+inst.options.snap.snap &&
+var min
+min =
+COLOUR_GREEN=\033[32;01
+COLOUR_YELLOW=\033[33;01
+dev-requirements$(COLOUR_NONE
+behave-django==1.4.0
+selenium==3.141.0
+django_chunk_upload_handlers.clam_av
+BaseDocumentTemplateView(LoginRequiredMixin
+DocumentsView(BaseDocumentTemplateView
+submission_id
+DocumentDownloadView(BaseDocumentTemplateView
+POST.get("case_type_id
+case_type_id.startswith("SUB
+bundle_id
+C901
+POST.get("case_id
+case_id=
+window.dit.user_id
+false{%
+organisationId && organisationId.length
+Account</h2
+id='current_password
+id='password_confirm
+job_title_id
+class="form-label">Time Zone
+style="background:{{colour}}"></div></li>
+value="save">Save</button
+address||^(?:[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a
+name="contact_email
+type="text
+value="{{contact.phone|default_if_none
+Jan Christensen
+Næste&#x3E
+AttributeError
+self.submission["id
+user_organisation_id=user_organisation_id
+Keyword Arguments
+Kenan Konjo
+Danas
+ENV:<span
+Portuguese
+Julho","Agosto","Setembro","Outubro","Novembro","Dezembro
+datepicker.regional.pt
+excludeStaticParent && parent.css
+# Set
+# Set cookie
+JS
+CRSF
+# Set anti XSS
+Audit
+AUDIT_LOG_USER_FIELD
+the X-Frame-Options
+DENY
+config.universalId
+var govukTrackerUrl =
+this.trackers.length
+Universal Analytics
+GA
+Analytics.prototype.addLinkedTrackerDomain = function
+name="user_id" value="{{user.id}}" {%
+both;"></div
+p>&nbsp;</p
+get_response
+request.kwargs = kwargs
+CacheControlMiddleware
+response["Cache-Control
+pluck
+to_json
+get_submission_deadline
+self._client.get_nav_section(self.case_id
+non_conf = document_conf_index.get
+non_conf
+update_spec["archive_reason_id
+update_spec
+CaseMilestoneDatesView(CaseBaseView
+GET.get("alert
+redirect(f"/case/{case_id}/
+get_tab(self
+participants.get(role["key
+role.get("key
+Remove
+self.consolidate_submissions
+ex_officio
+Invite 3rd party
+full_user =
+draft_submissions_this_role
+GET.get("submission_type_id
+lambda party:
+return_data["organisation_id
+Questionnaire
+E301, E501
+return_data.update({"alert
+get(deficiency_notice_params
+f"/case/{case_id}/submission/{submission_id
+SubmissionCreateView(SubmissionView
+send_to
+document_list_json
+doc_id
+case_number
+created_by
+self.update_submission_json(case_id
+exclude_case_id=case_id
+submission_request_name
+len(send_to
+self._client.clone_submission(**data
+@staticmethod
+d.
+3rd party
+invite["contact"]["submission_id
+CaseOrganisationView(CaseBaseView
+GET.get("submission_id
+HttpResponse(json.dumps({"saved
+action_id
+NavSectionView(CaseBaseView
+redirect(f"/case/{case_id}/section/{content_id
+nonconf_list
+idx
+is_tra").get
+compact_list(request
+f"{form_url}for/{organisation['id']}/
+f"/case/{self.case['id']}/invite/organisation/{self.kwargs['organisation_id']}/as/{self.kwargs['case_role_id']}/
+get(self.case
+IssueFilesFormView(CaseBaseView
+issue_files_form.html
+@method_decorator(csrf_exempt
+contact_id
+parent_id
+NoticesView
+notice =
+redirect("/cases
+CaseTeamJsonView(LoginRequiredMixin, View
+ARCHIVED
+bundle</button
+for="company">Company
+class="form-hint">Use
+class="form-hint">Optional</span
+type="text" name="organisation_address
+jQuery Mobile
+this.childWidgets.each
+data &&
+that._updateCornerClass
+TransientUser(User
+this.slave = slaveSelector && $
+this.slave &&
+//self.slave &&
+self.slave && self.slave.css
+GOVUK.analytics.trackEvent('Mailto Link Clicked'
+viruses"></i
+Un
+exist</em
+case.stage.id
+class="visually-hidden">Alert</span
+tab.value
+Robert Meredith
+Paul Cooney
+Krishna White"
+Brendan Quinn
+class="outer"><span><%=
+message && (
+\'\
+options && options.type &&
+class="pop
+var closeButton = $
+html").on("focusin
+this.$el.width
+Datepicker
+elem.length &&
+zIndex
+value ) && value
+.datepicker
+Mar
+Oct"
+Tue
+Sun = 0
+this._connectDatepicker
+jQuery meta
+//
+input.addClass
+inst.append.remove
+input.off
+html
+findMax
+max, maxI
+dayNames
+this._updateDatepicker
+2 && typeof
+&& settings.dateFormat
+this._optionDatepicker
+refreshDatepicker
+_setDateDatepicker:
+getDateDatepicker
+noDefault
+dateStr
+inst.dpDiv.is
+stepMonths
+Mac
+&& event.ctrlKey
+ctrl+home
+_doKeyUp
+$.effects && $
+return inst.input && inst.input.is
+inputWidth
+isFixed && offset.left
+isFixed &&
+Math.min
+obj &&
+|| ( input &&
+BC
+$.effects &&
+.length &&
+this._formatDate
+altField
+iFormat
+new Date().getFullYear() %
+monthNamesShort =
+getNumber
+iValue
+Date
+month++
+100ns
+Format
+newDate &&
+newDate.getFullYear
+Caja
+.datepicker._selectDay
+dRow
+daySettings
+tempDate.getMonth
+maxDate.getDate
+minDate &&
+this._canAdjustMonth
+-1
+scope='col'
+Math.ceil
+dRow++
+beforeShowDay.apply
+otherMonth && !
+maxDate && printDate
+otherMonth && !showOtherMonths
+drawMonth++
+html +=
+changeMonth
+minDate && minDate.getFullYear
+maxDate && maxDate.getFullYear
+changeMonth && changeYear
+minDate && date
+maxDate && newDate
+minMax
+getDaysInMonth
+function
+var yearSplit
+&& arguments.length
+Date().getTime
+this.options.role
+this.element.is
+this.active && this.active.parents
+this._closeOnDocumentClick
+tabIndex
+aria-haspopup
+aria-labelledby
+_keydown
+this._move
+this.active && !
+&& event.keyCode
+skip && match.index
+this.active.children
+newItems
+this.blur
+&& event.type
+nested.length && event &&
+&& event.target
+newItem && newItem.length
+Delay
+this.active &&
+this.active.prevAll
+this.active.nextAll
+this.isFirstItem
+id="organisationSearchInput
+>Save workflow</button
+Renier Pretorius
+Volgende
+Vandag
+Sondag
+Dinsdag
+Woensdag
+Donderdag
+Vrydag
+Don
+again</li>
+link_or_not(context
+mark_safe(f"""<a
+Setters
+Width
+role="button
+FEATURE
+Stojce Slavkovski
+Јануари","Февруари","Март","Април","Мај","Јуни
+Јул","Авг","Сеп","Окт","Ное","Дек
+require(["modules/WorkflowEditor
+selectstart
+django_log_formatter_ecs
+Vault
+NB
+default=
+Build
+# Quick
+# See
+# Application
+basic_auth_user
+trade_remedies_caseworker.urls
+DIRS
+OPTIONS
+NAME
+db.sqlite3
+https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
+Europe
+# Redis - Trade
+the Django Cache
+Caseworker
+Y-%m-%dT%H:%M:%S%z
+env("AWS_REGION
+default="eu
+S3 Root
+# Temporary
+EU
+EU Customs Union
+StreamHandler
+ECSFormatter
+EORI
+VAT
+D-U-N-S
+Dutch
+David De Sloovere
+←
+Server Error
+disabled{%
+value="{{field_name}}"/
+value="{{values|get_item:field_name}}">
+highlighted:</div
+role="alert
+ui.dialog
+topOffset
+this.options.draggable && $
+this.options.resizable && $
+element &&
+( next.length && next
+https://bugs.webkit.org/show_bug.cgi?id=47182
+moveToTop
+_moveToTop
+zIndexMax
+moved && !
+this.options.closeOnEscape && !
+() && event.keyCode &&
+uiDialogTitle
+.button
+_createButtonPane
+buttons ) && !
+ui.offset
+isDraggable && !
+isResizable && !
+isResizable &&
+isResizable && value
+iframe.outerWidth
+NOTIFY
+class="font-xsmall
+http://api.jqueryui.com/selectmenu/
+this._drawButton
+_drawButton
+this.ids.button
+this._resizeButton
+this.menu.empty
+var li
+that._renderItemData
+element.html
+"&#160
+this.menuItems.eq
+documentClick
+resizeButton
+this.menu.width
+is_enabled
+scotland-office
+scotland-office-websafe
+C80651
+scotland-office'
+William Griffiths
+Ebr
+Dydd Mawrth
+Dydd Mercher
+Llu
+Iau
+Behave-Django
+DesiredCapabilities
+assert context.browser.save_screenshot
+Box
+Bank Holidays
+Mart Sõmermaa
+Järgnev
+Juuli","August","September","Oktoober","November","Detsember
+Jaan
+Veebr
+Märts
+Pühapäev
+Teisipäev
+Kolmapäev
+Neljap
+Laup
+http://api.jqueryui.com/slider/
+max
+this._calculateNewMax
+handleCount
+options.values.length && options.values.length
+this.options.values && this.options.values.length
+2 && this.options.range
+this.options.values
+min
+calculateNewMax
+oRange = this.options.range
+this._valueMax
+previous_name.from_date
+No.</strong
+@home
+json.loads(json_text
+mode|add:'.html
+name="btnAction">Update</button>\
+function constructor(container
+this.renderer
+Bad Request
+cookies.</li
+230px
+310px
+170px
+darken($jamie-party-button
+darken($jamie-party-button-border
+div.inner
+class="filename"><%=document.name%></span></td>\
+bin"></i></a></td>\
+FormData(form[0
++ String(key.substr(0
+modalButton").attr("data
+FormData(evt.target
+data.file && !data.file.id
+JSON.stringify(data
+form.attr('data-organisation'
+helpers.urlParameters(params
+aTag
+confirmPopup("Remove document?").then(function
+xhr.setRequestHeader("X-CSRFToken
+var conf
+this.onDrop
+KB
+PB
+ZB
+Mobile Safari 3.2
+Android Browser
+@mixin box-shadow($shadow
+@mixin scale($x
+Android
+@mixin translate($x
+Mobile Safari 5.0
+DXImageTransform.
+@mixin transition($property
+Opera 10.5
+@mixin box-sizing($type
+@mixin appearance($appearance
+@mixin calc($property
+Mobile Safari
+@mixin opacity($trans
+English
+Stuart
+tr><td><span class="filename"><a href="/case/<%=data.submission && data.submission.case && data.submission.case.id%>/submission/<%=data.submission && data.submission.id%>/file/<%=data.id%>"><%=name%></a></span></td>\
+var meta
+myXhr.upload.addEventListener
+row.row.remove
+submission.is_new_submission %
+function DebugLogger(name
+DebugLogger
+NullLogger
+Boolean
+datetime.datetime.strptime(date_str[:19
+in_string
+mark_safe((date
+splitlines(str
+// el
+this.button.attr("data
+block.push(testEl
+setButtons
+http://api.jqueryui.com/position/
+getOffsets
+elem.outerHeight
+div.children
+hasOffset
+// Force
+myOffset
+elemWidth
+elemWidth && abs
+0 && overRight
+collisionPosTop
+0 && overBottom
+newOverTop
+value="<%=dit.caseId%
+attach="ContentTypeLink"></div
+true})%
+points)',options:[{key:'1',name:'1'},{key:'2',name:'2'},{key:'3',name:'3'},{key:'5',name:'5'},{key:'8',name:'8'},{key:'13',name:'13'},{key:'21',name:'21'}]})%
+days)</span
+name="case.name"></span></div
+class="bold"><span name="reference_string"></span></div
+for="content"><span class><%=obj.label%></span
+function onTargetClick(evt
+templates
+dit.user.hoi
+helpers.get(thisData
+SPAN
+// Load
+getTask
+assignee_id
+self.$viewer &&
+resolve(self.dlg.getContainer
+name &&
+this.$viewer &&
+Generate
+submission.deficiency_notice_params.publish
+value="approve
+class="button button-green">Approve submission</button
+notice</button
+continue</button
+Cancel publishing</button
+submission.deficiency_documents
+LI><a
+process.</p
+Április
+Szeptember
+Október
+Szep
+Vasárnap
+Hétfő
+Kedd
+Szerda
+Csütörtök
+Péntek
+Hét
+Ked
+Tab
+message|default:'Please
+Assistive Technologies
+Screenreaders
+event.target.click
+scope="col">Email</th
+False%}</span
+class="form-label">Type
+trade_remedies_caseworker URL Configuration
+Home
+Home.as_view
+URLconf
+CasesView
+CasesView.as_view
+path("system/
+name="forgotpass
+ResetPasswordView.as_view
+name="reset_password
+TwoFactorView.as_view
+name="2fa
+target_block && $
+not(:hidden),button
+Alert
+result.pop_alert && alertMsg
+self.element && self.element.length
+at</div>
+by</div
+submission.parent.deficiency_sent_at
+# Example Trade Remedies Caseworker
+DJANGO_SECRET_KEY
+CW
+http://localhost:8002
+AUTH-TOKEN-FOR-TRUSTED-USER
+a Colleague
+S3_STORAGE_KEY=
+CLAM_AV_PASSWORD
+action="/case/<%=(obj.case && obj.case.id)
+if(obj.id
+/')%>?__prefix=<%=(obj.case && obj.case.id)
+value="<%=obj.id%
+" value="cancel">Cancel</button>
+action="/case/<%=(obj.case && obj.case.id
+if(file.safe && file.id
+for(var note_idx=0
+note</button
+class="data-json hidden"><%=JSON.stringify(obj.note
+mm yyyy'
+dit.user && dit.user.id
+&& obj.note.documents.length
+function sanitize(str
+this.dialog = $
+this.el.find("ul.note-list").append(this.dialog
+evt.target).trigger("click
+this.dialog && this.dialog.remove
+delete this.dialog
+this.editingElement &&
+|| self.deleteList || self.noteChanged
+file && (
+self.note_element && self.note_element.remove
+noteLine
+model_key")[self.defaults.model_key]
+@include core-36
+Bold
+em(20
+Lede
+Ref
+this.previewEl
+this.previewEl.html
+self.tagList
+tagName &&
+future</p
+submission.deficiency_notice_params
+LOA.name autocomplete='new-password
+LOA.email autocomplete='new-password
+# Party
+WSGI
+el[0].datepicker
+parsedDate && parsedDate.format("dd
+parsedDate && parsedDate.format("mm
+value="${
+&& parsedDate.format("dd
+yyyy")}</span
+Spinner
+ui.spinner
+&& value.length
+delete this.cancelBlur
+this.buttons.first().button
+// IE 6
+keyCode
+this.counter++
+&& value
+this.buttons.button
+Globalize && this.options.numberFormat
+Globalize.format
+aria-valuemin
+autocomplete
+this._spin
+this._buttonHtml
+hasScrolled
+getWindowPositions
+el = $
+&& windowVerticalPosition
+windowDimensions.width
+function onChange
+CaseView.as_view
+FilesView.as_view
+CaseOrganisationView.as_view
+Submissions
+name="accept_organisation
+SubmissionsView.as_view
+name="case_audit
+Helvetica Regular
+Helvetica Neue
+Helvetica
+Font
+NTA-Light-Tabular
+Helvetica-Regular
+Withdraw
+class="reason
+Alex Cicovic
+Κλείσιμο
+Ιανουάριος","Φεβρουάριος","Μάρτιος","Απρίλιος","Μάιος","Ιούνιος
+Ιούλιος","Αύγουστος","Σεπτέμβριος","Οκτώβριος","Νοέμβριος","Δεκέμβριος
+type="text" name="code
+Mathias Bynens
+submission.deficiency_notice_params.merge_complete
+submission.deficiency_notice_params.notification_sent_at
+label[for='" + $.ui.escapeSelector
+Vjekoslav Nesek
+datepicker.regional.hr
+self.bodyClick
+function bodyClick
+Add New</a>
+td>{{bundle.version}}</td
+Dedupe
+td>{{duplicate.name}}</td
+Organisations</h2
+eb.sortval
+eb.sortval || $
+this.header.find("th").each(function
+isInput && this._isContentEditable
+this.isMultiLine
+this.isMultiLine ||
+event.originalEvent &&
+event.originalEvent && /^key/.test
+#6109 - IE
+&& value && this.xhr
+event.altKey ||
+equalValues && !
+menuVisible &&
+&& content && content.length && !
+( items.length &&
+) && /^next/.test
+keyEvent
+https://code.google.com/p/chromium/issues/detail?id=313082
+content && content.length
+External Link Status
+url="/case/{{case.id}}/organisation/{{organisation.id}}/verify_caserole_tasks/">View verification</button
+process</button
+http://jqueryui.com/button/
+this.options.showLabel &&
+this._attachIconSpace
+newShowLabel && !
+this.options.showLabel && !
+this.options.showLabel && this.options.text
+this.options.icon &&
+this.length &&
+INPUT" &&
+Mozilla
+DuplicateProperty
+"sr-SR
+Jul","Avg","Sep","Okt","Nov","Dec
+Nedelja","Ponedeljak","Utorak","Sreda","Četvrtak","Petak","Subota
+https://support.google.com/analytics/answer/2444872?hl=en
+i[r
+' && !
+Facebook, Twitter
+UA
+GOVUK.GoogleAnalyticsUniversalTracker
+hidden">User
+class="value">{{member.email|default:'-'}}</dd
+this.selectorChange
+/case/<%=caseId%>/organisation/<%=modelId%>/
+self.$fields.html
+this.headers.children
+this._eventHandler
+UP && event.ctrlKey
+this.active.length &&
+this.headers.eq
+var activeChildren
+&& options.collapsible
+newPanel
+clickedIsActive && !
+toShow.length && toHide.length
+toShow.length
+toShow.length &&
+&& animate.down ||
+http://api.jqueryui.com/explode-effect/
+site.</li
+value="{{case_id}}"/>
+name="files"/
+name="document_type_id
+notification{%
+} &lt;{{contact.email}}&gt;</option
+value="{{values|get_item:field_name}}"/>
+value="{{values|get_item:field_name}
+} &lt;{{contact.email}}&gt;</span
+template_spec
+} &lt;{{template_spec.values.email}}&gt;</span>
+name="file"/
+SelectableTable
+document.body).on("keydown
+inClick
+Compass
+newOptions
+GOVUK.analytics && GOVUK.analytics.trackEvent
+0
+TabController
+.bind(questionnairesTab
+function complaintsTab(
+td><%=
+formEdit?questionnaire=<%=questionnaire.id%>">View</a></td><td><button
+.conf-nonconf
+div.centre
+submission</button
+Publish{%
+300ms
+parameter.value|_multi_line %
+HTTPError
+HTTPRequest
+is_admin
+Confirmation
+UserManagerView(UserBaseTemplateView, GroupRequiredMixin
+users.sort(key
+can_edit
+job_titles": job_titles
+client.delete_user(user_id
+logger.warning(f"API Error
+response["pop_alert
+value="fileuploadtemplate
+type="button" class="button
+id",field:"parent_id",obj
+function editPageFull(section
+section && section.id
+Edit Question
+function editQuestion(container
+&& container.attr("data
+menuShowing && !
+highlightedQuestion && target.hasClass("question
+class="form
+class="menu-block">\
+class="threeline-menu"></span>\
+menuBlock.find(".config
+menu.on("click
+menuClick
+//$('ul.nav').on('click'
+navClick
+88 && evt.altKey
+Fr"
+dayNames[this.getDay
+monthNames[this.getMonth
+bits[3]
+Date(bits[3
+div.name
+rTemplate
+Map
+index(map
+serializeArray
+ImportError
+PYTHONPATH
+documents'}}</span>
+if_several
+request.user.email
+ORGANISATION_NAME
+ENV_NAME
+GIT_COMMIT
+Scale Effect
+Grows
+el, percent
+action="/cases/{{case_id}}/update_parent/
+Breadcrumbs
+value="{{values|get_item:item}}"/><br/> -->
+class="type">Type</th>
+window.console && window.console.warn
+this.checkboxClass
+this.getClickHandler
+this.clickHandler
+blur'
+this.focusHandler
+SelectionButtons
+class="bold cell">{{participant.role.plural}}</div>
+href="/organisations/{{participant.id}}/">{{participant.name}}</a></div>
+class="value">{{submission.organisation.name|default:'All'}}</span>
+this.picker =
+bodyClick
+Copyright jQuery Foundation
+i;for(i
+hasProp(e
+eachProp(e
+t.apply(e
+h),p&&(a.splice(0,f
+n)}):e.indexOf("!")===-1?i(e
+u(e
+r.id
+j[o]),e.check()):f(a
+r){e.detachEvent&&!isOpera?r&&e.detachEvent(r
+y={waitSeconds:7,baseUrl:"./",paths:{},bundles:{},pkgs:{},shim:{},config:{}},S={},k={},M={},O=[],j={},P={},R={},T=1,A=1;return
+getOwn(M
+i?this.on("error",i):this.events.error&&(i
+t){this.depMatched[e]||(this.depMatched[e]=!0,this.depCount-=1,this.depExports[e]=t)},fetch
+function(){return e.prefix?this.callPlugin():this.load()})):e.prefix?this.callPlugin():this.load()}},load:function(){var
+q.execCb(i
+this.init([],function(){return
+n,y))})),q.enable(r
+defQueue
+function(e){if(e.baseUrl&&"/"!==e.baseUrl.charAt(e.baseUrl.length-1)&&(e.baseUrl+="/"),"string"==typeof
+hasProp(j
+f.init(i
+e.length),e=e.substring(0,n)),q.nameToUrl(i(e
+e),!t&&!hasProp(j
+cjsRequireRegExp=/[^.]\s*require\s*\(\s*["']([^'"\s]+)["']\s*\)/g
+navigator||!window.document),isWebWorker=!isBrowser&&"undefined"!=typeof
+t.require[e].apply(t
+n.onNodeCreated&&n.onNodeCreated(r
+n;"string"!=typeof e&&(i
+i])},define.amd={jQuery:!0},req.exec
+class="form-hint">These
+deficient{%
+name="date
+http://jqueryui.com/tabs/
+ui.tabs
+var anchorUrl
+anchorUrl = anchor.href.replace
+anchorUrl
+this._getPanelForTab
+focusedTab
+event.ctrlKey && event.keyCode
+event.altKey && event.keyCode
+this.anchors.length
+> li:has(a[href]
+currentItem.attr
+this.tabs
+jQuery UI Tabs
+toShow.length && that.options.show
+toHide.length && this.options.hide
+this.tabs.eq
+var li = $
+.merge
+this.xhr && this.xhr.statusText
+Ajax
+anchor.attr
+self._client.organisation_cases(organisation_id
+redirect(f"/organisations/{organisation_id}/
+OrganisationFormView(BaseOrganisationTemplateView
+case_id=case_id
+HttpResponse(json.dumps({"organisation
+ContactFormView(BaseOrganisationTemplateView
+ContactDeleteView(BaseOrganisationTemplateView
+f"/case/{case_id}/admin/
+contact_id}
+left_name
+duplicate_orgs = self._client.get_duplicate_organisations(limit
+OrganisationRemoveView(BaseOrganisationTemplateView
+OrganisationMergeView(BaseOrganisationTemplateView
+merge_with
+http://api.jqueryui.com/blind-effect/
+Install Python
+npm
+map.name
+get_item(obj
+case_type_badge case.parent.type
+TaskViewer
+TaskList
+<li><button
+class="view
+fnMode('card')%>><i class="icon
+value="calendar
+class="tasklist
+for(var idx=0;idx<=obj.users.length;idx++
+NWD
+this.taskTopPanel
+Events().listen("tablesort
+this.taskViewer.createNwd
+GOVUK.getCookie("panel_side
+&& this.viewerMode
+showClearFilterButton
+&& evt.stopPropagation
+newSettings
+checkCache
+delete this.cacheTimer
+helpers.get(result
+self.lastUpdate &&
+DLL
+env/
+var/
+PyInstaller
+# Installer
+pip-delete-this-directory.txt
+local_settings.py
+Scrapy
+Sphinx
+PyBuilder
+Jupyter Notebook
+ENV/
+# Rope
+PyeCharm
+125px
+166px
+dl {
+Update{%
+Create{%
+style="min-width:900px
+Title required</span
+class="error-message">Country
+class="form-label">User active</label
+class="form-label">Email
+groups</label
+group.0
+Delete user</button
+>Save</button
+parts.append(text[-1 *
+gunicorn==20.0.4
+height:100%;"></textarea>\
+dlg.dialog
+link.attr("data
+evt.target).closest('li
+ol.css({height:'0
+return mark_safe(html
+ui.progressbar
+this.overlayDiv = $
+this.overlayDiv
+user.</p
+users</a></li
+django.core.cache
+form_id>/export/
+OrganisationsView
+ToggleOrganisationNonResponsiveView
+ToggleUserAdmin
+OrganisationsView.as_view
+OrganisationDedupeView.as_view
