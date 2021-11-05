@@ -21,9 +21,9 @@
   </thead>
   <tbody>
   {% for case in cases %}
-      {% if not case.view_only %}
-  {% set 'enable_links' True %}
-      {% endif %}
+    {% if not case.view_only %}
+      {% set 'enable_links' True %}
+    {% endif %}
     {% if case.user_case == False %}
       {% set 'enable_links' False %}
     {% endif %}
