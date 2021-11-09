@@ -21,10 +21,10 @@
   </thead>
   <tbody>
   {% for case in cases %}
-    {% set 'enable_links' True %}
-    {% if case.user_case == False %}
       {% set 'enable_links' False %}
-    {% endif %}
+      {% if case.can_navigate %}
+          {% set 'enable_links' True %}
+      {% endif %}
       <tr>
           <td>
             {% case_type_badge case.type %}
