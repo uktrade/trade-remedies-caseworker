@@ -102,7 +102,6 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                     }
                 },
                 "stage": {"name": 0},
-                "view_only": False,
                 "case_status": {"next_action": 0, "next_notice_due": 0},
             }
         }
