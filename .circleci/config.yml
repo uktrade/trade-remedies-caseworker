@@ -4,8 +4,8 @@ jobs:
     docker:
       - image: cimg/python:3.9.5
         environment:
-          DATABASE_URL: sqlite:///trade_remedies_caseworker/db.sqlite3
-          DJANGO_SETTINGS_MODULE: trade_remedies_caseworker.settings.local
+          DATABASE_URL: sqlite:///config/db.sqlite3
+          DJANGO_SETTINGS_MODULE: config.settings.local
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
     steps:
