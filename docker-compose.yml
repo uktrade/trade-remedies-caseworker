@@ -5,8 +5,8 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ./trade_remedies_caseworker:/app/
-      - ./trade_remedies_caseworker:/app/trade_remedies_client/
+      - ./config:/app/
+      - ./config:/app/trade_remedies_client/
       - ./requirements.in:/app/requirements.in/
       - ./requirements:/app/requirements/
     env_file:
