@@ -45,6 +45,7 @@ from core.constants import (
     SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUPS_TRA_ADMINS,
     SECURITY_GROUP_ORGANISATION_OWNER,
+    SECURITY_GROUPS_TRA_TOP_ADMINS,
     SUBMISSION_TYPE_QUESTIONNAIRE,
     SUBMISSION_TYPE_APPLICATION,
     SUBMISSION_NOTICE_TYPE_INVITE,
@@ -141,6 +142,17 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                 },
             ],
         }
+
+        # Contend with nonsense that should be rectified in V2.
+        # If we requested this user's cases, `case["user_case"]` flag will be
+        # present and set to True. Otherwise, to be able to navigate to a case
+        # the user must be member of SECURITY_GROUPS_TRA_TOP_ADMINS.
+        users_groups = set(request.user.groups)
+        allowed_groups = set(SECURITY_GROUPS_TRA_TOP_ADMINS)
+        can_navigate = bool(users_groups.intersection(allowed_groups))
+        for case in cases:
+            case["can_navigate"] = can_navigate or case.get("user_case", False)
+
         template_name = self.template_name if panel_layout else "cases/cases_old.html"
         body_class = "full-width kill-footer" if panel_layout else "full-width"
         return render(
