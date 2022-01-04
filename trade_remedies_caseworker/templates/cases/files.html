@@ -28,12 +28,6 @@
     {% else %}
         {% table_heading 'Author' 'submission.organisation_case_role' sort tabs.value dir %}
     {% endif %}
-    {% comment %}
-    {% table_heading 'Confidential' 'document.confidential' sort tabs.value dir %}
-        {% table_heading 'Issued' 'document.issued' sort tabs.value dir %}
-        {% table_heading 'Issued at' 'document.issued_at' sort tabs.value dir %}
-        <th></th>
-    {% endcomment %}
   </tr>
 </thead>
 <tbody>
@@ -41,14 +35,14 @@
 {% for document in file_list %}
     <tr>
         <td class="nobreak" sortVal="{{ document.created_at|format_date_no_span:'%Y_%m_%d'}}"  >
-            {{ document.created_at|format_date:'%d %b %Y' }} 
+            {{ document.created_at|format_date:'%d %b %Y' }}
         </td>
         <td>
             <a class="link" href="/document/{{document.id}}/download/" >{{ document.name }}</a>
         </td>
         <td>
             {% if document.submission %}
-                <a class="link" href="/case/{{case.id}}/submission/{{document.submission.id}}/">{{ document.submission.type.name }} (v{{document.submission.version}})</a>
+                <a class="link" href="/case/{{case.id}}/submission/{{document.submission.id}}/">{{ document.submission.type_name }} (v{{document.submission.version}})</a>
             {% else %}
                 N/A
             {% endif %}
@@ -58,34 +52,11 @@
                 <a class="link" href="/case/{{case.id}}/organisation/{{document.submission.organisation.id}}/">{{ document.submission.organisation.name }}</a>
             </td>
             <td class="nobreak">
-                {{ document.submission.organisation_case_role.name }}
+                {{ document.submission.organisation_case_role }}
             </td>
         {% else %}
-            <td>{{ document.created_by.name }}</td>
+            <td>{{ document.created_by }}</td>
         {% endif %}
-
-        {% comment %}
-            <td style="text-align:center;">{% confidential_toggle document tab %}</td>
-            <td style="text-align:center;">
-            {% if document.issued is None %}
-                N/A
-            {% elif document.issued and document.issued_by %}
-                {% badge document.issued_by.initials document.issued_by.name document.issued_by.colour %}
-            {% elif document.issued %}
-                Yes
-            {% else %}
-                No
-            {% endif %}
-        </td>
-        <td>
-        {% if not document.confidential and not document.issued %}
-            <div class="checkbox-container multiple-choice">
-                <input type="checkbox" name="document_id" value="{{document.id}}" id="documentId"/>
-                <label class="form-label"></label>
-            </div>
-        {% endif %}
-        </td>
-        {% endcomment %}
     </tr>
 {% endfor %}
 </tbody>
