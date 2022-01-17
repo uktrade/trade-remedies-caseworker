@@ -134,7 +134,7 @@ sqlparse==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
-git+git://github.com/uktrade/trade-remedies-client.git
+git+https://github.com/uktrade/trade-remedies-client@feat/TRLST-495-tidy-client
     # via -r requirements.in/../requirements/base.txt
 urllib3==1.26.5
     # via
