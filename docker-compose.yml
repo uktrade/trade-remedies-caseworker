@@ -1,12 +1,13 @@
 version: "3"
 services:
   caseworker:
-    build: .
+    build:
+      context: .
     ports:
       - "8001:8000"
     volumes:
-      - ./config:/app/
-      - ./config:/app/trade_remedies_client/
+      - ./trade_remedies_caseworker:/app/
+      - ./trade_remedies_caseworker:/app/trade_remedies_client/
       - ./requirements.in:/app/requirements.in/
       - ./requirements:/app/requirements/
     env_file:
