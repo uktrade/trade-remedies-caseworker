@@ -22,7 +22,7 @@ chardet==4.0.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
-django==2.2.24
+django==2.2.26
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
