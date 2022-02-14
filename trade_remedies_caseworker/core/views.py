@@ -12,7 +12,6 @@ from core.constants import (
     SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUPS_TRA,
     SECURITY_GROUPS_TRA_ADMINS,
-    ALERT_MAP,
 )
 from core.base import GroupRequiredMixin
 from core.utils import internal_redirect
