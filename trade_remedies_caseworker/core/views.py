@@ -180,23 +180,23 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
 
 
 class ForgotPasswordRequested(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = 'registration/password_reset_requested.html'
+    template_name = "registration/password_reset_requested.html"
 
 
 class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = 'registration/reset_password_request.html'
+    template_name = "registration/reset_password_request.html"
 
     def post(self, request, *args, **kwargs):
         if email := request.POST.get("email"):
             self.trusted_client.request_password_reset(email)
-            return redirect(reverse('forgot_password_requested'))
+            return redirect(reverse("forgot_password_requested"))
         return redirect(request.path)
 
 
 class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
     def get(self, request, user_pk, token, *args, **kwargs):
         token_is_valid = self.trusted_client.validate_password_reset(user_pk=user_pk, token=token)
-        error_message = kwargs.get('error', None)
+        error_message = kwargs.get("error", None)
         return render(
             request,
             "registration/reset_password.html",
@@ -218,8 +218,8 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
             except APIException as exc:
                 return self.get(request, user_pk, token, error=exc.message)
         elif password != password_confirm:
-            return self.get(request, user_pk, token, error='The passwords do not match')
-        return redirect_to_login(reverse('cases'), reverse('login'), 'next')
+            return self.get(request, user_pk, token, error="The passwords do not match")
+        return redirect_to_login(reverse("cases"), reverse("login"), "next")
 
 
 class CompaniesHouseSearch(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixin):

@@ -23,7 +23,11 @@ urlpatterns = [
     path("accounts/login/", core_views.LoginView.as_view(), name="login"),
     path("accounts/logout/", core_views.logout_view, name="logout"),
     path("system/", core_views.SystemView.as_view(), name="system"),
-    path("accounts/forgotpassword/done", core_views.ForgotPasswordRequested.as_view(), name="forgot_password_requested"),
+    path(
+        "accounts/forgotpassword/done",
+        core_views.ForgotPasswordRequested.as_view(),
+        name="forgot_password_requested",
+    ),
     path(
         "accounts/forgotpassword/",
         core_views.ForgotPasswordView.as_view(),
