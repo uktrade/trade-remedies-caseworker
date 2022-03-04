@@ -2413,7 +2413,6 @@ class InviteContactView(CaseBaseView):
             "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
             "email": email,
-            "e_additional_invite_information": contact["e_additional_invite_information"],
             "login_url": f"{settings.PUBLIC_BASE_URL}",
         }
         context = {

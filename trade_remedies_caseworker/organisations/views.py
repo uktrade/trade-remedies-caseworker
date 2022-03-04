@@ -300,7 +300,6 @@ class ContactFormView(BaseOrganisationTemplateView):
         request_fields = [
             "contact_name",
             "contact_phone",
-            "e_additional_invite_information",
             "contact_address",
             "contact_post_code",
             "contact_country",
@@ -344,7 +343,6 @@ def invite_template_change(request):
 
     contact_name = request.POST.get("data_dict[full_name]")
     contact_phone = request.POST.get("data_dict[contact_phone]")
-    e_additional_invite_information = request.POST.get("data_dict[e_additional_invite_information]")
     contact_address = request.POST.get("data_dict[contact_address]")
     contact_id = request.POST.get("data_dict[contact_id]")
     case_id = request.POST.get("data_dict[case_id]")
@@ -354,7 +352,6 @@ def invite_template_change(request):
     contact_request_fields = {
         "contact_name": contact_name,
         "contact_phone": contact_phone,
-        "e_additional_invite_information": e_additional_invite_information,
         "contact_address": contact_address,
         "contact_id": contact_id,
         "contact_email": contact_email,
