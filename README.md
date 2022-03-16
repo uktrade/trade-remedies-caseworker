@@ -61,6 +61,9 @@ You can make test objects available for BDD testing by creating views that creat
 
 For more information on the setup of BDD tests see the readme at https://github.com/uktrade/trade-remedies-docker
 
+## Fitness Functions
+![Current fitness metrics for TRSV2](fitness/fitness_metrics_graph.png)
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people who contributed to the original private repo ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
