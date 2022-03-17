@@ -31,8 +31,8 @@ jobs:
             . venv/bin/activate
             python manage.py test
             coverage json
-            fitness-functions run . trade_remedies_api
-            fitness-functions publish . trade_remedies_api
+            fitness-functions run . trade_remedies_caseworker
+            fitness-functions publish . trade_remedies_caseworker
       - run:
           name: Push the updated READ.ME back to GitHub
           command: |
