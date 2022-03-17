@@ -138,7 +138,7 @@ sqlparse==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
-git+git://github.com/uktrade/trade-remedies-client.git
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/../requirements/base.txt
 urllib3==1.26.5
     # via
@@ -152,9 +152,9 @@ werkzeug==0.15.3
     # via -r requirements.in/../requirements/base.txt
 whitenoise==5.3.0
     # via -r requirements.in/../requirements/base.txt
-zope.event==4.5.0
+zope-event==4.5.0
     # via gevent
-zope.interface==5.4.0
+zope-interface==5.4.0
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:

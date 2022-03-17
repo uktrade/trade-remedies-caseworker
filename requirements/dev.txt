@@ -45,6 +45,7 @@ decorator==5.1.0
     #   ipython
     #   traitlets
 django==3.2.12
+
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -146,7 +147,7 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pip-tools==6.2.0
+pip-tools==6.5.1
     # via -r requirements.in/dev.in
 platformdirs==2.3.0
     # via black
@@ -227,7 +228,7 @@ tomli==1.2.1
     # via
     #   black
     #   pep517
-git+git://github.com/uktrade/trade-remedies-client.git
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
 traitlets==4.3.3
     # via
