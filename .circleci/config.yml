@@ -4,8 +4,8 @@ jobs:
     docker:
       - image: cimg/python:3.9.5
         environment:
-          DATABASE_URL: sqlite:///config/db.sqlite3
-          DJANGO_SETTINGS_MODULE: trade_remedies_caseworker.config.settings.local
+          DATABASE_URL: sqlite:///trade_remedies_caseworker/db.sqlite3
+          DJANGO_SETTINGS_MODULE: config.settings.local
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
     steps:
@@ -29,7 +29,7 @@ jobs:
           name: Run tests and collect fitness functions
           command: |
             . venv/bin/activate
-            python manage.py test
+            pytest --ignore=staticfiles -n 4 -m "not version2"
             coverage json
             fitness-functions run . trade_remedies_caseworker
             fitness-functions publish . trade_remedies_caseworker
