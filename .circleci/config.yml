@@ -7,6 +7,7 @@ jobs:
           DATABASE_URL: sqlite:///db.sqlite3
           DJANGO_SETTINGS_MODULE: config.settings.local
           DJANGO_SECRET_KEY: used_for_testing
+          HEALTH_CHECK_TOKEN: AUTH-TOKEN-FOR-TRUSTED-USER
           ALLOWED_HOSTS: "*"
     steps:
       - add_ssh_keys:
