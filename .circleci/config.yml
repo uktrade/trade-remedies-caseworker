@@ -4,11 +4,14 @@ jobs:
     docker:
       - image: cimg/python:3.9.5
         environment:
-          DATABASE_URL: sqlite:///config/db.sqlite3
+          DATABASE_URL: sqlite:///db.sqlite3
           DJANGO_SETTINGS_MODULE: config.settings.local
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "35:b1:18:75:6a:a3:32:1e:12:c6:c6:61:f8:f4:a1:e7"
       - checkout
       - restore_cache:
           key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
@@ -23,11 +26,23 @@ jobs:
           paths:
             - "venv"
       - run:
-          name: Run tests
+          name: Run tests and collect fitness functions
           command: |
             . venv/bin/activate
-            cd trade_remedies_caseworker
-            python manage.py test
+            pytest --ignore=staticfiles -n 4 -m "not version2"
+            coverage json
+            fitness-functions run . trade_remedies_caseworker
+            fitness-functions publish . trade_remedies_caseworker
+      - run:
+          name: Push the updated READ.ME back to GitHub
+          command: |
+            . venv/bin/activate
+            git config user.email "fitness-functions-machine-user@digital.trade.gov.uk"  # /PS-IGNORE
+            git config user.name "FITNESS-FUNCTIONS MACHINE USER"  # /PS-IGNORE
+            git add fitness/fitness_metrics.db
+            git add fitness/fitness_metrics_graph.png
+            git commit -m "[ci skip] AUTOMATED - update fitness functions"
+            git push << pipeline.project.git_url >> << pipeline.git.branch >>
       - run:
           name: Run black
           command: |
