@@ -4,8 +4,6 @@
 #
 #    pip-compile --output-file=requirements/dev.txt requirements.in/dev.in
 #
-appnope==0.1.2
-    # via ipython
 asgiref==3.5.0
     # via django
 attrs==21.4.0
@@ -278,7 +276,7 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
-waitress==1.4.3
+waitress==2.1.1
     # via -r requirements.in/base.in
 wcwidth==0.2.5
     # via prompt-toolkit
