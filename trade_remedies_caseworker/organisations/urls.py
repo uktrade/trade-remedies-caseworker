@@ -16,6 +16,7 @@ from organisations.views import (
     OrganisationDuplicatesView,
     ToggleUserAdmin,
     OrganisationRemoveView,
+    invite_template_change
 )
 
 
@@ -56,6 +57,11 @@ urlpatterns = [
         "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/",
         ContactFormView.as_view(),
         name="edit_contact",
+    ),
+    path(
+        "case/invite_template",
+        invite_template_change,
+        name="invite_template_edit",
     ),
     path(
         "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/delete/",
