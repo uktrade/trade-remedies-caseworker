@@ -16,7 +16,7 @@ from organisations.views import (
     OrganisationDuplicatesView,
     ToggleUserAdmin,
     OrganisationRemoveView,
-    invite_template_change
+    invite_template_change,
 )
 
 

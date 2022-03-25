@@ -2421,7 +2421,8 @@ class InviteContactView(CaseBaseView):
             "company_name": organisation["name"],
             "deadline": parse_api_datetime(
                 get(self.case, "initiated_at"), settings.FRIENDLY_DATE_FORMAT
-            ) or "1 Jan 1999",
+            )
+            or "1 Jan 1999",
             "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
             "email": email,
