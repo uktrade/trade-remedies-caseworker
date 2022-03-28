@@ -2419,11 +2419,12 @@ class InviteContactView(CaseBaseView):
             "case_name": self.case["name"],
             "notice_of_initiation_url": self.case.get("latest_notice_of_initiation_url"),
             "company_name": organisation["name"],
-            "deadline": "",
+            "deadline": parse_api_datetime(
+                get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
+            ) or "",
             "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
             "email": email,
-            "e_additional_invite_information": "",
             "login_url": f"{settings.PUBLIC_BASE_URL}",
         }
         context = {
