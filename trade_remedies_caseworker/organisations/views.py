@@ -428,7 +428,7 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
         )
         contacts = organisation["contacts"]
         notify_key = (
-            "NOTIFY_COMPANY_ROLE_CHANGED"
+            "NOTIFY_COMPANY_ROLE_CHANGED_V2"
             if action in ("approve", "change")
             else "NOTIFY_COMPANY_ROLE_DENIED"
         )
@@ -440,6 +440,7 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
             "company_name": organisation["name"],
             "login_url": public_login_url(),
             "previous_role": organisation.get("case_role", {}).get("name"),
+            "reason": "",
         }
         values = self._client.create_notify_context(values)
         context = {
@@ -465,12 +466,13 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
         action = request.POST.get("action", "change")
         role_key = request.POST.get("organisation_type") or request.POST.get("role_key")
         contact_id = request.POST.get("contact_id")
+        reason = request.POST.get("reason")
         next_url = request.POST.get("next", f"/case/{case_id}/admin/")
         response = self._client.approval_notify(
             case_id=case_id,
             organisation_id=organisation_id,
             action=action,
-            values={"organisation_type": role_key, "contact_id": contact_id},
+            values={"organisation_type": role_key, "contact_id": contact_id, "reason": reason},
         )
         return HttpResponse(json.dumps({"redirect_url": next_url}))
 
