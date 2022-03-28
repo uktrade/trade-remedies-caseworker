@@ -1,4 +1,3 @@
-import datetime
 import json
 import logging
 import urllib.parse
@@ -6,7 +5,7 @@ from django.views.generic import TemplateView
 from django.views import View
 from django.shortcuts import render, redirect
 from django.utils.http import urlencode
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from core.base import FeatureFlagMixin
