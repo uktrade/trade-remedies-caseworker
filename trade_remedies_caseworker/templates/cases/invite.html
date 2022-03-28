@@ -24,47 +24,8 @@
         {% endif %}
     </div>
     <div class="button-set">
-        <button class="button button-blue" id="sendButton" type="submit" onclick="saveButton(this)">Send</button>
+        <button class="button button-blue" type="submit">Send</button>
         <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
     </div>
 </form>
 </div>
-
-<script>
-    jQuery('.notify-preview').bind('DOMSubtreeModified', function (event) {
-        const submitButton = jQuery('#sendButton');
-        submitButton[0].innerHTML = "Save"
-        submitButton[0].type = "button"
-    })
-
-    function saveButton(object) {
-        const dataElements = object.parentElement.parentElement.getElementsByTagName("span");
-        const dataElementsLength = dataElements.length;
-        const dataElementsDict = {};
-        for (var i = 0; i < dataElementsLength; i++) {
-            dataElementsDict[dataElements[i].title] = dataElements[i].innerText
-        }
-        dataElementsDict["case_id"] = "{{ case.id }}"
-
-        const csrf_token = object.parentElement.parentElement[0].value
-        const dataDict = {
-            data_dict: dataElementsDict,
-        };
-        if (object.innerHTML === "Save") {
-            console.log(dataDict)
-            $.ajax({
-                type: "POST",
-                headers: {
-                    "X-CSRFToken": csrf_token,
-                },
-                data: dataDict,
-                url: "{% url "invite_template_edit" %}",
-            }).then(function (result) {
-                alert(result)
-                object.innerHTML = "Send"
-                object.type = "submit"
-            });
-        }
-    }
-
-</script>
