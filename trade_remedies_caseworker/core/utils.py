@@ -228,6 +228,12 @@ def parse_notify_template(template, values):
         value = value or ""
         if key == "footer":
             template = template.replace(f"(({key}))", value.replace("\n", "</br>"))
+        elif key == "deadline":
+            value = value.replace("<", "&lt;").replace(">", "&gt;")
+            template = template.replace(
+                f"(({key}))",
+                f'<span class="notify-tag" title="{key}" contentEditable=true>{value}</span>',
+            )
         else:
             value = value.replace("<", "&lt;").replace(">", "&gt;")
             template = template.replace(
