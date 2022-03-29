@@ -47,6 +47,8 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
             "invites": invites,
         }
 
+    def on_approve(self, **kwargs):
+        return super().on_approve(**kwargs)
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []
