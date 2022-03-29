@@ -403,7 +403,7 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
         notify_key = (
             "NOTIFY_COMPANY_ROLE_CHANGED_V2"
             if action in ("approve", "change")
-            else "NOTIFY_COMPANY_ROLE_DENIED"
+            else "NOTIFY_COMPANY_ROLE_DENIED_V2"
         )
         notification_template = self._client.get_notification_template(notify_key)
         values = {
