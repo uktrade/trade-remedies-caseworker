@@ -1,4 +1,3 @@
-import datetime
 import json
 import logging
 import urllib.parse
@@ -6,7 +5,7 @@ from django.views.generic import TemplateView
 from django.views import View
 from django.shortcuts import render, redirect
 from django.utils.http import urlencode
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from core.base import FeatureFlagMixin
@@ -53,32 +52,6 @@ org_fields = [
 ]
 
 logger = logging.getLogger(__name__)
-
-
-def invite_template_change(request):
-    if request.method != "POST":
-        logger.error(f"invite_template_change expected POST but received {request.method}")
-        return HttpResponseBadRequest()
-
-    case_id = request.POST.get("data_dict[case_id]")
-    try:
-        case_request_fields = {
-            "initiated_at": datetime.datetime.strptime(
-                request.POST.get("data_dict[deadline]"), "%d %b %Y"
-            ).replace(tzinfo=datetime.timezone.utc),
-        }
-    except ValueError:
-        case_request_fields = {
-            "initiated_at": datetime.datetime.strptime(
-                request.POST.get("data_dict[deadline]"), "%d %B %Y"
-            ).replace(tzinfo=datetime.timezone.utc),
-        }
-    if request.user.is_authenticated:
-        _client = TradeRemediesAPIClientMixin.client(request, request.user)
-        _client.update_case(case_id, case_request_fields)
-        return HttpResponse(json.dumps({"updated": True}))
-
-    return HttpResponse(json.dumps({"updated": False}))
 
 
 class BaseOrganisationTemplateView(
