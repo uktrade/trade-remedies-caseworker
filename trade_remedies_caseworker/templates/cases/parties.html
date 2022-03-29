@@ -29,9 +29,6 @@ function toggleTabs(roleId, sampled) {
 {% endif %}
 <div class="party-type-list" data-attach="PartyList" data-case-id="{{case.id}}">
 {% for party_type in party_types %}
-    {% if party_type.case_role_id == 8 %}
-        {{ party_type.case_role_id }}
-    {% endif %}
 	<h2 class="heading-medium party-type-name">{{party_type.name}}</h2>
 	{% with parties_by_sampled=party_type.parties|deep_index:'sampled' %}
 		<ul class="tabset">

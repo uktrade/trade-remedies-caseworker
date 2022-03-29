@@ -5,7 +5,6 @@ from django.utils import timezone
 from trade_remedies_client.client import Client
 from core.utils import get
 
-
 SUBMISSION_TYPE_HELPERS = {}
 
 
@@ -47,8 +46,6 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
             "invites": invites,
         }
 
-    def on_approve(self, **kwargs):
-        return super().on_approve(**kwargs)
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []
@@ -66,10 +63,10 @@ class AssignUserSubmission(BaseSubmissionHelper):
         if self.submission["organisation"]["id"] != user_organisation_id:
             # make the case assignment now.
             is_primary = (
-                self.submission.get("deficiency_notice_params", {})
-                .get("assign_user", {})
-                .get("contact_status")
-                == "primary"
+                    self.submission.get("deficiency_notice_params", {})
+                    .get("assign_user", {})
+                    .get("contact_status")
+                    == "primary"
             )
             self.client.assign_user_to_case(
                 user_organisation_id=user_organisation_id,
@@ -78,7 +75,7 @@ class AssignUserSubmission(BaseSubmissionHelper):
                 case_id=self.case["id"],
                 primary=is_primary,
             )
-        return {"alert": f'Assigned {get(self.submission,"contact/user/name")} to case'}
+        return {"alert": f'Assigned {get(self.submission, "contact/user/name")} to case'}
 
 
 SUBMISSION_TYPE_HELPERS["invite"] = InviteThirdPartySubmission
@@ -105,7 +102,7 @@ def get_submission_deadline(submission, fmt=None):
         due_at = datetime.strptime(due_at, settings.API_DATETIME_FORMAT)
     else:
         time_window = (
-            int(dnp.get("time_window") or "0") or int(submission.get("time_window") or "0") or 0
+                int(dnp.get("time_window") or "0") or int(submission.get("time_window") or "0") or 0
         )
         if time_window > 0:
             due_at = (timezone.now() + timedelta(days=time_window)).date()
