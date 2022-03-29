@@ -232,9 +232,10 @@ def parse_notify_template(template, values):
             value = value.replace("<", "&lt;").replace(">", "&gt;")
             template = template.replace(
                 f"(({key}))",
-                f'<br/><input name="deadline" class="notify-tag" title="{key}" size="20" style="border: none; background: pink" \
-                    value="{value}" placeholder="31 January 1999">\
-                        </input><br/>',
+                f'<br/><input name="deadline" class="notify-tag" title="{key}" size="20" \
+                    style="border: none; background: pink" \
+                        value="{value}" placeholder="31 January 1999"> \
+                            </input><br/>',
             )
         else:
             value = value.replace("<", "&lt;").replace(">", "&gt;")
