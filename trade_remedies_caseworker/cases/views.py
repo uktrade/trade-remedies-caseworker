@@ -431,7 +431,15 @@ class PartiesView(CaseBaseView):
         invited = set([])
         accepted = set([])
         for invite in all_case_invites:
+            if invite.get('id') == '12ffae80-29b1-463b-9efb-d53e0d9455d1':
+                print('asd')
+
             org_id = invite.get("organisation", {}).get("id")
+            if submission := invite.get("submission"):
+                if submission.get("name") == "Invite 3rd party":
+                    # It's a third party invite, so we add the organisation of the contact of the invite
+                    org_id = invite["contact"]["organisation"]["id"]
+
             if invite.get("accepted_at"):
                 # note: accepted and invited are mutually exclusive
                 accepted.add(org_id)
