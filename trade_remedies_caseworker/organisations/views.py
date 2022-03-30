@@ -65,15 +65,15 @@ def invite_template_change(request):
     if deadline := request.POST.get("data_dict[deadline]"):
         try:
             case_request_fields = {
-                "initiated_at": datetime.datetime.strptime(
-                    deadline, "%d %b %Y"
-                ).replace(tzinfo=datetime.timezone.utc),
+                "initiated_at": datetime.datetime.strptime(deadline, "%d %b %Y").replace(
+                    tzinfo=datetime.timezone.utc
+                ),
             }
         except ValueError:
             case_request_fields = {
-                "initiated_at": datetime.datetime.strptime(
-                    deadline, "%d %B %Y"
-                ).replace(tzinfo=datetime.timezone.utc),
+                "initiated_at": datetime.datetime.strptime(deadline, "%d %B %Y").replace(
+                    tzinfo=datetime.timezone.utc
+                ),
             }
     if request.user.is_authenticated:
         _client = TradeRemediesAPIClientMixin.client(request, request.user)
@@ -219,13 +219,13 @@ class OrganisationFormView(BaseOrganisationTemplateView):
     raise_exception = True
 
     def get(
-            self,
-            request,
-            case_id=None,
-            organisation_id=None,
-            organisation_type=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        organisation_type=None,
+        *args,
+        **kwargs,
     ):
         role = {}
         all_roles = self._client.get_case_roles()
@@ -257,13 +257,13 @@ class OrganisationFormView(BaseOrganisationTemplateView):
         return render(request, self.template_name, context)
 
     def post(
-            self,
-            request,
-            case_id=None,
-            organisation_id=None,
-            organisation_type=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        organisation_type=None,
+        *args,
+        **kwargs,
     ):
         extra_context = {"case_id": str(case_id)}
         org_request_fields = collect_request_fields(request, org_fields, extra_context)
@@ -283,7 +283,7 @@ class OrganisationFormView(BaseOrganisationTemplateView):
                 )
                 contact_request_fields["organisation_id"] = organisation["id"]
                 if contact_request_fields.get("contact_name") and contact_request_fields.get(
-                        "contact_email"
+                    "contact_email"
                 ):
                     contact = self._client.create_contact(contact_request_fields)
             return self.return_redirect("Created party " + organisation.get("name"))
@@ -295,13 +295,13 @@ class ContactFormView(BaseOrganisationTemplateView):
     raise_exception = True
 
     def get(
-            self,
-            request,
-            case_id=None,
-            organisation_id=None,
-            contact_id=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        contact_id=None,
+        *args,
+        **kwargs,
     ):
         organisation = self._client.get_organisation(organisation_id)
         if contact_id:
@@ -319,13 +319,13 @@ class ContactFormView(BaseOrganisationTemplateView):
         return render(request, self.template_name, context)
 
     def post(
-            self,
-            request,
-            case_id=None,
-            organisation_id=None,
-            contact_id=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        organisation_id=None,
+        contact_id=None,
+        *args,
+        **kwargs,
     ):
         request_fields = [
             "contact_name",
@@ -371,13 +371,13 @@ class ContactDeleteView(BaseOrganisationTemplateView):
 
 class ContactPrimaryView(BaseOrganisationTemplateView):
     def post(
-            self,
-            request,
-            organisation_id=None,
-            contact_id=None,
-            case_id=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        organisation_id=None,
+        contact_id=None,
+        case_id=None,
+        *args,
+        **kwargs,
     ):
         response = self._client.set_case_primary_contact(contact_id, organisation_id, case_id)
         name = response.get("name", "")
@@ -459,7 +459,7 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
             "parsed_template": parse_notify_template(notification_template["body"], values),
             "notification_template": notification_template,
             "organisation_type": request.GET.get("organisation_type")
-                                 or CASE_ROLE_AWAITING_APPROVAL,
+            or CASE_ROLE_AWAITING_APPROVAL,
         }
         return render(request, self.template_name, context)
 
