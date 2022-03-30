@@ -513,7 +513,6 @@ class OrganisationRemoveView(BaseOrganisationTemplateView):
 
 class OrganisationMergeView(BaseOrganisationTemplateView):
     def post(self, request, organisation_id, *args, **kwargs):
-
         merge_with = request.POST.getlist("merge_with")
         parameter_map = request.POST.get("parameter_map")
         result = self.client(self.request.user).organisation_merge(

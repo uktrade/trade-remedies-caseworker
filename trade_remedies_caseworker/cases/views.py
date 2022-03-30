@@ -432,6 +432,11 @@ class PartiesView(CaseBaseView):
         accepted = set([])
         for invite in all_case_invites:
             org_id = invite.get("organisation", {}).get("id")
+            if submission := invite.get("submission"):
+                if submission.get("name") == "Invite 3rd party":
+                    # It's a 3rd party invite, so use the organisation of the contact of the invite
+                    org_id = invite["contact"]["organisation"]["id"]
+
             if invite.get("accepted_at"):
                 # note: accepted and invited are mutually exclusive
                 accepted.add(org_id)
@@ -1189,6 +1194,7 @@ class SubmissionDeficiencyView(CaseBaseView):
     def post(self, request, case_id, submission_id, *args, **kwargs):
         stage_change_if_sufficient = request.POST.get("stage_change_if_sufficient")
         stage_change_if_deficient = request.POST.get("stage_change_if_deficient")
+        reason = request.POST.get("reason")
         submission = self._client.get_submission(case_id, submission_id)
         notify_keys = [
             "full_name",
@@ -2404,9 +2410,14 @@ class InviteContactView(CaseBaseView):
             form_url = f"/case/{self.case['id']}/invite/organisation/{self.kwargs['organisation_id']}/as/{self.kwargs['case_role_id']}/"  # noqa: E501
         if not organisation:
             organisation = contact["organisation"]
-        notification_template = self._client.get_notification_template(
-            "NOTIFY_INFORM_INTERESTED_PARTIES"
-        )
+        try:
+            notification_template = self._client.get_notification_template(
+                self.case["type"]["meta"]["invite_notify_template_key"]
+            )
+        except KeyError:
+            notification_template = self._client.get_notification_template(
+                "NOTIFY_INFORM_INTERESTED_PARTIES"
+            )
 
         deep_update(
             self.case,
