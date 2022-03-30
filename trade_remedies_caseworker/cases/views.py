@@ -1142,7 +1142,7 @@ class SubmissionDeficiencyView(CaseBaseView):
             contact.get("organisation") or {}
         ).get("name")
         notification_template = self._client.get_notification_template(
-            "NOTIFY_SUBMISSION_DEFICIENCY"
+            "NOTIFY_APPLICATION_INSUFFICIENT"
         )
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
