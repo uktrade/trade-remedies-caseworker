@@ -2393,9 +2393,14 @@ class InviteContactView(CaseBaseView):
             form_url = f"/case/{self.case['id']}/invite/organisation/{self.kwargs['organisation_id']}/as/{self.kwargs['case_role_id']}/"  # noqa: E501
         if not organisation:
             organisation = contact["organisation"]
-        notification_template = self._client.get_notification_template(
-            "NOTIFY_INFORM_INTERESTED_PARTIES"
-        )
+        try:
+            notification_template = self._client.get_notification_template(
+                self.case['type']['meta']['invite_notify_template_key']
+            )
+        except KeyError:
+            notification_template = self._client.get_notification_template(
+                "NOTIFY_INFORM_INTERESTED_PARTIES"
+            )
 
         deep_update(
             self.case,
