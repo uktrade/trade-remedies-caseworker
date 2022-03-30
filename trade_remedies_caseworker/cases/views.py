@@ -1146,9 +1146,19 @@ class SubmissionDeficiencyView(CaseBaseView):
         organisation_name = submission.get("organisation", {}).get("name") or (
             contact.get("organisation") or {}
         ).get("name")
-        notification_template = self._client.get_notification_template(
-            "NOTIFY_APPLICATION_INSUFFICIENT_V2"
-        )
+        try:
+            if submission["type"]["name"] == "Application":
+                notification_template = self._client.get_notification_template(
+                    "NOTIFY_APPLICATION_INSUFFICIENT_V2"
+                )
+            else:
+                notification_template = self._client.get_notification_template(
+                    "NOTIFY_SUBMISSION_DEFICIENCY"
+                )
+        except KeyError:
+            notification_template = self._client.get_notification_template(
+                "NOTIFY_SUBMISSION_DEFICIENCY"
+            )
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
         case_number = submission["case"]["reference"]
@@ -1184,7 +1194,6 @@ class SubmissionDeficiencyView(CaseBaseView):
     def post(self, request, case_id, submission_id, *args, **kwargs):
         stage_change_if_sufficient = request.POST.get("stage_change_if_sufficient")
         stage_change_if_deficient = request.POST.get("stage_change_if_deficient")
-        reason = request.POST.get("reason")
         submission = self._client.get_submission(case_id, submission_id)
         notify_keys = [
             "full_name",
@@ -1197,6 +1206,8 @@ class SubmissionDeficiencyView(CaseBaseView):
             "reason",
         ]
         notify_data = {key: request.POST.get(key) for key in notify_keys}
+        if notify_data.get("reason"):
+            notify_data["submission_type"] = "Application"
         if request.POST.get("contact_id"):
             notify_data["contact_id"] = request.POST["contact_id"]
 
