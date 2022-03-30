@@ -1194,7 +1194,6 @@ class SubmissionDeficiencyView(CaseBaseView):
     def post(self, request, case_id, submission_id, *args, **kwargs):
         stage_change_if_sufficient = request.POST.get("stage_change_if_sufficient")
         stage_change_if_deficient = request.POST.get("stage_change_if_deficient")
-        reason = request.POST.get("reason")
         submission = self._client.get_submission(case_id, submission_id)
         notify_keys = [
             "full_name",
