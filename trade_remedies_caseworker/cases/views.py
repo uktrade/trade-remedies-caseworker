@@ -2395,7 +2395,7 @@ class InviteContactView(CaseBaseView):
             organisation = contact["organisation"]
         try:
             notification_template = self._client.get_notification_template(
-                self.case['type']['meta']['invite_notify_template_key']
+                self.case["type"]["meta"]["invite_notify_template_key"]
             )
         except KeyError:
             notification_template = self._client.get_notification_template(
