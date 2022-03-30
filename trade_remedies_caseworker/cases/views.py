@@ -1147,7 +1147,7 @@ class SubmissionDeficiencyView(CaseBaseView):
             contact.get("organisation") or {}
         ).get("name")
         notification_template = self._client.get_notification_template(
-            "NOTIFY_SUBMISSION_DEFICIENCY"
+            "NOTIFY_APPLICATION_INSUFFICIENT"
         )
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
@@ -2425,13 +2425,12 @@ class InviteContactView(CaseBaseView):
             "notice_of_initiation_url": self.case.get("latest_notice_of_initiation_url"),
             "company_name": organisation["name"],
             "deadline": parse_api_datetime(
-                get(self.case, "initiated_at"), settings.FRIENDLY_DATE_FORMAT
+                get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             )
-            or "1 Jan 1999",
+            or "",
             "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
             "email": email,
-            "e_additional_invite_information": "",
             "login_url": f"{settings.PUBLIC_BASE_URL}",
         }
         context = {
@@ -2457,7 +2456,7 @@ class InviteContactView(CaseBaseView):
         *args,
         **kwargs,
     ):
-        notify_keys = ["full_name", "product"]
+        notify_keys = ["full_name", "product", "deadline"]
         notify_data = {key: request.POST.get(key) for key in notify_keys}
         if organisation_id and contact_id:
             notify_data["organisation_id"] = organisation_id

@@ -1,4 +1,3 @@
-import datetime
 import json
 import logging
 import urllib.parse
@@ -6,7 +5,7 @@ from django.views.generic import TemplateView
 from django.views import View
 from django.shortcuts import render, redirect
 from django.utils.http import urlencode
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from core.base import FeatureFlagMixin
@@ -53,34 +52,6 @@ org_fields = [
 ]
 
 logger = logging.getLogger(__name__)
-
-
-def invite_template_change(request):
-    if request.method != "POST":
-        logger.error(f"invite_template_change expected POST but received {request.method}")
-        return HttpResponseBadRequest()
-
-    case_id = request.POST.get("data_dict[case_id]")
-    case_request_fields = {}
-    if deadline := request.POST.get("data_dict[deadline]"):
-        try:
-            case_request_fields = {
-                "initiated_at": datetime.datetime.strptime(deadline, "%d %b %Y").replace(
-                    tzinfo=datetime.timezone.utc
-                ),
-            }
-        except ValueError:
-            case_request_fields = {
-                "initiated_at": datetime.datetime.strptime(deadline, "%d %B %Y").replace(
-                    tzinfo=datetime.timezone.utc
-                ),
-            }
-    if request.user.is_authenticated:
-        _client = TradeRemediesAPIClientMixin.client(request, request.user)
-        _client.update_case(case_id, case_request_fields)
-        return HttpResponse(json.dumps({"updated": True}))
-
-    return HttpResponse(json.dumps({"updated": False}))
 
 
 class BaseOrganisationTemplateView(
@@ -430,9 +401,9 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
         )
         contacts = organisation["contacts"]
         notify_key = (
-            "NOTIFY_COMPANY_ROLE_CHANGED"
+            "NOTIFY_COMPANY_ROLE_CHANGED_V2"
             if action in ("approve", "change")
-            else "NOTIFY_COMPANY_ROLE_DENIED"
+            else "NOTIFY_COMPANY_ROLE_DENIED_V2"
         )
         notification_template = self._client.get_notification_template(notify_key)
         values = {
@@ -442,6 +413,7 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
             "company_name": organisation["name"],
             "login_url": public_login_url(),
             "previous_role": organisation.get("case_role", {}).get("name"),
+            "reason": "",
         }
         values = self._client.create_notify_context(values)
         context = {
@@ -467,12 +439,13 @@ class OrganisationCaseRoleView(BaseOrganisationTemplateView):
         action = request.POST.get("action", "change")
         role_key = request.POST.get("organisation_type") or request.POST.get("role_key")
         contact_id = request.POST.get("contact_id")
+        reason = request.POST.get("reason")
         next_url = request.POST.get("next", f"/case/{case_id}/admin/")
         response = self._client.approval_notify(
             case_id=case_id,
             organisation_id=organisation_id,
             action=action,
-            values={"organisation_type": role_key, "contact_id": contact_id},
+            values={"organisation_type": role_key, "contact_id": contact_id, "reason": reason},
         )
         return HttpResponse(json.dumps({"redirect_url": next_url}))
 
