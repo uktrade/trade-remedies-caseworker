@@ -16,26 +16,28 @@ Including another URLconf
 from django.urls import include, path
 from core import views as core_views
 from cases.views import CasesView
+from login import views as login_views
+from password import views as password_views
 
 urlpatterns = [
     path("", CasesView.as_view(), name="cases"),
     path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
-    path("accounts/login/", core_views.LoginView.as_view(), name="login"),
-    path("accounts/logout/", core_views.logout_view, name="logout"),
+    path("accounts/login/", login_views.LoginView.as_view(), name="login"),
+    path("accounts/logout/", login_views.logout_view, name="logout"),
     path("system/", core_views.SystemView.as_view(), name="system"),
     path(
         "accounts/forgotpassword/done",
-        core_views.ForgotPasswordRequested.as_view(),
+        password_views.ForgotPasswordRequested.as_view(),
         name="forgot_password_requested",
     ),
     path(
         "accounts/forgotpassword/",
-        core_views.ForgotPasswordView.as_view(),
+        password_views.ForgotPasswordView.as_view(),
         name="forgot_password",
     ),
     path(
         "accounts/password/reset/<uuid:user_pk>/<str:token>/",
-        core_views.ResetPasswordView.as_view(),
+        password_views.ResetPasswordView.as_view(),
         name="reset_password",
     ),
     path("twofactor/", core_views.TwoFactorView.as_view(), name="2fa"),
