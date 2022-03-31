@@ -40,7 +40,7 @@ urlpatterns = [
         password_views.ResetPasswordView.as_view(),
         name="reset_password",
     ),
-    path("twofactor/", core_views.TwoFactorView.as_view(), name="2fa"),
+    path("twofactor/", login_views.TwoFactorView.as_view(), name="2fa"),
     path("users/", include("users.urls")),
     path("case/", include("cases.urls")),
     path("cases/", include("cases.urls")),
