@@ -4,6 +4,8 @@
 #
 #    pip-compile --output-file=requirements/dev.txt requirements.in/dev.in
 #
+appnope==0.1.2
+    # via ipython
 asgiref==3.5.0
     # via django
 attrs==21.4.0
@@ -36,9 +38,12 @@ click==8.0.4
     # via
     #   black
     #   pip-tools
+codecov==2.1.12
+    # via -r requirements.in/dev.in
 coverage[toml]==6.3.2
     # via
     #   -r requirements.in/dev.in
+    #   codecov
     #   pytest-cov
 cycler==0.11.0
     # via matplotlib
@@ -227,6 +232,7 @@ redis==3.2.0
 requests==2.25.1
     # via
     #   -r requirements.in/base.in
+    #   codecov
     #   trade-remedies-client
 s3transfer==0.4.2
     # via boto3
