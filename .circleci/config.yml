@@ -31,30 +31,30 @@ jobs:
   code_quality:
     docker:
       - image: cimg/python:3.9.5
-      steps:
-        - checkout
-        - restore_dependency_cache
-        - install_dependencies
-        - save_dependency_cache
-        - run:
-            name: Run black
-            command: |
-              black trade_remedies_caseworker --check
-        - run:
-            name: Run Flake8
-            command: |
-              pflake8 trade_remedies_caseworker --config pyproject.toml
-        - restore_cache:
-            key: pii-secret
-        - run:
-            name: Run pre-commit hooks
-            command: |
-              pre-commit autoupdate
-              pre-commit run --all-files
-        - save_cache:
-            key: pii-secret
-            paths:
-              - ".pii-secret-hook"
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - install_dependencies
+      - save_dependency_cache
+      - run:
+          name: Run black
+          command: |
+            black trade_remedies_caseworker --check
+      - run:
+          name: Run Flake8
+          command: |
+            pflake8 trade_remedies_caseworker --config pyproject.toml
+      - restore_cache:
+          key: pii-secret
+      - run:
+          name: Run pre-commit hooks
+          command: |
+            pre-commit autoupdate
+            pre-commit run --all-files
+      - save_cache:
+          key: pii-secret
+          paths:
+            - ".pii-secret-hook"
   test_and_fitness_functions:
     docker:
       - image: cimg/python:3.9.5
