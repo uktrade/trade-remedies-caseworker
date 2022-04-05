@@ -1742,3 +1742,19 @@ Csütörtök
 Péntek
 Hét
 Ked
+django-extensions==3.1.5
+POSTGRES_HOST_AUTH_METHOD=trust
+# Trade Remedies API Client
+f'<textarea name="reason
+F401
+env/*
+| D104
+D205
+W503
+E704
+E231
+F841
+E203
+sqlite:///db.sqlite3
+reset_password_request.html
+Application
