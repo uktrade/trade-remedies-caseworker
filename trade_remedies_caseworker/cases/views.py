@@ -1583,7 +1583,7 @@ class SubmissionNotifyView(CaseBaseView):
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
         case_number = case["reference"]
         if submission_type.get("notify_template", "") == "NOTIFY_AD_HOC_EMAIL":
-            email = "contact@traderemedies.gov.uk" # /PS-IGNORE
+            email = "contact@traderemedies.gov.uk"  # /PS-IGNORE
         else:
             email = notify_contact_email(self._client, case_number)
         footer = notify_footer(self._client, email)
