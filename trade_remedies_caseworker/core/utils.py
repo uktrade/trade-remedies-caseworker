@@ -237,6 +237,15 @@ def parse_notify_template(template, values):
                         value="{value}" placeholder="31 January 1999"> \
                             </input><br/>',
             )
+        elif key == "reason":
+            value = value.replace("<", "&lt;").replace(">", "&gt;")
+            template = template.replace(
+                f"(({key}))",
+                f'<textarea name="reason" class="notify-tag" title="{key}" \
+                     style="border: none; width: 100%; background: pink" \
+                         value="{value}" rows="5" \
+                             placeholder="Optional reason here..."></textarea><br/><br/>',
+            )
         else:
             value = value.replace("<", "&lt;").replace(">", "&gt;")
             template = template.replace(
