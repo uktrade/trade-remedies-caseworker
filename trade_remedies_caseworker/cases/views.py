@@ -2446,7 +2446,7 @@ class InviteContactView(CaseBaseView):
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             )
-            or "",
+            or "a deadline assigned when case is initiated.",
             "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
             "email": email,
