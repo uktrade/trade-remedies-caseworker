@@ -1538,6 +1538,10 @@ class SubmissionVerifyNotify(SubmissionVerifyBaseView):
                     "role": role_name,
                 }
             )
+            if notify_key == "NOTIFY_INTERESTED_PARTY_REQUEST_DENIED":
+                values[
+                    "footer"
+                ] = "Investigations Team\r\nTrade Remedies\r\nDepartment for International Trade\r\nContact: investigations@traderemedies.gov.uk"  # /PS-IGNORE
             parsed_template = parse_notify_template(notification_template["body"], values)
         except Exception as ex:
             parsed_template = ""
