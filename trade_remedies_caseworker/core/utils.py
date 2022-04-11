@@ -198,8 +198,8 @@ def notify_footer(api_client, email=None):
 
 
 def notify_contact_email(
-    api_client: Client(), case_number: uuid = None, notify_sys_param_name: uuid = None
-):
+    api_client: Client, case_number: uuid = None, notify_sys_param_name: uuid = None
+) -> str:
     """Build notify email address.
 
     :param (Client) api_client: TR API Client.
