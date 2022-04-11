@@ -1582,7 +1582,7 @@ class SubmissionNotifyView(CaseBaseView):
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
         case_number = case["reference"]
-        email = notify_contact_email(self._client, case_number)
+        email = notify_contact_email(self._client, case_number, notify_sys_param_name)
         footer = notify_footer(self._client, email)
         values = {
             "full_name": contact_name,
