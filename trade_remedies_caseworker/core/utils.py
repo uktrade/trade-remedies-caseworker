@@ -5,11 +5,12 @@ import logging
 import json
 import markdown
 import re
+import uuid
 
 from django.conf import settings
 from django.shortcuts import redirect
 from django.utils.http import is_safe_url
-
+from django.test import Client
 from trade_remedies_client.exceptions import APIException
 
 logger = logging.getLogger(__name__)
@@ -196,7 +197,7 @@ def notify_footer(api_client, email=None):
     return default_footer
 
 
-def notify_contact_email(api_client, case_number=None, notify_sys_param_name=None):
+def notify_contact_email(api_client: Client(), case_number: uuid = None, notify_sys_param_name: uuid = None):
     """Build notify email address.
 
     :param (Client) api_client: TR API Client.
