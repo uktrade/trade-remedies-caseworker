@@ -1587,7 +1587,10 @@ class SubmissionNotifyView(CaseBaseView):
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
         case_number = case["reference"]
-        email = notify_contact_email(self._client, case_number)
+        if submission_type.get("notify_template", "") == "NOTIFY_AD_HOC_EMAIL":
+            email = "contact@traderemedies.gov.uk"  # /PS-IGNORE
+        else:
+            email = notify_contact_email(self._client, case_number, notify_sys_param_name)
         footer = notify_footer(self._client, email)
         values = {
             "full_name": contact_name,
@@ -2451,7 +2454,7 @@ class InviteContactView(CaseBaseView):
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
             )
-            or "",
+            or "a deadline assigned when case is initiated.",
             "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
             "email": email,
