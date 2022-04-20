@@ -432,6 +432,11 @@ class PartiesView(CaseBaseView):
         accepted = set([])
         for invite in all_case_invites:
             org_id = invite.get("organisation", {}).get("id")
+            if submission := invite.get("submission"):
+                if submission.get("name") == "Invite 3rd party":
+                    # It's a 3rd party invite, so use the organisation of the contact of the invite
+                    org_id = invite["contact"]["organisation"]["id"]
+
             if invite.get("accepted_at"):
                 # note: accepted and invited are mutually exclusive
                 accepted.add(org_id)
@@ -1141,9 +1146,19 @@ class SubmissionDeficiencyView(CaseBaseView):
         organisation_name = submission.get("organisation", {}).get("name") or (
             contact.get("organisation") or {}
         ).get("name")
-        notification_template = self._client.get_notification_template(
-            "NOTIFY_SUBMISSION_DEFICIENCY"
-        )
+        try:
+            if submission["type"]["name"] == "Application":
+                notification_template = self._client.get_notification_template(
+                    "NOTIFY_APPLICATION_INSUFFICIENT_V2"
+                )
+            else:
+                notification_template = self._client.get_notification_template(
+                    "NOTIFY_SUBMISSION_DEFICIENCY"
+                )
+        except KeyError:
+            notification_template = self._client.get_notification_template(
+                "NOTIFY_SUBMISSION_DEFICIENCY"
+            )
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
         case_number = submission["case"]["reference"]
@@ -1158,6 +1173,7 @@ class SubmissionDeficiencyView(CaseBaseView):
             "submission_type": submission.get("type", {}).get("name"),
             "login_url": public_login_url(),
             "footer": footer,
+            "reason": "",
         }
         context = {
             "form_action": f"/case/{case_id}/submission/{submission_id}/status/notify/",
@@ -1187,8 +1203,11 @@ class SubmissionDeficiencyView(CaseBaseView):
             "deadline",
             "submission_type",
             "login_url",
+            "reason",
         ]
         notify_data = {key: request.POST.get(key) for key in notify_keys}
+        if notify_data.get("reason"):
+            notify_data["submission_type"] = "Application"
         if request.POST.get("contact_id"):
             notify_data["contact_id"] = request.POST["contact_id"]
 
@@ -1519,6 +1538,11 @@ class SubmissionVerifyNotify(SubmissionVerifyBaseView):
                     "role": role_name,
                 }
             )
+            if notify_key == "NOTIFY_INTERESTED_PARTY_REQUEST_DENIED":
+                values[
+                    "footer"
+                ] = f"Investigations Team\r\nTrade Remedies\r\nDepartment for International Trade\r\n\
+                    Contact: {case.get('reference')}@traderemedies.gov.uk"  # /PS-IGNORE
             parsed_template = parse_notify_template(notification_template["body"], values)
         except Exception as ex:
             parsed_template = ""
@@ -1563,7 +1587,10 @@ class SubmissionNotifyView(CaseBaseView):
         template_name = f"cases/submissions/{submission_type['key']}/notify.html"
         due_at = get_submission_deadline(submission, settings.FRIENDLY_DATE_FORMAT)
         case_number = case["reference"]
-        email = notify_contact_email(self._client, case_number)
+        if submission_type.get("notify_template", "") == "NOTIFY_AD_HOC_EMAIL":
+            email = "contact@traderemedies.gov.uk"  # /PS-IGNORE
+        else:
+            email = notify_contact_email(self._client, case_number, notify_sys_param_name)
         footer = notify_footer(self._client, email)
         values = {
             "full_name": contact_name,
@@ -2390,9 +2417,14 @@ class InviteContactView(CaseBaseView):
             form_url = f"/case/{self.case['id']}/invite/organisation/{self.kwargs['organisation_id']}/as/{self.kwargs['case_role_id']}/"  # noqa: E501
         if not organisation:
             organisation = contact["organisation"]
-        notification_template = self._client.get_notification_template(
-            "NOTIFY_INFORM_INTERESTED_PARTIES"
-        )
+        try:
+            notification_template = self._client.get_notification_template(
+                self.case["type"]["meta"]["invite_notify_template_key"]
+            )
+        except KeyError:
+            notification_template = self._client.get_notification_template(
+                "NOTIFY_INFORM_INTERESTED_PARTIES"
+            )
 
         deep_update(
             self.case,
@@ -2421,7 +2453,8 @@ class InviteContactView(CaseBaseView):
             "company_name": organisation["name"],
             "deadline": parse_api_datetime(
                 get(self.case, "registration_deadline"), settings.FRIENDLY_DATE_FORMAT
-            ),
+            )
+            or "a deadline assigned when case is initiated.",
             "footer": footer,
             "guidance_url": self._client.get_system_parameters("LINK_HELP_BOX_GUIDANCE")["value"],
             "email": email,
@@ -2450,7 +2483,7 @@ class InviteContactView(CaseBaseView):
         *args,
         **kwargs,
     ):
-        notify_keys = ["full_name", "product"]
+        notify_keys = ["full_name", "product", "deadline"]
         notify_data = {key: request.POST.get(key) for key in notify_keys}
         if organisation_id and contact_id:
             notify_data["organisation_id"] = organisation_id

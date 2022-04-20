@@ -2,6 +2,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![codecov](https://codecov.io/gh/uktrade/trade-remedies-caseworker/branch/develop/graph/badge.svg)](https://codecov.io/gh/uktrade/trade-remedies-caseworker/)
 Case-worker-facing UI for the Trade Remedies system
 
 ## Code Style
@@ -60,6 +61,9 @@ from the Trade Remedies orchestration project directory.
 You can make test objects available for BDD testing by creating views that create them in the 'api_test' app in the [Trade Remedies API](https://github.com/uktrade/trade-remedies-api) project.
 
 For more information on the setup of BDD tests see the readme at https://github.com/uktrade/trade-remedies-docker
+
+## Fitness Functions
+![Current fitness metrics for TRSV2](fitness/fitness_metrics_graph.png)
 
 ## Contributors ✨
 

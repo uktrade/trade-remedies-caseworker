@@ -5,11 +5,12 @@ import logging
 import json
 import markdown
 import re
+import uuid
 
 from django.conf import settings
 from django.shortcuts import redirect
 from django.utils.http import is_safe_url
-
+from django.test import Client
 from trade_remedies_client.exceptions import APIException
 
 logger = logging.getLogger(__name__)
@@ -196,16 +197,19 @@ def notify_footer(api_client, email=None):
     return default_footer
 
 
-def notify_contact_email(api_client, case_number=None):
+def notify_contact_email(
+    api_client: Client, case_number: uuid = None, notify_sys_param_name: uuid = None
+) -> str:
     """Build notify email address.
 
     :param (Client) api_client: TR API Client.
     :param (str) case_number: e.g. 'TD0001'
+    :param (str) notify_sys_param_name: e.g. 'NOTIFY_QUESTIONNAIRE'
     :returns (str): If a case is specified returns a case contact email built
       using TRADE_REMEDIES_EMAIL_DOMAIN system parameter, otherwise returns
       TRADE_REMEDIES_EMAIL system parameter.
     """
-    if case_number:
+    if case_number and notify_sys_param_name != "NOTIFY_QUESTIONNAIRE":
         try:
             domain = api_client.get_system_parameters("TRADE_REMEDIES_EMAIL_DOMAIN")["value"]
         except APIException as e:
@@ -228,6 +232,24 @@ def parse_notify_template(template, values):
         value = value or ""
         if key == "footer":
             template = template.replace(f"(({key}))", value.replace("\n", "</br>"))
+        elif key == "deadline":
+            value = value.replace("<", "&lt;").replace(">", "&gt;")
+            template = template.replace(
+                f"(({key}))",
+                f'<br/><input name="deadline" class="notify-tag" title="{key}" size="36" \
+                    style="border: none; background: yellow; color: black" \
+                        value="{value}" readonly> \
+                            </input><br/>',
+            )
+        elif key == "reason":
+            value = value.replace("<", "&lt;").replace(">", "&gt;")
+            template = template.replace(
+                f"(({key}))",
+                f'<textarea name="reason" class="notify-tag" title="{key}" \
+                     style="border: none; width: 100%; background: pink" \
+                         value="{value}" rows="5" \
+                             placeholder="Optional reason here..."></textarea><br/><br/>',
+            )
         else:
             value = value.replace("<", "&lt;").replace(">", "&gt;")
             template = template.replace(
