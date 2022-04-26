@@ -5,7 +5,6 @@ from django.utils import timezone
 from trade_remedies_client.client import Client
 from core.utils import get
 
-
 SUBMISSION_TYPE_HELPERS = {}
 
 
@@ -76,7 +75,7 @@ class AssignUserSubmission(BaseSubmissionHelper):
                 case_id=self.case["id"],
                 primary=is_primary,
             )
-        return {"alert": f'Assigned {get(self.submission,"contact/user/name")} to case'}
+        return {"alert": f'Assigned {get(self.submission, "contact/user/name")} to case'}
 
 
 SUBMISSION_TYPE_HELPERS["invite"] = InviteThirdPartySubmission
