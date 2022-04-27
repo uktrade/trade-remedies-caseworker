@@ -8,5 +8,5 @@ INSTALLED_APPS += [
 ]
 
 MIDDLEWARE += [
-    "django_audit_log_middleware.AuditLogMiddleware",
+    "config.middleware.CustomAuditLogMiddleware",
 ]
