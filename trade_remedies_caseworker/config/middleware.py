@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
 from core.models import TransientUser
+from django_audit_log_middleware import AuditLogMiddleware
 
 
 class APIUserMiddleware:
@@ -17,9 +18,9 @@ class APIUserMiddleware:
             request.token = request.session["token"]
 
             if (
-                settings.USE_2FA
-                and request.user.should_two_factor
-                and request.path not in (reverse("2fa"), reverse("logout"))
+                    settings.USE_2FA
+                    and request.user.should_two_factor
+                    and request.path not in (reverse("2fa"), reverse("logout"))
             ):
                 return redirect("/twofactor/")
         else:
@@ -41,3 +42,22 @@ class CacheControlMiddleware:
         response["Cache-Control"] = "no-store"
         response["Pragma"] = "no-cache"
         return response
+
+
+class CustomAuditLogMiddleware(AuditLogMiddleware):
+    def _get_first_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.first_name
+            except AttributeError:
+                pass
+
+        return ""
+
+    def _get_last_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.last_name
+            except AttributeError:
+                pass
+        return ""
