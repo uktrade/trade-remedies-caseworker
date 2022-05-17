@@ -8,11 +8,11 @@
 
 {% block main_content %}
     {% if form_errors.error_summaries %}
-        <span class="error-message">
         {% for error in form_errors.error_summaries %}
-            {{ error }}
+            <span class="error-message">
+                {{ error }}
+            </span>
         {% endfor %}
-        </span>
     {% endif %}
     <form method="post">
         {% csrf_token %}
