@@ -290,7 +290,7 @@ tomli==2.0.1
     #   coverage
     #   pep517
     #   pyproject-flake8
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@v2feature/trsv2-174/login-journey
     # via -r requirements.in/base.in
 traitlets==4.3.3
     # via
