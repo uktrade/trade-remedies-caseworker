@@ -2,14 +2,13 @@ from core.models import TransientUser
 from django.shortcuts import redirect
 from django_audit_log_middleware import AuditLogMiddleware
 
-from trade_remedies_caseworker.core.utils import should_2fa
-
 
 class APIUserMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
+        from trade_remedies_caseworker.core.utils import should_2fa
         if request.session and request.session.get("token") and request.session.get("user"):
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
