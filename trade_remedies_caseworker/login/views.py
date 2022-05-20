@@ -7,8 +7,7 @@ from trade_remedies_client.client import Client
 from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from trade_remedies_caseworker.core.utils import should_2fa
-from trade_remedies_caseworker.login.decorators import v2_error_handling
+from .decorators import v2_error_handling
 
 
 def logout_view(request):
@@ -41,6 +40,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
             request.session["version"] = response.get("version")
             request.session["errors"] = None
             request.session.cycle_key()
+            from trade_remedies_caseworker.core.utils import should_2fa
             if should_2fa(request):
                 Client(response["token"]).two_factor_request()
             if next_url:
