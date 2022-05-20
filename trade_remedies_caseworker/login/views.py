@@ -1,7 +1,9 @@
 from core.utils import internal_redirect
+from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.generic import TemplateView
 from trade_remedies_client.client import Client
 from trade_remedies_client.exceptions import APIException
@@ -40,8 +42,11 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
             request.session["version"] = response.get("version")
             request.session["errors"] = None
             request.session.cycle_key()
-            from trade_remedies_caseworker.core.utils import should_2fa
-            if should_2fa(request):
+            if (
+                    settings.USE_2FA
+                    and request.user.should_two_factor
+                    and request.path not in (reverse("2fa"), reverse("logout"))
+            ):
                 Client(response["token"]).two_factor_request()
             if next_url:
                 return internal_redirect(next_url, "/cases/")

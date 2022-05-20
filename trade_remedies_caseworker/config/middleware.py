@@ -1,5 +1,7 @@
 from core.models import TransientUser
+from django.conf import settings
 from django.shortcuts import redirect
+from django.urls import reverse
 from django_audit_log_middleware import AuditLogMiddleware
 
 
@@ -8,7 +10,6 @@ class APIUserMiddleware:
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
-        from trade_remedies_caseworker.core.utils import should_2fa
         if request.session and request.session.get("token") and request.session.get("user"):
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
@@ -16,7 +17,11 @@ class APIUserMiddleware:
             request.kwargs = kwargs
             request.token = request.session["token"]
 
-            if should_2fa(request):
+            if (
+                    settings.USE_2FA
+                    and request.user.should_two_factor
+                    and request.path not in (reverse("2fa"), reverse("logout"))
+            ):
                 return redirect("/twofactor/")
         response = self.get_response(request)
         return response
