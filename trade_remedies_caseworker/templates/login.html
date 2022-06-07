@@ -7,21 +7,18 @@
 {% endblock %}
 
 {% block main_content %}
-    {% if error %}
-        <span class="error-message">
-        {% if error == 'INVALID_LOGIN' %}
-            You have entered an incorrect email address or password.<br/>
-            Please try again or click on the Forgotten password link below.
-        {% else %}
-            {{error}}
-        {% endif %}
-        </span>
+    {% if form_errors.error_summaries %}
+        {% for error in form_errors.error_summaries %}
+            <span class="error-message">
+                {{ error }}
+            </span>
+        {% endfor %}
     {% endif %}
-    <form action="/accounts/login/" method="post">
+    <form method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="email" class="form-label">Email</label>
-            <input type="text" class="form-control" id="email" name="email" value="{{email}}">
+            <input type="text" class="form-control" id="email" name="email" value="{{ email }}">
         </div>
         <div class="form-group">
             <label for="password" class="form-label">Password</label>

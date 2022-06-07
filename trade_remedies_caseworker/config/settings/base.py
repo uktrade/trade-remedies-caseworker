@@ -122,6 +122,7 @@ TEMPLATES = [
                 "config.context_processors.page_context",
                 "config.context_processors.version_context",
                 "config.context_processors.motd_context",
+                "config.context_processors.v2_error_handling",
             ],
         },
     },

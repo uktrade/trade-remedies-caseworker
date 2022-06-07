@@ -1758,3 +1758,5 @@ E203
 sqlite:///db.sqlite3
 reset_password_request.html
 Application
+API
+form_errors.error_summaries
