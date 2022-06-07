@@ -18,9 +18,9 @@ class APIUserMiddleware:
             request.token = request.session["token"]
 
             if (
-                    settings.USE_2FA
-                    and request.user.should_two_factor
-                    and request.path not in (reverse("2fa"), reverse("logout"))
+                settings.USE_2FA
+                and request.user.should_two_factor
+                and request.path not in (reverse("2fa"), reverse("logout"))
             ):
                 return redirect("/twofactor/")
         response = self.get_response(request)
