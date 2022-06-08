@@ -1,4 +1,3 @@
-from core.utils import internal_redirect
 from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,6 +9,7 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 from .decorators import v2_error_handling
+from core.utils import internal_redirect
 
 
 def logout_view(request):
@@ -44,7 +44,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
             request.session.cycle_key()
             if (
                 settings.USE_2FA
-                and request.user.should_two_factor
+                and request.session["user"]["should_two_factor"]
                 and request.path not in (reverse("2fa"), reverse("logout"))
             ):
                 Client(response["token"]).two_factor_request()
