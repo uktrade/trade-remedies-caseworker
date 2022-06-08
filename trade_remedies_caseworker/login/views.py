@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
@@ -8,6 +9,7 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 from .decorators import v2_error_handling
+from core.utils import internal_redirect
 
 
 def logout_view(request):
