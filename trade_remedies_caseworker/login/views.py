@@ -44,7 +44,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
             request.session.cycle_key()
             if (
                 settings.USE_2FA
-                and request.user.should_two_factor
+                and request.session["user"]["should_two_factor"]
                 and request.path not in (reverse("2fa"), reverse("logout"))
             ):
                 Client(response["token"]).two_factor_request()
