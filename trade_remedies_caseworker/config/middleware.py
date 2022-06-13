@@ -1,7 +1,7 @@
+from core.models import TransientUser
+from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.conf import settings
-from core.models import TransientUser
 from django_audit_log_middleware import AuditLogMiddleware
 
 
@@ -18,13 +18,11 @@ class APIUserMiddleware:
             request.token = request.session["token"]
 
             if (
-                    settings.USE_2FA
-                    and request.user.should_two_factor
-                    and request.path not in (reverse("2fa"), reverse("logout"))
+                settings.USE_2FA
+                and request.user.should_two_factor
+                and request.path not in (reverse("2fa"), reverse("logout"))
             ):
                 return redirect("/twofactor/")
-        else:
-            print("NO USER!")
         response = self.get_response(request)
         return response
 
