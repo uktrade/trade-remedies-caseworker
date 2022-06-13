@@ -69,7 +69,7 @@
                 {% set 'contact_org_verify_state' 'in-progress' %}
             {% endif %}
 
-            {% if submission.contact.organisation.name %}
+            {% if submission.contact.user.organisation.organisation.name %}
                 {% set 'rep_verify_label' 'Verify '|addstr:submission.contact.user.organisation.organisation.name %}
             {% endif %}
             {% set 'org_verify_label' 'Verify '|addstr:organisation.name %}
