@@ -8,7 +8,9 @@ import re
 import uuid
 
 from django.conf import settings
+from django.http import HttpRequest
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.http import is_safe_url
 from django.test import Client
 from trade_remedies_client.exceptions import APIException
@@ -262,7 +264,9 @@ def parse_notify_template(template, values):
         template = "".join(
             [
                 template[0 : match.start()],
-                '<blockquote style="Margin: 0 0 20px 0; border-left: 10px solid #BFC1C3;padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;">',  # noqa: E501
+                '<blockquote style="Margin: 0 0 20px 0; border-left: 10px solid '
+                '#BFC1C3;padding: 15px 0 0.1px 15px; font-size: 19px; line-height: 25px;">',
+                # noqa: E501
                 groups[1],
                 "</blockquote>",
                 template[match.end() :],
@@ -317,3 +321,16 @@ def internal_redirect(url, default_path):
         return redirect(default_path)
 
     return redirect(url)
+
+
+def should_2fa(request: HttpRequest) -> bool:
+    """
+    Should a particular user (belonging to a request) be forced to do 2-factor authentication.
+    :param request: Request object
+    :return: bool
+    """
+    return (
+        settings.USE_2FA
+        and request.user.should_two_factor
+        and request.path not in (reverse("2fa"), reverse("logout"))
+    )

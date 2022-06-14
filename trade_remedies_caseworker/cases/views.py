@@ -1589,6 +1589,8 @@ class SubmissionNotifyView(CaseBaseView):
         case_number = case["reference"]
         if submission_type.get("notify_template", "") == "NOTIFY_AD_HOC_EMAIL":
             email = "contact@traderemedies.gov.uk"  # /PS-IGNORE
+        elif notify_sys_param_name == "NOTIFY_QUESTIONNAIRE":
+            email = None
         else:
             email = notify_contact_email(self._client, case_number, notify_sys_param_name)
         footer = notify_footer(self._client, email)

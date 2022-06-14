@@ -55,7 +55,7 @@ decorator==5.1.1
     #   traitlets
 distlib==0.3.4
     # via virtualenv
-django==3.2.12
+django==3.2.13
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -290,7 +290,7 @@ tomli==2.0.1
     #   coverage
     #   pep517
     #   pyproject-flake8
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@v2feature/trsv2-174/login-journey
     # via -r requirements.in/base.in
 traitlets==4.3.3
     # via
