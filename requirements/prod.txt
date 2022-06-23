@@ -138,8 +138,8 @@ sqlparse==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@v2feature/trsv2-174/login-journey
-    # via -r requirements.in/../requirements/base.txt
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
+    # via -r requirements.in/prod.in
 urllib3==1.26.5
     # via
     #   -r requirements.in/../requirements/base.txt
