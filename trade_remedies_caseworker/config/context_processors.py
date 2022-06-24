@@ -53,3 +53,9 @@ def v2_error_handling(request):
     if form_errors := request.session.pop("form_errors", None):
         return {"form_errors": form_errors}
     return {}
+
+
+def google_tag_manager(request):
+    """Google Tag Manager Id."""
+    return { "analytics_manager_id" : settings.GOOGLE_ANALYTICS_TAG_MANAGER_ID}
+

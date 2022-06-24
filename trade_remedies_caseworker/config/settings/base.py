@@ -123,6 +123,7 @@ TEMPLATES = [
                 "config.context_processors.version_context",
                 "config.context_processors.motd_context",
                 "config.context_processors.v2_error_handling",
+                "config.context_processors.google_tag_manager",
             ],
         },
     },
@@ -355,3 +356,5 @@ ENVIRONMENT_LOGGING = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+GOOGLE_ANALYTICS_TAG_MANAGER_ID=env("GOOGLE_ANALYTICS_TAG_MANAGER_ID", default="")
