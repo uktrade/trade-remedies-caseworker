@@ -8,7 +8,9 @@ from django.conf import settings
 
 
 def motd_context(request):
-    return {"public_notice": Client().get_system_parameters("PUBLIC_NOTICE").get("value")}
+    return {
+        "public_notice": Client().get_system_parameters("PUBLIC_NOTICE").get("value")
+    }
 
 
 def user_context(request):
@@ -57,5 +59,4 @@ def v2_error_handling(request):
 
 def google_tag_manager(request):
     """Google Tag Manager Id."""
-    return { "analytics_manager_id" : settings.GOOGLE_ANALYTICS_TAG_MANAGER_ID}
-
+    return {"analytics_manager_id": settings.GOOGLE_ANALYTICS_TAG_MANAGER_ID}
