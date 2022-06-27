@@ -9,9 +9,7 @@
 {% block main_content %}
     {% if form_errors.error_summaries %}
         {% for error in form_errors.error_summaries %}
-            <span class="error-message">
-                {{ error }}
-            </span>
+            <a href="#{{ error.0 }}"><span class="error-message">{{ error.1 }}</span></a>
         {% endfor %}
     {% endif %}
     <form method="post">
