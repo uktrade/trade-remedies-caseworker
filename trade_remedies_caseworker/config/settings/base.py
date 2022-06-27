@@ -123,6 +123,7 @@ TEMPLATES = [
                 "config.context_processors.version_context",
                 "config.context_processors.motd_context",
                 "config.context_processors.v2_error_handling",
+                "config.context_processors.google_tag_manager",
             ],
         },
     },
@@ -223,7 +224,9 @@ STATICFILES_DIRS = [
 ]
 
 AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = env("S3_STORAGE_KEY", default=None)
-AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env("S3_STORAGE_SECRET", default=None)
+AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env(
+    "S3_STORAGE_SECRET", default=None
+)
 AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME", default=None)
 AWS_S3_REGION_NAME = AWS_REGION = env("AWS_REGION", default="eu-west-1")
 AWS_S3_SIGNATURE_VERSION = "s3v4"
@@ -355,3 +358,5 @@ ENVIRONMENT_LOGGING = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+GOOGLE_ANALYTICS_TAG_MANAGER_ID = env("GOOGLE_ANALYTICS_TAG_MANAGER_ID", default="")
