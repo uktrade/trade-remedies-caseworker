@@ -138,7 +138,7 @@ sqlparse==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@develop
     # via -r requirements.in/prod.in
 urllib3==1.26.5
     # via

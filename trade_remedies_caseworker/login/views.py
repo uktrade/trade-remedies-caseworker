@@ -52,6 +52,8 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
                 return internal_redirect(next_url, "/cases/")
             else:
                 return redirect("/cases/")
+        else:
+            return response
 
 
 class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixin):
