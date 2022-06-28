@@ -8,7 +8,7 @@ from trade_remedies_client.client import Client
 from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from .decorators import v2_error_handling
+from core.decorators import catch_form_errors
 from core.utils import internal_redirect
 
 
@@ -24,7 +24,7 @@ def logout_view(request):
 class LoginView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "login.html"
 
-    @v2_error_handling()
+    @catch_form_errors()
     def post(self, request, *args, **kwargs):
         email = request.POST.get("email")
         password = request.POST.get("password")
