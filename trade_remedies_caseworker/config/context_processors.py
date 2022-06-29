@@ -46,3 +46,19 @@ def page_context(request):
 
 def version_context(request):
     return {"version": {"api": request.session.get("version", ""), "ui": __version__}}
+
+
+def add_form_errors(request):
+    """Pops the form errors from the request.session for front-end rendering.
+
+    This "form_errors" key is then checked in the govuk/base_with_form.html BASE template, and is
+    looped over to display the errors in the error summaries box at the top of the page. Individual
+    elements can also access this dictionary to retrieve the specific error for that field, e.g. in
+    component_macros/text_input.html
+    """
+    return {"form_errors": request.session.pop("form_errors", None)}
+
+
+def google_tag_manager(request):
+    """Google Tag Manager Id."""
+    return {"analytics_manager_id": settings.GOOGLE_ANALYTICS_TAG_MANAGER_ID}

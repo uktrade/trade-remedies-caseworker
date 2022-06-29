@@ -33,15 +33,12 @@ django==3.2.13
     #   django-session-timeout
     #   django-storages
     #   django-timezone-field
-    #   trade-remedies-client
 django-audit-log-middleware==0.0.4
     # via -r requirements.in/base.in
 django-basicauth==0.5.2
     # via -r requirements.in/base.in
 django-cache-memoize==0.1.6
-    # via
-    #   -r requirements.in/base.in
-    #   trade-remedies-client
+    # via -r requirements.in/base.in
 django-chunk-upload-handlers==0.0.12
     # via -r requirements.in/base.in
 django-countries==7.2.1
@@ -98,9 +95,7 @@ redis==3.2.0
     #   -r requirements.in/base.in
     #   django-redis
 requests==2.25.1
-    # via
-    #   -r requirements.in/base.in
-    #   trade-remedies-client
+    # via -r requirements.in/base.in
 s3transfer==0.4.2
     # via boto3
 sentry-sdk==0.13.1
@@ -111,15 +106,13 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
-    # via -r requirements.in/base.in
 urllib3==1.26.5
     # via
     #   -r requirements.in/base.in
     #   botocore
     #   requests
     #   sentry-sdk
-waitress==2.1.1
+waitress==2.1.2
     # via -r requirements.in/base.in
 werkzeug==0.15.3
     # via -r requirements.in/base.in

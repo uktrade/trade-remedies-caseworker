@@ -138,15 +138,15 @@ sqlparse==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
-    # via -r requirements.in/../requirements/base.txt
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
+    # via -r requirements.in/prod.in
 urllib3==1.26.5
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
     #   requests
     #   sentry-sdk
-waitress==2.1.1
+waitress==2.1.2
     # via -r requirements.in/../requirements/base.txt
 werkzeug==0.15.3
     # via -r requirements.in/../requirements/base.txt
