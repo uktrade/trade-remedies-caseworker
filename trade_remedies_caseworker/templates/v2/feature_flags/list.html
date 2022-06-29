@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load text_element %}
+{% load custom_filters %}
+{% load application_heading %}
+{% load format_date %}
+
+{% block heading %}
+    Manage Feature Flags
+{% endblock %}
+
+{% block main_content %}
+    <div class="grid-row">
+        <div class="colum-full-nav">
+            {% for feature_flag in feature_flags %}
+                <fieldset class="feature_flag">
+                    <a href="{% url 'view_feature_one_flag' feature_flag_name=feature_flag.name %}">{{ feature_flag.name }}</a>
+          <h4>Users in this group:</h4>
+                    {% for user in feature_flag.users_in_group %}
+                        <p>Name {{ user.name }}</p>
+                        <p>Email {{ user.email }}</p>
+                    {% endfor %}
+                </fieldset>
+
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

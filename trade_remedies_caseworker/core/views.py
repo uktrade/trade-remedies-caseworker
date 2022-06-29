@@ -128,3 +128,38 @@ class FeedbackFormExportView(
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
         response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xlsx"
         return response
+
+
+class ViewFeatureFlags(
+    LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    template_name = "v2/feature_flags/list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feature_flags"] = self.client(self.request.user).v2_get_all_feature_flags()
+        return context
+
+
+class ViewOneFeatureFlag(
+    LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    template_name = "v2/feature_flags/retrieve.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feature_flag"] = self.client(self.request.user).v2_get_one_feature_flag(
+            kwargs["feature_flag_name"])
+        return context
+
+
+class AddUserToGroup(
+    LoginRequiredMixin, GroupRequiredMixin, View, TradeRemediesAPIClientMixin
+):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+
+    def post(self, request, group_name, user_pk):
+        response = self.client(request.user).v2_add_user_group(group=group_name, user_pk=user_pk, partial=True)
+        print("Asd")
