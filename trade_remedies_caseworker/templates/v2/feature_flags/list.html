@@ -10,18 +10,25 @@
 
 {% block main_content %}
     <div class="grid-row">
-        <div class="colum-full-nav">
-            {% for feature_flag in feature_flags %}
-                <fieldset class="feature_flag">
-                    <a href="{% url 'view_feature_one_flag' feature_flag_name=feature_flag.name %}">{{ feature_flag.name }}</a>
-          <h4>Users in this group:</h4>
-                    {% for user in feature_flag.users_in_group %}
-                        <p>Name {{ user.name }}</p>
-                        <p>Email {{ user.email }}</p>
+        <div class="column-two-thirds">
+            <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Name</th>
+                        <th scope="col" class="govuk-table__header">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    {% for feature_flag in feature_flags %}
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">{{ feature_flag.name }}</th>
+                                <td class="govuk-table__cell">
+                                    <a href="{% url 'view_feature_one_flag' feature_flag_name=feature_flag.name %}">Manage this feature flag</a>
+                                </td>
+                            </tr>
                     {% endfor %}
-                </fieldset>
-
-            {% endfor %}
+                    </tbody>
+                </table>
         </div>
     </div>
 {% endblock %}

@@ -6,7 +6,7 @@ from core.views import (
 )
 from cases.views import SubmissionCreateView
 
-from trade_remedies_caseworker.core.views import AddUserToGroup, ViewFeatureFlags, \
+from trade_remedies_caseworker.core.views import EditUserGroup, ViewFeatureFlags, \
     ViewOneFeatureFlag
 
 urlpatterns = [
@@ -28,7 +28,7 @@ urlpatterns = [
         name="form_export",
     ),
     path(
-        "feature_flags",
+        "feature_flags/",
         ViewFeatureFlags.as_view(),
         name="view_feature_flags"
     ),
@@ -38,8 +38,8 @@ urlpatterns = [
         name="view_feature_one_flag"
     ),
     path(
-        "add_user_to_group/<str:group_name>/<uuid:user_pk>",
-        AddUserToGroup.as_view(),
-        name="add_user_to_group"
+        "add_user_to_group/<str:group_name>/",
+        EditUserGroup.as_view(),
+        name="edit_user_group"
     )
 ]

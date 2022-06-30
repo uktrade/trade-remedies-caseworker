@@ -2,6 +2,7 @@ import os
 import json
 
 from django.http import HttpResponse
+from django.urls import reverse
 from django.views.generic import TemplateView, View
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,6 +13,8 @@ from core.constants import (
 )
 from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+
+from trade_remedies_caseworker.core.constants import SECURITY_GROUP_SUPER_USER
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -133,7 +136,7 @@ class FeedbackFormExportView(
 class ViewFeatureFlags(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
-    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    groups_required = SECURITY_GROUP_SUPER_USER
     template_name = "v2/feature_flags/list.html"
 
     def get_context_data(self, **kwargs):
@@ -145,7 +148,7 @@ class ViewFeatureFlags(
 class ViewOneFeatureFlag(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
-    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    groups_required = SECURITY_GROUP_SUPER_USER
     template_name = "v2/feature_flags/retrieve.html"
 
     def get_context_data(self, **kwargs):
@@ -155,11 +158,15 @@ class ViewOneFeatureFlag(
         return context
 
 
-class AddUserToGroup(
+class EditUserGroup(
     LoginRequiredMixin, GroupRequiredMixin, View, TradeRemediesAPIClientMixin
 ):
-    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    groups_required = SECURITY_GROUP_SUPER_USER
 
-    def post(self, request, group_name, user_pk):
-        response = self.client(request.user).v2_add_user_group(group=group_name, user_pk=user_pk, partial=True)
-        print("Asd")
+    def post(self, request, group_name):
+        self.client(request.user).v2_change_user_group(
+            group_name=group_name,
+            user_pk=request.POST["user_to_change"],
+            request_method=request.GET["method"]
+        )
+        return redirect(reverse("view_feature_one_flag", kwargs={"feature_flag_name": group_name}))
