@@ -290,7 +290,7 @@ tomli==2.0.1
     #   coverage
     #   pep517
     #   pyproject-flake8
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
     # via -r requirements.in/base.in
 traitlets==4.3.3
     # via
@@ -308,7 +308,7 @@ urllib3==1.26.5
     #   sentry-sdk
 virtualenv==20.14.0
     # via pre-commit
-waitress==2.1.1
+waitress==2.1.2
     # via -r requirements.in/base.in
 wcwidth==0.2.5
     # via prompt-toolkit

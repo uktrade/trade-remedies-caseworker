@@ -1,12 +1,14 @@
+from django.conf import settings
 from django.contrib.auth import logout
-import json
-
-from django.views.generic import TemplateView
-from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.views.generic import TemplateView
+from trade_remedies_client.client import Client
 from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
+from core.decorators import catch_form_errors
 from core.utils import internal_redirect
 
 
@@ -22,55 +24,34 @@ def logout_view(request):
 class LoginView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "login.html"
 
-    def get(self, request, *args, **kwargs):
-        email = request.GET.get("email")
-        password = request.GET.get("password")
-        error = request.GET.get("error")
-        request.session["next"] = request.GET.get("next")
-        request.session.cycle_key()
-        return render(
-            request,
-            self.template_name,
-            {
-                "email": email or "",
-                "password": password or "",
-                "error": request.session.get("errors", None) if error else None,
-            },
-        )
-
+    @catch_form_errors()
     def post(self, request, *args, **kwargs):
         email = request.POST.get("email")
         password = request.POST.get("password")
-        try:
-            response = self.trusted_client.authenticate(
-                email,
-                password,
-                user_agent=request.META["HTTP_USER_AGENT"],
-                ip_address=request.META["REMOTE_ADDR"],
-            )
-            if response and response.get("token"):
-                next_url = request.session.get("next")
-                request.session.clear()
-                request.session["token"] = response["token"]
-                request.session["user"] = response["user"]
-                request.session["version"] = response.get("version")
-                request.session["errors"] = None
-                request.session.cycle_key()
-                if next_url:
-                    return internal_redirect(next_url, "/cases/")
-                else:
-                    return redirect("/cases/")
+        response = self.trusted_client.authenticate(
+            email,
+            password,
+            user_agent=request.META["HTTP_USER_AGENT"],
+            ip_address=request.META["REMOTE_ADDR"],
+        )
+        if response and response.get("token"):
+            next_url = request.session.get("next")
+            request.session.clear()
+            request.session["token"] = response["token"]
+            request.session["user"] = response["user"]
+            request.session["version"] = response.get("version")
+            request.session["errors"] = None
+            request.session.cycle_key()
+            if (
+                settings.USE_2FA
+                and request.session["user"]["should_two_factor"]
+                and request.path not in (reverse("2fa"), reverse("logout"))
+            ):
+                Client(response["token"]).two_factor_request()
+            if next_url:
+                return internal_redirect(next_url, "/cases/")
             else:
-                return redirect("/accounts/login/?error=t")
-        except Exception as exc:
-            try:
-                reason = exc.response.json().get("detail")
-            except json.decoder.JSONDecodeError:
-                reason = exc.response.text
-            except Exception:
-                reason = str(exc)
-            request.session["errors"] = reason
-            return redirect("/accounts/login/?error=1")
+                return redirect("/cases/")
 
 
 class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixin):

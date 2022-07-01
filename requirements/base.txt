@@ -111,7 +111,7 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
     # via -r requirements.in/base.in
 urllib3==1.26.5
     # via
@@ -119,7 +119,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-waitress==2.1.1
+waitress==2.1.2
     # via -r requirements.in/base.in
 werkzeug==0.15.3
     # via -r requirements.in/base.in
