@@ -6,7 +6,7 @@ from core.views import (
 )
 from cases.views import SubmissionCreateView
 
-from trade_remedies_caseworker.core.views import EditUserGroup, ViewFeatureFlags, ViewOneFeatureFlag
+from core.views import EditUserGroup, ViewFeatureFlags, ViewOneFeatureFlag
 
 urlpatterns = [
     path("bundles/create/", SubmissionCreateView.as_view(), name="create_submission"),

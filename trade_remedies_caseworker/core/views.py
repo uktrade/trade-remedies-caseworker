@@ -14,7 +14,7 @@ from core.constants import (
 from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from trade_remedies_caseworker.core.constants import SECURITY_GROUP_SUPER_USER
+from core.constants import SECURITY_GROUP_SUPER_USER
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
