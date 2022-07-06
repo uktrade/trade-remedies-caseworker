@@ -19,6 +19,9 @@
       {% endif %}
     </tr>
   </thead>
+ {% if "FEATURE_FLAG_UAT_TEST" in user.groups %}
+     <h1 class="header heading-large"><strong>The User can see this as they are in the feature flag group</strong></h1>
+    {% endif %}
   <tbody>
   {% for case in cases %}
       {% set 'enable_links' False %}
