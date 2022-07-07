@@ -6,6 +6,8 @@ from core.views import (
 )
 from cases.views import SubmissionCreateView
 
+from core.views import EditUserGroup, ViewFeatureFlags, ViewOneFeatureFlag
+
 urlpatterns = [
     path("bundles/create/", SubmissionCreateView.as_view(), name="create_submission"),
     path(
@@ -24,4 +26,11 @@ urlpatterns = [
         FeedbackFormExportView.as_view(),
         name="form_export",
     ),
+    path("feature_flags/", ViewFeatureFlags.as_view(), name="view_feature_flags"),
+    path(
+        "feature_flags/<str:feature_flag_name>",
+        ViewOneFeatureFlag.as_view(),
+        name="view_feature_one_flag",
+    ),
+    path("add_user_to_group/<str:group_name>/", EditUserGroup.as_view(), name="edit_user_group"),
 ]
