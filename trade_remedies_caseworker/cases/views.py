@@ -815,7 +815,7 @@ class SubmissionView(CaseBaseView):
         return_data.update({"template_name": template_name, "mode": "form"})
         return return_data
 
-    def post(  # noqa: C901
+    def post(
         self,
         request,
         case_id,
