@@ -1,4 +1,4 @@
-git+https://github.com/uktrade/trade-remedies-client.git@feature/trsv2-190/feature-flags#trade-remedies-client
+git+https://github.com/uktrade/trade-remedies-client.git@master#trade-remedies-client
 boto3==1.17.89
 django-basicauth==0.5.2
 django-cache-memoize==0.1.6
