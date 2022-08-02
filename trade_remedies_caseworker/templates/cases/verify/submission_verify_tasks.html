@@ -71,11 +71,6 @@
                 {% elif submission.deficiency_notice_params.contact_org_verify == 'accepted' %}
                     {% set 'contact_org_verify_state' 'in-progress' %}
                 {% endif %}
-                {% if contact_org_verify_state != "not-applicable" %}
-                    {% if not submission.contact.user.organisation.organisation.name %}
-                        {% set 'contact_org_verify_state' 'not-applicable' %}
-                    {% endif %}
-                {% endif %}
 
                 {% if submission.contact.user.organisation.organisation.name %}
                     {% set 'rep_verify_label' 'Verify '|addstr:submission.contact.user.organisation.organisation.name %}
