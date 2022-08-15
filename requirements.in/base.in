@@ -15,7 +15,7 @@ django-session-timeout==0.0.3
 django-timezone-field==4.2.3
 django-storages==1.11.1
 django-chunk-upload-handlers==0.0.12
-Django==3.2.14
+Django==3.2.15
 dpath==1.4.2
 Markdown==2.6.11
 pytz
