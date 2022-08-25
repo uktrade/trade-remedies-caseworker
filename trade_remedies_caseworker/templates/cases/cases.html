@@ -58,9 +58,7 @@
 						{% if user.permissions.workflow_editor %}
 							<li><a href="/settings/system_parameters/">Set system parameters</a></li>
 						{% endif %}
-                        {% if user.is_super_user %}
-                            <li><a href="{% url 'view_feature_flags' %}">View Feature Flags</a></li>
-                        {% endif %}
+                        <li><a href="{% url 'view_feature_flags' %}">View Feature Flags</a></li>
 					{% endif %}
 					{% if user.permissions.create_ex_oficio %}
 						<li><a href="/case/create/">Create a new ex-officio case</a></li>
