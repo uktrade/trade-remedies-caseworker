@@ -261,6 +261,23 @@ class OrganisationFormView(BaseOrganisationTemplateView):
         return HttpResponse(json.dumps({"organisation": organisation}))
 
 
+class OrganisationInviteView(BaseOrganisationTemplateView):
+    template_name = "organisations/organisation_invitation.html"
+
+    # need to ensure that the following fields etc are correct for our invitation 
+    # form - ensure that the form (html) is correct also!!!
+    # def form_valid(self, form):
+    #     submission_id = self.kwargs["submission_id"]
+    #     contact_id = self.kwargs["contact_id"]
+    #     return redirect(
+    #         f"/case/interest/{submission_id}/{contact_id}/submit/?name="
+    #         f"{form.cleaned_data.get('organisation_name')}&"
+    #         f"companies_house_id={form.cleaned_data.get('companies_house_id')}&"
+    #         f"post_code={form.cleaned_data.get('organisation_post_code')}&"
+    #         f"address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
+    #     )
+
+
 class ContactFormView(BaseOrganisationTemplateView):
     template_name = "organisations/contact_form.html"
     raise_exception = True

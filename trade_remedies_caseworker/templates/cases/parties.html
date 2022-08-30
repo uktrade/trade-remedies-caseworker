@@ -102,7 +102,8 @@ function toggleTabs(roleId, sampled) {
 		{% endfor %}
 	{% endwith %}
 	{% if party_type.add_link %}
-		<button class="link modal-form pull-right bold" data-url="/organisations/case/{{case.id}}/create/{{party_type.key}}/">{{ party_type.add_link }}</button>
+		<!-- <button class="link modal-form pull-right bold" data-url="/organisations/case/{{case.id}}/create/{{party_type.key}}/">{{ party_type.add_link }}</button> -->
+		<a class="link pull-right bold" href="{% url 'organisations:invite_organisation' case_id=case.id %}">Invite party to case</a>
 	{% endif %}
 {% endfor %}
 </div>

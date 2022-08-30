@@ -11,6 +11,7 @@ from organisations.views import (
     OrganisationCaseRoleView,
     OrganisationDedupeView,
     OrganisationDeleteView,
+    OrganisationInviteView,
     OrganisationMergeView,
     OrganisationMatchView,
     OrganisationDuplicatesView,
@@ -18,10 +19,15 @@ from organisations.views import (
     OrganisationRemoveView,
 )
 
-
+app_name = 'organisations'
 urlpatterns = [
     path("", OrganisationsView.as_view(), name="organisations"),
     path("<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"),
+    path(
+        "case/<uuid:case_id>/invite/",
+        OrganisationInviteView.as_view(),
+        name="invite_organisation",
+    ),
     path(
         "case/<uuid:case_id>/create/<str:organisation_type>/",
         OrganisationFormView.as_view(),
