@@ -44,6 +44,9 @@ urlpatterns = [
     path("users/", include("users.urls")),
     path("case/", include("cases.urls")),
     path("cases/", include("cases.urls")),
+    path(
+        "companieshouse/search/", core_views.CompaniesHouseSearch.as_view(), name="companieshouse"
+    ),
     path("settings/", include("core.urls")),
     path("documents/", include("documents.urls")),
     path("document/", include("documents.urls")),

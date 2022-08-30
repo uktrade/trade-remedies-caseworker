@@ -447,7 +447,8 @@ class PartiesView(CaseBaseView):
             _base["key"] = role["key"]
             _base["name"] = role["plural"]
             if role["allow_cw_create"]:
-                _base["add_link"] = f"Add {role['name']}"
+                # _base["add_link"] = f"Add {role['name']}"
+                _base["add_link"] = f"Invite party to case"
             parties.append(_base)
 
         return {
