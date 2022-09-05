@@ -14,7 +14,6 @@ from core.constants import (
 from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from core.constants import SECURITY_GROUP_SUPER_USER
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -136,7 +135,7 @@ class FeedbackFormExportView(
 class ViewFeatureFlags(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
-    groups_required = SECURITY_GROUP_SUPER_USER
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "v2/feature_flags/list.html"
 
     def get_context_data(self, **kwargs):
@@ -148,7 +147,7 @@ class ViewFeatureFlags(
 class ViewOneFeatureFlag(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
-    groups_required = SECURITY_GROUP_SUPER_USER
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "v2/feature_flags/retrieve.html"
 
     def get_context_data(self, **kwargs):
@@ -160,7 +159,7 @@ class ViewOneFeatureFlag(
 
 
 class EditUserGroup(LoginRequiredMixin, GroupRequiredMixin, View, TradeRemediesAPIClientMixin):
-    groups_required = SECURITY_GROUP_SUPER_USER
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
 
     def post(self, request, group_name):
         self.client(request.user).v2_change_user_group(
