@@ -1,109 +1,157 @@
 {% extends "cases/_case_template.html" %}
 {% load deep_index %}
 {% load get_item %}
+{% load format_date %}
 {% load get_item_length %}
 {% block case_page_content %}
-<script>
-window.dit.page='parties';
+    <script>
+        window.dit.page = 'parties';
 
-function toggleTabs(roleId, sampled) {
-	if (sampled) {
-		$('#parties-' + roleId + '-sampled').show();
-		$('#parties-' + roleId + '-not_sampled').hide();
-		$('#sampled_tab-' + roleId).addClass('selected');
-		$('#not_sampled_tab-' + roleId).removeClass('selected');
-	} else {
-		$('#parties-' + roleId + '-sampled').hide();
-		$('#parties-' + roleId + '-not_sampled').show();
-		$('#sampled_tab-' + roleId).removeClass('selected');
-		$('#not_sampled_tab-' + roleId).addClass('selected');
-	}
-}
-</script>
-{% if alert %}
-	<div class="govuk-box-highlight bold">
-	    {% if alert %}
-	        {{alert}}
-	    {% endif %}
-	</div>
-{% endif %}
-<div class="party-type-list" data-attach="PartyList" data-case-id="{{case.id}}">
-{% for party_type in party_types %}
-	<h2 class="heading-medium party-type-name">{{party_type.name}}</h2>
-	{% with parties_by_sampled=party_type.parties|deep_index:'sampled' %}
-		<ul class="tabset">
+        function toggleTabs(roleId, sampled) {
+            if (sampled) {
+                $('#parties-' + roleId + '-sampled').show();
+                $('#parties-' + roleId + '-not_sampled').hide();
+                $('#sampled_tab-' + roleId).addClass('selected');
+                $('#not_sampled_tab-' + roleId).removeClass('selected');
+            } else {
+                $('#parties-' + roleId + '-sampled').hide();
+                $('#parties-' + roleId + '-not_sampled').show();
+                $('#sampled_tab-' + roleId).removeClass('selected');
+                $('#not_sampled_tab-' + roleId).addClass('selected');
+            }
+        }
+    </script>
+    {% if alert %}
+        <div class="govuk-box-highlight bold">
+            {% if alert %}
+                {{ alert }}
+            {% endif %}
+        </div>
+    {% endif %}
+    <div class="party-type-list" data-attach="PartyList" data-case-id="{{ case.id }}">
+        {% for party_type in party_types %}
+            <h2 class="heading-medium party-type-name">{{ party_type.name }}</h2>
+            {% with parties_by_sampled=party_type.parties|deep_index:'sampled' %}
+                <ul class="tabset">
 
-				<li id="not_sampled_tab-{{party_type.case_role_id}}" class="tab pull-right">
-					<a href="javascript:toggleTabs('{{party_type.case_role_id}}', false);" data-tab="not_sampled">Not Sampled <div class="number-circle">
-						<span>{{ parties_by_sampled|get_item_length:'' }}</span></div>
-					</a>
-				</li>
+                    <li id="not_sampled_tab-{{ party_type.case_role_id }}" class="tab pull-right">
+                        <a href="javascript:toggleTabs('{{ party_type.case_role_id }}', false);" data-tab="not_sampled">Not
+                            Sampled
+                            <div class="number-circle">
+                                <span>{{ parties_by_sampled|get_item_length:'' }}</span></div>
+                        </a>
+                    </li>
 
-				<li id="sampled_tab-{{party_type.case_role_id}}" class="tab selected pull-right">
-					<a href="javascript:toggleTabs('{{party_type.case_role_id}}', true);" data-tab="sampled">Sampled <div class="number-circle">
-						<span>{{ parties_by_sampled|get_item_length:'true' }}</span></div>
-					</a>
-				</li>
+                    <li id="sampled_tab-{{ party_type.case_role_id }}" class="tab selected pull-right">
+                        <a href="javascript:toggleTabs('{{ party_type.case_role_id }}', true);" data-tab="sampled">Sampled
+                            <div class="number-circle">
+                                <span>{{ parties_by_sampled|get_item_length:'true' }}</span></div>
+                        </a>
+                    </li>
 
-		</ul>
-		{% for sample_state in parties_by_sampled %}
-			<div
-				id="parties-{{party_type.case_role_id}}-{% if sample_state %}sampled{% else %}not_sampled{% endif %}"
-				{% if not sample_state %}style="display: none;"{% endif %}
-				>
-				<ol class="party-list" data-attach="ButtonPost">
-					{% for party in parties_by_sampled|get_item:sample_state %}
-						{% if party.has_non_draft_subs or party_type.add_link %}
-							<li class="{% if party.users|length > 0 %}with-users{% endif %}" data-org-id="{{party.id}}" data-caserole="{{party_type.case_role_id}}">
-								<div class="compact-section">
+                </ul>
+                {% for sample_state in parties_by_sampled %}
+                    <div
+                            id="parties-{{ party_type.case_role_id }}-{% if sample_state %}sampled{% else %}not_sampled{% endif %}"
+                            {% if not sample_state %}style="display: none;"{% endif %}
+                    >
+                        <ol class="party-list" data-attach="ButtonPost">
+                            {% for party in parties_by_sampled|get_item:sample_state %}
+                                {% if party.has_non_draft_subs or party_type.add_link %}
+                                    <li class="{% if party.users|length > 0 %}with-users{% endif %}"
+                                        data-org-id="{{ party.id }}" data-caserole="{{ party_type.case_role_id }}">
+                                        <div class="compact-section">
 
-									<a class="organisation link bold" href="/case/{{case_id}}/organisation/{{party.id}}/">{{party.name}}</a>
-									<a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">Expand {{party.name}}</span></a>
-									<div class="icon-box pull-right margin-right-1">
-										{% if not party.gov_body %} {# don't show any kind of state icon for the TRID #}
-											{% if party.fraudulent %}
-												<i class="icon icon-warning" title="Fraudulent"><span class="visually-hidden">Non-cooperative</span></i>
-											{% elif party.non_responsive %}
-												<i class="icon icon-warning" title="Non-cooperative"><span class="visually-hidden">Non-cooperative</span></i>
-											{% elif party.has_roi or party_type.key == 'applicant' %}
-												{% if party_type.add_link and party.validated_at %}
-													<i class="icon icon-green-tick" title="Self identified"><span class="visually-hidden">Self identified</span></i>
-												{% elif party_type.key == 'awaiting_approval' or not party.validated_at and party_type.key != 'rejected' %}
-													<i class="icon icon-amber-warning" title="Approval needed"><span class="visually-hidden">Alert</span></i>
-												{% endif %}
-											{% else %}
-												{% if party.id in accepted_orgs %}
-													{% if party.validated_at %}
-														<i class="icon icon-green-tick" title="Invitation accepted"><span class="visually-hidden">Invitation accepted</span></i>
-													{% else %}
-														<i class="icon icon-amber-warning" title="Invitation accepted, not yet verified"><span class="visually-hidden">Invitation accepted, not yet verified</span></i>
-													{% endif %}
-												{% elif party.id in invited_orgs %}
-													<i class="icon icon-timer" title="Invitation sent"><span class="visually-hidden">Invitation sent</span></i>
-												{% elif party_type.add_link %}
-													<i class="icon icon-amber-warning" title="Invitation not sent"><span class="visually-hidden">Alert</span></i>
-													{% set 'invite' True  %}
-												{% endif %}
-											{% endif %}
-										{% endif %}
-									</div>
-								</div>
-								<div class="expand-section party-details">
-									{% include "widgets/contact_button_block.html" with list=party.contacts case_role_id=party_type.case_role_id case=case organisation=party invites=invites party_type=party_type invite=invite %}
-									<ul class="party-list" style="min-height:380px;">
-										<!-- dynamic load in here -->
-									</ul>
-								</div>
-							</li>
-						{% endif %}
-					{% endfor %}
-				</ol>
-			</div>
-		{% endfor %}
-	{% endwith %}
-	{% if party_type.add_link %}
-		<button class="link modal-form pull-right bold" data-url="/organisations/case/{{case.id}}/create/{{party_type.key}}/">{{ party_type.add_link }}</button>
-	{% endif %}
-{% endfor %}
-</div>
+                                            <a class="organisation link bold"
+                                               href="/case/{{ case_id }}/organisation/{{ party.id }}/">{{ party.name }}</a>
+                                            <a href="javascript:void(0)" class="expander pull-right"
+                                               data-attach="ExpandCollapse"><span
+                                                    class="visually-hidden">Expand {{ party.name }}</span></a>
+                                            <div class="icon-box pull-right margin-right-1">
+                                                {% if not party.gov_body %}
+                                                    {# don't show any kind of state icon for the TRID #}
+                                                    {% if party.fraudulent %}
+                                                        <i class="icon icon-warning" title="Fraudulent"><span
+                                                                class="visually-hidden">Non-cooperative</span></i>
+                                                    {% elif party.non_responsive %}
+                                                        <i class="icon icon-warning" title="Non-cooperative"><span
+                                                                class="visually-hidden">Non-cooperative</span></i>
+                                                    {% elif party.has_roi or party_type.key == 'applicant' %}
+                                                        {% if party_type.add_link and party.validated_at %}
+                                                            <i class="icon icon-green-tick"
+                                                               title="Self identified"><span class="visually-hidden">Self identified</span></i>
+                                                        {% elif party_type.key == 'awaiting_approval' or not party.validated_at and party_type.key != 'rejected' %}
+                                                            <i class="icon icon-amber-warning"
+                                                               title="Approval needed"><span class="visually-hidden">Alert</span></i>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if party.id in accepted_orgs %}
+                                                            {% if party.validated_at %}
+                                                                <i class="icon icon-green-tick"
+                                                                   title="Invitation accepted"><span
+                                                                        class="visually-hidden">Invitation accepted</span></i>
+                                                            {% else %}
+                                                                <i class="icon icon-amber-warning"
+                                                                   title="Invitation accepted, not yet verified"><span
+                                                                        class="visually-hidden">Invitation accepted, not yet verified</span></i>
+                                                            {% endif %}
+                                                        {% elif party.id in invited_orgs %}
+                                                            <i class="icon icon-timer" title="Invitation sent"><span
+                                                                    class="visually-hidden">Invitation sent</span></i>
+                                                        {% elif party_type.add_link %}
+                                                            <i class="icon icon-amber-warning"
+                                                               title="Invitation not sent"><span
+                                                                    class="visually-hidden">Alert</span></i>
+                                                            {% set 'invite' True %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="expand-section party-details">
+                                            {% include "widgets/contact_button_block.html" with list=party.contacts case_role_id=party_type.case_role_id case=case organisation=party invites=invites party_type=party_type invite=invite %}
+                                            <ul class="party-list" style="min-height:380px;">
+                                                <!-- dynamic load in here -->
+                                            </ul>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </div>
+                {% endfor %}
+            {% endwith %}
+            {% if party_type.add_link %}
+                <button class="link modal-form pull-right bold"
+                        data-url="/organisations/case/{{ case.id }}/create/{{ party_type.key }}/">{{ party_type.add_link }}</button>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if sent_tra_case_invitations %}
+        <h2 class="heading-medium party-type-name">Sent Invites</h2>
+        <div id="case_invitations">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Date/time</th>
+                    <th>Caseworker</th>
+                    <th>Organisation</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for invitation in sent_tra_case_invitations %}
+                    <tr>
+                        <td>{% format_date invitation.sent_at '%d %b %Y %H:%M:%S' %}</td>
+                        <td>{{ invitation.created_by_name }}</td>
+                        <td>{{ invitation.contact.organisation_name }}</td>
+                        <td>{{ invitation.contact.name }}</td>
+                        <td>{{ invitation.contact.email }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}

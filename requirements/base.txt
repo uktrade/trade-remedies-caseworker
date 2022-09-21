@@ -76,6 +76,8 @@ django-storages==1.11.1
     #   django-chunk-upload-handlers
 django-timezone-field==4.2.3
     # via -r requirements.in/base.in
+dotwiz==0.3.1
+    # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
 idna==2.10
@@ -90,6 +92,8 @@ markdown==2.6.11
     # via -r requirements.in/base.in
 marshmallow==3.6.1
     # via kubi-ecs-logger
+pyheck==0.1.5
+    # via dotwiz
 python-dateutil==2.8.2
     # via botocore
 pytz==2021.1
@@ -127,7 +131,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
     # via -r requirements.in/base.in
 waitress==2.1.2
     # via -r requirements.in/base.in
