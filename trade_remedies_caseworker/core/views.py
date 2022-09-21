@@ -13,7 +13,7 @@ from core.constants import (
 )
 from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-
+from v2_api_client.mixins import APIClientMixin
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -158,13 +158,14 @@ class ViewOneFeatureFlag(
         return context
 
 
-class EditUserGroup(LoginRequiredMixin, GroupRequiredMixin, View, TradeRemediesAPIClientMixin):
+class EditUserGroup(LoginRequiredMixin, GroupRequiredMixin, View, APIClientMixin):
     groups_required = SECURITY_GROUPS_TRA_ADMINS
 
     def post(self, request, group_name):
-        self.client(request.user).v2_change_user_group(
-            group_name=group_name,
-            user_pk=request.POST["user_to_change"],
-            request_method=request.GET["method"],
+        getattr(self.client, request.GET["method"])(
+            self.client.url(f"users/{request.POST['user_to_change']}/change_group"),
+            data={
+                "group_name": group_name
+            }
         )
         return redirect(reverse("view_feature_one_flag", kwargs={"feature_flag_name": group_name}))
