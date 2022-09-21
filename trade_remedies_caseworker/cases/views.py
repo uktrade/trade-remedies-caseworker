@@ -1433,7 +1433,7 @@ class SubmisisonVerifyOrganisation(SubmissionVerifyBaseView):
         org_matches.sort(
             key=lambda m: 1 if m.get("id") == test_org_id else 0
         )  # put the actual match at the end
-        matches = decorate_orgs(org_matches, test_org_id)
+        matches = decorate_orgs(org_matches, test_org_id, exclude_case_id=case_id)
         for match in matches:
             if str(match.get("id")) == str(organisation.get("id")):
                 organisation.update(match)
