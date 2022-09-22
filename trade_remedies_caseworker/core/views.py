@@ -164,8 +164,6 @@ class EditUserGroup(LoginRequiredMixin, GroupRequiredMixin, View, APIClientMixin
     def post(self, request, group_name):
         getattr(self.client, request.GET["method"])(
             self.client.url(f"users/{request.POST['user_to_change']}/change_group"),
-            data={
-                "group_name": group_name
-            }
+            data={"group_name": group_name},
         )
         return redirect(reverse("view_feature_one_flag", kwargs={"feature_flag_name": group_name}))
