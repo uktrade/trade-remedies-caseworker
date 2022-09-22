@@ -4,6 +4,8 @@
 #
 #    pip-compile --output-file=requirements/base.txt requirements.in/base.in
 #
+api-client==1.3.1
+    # via v2-api-client
 asgiref==3.5.0
     # via django
 boto3==1.17.89
@@ -20,7 +22,7 @@ certifi==2021.5.30
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-django==3.2.13
+django==3.2.15
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -34,6 +36,7 @@ django==3.2.13
     #   django-storages
     #   django-timezone-field
     #   trade-remedies-client
+    #   v2-api-client
 django-audit-log-middleware==0.0.4
     # via -r requirements.in/base.in
 django-basicauth==0.5.2
@@ -42,6 +45,7 @@ django-cache-memoize==0.1.6
     # via
     #   -r requirements.in/base.in
     #   trade-remedies-client
+    #   v2-api-client
 django-chunk-upload-handlers==0.0.12
     # via -r requirements.in/base.in
 django-countries==7.2.1
@@ -100,7 +104,9 @@ redis==3.2.0
 requests==2.25.1
     # via
     #   -r requirements.in/base.in
+    #   api-client
     #   trade-remedies-client
+    #   v2-api-client
 s3transfer==0.4.2
     # via boto3
 sentry-sdk==0.13.1
@@ -111,6 +117,8 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
+tenacity==8.0.1
+    # via api-client
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
     # via -r requirements.in/base.in
 urllib3==1.26.5
@@ -119,6 +127,8 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+    # via -r requirements.in/base.in
 waitress==2.1.2
     # via -r requirements.in/base.in
 werkzeug==0.15.3

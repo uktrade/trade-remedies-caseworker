@@ -39,6 +39,10 @@ class TransientUser:
         """
         return any([grp in self.groups for grp in SECURITY_GROUPS_TRA_TOP_ADMINS])
 
+    @property
+    def is_super_user(self):
+        return any([grp in self.groups for grp in SECURITY_GROUPS_TRA_ADMINS])
+
     def reload(self, request):
         """
         Reload the user from the API

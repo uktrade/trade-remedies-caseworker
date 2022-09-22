@@ -2,6 +2,7 @@ import os
 import json
 
 from django.http import HttpResponse
+from django.urls import reverse
 from django.views.generic import TemplateView, View
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,6 +13,7 @@ from core.constants import (
 )
 from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from v2_api_client.mixins import APIClientMixin
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -128,3 +130,42 @@ class FeedbackFormExportView(
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
         response["Content-Disposition"] = "attachment; filename=trade_remedies_export.xlsx"
         return response
+
+
+class ViewFeatureFlags(
+    LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    template_name = "v2/feature_flags/list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feature_flags"] = self.client(self.request.user).v2_get_all_feature_flags()
+        return context
+
+
+class ViewOneFeatureFlag(
+    LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    template_name = "v2/feature_flags/retrieve.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feature_flag"] = self.client(self.request.user).v2_get_one_feature_flag(
+            kwargs["feature_flag_name"]
+        )
+        return context
+
+
+class EditUserGroup(LoginRequiredMixin, GroupRequiredMixin, View, APIClientMixin):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+
+    def post(self, request, group_name):
+        getattr(self.client, request.GET["method"])(
+            self.client.url(f"users/{request.POST['user_to_change']}/change_group"),
+            data={
+                "group_name": group_name
+            }
+        )
+        return redirect(reverse("view_feature_one_flag", kwargs={"feature_flag_name": group_name}))

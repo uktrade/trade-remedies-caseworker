@@ -12,7 +12,7 @@ verification of an organisation in the verification flow.
     {% endif %}    
     {% if organisation.indirect_cases or organisation.cases %}
         {% if organisation.cases %}
-            <li><strong class="bold">{{organisation.name}}</strong> has participated in {% if organisation.collated_cases|length %}<a href="javascript:void(0)" class="js-pop-up link">{{organisation.collated_cases|length}} previous case{% pluralize organisation.collated_cases|length %}</a>{% else %}no previous cases{% endif %} in its own right.
+            <li><strong class="bold">{{organisation.name}}</strong> has participated in {% if organisation.collated_cases|length %}<a href="javascript:void(0)" class="js-pop-up link">{{organisation.collated_cases|length}} other case{% pluralize organisation.collated_cases|length %}</a>{% else %}no other cases{% endif %} in its own right.
                 {% include "organisations/_representations_popup.html" with party=organisation cases=organisation.collated_cases mode="participation_list" title="Case participation" %}
             </li>
         {% endif %}        
@@ -32,11 +32,10 @@ verification of an organisation in the verification flow.
                 The last validation was on <strong class="bold">{{organisation.verified_usercases.0.caserole.validated_at|format_date:'%d %b %Y'}}</strong> by <strong class="bold">{{organisation.verified_usercases.0.caserole.validated_by.name}}</strong>
             </li>
         {% else %}
-            <li class="highlight"><strong class="bold">{{organisation.name}}</strong> has not yet been validated in any of the cases it's been involved in.</li>
+            <li class="highlight"><strong class="bold">{{organisation.name}}</strong> has not yet been validated in any of the other cases it's been involved in.</li>
         {% endif %}
     {% else %}
         <li class="highlight"><strong class="bold">{{organisation.name}}</strong> has made no previous representations and must be checked thoroughly.</li>
     {% endif %}                 
 
 </ul>
- 

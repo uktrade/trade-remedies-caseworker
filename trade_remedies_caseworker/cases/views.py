@@ -435,7 +435,10 @@ class PartiesView(CaseBaseView):
             if submission := invite.get("submission"):
                 if submission.get("name") == "Invite 3rd party":
                     # It's a 3rd party invite, so use the organisation of the contact of the invite
-                    org_id = invite["contact"]["organisation"]["id"]
+                    if invite["contact"]:
+                        org_id = invite["contact"]["organisation"]["id"]
+                    else:
+                        continue
 
             if invite.get("accepted_at"):
                 # note: accepted and invited are mutually exclusive
@@ -815,7 +818,7 @@ class SubmissionView(CaseBaseView):
         return_data.update({"template_name": template_name, "mode": "form"})
         return return_data
 
-    def post(  # noqa: C901
+    def post(
         self,
         request,
         case_id,
@@ -1539,10 +1542,11 @@ class SubmissionVerifyNotify(SubmissionVerifyBaseView):
                 }
             )
             if notify_key == "NOTIFY_INTERESTED_PARTY_REQUEST_DENIED":
-                values[
-                    "footer"
-                ] = f"Investigations Team\r\nTrade Remedies\r\nDepartment for International Trade\r\n\
+                values["footer"] = (
+                    f"Investigations Team\r\nTrade Remedies\r\n"
+                    f"Department for International Trade\r\n\
                     Contact: {case.get('reference')}@traderemedies.gov.uk"  # /PS-IGNORE
+                )
             parsed_template = parse_notify_template(notification_template["body"], values)
         except Exception as ex:
             parsed_template = ""

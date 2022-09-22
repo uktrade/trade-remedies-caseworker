@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load text_element %}
+{% load custom_filters %}
+{% load application_heading %}
+{% load format_date %}
+
+{% block heading %}
+    {{ feature_flag.name }}
+{% endblock %}
+
+{% block main_content %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% if feature_flag.users_in_group %}
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Name</th>
+                        <th scope="col" class="govuk-table__header">Email</th>
+                        <th scope="col" class="govuk-table__header">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    {% for user in feature_flag.users_in_group %}
+                        <form method="post"
+                              action="{% url 'edit_user_group' group_name=feature_flag.name %}?method=delete">
+                            {% csrf_token %}
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">{{ user.name }}</th>
+                                <td class="govuk-table__cell">{{ user.email }}</td>
+                                <td class="govuk-table__cell">
+                                    <button type="submit" name="user_to_change" value="{{ user.id }}">Delete user from
+                                        group
+                                    </button>
+                                </td>
+                            </tr>
+                        </form>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <strong>There are no users in this group</strong>
+            {% endif %}
+            <div class="margin-top-2">
+                <h3>Add a new user to group</h3>
+                <form method="post"
+                      action="{% url 'edit_user_group' group_name=feature_flag.name %}?method=put">
+                    {% csrf_token %}
+                    <select name="user_to_change">
+                        {% for user in feature_flag.users_not_in_group %}
+                            <option value="{{ user.id }}">{{ user.name }} ({{ user.email }})</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -92,6 +92,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "config.middleware.CacheControlMiddleware",
+    "config.middleware.SentryContextMiddleware",
 ]
 
 # Add basic authentication if configured
