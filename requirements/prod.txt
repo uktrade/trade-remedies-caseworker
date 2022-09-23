@@ -85,6 +85,10 @@ django-storages==1.11.1
     #   django-chunk-upload-handlers
 django-timezone-field==4.2.3
     # via -r requirements.in/../requirements/base.txt
+dotwiz==0.4.0
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   v2-api-client
 dpath==1.4.2
     # via -r requirements.in/../requirements/base.txt
 gevent==21.1.2
@@ -112,6 +116,10 @@ marshmallow==3.6.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   kubi-ecs-logger
+pyheck==0.1.5
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   dotwiz
 python-dateutil==2.8.2
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -158,7 +166,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
     # via -r requirements.in/../requirements/base.txt
 waitress==2.1.2
     # via -r requirements.in/../requirements/base.txt

@@ -111,6 +111,8 @@ django-storages==1.11.1
     #   django-chunk-upload-handlers
 django-timezone-field==4.2.3
     # via -r requirements.in/base.in
+dotwiz==0.4.0
+    # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
 execnet==1.9.0
@@ -216,6 +218,8 @@ pygments==2.8.1
     # via
     #   -r requirements.in/dev.in
     #   ipython
+pyheck==0.1.5
+    # via dotwiz
 pyparsing==3.0.7
     # via
     #   matplotlib
@@ -316,7 +320,7 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit
