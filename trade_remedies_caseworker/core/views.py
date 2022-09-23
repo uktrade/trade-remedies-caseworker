@@ -13,7 +13,8 @@ from core.constants import (
 )
 from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from v2_api_client.mixins import APIClientMixin
+
+from core.constants import SECURITY_GROUP_SUPER_USER
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -48,6 +49,13 @@ class CompaniesHouseSearch(TemplateView, LoginRequiredMixin, TradeRemediesAPICli
     def get(self, request, *args, **kwargs):
         query = request.GET.get("term")
         results = self.client(request.user).companies_house_search(query)
+        return HttpResponse(json.dumps(results), content_type="application/json")
+
+
+class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("term")
+        results = self.client.organisations.get_organisations_by_company_name(query)
         return HttpResponse(json.dumps(results), content_type="application/json")
 
 

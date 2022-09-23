@@ -45,7 +45,7 @@ urlpatterns = [
     path("case/", include("cases.urls")),
     path("cases/", include("cases.urls")),
     path(
-        "companieshouse/search/", core_views.CompaniesHouseSearch.as_view(), name="companieshouse"
+        "organisationname/search/", core_views.OrganisationNameSearch.as_view(), name="organisationnamesearch"
     ),
     path("settings/", include("core.urls")),
     path("documents/", include("documents.urls")),

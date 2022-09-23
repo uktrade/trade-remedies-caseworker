@@ -1,7 +1,10 @@
 import json
 import logging
 import urllib.parse
+from django.http import QueryDict
+from django.urls import reverse
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 from django.views import View
 from django.shortcuts import render, redirect
 from django.utils.http import urlencode
@@ -22,6 +25,9 @@ from core.utils import (
     deep_index_items_by_exists,
     deep_index_items_by,
     get,
+)
+from organisations.forms import (
+    UKOrganisationInviteForm,
 )
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
@@ -261,11 +267,50 @@ class OrganisationFormView(BaseOrganisationTemplateView):
         return HttpResponse(json.dumps({"organisation": organisation}))
 
 
-class OrganisationInviteView(BaseOrganisationTemplateView):
-    template_name = "organisations/organisation_invitation.html"
+class BaseOrganisationInviteView(FormView):
+    next_url_resolver = ""
 
-    # need to ensure that the following fields etc are correct for our invitation 
-    # form - ensure that the form (html) is correct also!!!
+    def dispatch(self, *args, **kwargs):
+        if "organisation_invitation" not in self.request.session:
+            self.request.session["organisation_invitation"] = {}
+        self.request.session.modified = True
+        return super().dispatch(*args, **kwargs)
+
+    def reset_session(self, request, initial_data=None):
+        initial_data = initial_data or {}
+        request.session["organisation_invitation"] = initial_data
+        request.session.modified = True
+        return request.session
+
+    def update_session(self, request, update_data):
+        request.session.setdefault("organisation_invitation", {})
+        if isinstance(update_data, QueryDict):
+            # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
+            # internal representation of QueryDicts store individual values as lists, regardless
+            # of how many elements are in that list
+            # https://www.ianlewis.org/en/querydict-and-update
+            update_data = update_data.dict()
+        request.session["organisation_invitation"].update(update_data)
+        request.session.modified = True
+        return request.session
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return super().form_invalid(form)
+
+    def form_valid(self, form):
+        self.update_session(self.request, form.cleaned_data)
+        return redirect(self.get_next_url(form))
+
+    def get_next_url(self, form=None):
+        return reverse(self.next_url_resolver)
+
+
+class OrganisationInviteView(BaseOrganisationInviteView):
+    template_name = "organisations/organisation_invitation.html"
+    form_class = UKOrganisationInviteForm
+    next_url_resolver = "organisations:invite_organisation_contacts"
+
     # def form_valid(self, form):
     #     submission_id = self.kwargs["submission_id"]
     #     contact_id = self.kwargs["contact_id"]
@@ -276,6 +321,11 @@ class OrganisationInviteView(BaseOrganisationTemplateView):
     #         f"post_code={form.cleaned_data.get('organisation_post_code')}&"
     #         f"address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
     #     )
+
+
+class OrganisationInviteContactsView(FormView):
+    template_name = "organisations/organisation_invitation_contacts.html"
+    # form_class = ???
 
 
 class ContactFormView(BaseOrganisationTemplateView):

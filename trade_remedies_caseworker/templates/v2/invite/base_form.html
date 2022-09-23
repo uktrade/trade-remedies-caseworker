@@ -9,7 +9,7 @@
             </h1>
             <p>{% block description %}{% endblock description %}</p>
         {% endblock noheading %}
-        <form method="post" novalidate="novalidate" id="roi-step2-form">
+        <form method="post" novalidate="novalidate" id="organisation-invite-form">
             {% csrf_token %}
             {% block form_content %}{% endblock form_content %}
         </form>
