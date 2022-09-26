@@ -132,9 +132,7 @@ class FeedbackFormExportView(
         return response
 
 
-class ViewFeatureFlags(
-    LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin
-):
+class ViewFeatureFlags(LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin):
 
     groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "v2/feature_flags/list.html"
@@ -145,9 +143,7 @@ class ViewFeatureFlags(
         return context
 
 
-class ViewOneFeatureFlag(
-    LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin
-):
+class ViewOneFeatureFlag(LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin):
     groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "v2/feature_flags/retrieve.html"
 
