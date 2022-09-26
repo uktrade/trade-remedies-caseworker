@@ -133,28 +133,27 @@ class FeedbackFormExportView(
 
 
 class ViewFeatureFlags(
-    LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+    LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin
 ):
+
     groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "v2/feature_flags/list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["feature_flags"] = self.client(self.request.user).v2_get_all_feature_flags()
+        context["feature_flags"] = self.client.feature_flags()
         return context
 
 
 class ViewOneFeatureFlag(
-    LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+    LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin
 ):
     groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "v2/feature_flags/retrieve.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["feature_flag"] = self.client(self.request.user).v2_get_one_feature_flag(
-            kwargs["feature_flag_name"]
-        )
+        context["feature_flag"] = self.client.feature_flags(kwargs["feature_flag_name"])
         return context
 
 
@@ -162,8 +161,9 @@ class EditUserGroup(LoginRequiredMixin, GroupRequiredMixin, View, APIClientMixin
     groups_required = SECURITY_GROUPS_TRA_ADMINS
 
     def post(self, request, group_name):
-        getattr(self.client, request.GET["method"])(
-            self.client.url(f"users/{request.POST['user_to_change']}/change_group"),
-            data={"group_name": group_name},
-        )
+        if request.GET["method"] == "delete":
+            self.client.users(request.POST["user_to_change"]).delete_group(group_name)
+        elif request.GET["method"] == "put":
+            self.client.users(request.POST["user_to_change"]).add_group(group_name)
+
         return redirect(reverse("view_feature_one_flag", kwargs={"feature_flag_name": group_name}))
