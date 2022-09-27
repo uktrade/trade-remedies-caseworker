@@ -111,7 +111,7 @@ django-storages==1.11.1
     #   django-chunk-upload-handlers
 django-timezone-field==4.2.3
     # via -r requirements.in/base.in
-dotwiz==0.3.1
+dotwiz==0.4.0
     # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
