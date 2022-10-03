@@ -25,3 +25,20 @@ class UKOrganisationInviteForm(ValidationForm):
             self.add_error("company_search_container", "companies_house_not_searched")
         else:
             return self.cleaned_data
+
+
+class UKOrganisationInviteContactForm(ValidationForm):
+    # declare empty choices variable
+    choices = []
+
+    def __init__(self, *args, **kwargs):
+        org_invite_contacts = kwargs.pop("org_invite_contacts", None)
+        super(UKOrganisationInviteContactForm, self).__init__(*args, **kwargs)
+        # assign value to the choices variable
+        self.fields["org"].choices = org_invite_contacts
+
+    org = forms.ChoiceField(
+        error_messages={"required": "no_representative_org"},
+        choices=[],  # use the choices variable
+    )
+

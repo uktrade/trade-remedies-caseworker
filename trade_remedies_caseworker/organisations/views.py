@@ -28,9 +28,11 @@ from core.utils import (
 )
 from organisations.forms import (
     UKOrganisationInviteForm,
+    UKOrganisationInviteContactForm,
 )
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
+from v2_api_client.mixins import APIClientMixin
 
 contact_fields = [
     "contact_name",
@@ -302,14 +304,13 @@ class BaseOrganisationInviteView(FormView):
     def form_valid(self, form):
         self.update_session(self.request, form.cleaned_data)
         self.next_url_kwargs = {
-            "case_id": self.kwargs["case_id"],  # %%%%%%%%%% NEED TO CHANGE TO CASE_ID %%%%%%%%%%%
+            "case_id": self.kwargs["case_id"],
             "organisation_id": form.cleaned_data.get("organisation_id")
         }
         return redirect(self.get_next_url(form))
 
     def get_next_url(self, form=None):
         return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
-        # return reverse(self.next_url_resolver)
 
 
 class OrganisationInviteView(BaseOrganisationInviteView):
@@ -318,10 +319,50 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     next_url_resolver = "organisations:invite_organisation_contacts"
 
 
-class OrganisationInviteContactsView(BaseOrganisationInviteView):
+class OrganisationInviteContactsView(LoginRequiredMixin, FormView, TradeRemediesAPIClientMixin):
     template_name = "organisations/organisation_invitation_contacts.html"
-    form_class = UKOrganisationInviteForm
+    form_class = UKOrganisationInviteContactForm
     next_url_resolver = "organisations:invite_organisation_contacts_NEEW_CORRECT_URL"
+
+    def get_org_invite_contacts(self):
+        self._client = self.client(self.request.user)
+        org_invite_contacts = self._client.get_organisation_contacts(
+            self.kwargs["organisation_id"], self.kwargs["case_id"], exclude_indirect=True
+        )
+        # extract and return tuples of contacts in a list (from a
+        # list of dictionaries)
+        # removing duplicates
+
+        # return [
+        #     (each["name"])
+        #     for each in org_invite_contacts
+        #     if each["name"] != self.request.user.organisation.get("name")
+        # ]
+        return org_invite_contacts
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        context["org_invite_contacts"] = self.get_org_invite_contacts()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
+        return kwargs
+
+    # Re-instate the following once you have the list displayed on the form 
+    # def form_valid(self, form):
+    #     return redirect(
+    #         reverse(
+    #             "interest_existing_client_primary_contact",
+    #             kwargs={
+    #                 "submission_id": self.kwargs["submission_id"],
+    #                 "organisation_id": form.cleaned_data.get("org"),
+    #             },
+    #         )
+    #     )
+
 
 
 class ContactFormView(BaseOrganisationTemplateView):

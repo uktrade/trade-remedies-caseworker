@@ -11,7 +11,26 @@
 {% block main_content %}
     <div class="grid-row">
         <div class="column-two-thirds">
-            <h1>This is a heading</h1>            
+            <h1>This is a heading</h1>
+            <!-- <h2>These are the contacts: {{ org_invite_contacts }}</h2> -->
+            <div class="govuk-radios" data-module="govuk-radios" id="org">
+
+                {% for organisation in org_invite_contacts %}
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="{{ organisation.1 }}" name="org"
+                               type="radio" value="{{ organisation.0 }}" {% if submission.organisation.id == organisation.0 %}checked{% endif %}>
+                        <label class="govuk-label govuk-radios__label" for="{{ organisation.1 }}">
+
+                            {{ organisation.name }}&nbsp;({{organisation.email}})<br>
+
+                        </label>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
         </div>
     </div>
 {% endblock %}

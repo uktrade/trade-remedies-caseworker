@@ -31,7 +31,6 @@ urlpatterns = [
     ),
     path(
         "case/<uuid:case_id>/invite/<uuid:organisation_id>/contacts",
-        # "case/invite/contacts",
         OrganisationInviteContactsView.as_view(),
         name="invite_organisation_contacts",
     ),
