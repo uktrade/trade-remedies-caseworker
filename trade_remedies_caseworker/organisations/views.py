@@ -269,6 +269,7 @@ class OrganisationFormView(BaseOrganisationTemplateView):
 
 class BaseOrganisationInviteView(FormView):
     next_url_resolver = ""
+    next_url_kwargs = {}
 
     def dispatch(self, *args, **kwargs):
         if "organisation_invitation" not in self.request.session:
@@ -300,10 +301,15 @@ class BaseOrganisationInviteView(FormView):
 
     def form_valid(self, form):
         self.update_session(self.request, form.cleaned_data)
+        self.next_url_kwargs = {
+            "case_id": self.kwargs["case_id"],  # %%%%%%%%%% NEED TO CHANGE TO CASE_ID %%%%%%%%%%%
+            "organisation_id": form.cleaned_data.get("organisation_id")
+        }
         return redirect(self.get_next_url(form))
 
     def get_next_url(self, form=None):
-        return reverse(self.next_url_resolver)
+        return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
+        # return reverse(self.next_url_resolver)
 
 
 class OrganisationInviteView(BaseOrganisationInviteView):
@@ -311,21 +317,11 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     form_class = UKOrganisationInviteForm
     next_url_resolver = "organisations:invite_organisation_contacts"
 
-    # def form_valid(self, form):
-    #     submission_id = self.kwargs["submission_id"]
-    #     contact_id = self.kwargs["contact_id"]
-    #     return redirect(
-    #         f"/case/interest/{submission_id}/{contact_id}/submit/?name="
-    #         f"{form.cleaned_data.get('organisation_name')}&"
-    #         f"companies_house_id={form.cleaned_data.get('companies_house_id')}&"
-    #         f"post_code={form.cleaned_data.get('organisation_post_code')}&"
-    #         f"address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
-    #     )
 
-
-class OrganisationInviteContactsView(FormView):
+class OrganisationInviteContactsView(BaseOrganisationInviteView):
     template_name = "organisations/organisation_invitation_contacts.html"
-    # form_class = ???
+    form_class = UKOrganisationInviteForm
+    next_url_resolver = "organisations:invite_organisation_contacts_NEEW_CORRECT_URL"
 
 
 class ContactFormView(BaseOrganisationTemplateView):

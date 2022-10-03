@@ -1,8 +1,8 @@
 {% extends "v2/invite/base_form.html" %}
-{% load text_element %}
+<!-- {% load text_element %}
 {% load custom_filters %}
 {% load application_heading %}
-{% load format_date %}
+{% load format_date %} -->
 
 {% load static %}
 
@@ -74,15 +74,15 @@
                     .attr("value", null)
                     .appendTo($(this));
                 $("<input />").attr("type", "hidden")
+                    .attr("name", "organisation_address")
+                    .attr("value", null)
+                    .appendTo($(this));
+                $("<input />").attr("type", "hidden")
                     .attr("name", "companies_house_id")
                     .attr("value", null)
                     .appendTo($(this));
                 $("<input />").attr("type", "hidden")
-                    .attr("name", "organisation_post_code")
-                    .attr("value", null)
-                    .appendTo($(this));
-                $("<input />").attr("type", "hidden")
-                    .attr("name", "organisation_address")
+                    .attr("name", "organisation_id")
                     .attr("value", null)
                     .appendTo($(this));
             });
@@ -117,8 +117,8 @@
                         url: `{% url 'organisationnamesearch' %}?term=${query}`,
                         success: function (data) {
                             if (data) {
-                                let names = data.map(result => `${result.title} (${result.company_number})`)
-                                proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
+                                let names = data["organisations"].map(result => `${result.name} (${result.companies_house_id})`)
+                                proposed_names = Object.fromEntries(data["organisations"].map(result => [`${result.name} (${result.companies_house_id})`, result]));
                                 populateResults(names)
                                 if (names.length == 0) {
                                     clearCompany()
@@ -142,23 +142,23 @@
                         $("#organisation-invite-form").submit(function () {
                             $("<input />").attr("type", "hidden")
                                 .attr("name", "organisation_name")
-                                .attr("value", company_data.title)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "companies_house_id")
-                                .attr("value", company_data.company_number)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_post_code")
-                                .attr("value", company_data.address.postal_code)
+                                .attr("value", company_data.name)
                                 .appendTo($(this));
                             $("<input />").attr("type", "hidden")
                                 .attr("name", "organisation_address")
-                                .attr("value", company_data.address_snippet)
+                                .attr("value", company_data.address)
+                                .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "companies_house_id")
+                                .attr("value", company_data.companies_house_id)
+                                .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "organisation_id")
+                                .attr("value", company_data.id)
                                 .appendTo($(this));
                         });
                         $('#selected_company_wrapper').show();
-                        $('#selected_company').text(`${company_data.title} (${company_data.company_number}) ${company_data.address_snippet}`)
+                        $('#selected_company').text(`${company_data.name} (${company_data.companies_house_id}) ${company_data.address}`)
                         return true
                     }
                     $('#selected_company_wrapper').hide();
@@ -166,7 +166,6 @@
                 }
             }
         })
-
 
     </script>
 
