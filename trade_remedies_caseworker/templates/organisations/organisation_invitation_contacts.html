@@ -1,28 +1,40 @@
-{% extends "base.html" %}
+{% extends "v2/govuk/base.html" %}
 {% load text_element %}
 {% load custom_filters %}
 {% load application_heading %}
 {% load format_date %}
 
-{% block heading %}
-    
-{% endblock %}
+{% block noheading %}
+{% endblock noheading %}
+
+{% block page_title %}Which organisation do you want to invite?{% endblock page_title %}
 
 {% block main_content %}
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h1>This is a heading</h1>
-            <!-- <h2>These are the contacts: {{ org_invite_contacts }}</h2> -->
-            <div class="govuk-radios" data-module="govuk-radios" id="org">
 
-                {% for organisation in org_invite_contacts %}
+ <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+          
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    
+    <form action="invite-party-check" novalidate method="post" id="invite-party-contacts-choice-form">
 
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="{{ organisation.1 }}" name="org"
-                               type="radio" value="{{ organisation.0 }}" {% if submission.organisation.id == organisation.0 %}checked{% endif %}>
-                        <label class="govuk-label govuk-radios__label" for="{{ organisation.1 }}">
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" aria-describedby="invite-party-contacts-choice-hint">
 
-                            {{ organisation.name }}&nbsp;({{organisation.email}})<br>
+            <div id="invite-party-contacts-choice-hint" class="govuk-hint">
+                Select all contacts you want to invite.
+            </div>
+
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="org-contacts">
+
+                {% for contact in org_invite_contacts %}
+
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="{{ contact.name }}" name="invite-party-contacts-choice"
+                                type="checkbox" value="{{ contact.name }} - {{ contact.email }}">
+                        <label class="govuk-label govuk-checkboxes__label" for="{{ contact.name }}">
+
+                            {{ contact.name }}&nbsp;-&nbsp;{{ contact.email }}<br>
 
                         </label>
 
@@ -31,6 +43,30 @@
                 {% endfor %}
 
             </div>
+
+            </fieldset>
         </div>
-    </div>
-{% endblock %}
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                I want to invite a new contact from this organisation
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p>To avoid duplicate accounts, please ask the admin from the organisation to invite the new contact to the account first.</p>
+            </div>
+        </details>
+          
+          
+        <div class="govuk-button-group">
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+              
+            <a class="govuk-link" govuk-link--no-visited-state href="javascript: history.back()">Back</a>
+        </div>
+          
+    </form>
+
+{% endblock main_content %}

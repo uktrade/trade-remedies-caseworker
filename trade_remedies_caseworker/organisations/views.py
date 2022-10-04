@@ -319,26 +319,13 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     next_url_resolver = "organisations:invite_organisation_contacts"
 
 
-class OrganisationInviteContactsView(LoginRequiredMixin, FormView, TradeRemediesAPIClientMixin):
+class OrganisationInviteContactsView(LoginRequiredMixin, FormView, APIClientMixin):
     template_name = "organisations/organisation_invitation_contacts.html"
     form_class = UKOrganisationInviteContactForm
     next_url_resolver = "organisations:invite_organisation_contacts_NEEW_CORRECT_URL"
 
     def get_org_invite_contacts(self):
-        self._client = self.client(self.request.user)
-        org_invite_contacts = self._client.get_organisation_contacts(
-            self.kwargs["organisation_id"], self.kwargs["case_id"], exclude_indirect=True
-        )
-        # extract and return tuples of contacts in a list (from a
-        # list of dictionaries)
-        # removing duplicates
-
-        # return [
-        #     (each["name"])
-        #     for each in org_invite_contacts
-        #     if each["name"] != self.request.user.organisation.get("name")
-        # ]
-        return org_invite_contacts
+        return self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -351,7 +338,7 @@ class OrganisationInviteContactsView(LoginRequiredMixin, FormView, TradeRemedies
         kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
         return kwargs
 
-    # Re-instate the following once you have the list displayed on the form 
+    # Re-instate (and correct!!!) the following once you have the list displayed on the form 
     # def form_valid(self, form):
     #     return redirect(
     #         reverse(
