@@ -323,9 +323,13 @@ class OrganisationInviteContactsView(LoginRequiredMixin, FormView, APIClientMixi
     template_name = "organisations/organisation_invitation_contacts.html"
     form_class = UKOrganisationInviteContactForm
     next_url_resolver = "organisations:invite_organisation_contacts_NEEW_CORRECT_URL"
-
+        
     def get_org_invite_contacts(self):
-        return self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts
+        # list of tuples containing contacts for the organisation
+        contacts_list = (self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts)
+        # sort the tuples in alphabetical name order)
+        contacts_list.sort(key = lambda x: x["name"])
+        return contacts_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

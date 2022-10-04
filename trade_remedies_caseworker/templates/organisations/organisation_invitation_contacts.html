@@ -7,7 +7,8 @@
 {% block noheading %}
 {% endblock noheading %}
 
-{% block page_title %}Which organisation do you want to invite?{% endblock page_title %}
+{% block page_title %}Who do you want to invite?{% endblock page_title %}
+
 
 {% block main_content %}
 
@@ -19,30 +20,43 @@
     <form action="invite-party-check" novalidate method="post" id="invite-party-contacts-choice-form">
 
         <div class="govuk-form-group">
+
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--xl" for="search-reg-org">
+                    Who do you want to invite?
+                </label>
+            </h1>
+
             <fieldset class="govuk-fieldset" aria-describedby="invite-party-contacts-choice-hint">
 
-            <div id="invite-party-contacts-choice-hint" class="govuk-hint">
-                Select all contacts you want to invite.
-            </div>
-
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="org-contacts">
-
-                {% for contact in org_invite_contacts %}
-
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="{{ contact.name }}" name="invite-party-contacts-choice"
-                                type="checkbox" value="{{ contact.name }} - {{ contact.email }}">
-                        <label class="govuk-label govuk-checkboxes__label" for="{{ contact.name }}">
-
-                            {{ contact.name }}&nbsp;-&nbsp;{{ contact.email }}<br>
-
-                        </label>
-
+                {% if org_invite_contacts %}
+                    <div id="invite-party-contacts-choice-hint" class="govuk-hint">
+                        Select all contacts you want to invite.
                     </div>
 
-                {% endfor %}
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="org-contacts">
 
-            </div>
+                        
+                        {% for contact in org_invite_contacts %}
+
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="{{ contact.name }}" name="invite-party-contacts-choice"
+                                        type="checkbox" value="{{ contact.name }} - {{ contact.email }}">
+                                <label class="govuk-label govuk-checkboxes__label" for="{{ contact.name }}">
+
+                                    {{ contact.name }}&nbsp;-&nbsp;{{ contact.email }}<br>
+
+                                </label>
+
+                            </div>
+
+                        {% endfor %}
+                        
+
+                    </div>
+                {% else %}
+                    <p>PLACEHOLDER: No contacts exist for this organisation - would we need a message like this???</p>
+                {% endif %}
 
             </fieldset>
         </div>
