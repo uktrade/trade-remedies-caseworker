@@ -6,34 +6,29 @@
 <head>
     {% block head %}
         <meta charset="utf-8">
-        <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - GOV.UK Trade
+        <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - Trade
             Remedies Service</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-        <meta name="theme-color" content="blue">
-
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-        <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'images/favicon.ico' %}"
-              type="image/x-icon">
-        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/images/apple-touch-icon-180x180.png' %}">
-        <link rel="apple-touch-icon" sizes="167x167" href="{% static 'govuk/images/apple-touch-icon-167x167.png' %}">
-        <link rel="apple-touch-icon" sizes="152x152" href="{% static 'govuk/images/apple-touch-icon-152x152.png' %}">
-        <link rel="apple-touch-icon" href="{% static 'govuk/images/apple-touch-icon.png' %}">
+            <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+            <meta name="theme-color" content="#0b0c0c"> 
+            
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
+            
+              <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/govuk/assets/images/favicon.ico" 
+                    type="image/x-icon">
+              <link rel="mask-icon" href="/govuk/assets/images/govuk-mask-icon.svg" color="#0b0c0c"> 
+              <link rel="apple-touch-icon" sizes="180x180" href="/govuk/assets/images/govuk-apple-touch-icon-180x180.png">
+              <link rel="apple-touch-icon" sizes="167x167" href="/govuk/assets/images/govuk-apple-touch-icon-167x167.png">
+              <link rel="apple-touch-icon" sizes="152x152" href="/govuk/assets/images/govuk-apple-touch-icon-152x152.png">
+              <link rel="apple-touch-icon" href="/govuk/assets/images/govuk-apple-touch-icon.png">
 
         <!--[if !IE 8]><!-->
-        <link href="{% static 'v2/css/govuk/application.css' %}" rel="stylesheet">
+        <link href="{% static 'v2/css/govuk/application.css' %}" media="all" rel="stylesheet" type="text/css" />
 
         <!--<![endif]-->
 
-        <!--[if IE 8]>
-        <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.0.1.min.css' %}" rel="stylesheet">
-        <![endif]-->
+        <link href="/public/css/accessible-autocomplete.min.css" rel="stylesheet" type="text/css" />
 
-        <!--[if lt IE 9]>
-        <script src="/html5-shiv/html5shiv.js"></script>
-        <![endif]-->
-
-        <meta property="og:image" content="&lt;YOUR-DOMAIN&gt;/images/govuk-opengraph-image.png">
     {% endblock %}
 
     {% block extra_css %}
@@ -41,15 +36,10 @@
     {% endblock extra_css %}
 </head>
 
-<body class="govuk-template__body app-body-class js-disabled" data-test="My value" data-other="report:details">
-<script>
-    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-    if (document.body.classList.contains("js-disabled")) {
-        document.body.classList.remove("js-disabled");
-    }
-</script>
-
-<a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+<body class="govuk-template__body caseworker-width cases-nav">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>   
+    
+    <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
 <header class="caseworker-red govuk-header " role="banner" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
@@ -92,7 +82,8 @@
           
           <li class="app-navigation__list-item app-navigation__list-item--dash" >
             <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link" href="/caseworker/dashboard">
-              Dashboard</a>
+              Dashboard
+            </a>
           </li>
           <li class="app-navigation__list-item app-navigation__list-item--cases" >
             <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link" href="/caseworker/cases/cases-all">
