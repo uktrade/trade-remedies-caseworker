@@ -41,4 +41,3 @@ class UKOrganisationInviteContactForm(ValidationForm):
         error_messages={"required": "no_representative_org"},
         choices=[],  # use the choices variable
     )
-

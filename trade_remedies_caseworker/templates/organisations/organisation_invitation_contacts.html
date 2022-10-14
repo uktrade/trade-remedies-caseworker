@@ -1,86 +1,87 @@
-{% extends "v2/govuk/base.html" %}
-{% load text_element %}
+{% extends "v2/govuk/base_with_form.html" %}
+<!-- {    % load text_element %   }
 {% load custom_filters %}
 {% load application_heading %}
-{% load format_date %}
-
-{% block noheading %}
-{% endblock noheading %}
-
-{% block page_title %}Who do you want to invite?{% endblock page_title %}
+{% load format_date %} -->
 
 
-{% block main_content %}
+{% block page_title %}Invite party{% endblock page_title %}
 
- <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
-          
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-    
-    <form action="invite-party-check" novalidate method="post" id="invite-party-contacts-choice-form">
+{% block form_content %}
 
-        <div class="govuk-form-group">
+    <div class="govuk-form-group">
 
-            <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--xl" for="search-reg-org">
-                    Who do you want to invite?
-                </label>
-            </h1>
+        <fieldset class="govuk-fieldset" aria-describedby="invite-party-contacts-choice-hint">
+  
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+            
+                <h1 class="govuk-fieldset__heading">
+                    Which contact do you want to invite?
+                </h1>
+            
+            </legend>
 
-            <fieldset class="govuk-fieldset" aria-describedby="invite-party-contacts-choice-hint">
+            {% if org_invite_contacts %}
+                <div id="invite-party-contacts-choice-hint" class="govuk-hint">
+                    Select all contacts you want to invite.
+                </div>
 
-                {% if org_invite_contacts %}
-                    <div id="invite-party-contacts-choice-hint" class="govuk-hint">
-                        Select all contacts you want to invite.
-                    </div>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="org">
 
-                    <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="org-contacts">
+                    {% for contact in org_invite_contacts %}
 
-                        
-                        {% for contact in org_invite_contacts %}
+                        <!-- 
+                            Each contact is a tuple containing a name (0) and an email (1), 
+                            therefore need to access these using index numbers.
+                        -->
 
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="{{ contact.name }}" name="invite-party-contacts-choice"
-                                        type="checkbox" value="{{ contact.name }} - {{ contact.email }}">
-                                <label class="govuk-label govuk-checkboxes__label" for="{{ contact.name }}">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="{{ contact.0 }}" name="org"
+                                    type="checkbox" value="{{ contact.0 }}">
+                            <label class="govuk-label govuk-checkboxes__label" for="{{ contact.0 }}">
 
-                                    {{ contact.name }}&nbsp;-&nbsp;{{ contact.email }}<br>
+                                {{ contact.0 }}&nbsp;-&nbsp;{{ contact.1 }}<br>
+                                <!-- {{ contact.0 }}<br> -->
 
-                                </label>
+                            </label>
 
-                            </div>
+                        </div>
 
-                        {% endfor %}
-                        
+                    {% endfor %}
 
-                    </div>
-                {% else %}
-                    <p>PLACEHOLDER: No contacts exist for this organisation - would we need a message like this???</p>
-                {% endif %}
 
-            </fieldset>
+
+
+                    <!-- 
+                        REMOVE THE FOLLOWING LINES ONCE YOU HAVE SORTED OUT THE ISSUE WITH YOUR SELECTION 
+                        NOT BEING ACCPETED - USING THE DROP-DOWN LIST (FROM FORM) TO MAKE A SALECTION,
+                        AND WORK ON THE NEXT PAGE (SO THAT IS READY AND LOOKING RIGHT)
+                     -->
+                    {{ form.errors }}
+                    {{ form.non_field_errors }}
+                    <!-- {{ form }} --> 
+
+                    
+                </div>
+
+            {% else %}
+                <p>PLACEHOLDER: No contacts exist for this organisation - would we need a message like this???</p>
+            {% endif %}
+
+        </fieldset>
+    </div>
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+            I want to invite a new contact from this organisation
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>To avoid duplicate accounts, please ask the admin from the organisation to invite the new contact to the account first.</p>
         </div>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-              <span class="govuk-details__summary-text">
-                I want to invite a new contact from this organisation
-              </span>
-            </summary>
-            <div class="govuk-details__text">
-              <p>To avoid duplicate accounts, please ask the admin from the organisation to invite the new contact to the account first.</p>
-            </div>
-        </details>
+    </details>
+        
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Continue" %}
           
-          
-        <div class="govuk-button-group">
-            <button class="govuk-button" data-module="govuk-button">
-                Continue
-            </button>
-              
-            <a class="govuk-link" govuk-link--no-visited-state href="javascript: history.back()">Back</a>
-        </div>
-          
-    </form>
-
-{% endblock main_content %}
+{% endblock form_content %}

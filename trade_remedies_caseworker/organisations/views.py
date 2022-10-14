@@ -1,6 +1,7 @@
 import json
 import logging
 import urllib.parse
+from abc import ABC, abstractmethod
 from django.http import QueryDict
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -269,7 +270,7 @@ class OrganisationFormView(BaseOrganisationTemplateView):
         return HttpResponse(json.dumps({"organisation": organisation}))
 
 
-class BaseOrganisationInviteView(FormView):
+class BaseOrganisationInviteView(LoginRequiredMixin, FormView, APIClientMixin, ABC):
     next_url_resolver = ""
     next_url_kwargs = {}
 
@@ -303,26 +304,70 @@ class BaseOrganisationInviteView(FormView):
 
     def form_valid(self, form):
         self.update_session(self.request, form.cleaned_data)
-        self.next_url_kwargs = {
-            "case_id": self.kwargs["case_id"],
-            "organisation_id": form.cleaned_data.get("organisation_id")
-        }
         return redirect(self.get_next_url(form))
 
+    @abstractmethod
     def get_next_url(self, form=None):
-        return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
+        # This method must be implemented in the subclass
+        pass
 
 
 class OrganisationInviteView(BaseOrganisationInviteView):
     template_name = "organisations/organisation_invitation.html"
     form_class = UKOrganisationInviteForm
-    next_url_resolver = "organisations:invite_organisation_contacts"
+    next_url_resolver = "organisations:invite-party-contacts-choice"
+
+    def get_next_url(self, form=None):
+        self.next_url_kwargs = {
+            "case_id": self.kwargs["case_id"],
+            "organisation_id": form.cleaned_data.get("organisation_id")
+        }
+        return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
 
 
-class OrganisationInviteContactsView(LoginRequiredMixin, FormView, APIClientMixin):
+class OrganisationInviteContactsView(BaseOrganisationInviteView):
     template_name = "organisations/organisation_invitation_contacts.html"
     form_class = UKOrganisationInviteContactForm
-    next_url_resolver = "organisations:invite_organisation_contacts_NEEW_CORRECT_URL"
+    next_url_resolver = "organisations:invite-party-check"
+        
+    def get_org_invite_contacts(self):
+        # list of tuples containing contacts for the organisation
+        contacts_list_full_data = (self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts)
+        
+        # Extract name and email pairs into tuples. These tuples will be in a list.
+        contacts_list = [
+            (each["name"], each["email"])
+            for each in contacts_list_full_data
+        ]
+
+        # As each contact is a tuple containing a name and an email, need to access 
+        # using index number. Sort the tuples in alphabetical (name) order
+        contacts_list.sort(key = lambda x: x[0])
+        return contacts_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        context["org_invite_contacts"] = self.get_org_invite_contacts()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
+        return kwargs
+
+    def get_next_url(self, form=None):
+        self.next_url_kwargs = {
+            "case_id": self.kwargs["case_id"],
+            "organisation_id": self.kwargs["organisation_id"],
+        }
+        return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
+
+
+class OrganisationInviteReviewView(BaseOrganisationInviteView):
+    template_name = "organisations/organisation_invitation_review.html"
+    form_class = UKOrganisationInviteContactForm
+    next_url_resolver = "organisations:invite-party-contacts-choice_NEW_CORRECT_URL"
         
     def get_org_invite_contacts(self):
         # list of tuples containing contacts for the organisation
@@ -342,18 +387,14 @@ class OrganisationInviteContactsView(LoginRequiredMixin, FormView, APIClientMixi
         kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
         return kwargs
 
-    # Re-instate (and correct!!!) the following once you have the list displayed on the form 
-    # def form_valid(self, form):
-    #     return redirect(
-    #         reverse(
-    #             "interest_existing_client_primary_contact",
-    #             kwargs={
-    #                 "submission_id": self.kwargs["submission_id"],
-    #                 "organisation_id": form.cleaned_data.get("org"),
-    #             },
-    #         )
-    #     )
+    def get_next_url(self, form=None):
+        # self.next_url_kwargs = {
+        #     "case_id": self.kwargs["case_id"],
+        #     "organisation_id": self.kwargs["organisation_id"],
+        # }
 
+        # return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
+        return reverse(self.next_url_resolver)
 
 
 class ContactFormView(BaseOrganisationTemplateView):
