@@ -5,7 +5,7 @@
 {% load format_date %} -->
 
 
-{% block page_title %}Invite party{% endblock page_title %}
+{% block page_title %}Invite contact details{% endblock page_title %}
 
 {% block form_content %}
 
@@ -36,20 +36,19 @@
                         -->
 
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="{{ contact.0 }}" name="org"
-                                    type="checkbox" value="{{ contact.0 }}">
+                            <input class="govuk-checkboxes__input" id="{{ contact.0 }}" name="which_contact"
+                                    type="checkbox" value="{{ contact.0 }}"
+                                    {% if contact.0 in selected_contacts %}checked{% endif %}>
                             <label class="govuk-label govuk-checkboxes__label" for="{{ contact.0 }}">
 
-                                {{ contact.0 }}&nbsp;-&nbsp;{{ contact.1 }}<br>
-                                <!-- {{ contact.0 }}<br> -->
+                                <!-- {{ contact.0 }}&nbsp;-&nbsp;{{ contact.1 }}<br> -->
+                                {{ contact.1 }}<br>
 
                             </label>
 
                         </div>
 
                     {% endfor %}
-
-
 
 
                     <!-- 

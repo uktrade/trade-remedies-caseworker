@@ -5,7 +5,7 @@
 {% load format_date %} -->
 
 
-{% block page_title %}Invite contact details{% endblock page_title %}
+{% block page_title %}Check and submit{% endblock page_title %}
 
 {% block form_content %}
 
@@ -25,7 +25,7 @@
             Case
             </dt>
             <dd class="govuk-summary-list__value">
-            AD2224 - Steel plate from Russia
+                {{case.reference}} - {{ case.name }}
             </dd>
         </div>
         </dl>
@@ -36,12 +36,12 @@
             </dt>
             <dd class="govuk-summary-list__value">
             
-                Steel UK
+                {{ organisation.name }}
             
             </dd>
             <dd class="govuk-summary-list__actions">
             
-            <a href="invite-party" class="govuk-link--no-visited-state">
+            <a href="{% url 'organisations:invite-party' case_id=case_id %}" class="govuk-link--no-visited-state">
                 Change
                 <span class="govuk-visually-hidden"> organisation</span>
                 </a>
@@ -57,6 +57,15 @@
             <dd class="govuk-summary-list__value">
             <ul class="govuk-list">
                 
+                {% for contact in selected_contacts %}
+
+                    <li>
+
+                        {{ contact.name }} - {{ contact.email }}
+
+                    </li>
+
+                {% endfor %}
                 
                 
             </ul>
@@ -77,6 +86,8 @@
         
     </div>
 
+    <h2 class="govuk-heading-m">Now send your invite</h2>
+    <p>Submitting this information will send email invites.</p>
         
     {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and send invite" back_button_text="Back" %}
           

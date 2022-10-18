@@ -35,9 +35,13 @@ class UKOrganisationInviteContactForm(ValidationForm):
         org_invite_contacts = kwargs.pop("org_invite_contacts", None)
         super(UKOrganisationInviteContactForm, self).__init__(*args, **kwargs)
         # assign value to the choices variable
-        self.fields["org"].choices = org_invite_contacts
+        self.fields["which_contact"].choices = org_invite_contacts
 
-    org = forms.ChoiceField(
+    which_contact = forms.ChoiceField(
         error_messages={"required": "no_representative_org"},
         choices=[],  # use the choices variable
     )
+
+
+class UKOrganisationInviteContactReviewForm(ValidationForm):
+    pass

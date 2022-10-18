@@ -30,6 +30,7 @@ from core.utils import (
 from organisations.forms import (
     UKOrganisationInviteForm,
     UKOrganisationInviteContactForm,
+    UKOrganisationInviteContactReviewForm,
 )
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
@@ -326,29 +327,44 @@ class OrganisationInviteView(BaseOrganisationInviteView):
 
 
 class OrganisationInviteContactsView(BaseOrganisationInviteView):
-    template_name = "organisations/organisation_invitation_contacts.html"
+    template_name = "organisations/invite_party_contacts_choice.html"
     form_class = UKOrganisationInviteContactForm
     next_url_resolver = "organisations:invite-party-check"
         
     def get_org_invite_contacts(self):
         # list of tuples containing contacts for the organisation
         contacts_list_full_data = (self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts)
+
+        print("££££££ full contacts list: ", contacts_list_full_data)
         
         # Extract name and email pairs into tuples. These tuples will be in a list.
         contacts_list = [
-            (each["name"], each["email"])
+            # (each["name"], each["email"])
+            (each["id"], each["name"], each["email"])
             for each in contacts_list_full_data
         ]
 
+
+        new_contacts_list = []
+        for contact in contacts_list:
+            name_email = (contact[1] + " - " + contact[2],)   # name (1) and email (2)
+            new_tuple = (contact[0],) + name_email   # id (0)
+            new_contacts_list.append(new_tuple)
+
+        print("&&&&&& extracted contacts list: ", new_contacts_list)
+
         # As each contact is a tuple containing a name and an email, need to access 
         # using index number. Sort the tuples in alphabetical (name) order
-        contacts_list.sort(key = lambda x: x[0])
-        return contacts_list
+        new_contacts_list.sort(key = lambda x: x[1])
+        return new_contacts_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
         context["org_invite_contacts"] = self.get_org_invite_contacts()
+        # context["selected_contacts"] = [
+        #     (each["name"], each["email"]) for each in context["???"]["???"]
+        # ]
         return context
 
     def get_form_kwargs(self):
@@ -363,29 +379,42 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
         }
         return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
 
+    def form_valid(self, form):
+        # selected contacts
+        self.request.session["selected_contacts"] = self.request.POST.getlist("which_contact")
+        self.update_session(self.request, form.cleaned_data)
+        return super().form_valid(form)
+
 
 class OrganisationInviteReviewView(BaseOrganisationInviteView):
-    template_name = "organisations/organisation_invitation_review.html"
-    form_class = UKOrganisationInviteContactForm
+    template_name = "organisations/invite_party_check.html"
+    form_class = UKOrganisationInviteContactReviewForm
     next_url_resolver = "organisations:invite-party-contacts-choice_NEW_CORRECT_URL"
         
-    def get_org_invite_contacts(self):
-        # list of tuples containing contacts for the organisation
-        contacts_list = (self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts)
-        # sort the tuples in alphabetical name order)
-        contacts_list.sort(key = lambda x: x["name"])
-        return contacts_list
+    def get_selected_contacts(self):
+        selected_contacts = []
+        for contact_id in self.request.session["selected_contacts"]:
+            contact = self.client.contacts(contact_id)
+            selected_contacts.append(contact)
+        return selected_contacts
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
-        context["org_invite_contacts"] = self.get_org_invite_contacts()
+
+        context["case_id"] = self.kwargs["case_id"]
+        context["organisation_id"] = self.kwargs["organisation_id"]
+        context["case"] = self.client.cases(self.kwargs["case_id"])
+        context["organisation"] = self.client.organisations(self.kwargs["organisation_id"])
+
+        context["selected_contacts"] = self.get_selected_contacts()
+
         return context
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
+    #     return kwargs
 
     def get_next_url(self, form=None):
         # self.next_url_kwargs = {
