@@ -435,7 +435,7 @@ class PartiesView(CaseBaseView):
             if submission := invite.get("submission"):
                 if submission.get("name") == "Invite 3rd party":
                     # It's a 3rd party invite, so use the organisation of the contact of the invite
-                    if invite["contact"]:
+                    if invite.get("contact") and invite.get("organisation") and invite["contact"]["organisation"].get("id"):
                         org_id = invite["contact"]["organisation"]["id"]
                     else:
                         continue
