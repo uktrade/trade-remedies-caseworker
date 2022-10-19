@@ -28,9 +28,10 @@ from core.utils import (
     get,
 )
 from organisations.forms import (
-    UKOrganisationInviteForm,
-    UKOrganisationInviteContactForm,
-    UKOrganisationInviteContactReviewForm,
+    OrganisationInviteForm,
+    OrganisationInviteContactForm,
+    OrganisationInviteContactReviewForm,
+    OrganisationInviteCompleteForm,
 )
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
@@ -315,7 +316,7 @@ class BaseOrganisationInviteView(LoginRequiredMixin, FormView, APIClientMixin, A
 
 class OrganisationInviteView(BaseOrganisationInviteView):
     template_name = "organisations/organisation_invitation.html"
-    form_class = UKOrganisationInviteForm
+    form_class = OrganisationInviteForm
     next_url_resolver = "organisations:invite-party-contacts-choice"
 
     def get_next_url(self, form=None):
@@ -328,45 +329,41 @@ class OrganisationInviteView(BaseOrganisationInviteView):
 
 class OrganisationInviteContactsView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_contacts_choice.html"
-    form_class = UKOrganisationInviteContactForm
+    form_class = OrganisationInviteContactForm
     next_url_resolver = "organisations:invite-party-check"
         
     def get_org_invite_contacts(self):
         # list of tuples containing contacts for the organisation
         contacts_list_full_data = (self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts)
-
-        print("££££££ full contacts list: ", contacts_list_full_data)
         
-        # Extract name and email pairs into tuples. These tuples will be in a list.
+        # Extract id, name, and email into tuples. These tuples will be in a list.
         contacts_list = [
-            # (each["name"], each["email"])
             (each["id"], each["name"], each["email"])
             for each in contacts_list_full_data
         ]
 
-
+        # choices(?) in form is expecting only two fields per tuple, therefore merge 
+        # name and email
         new_contacts_list = []
         for contact in contacts_list:
             name_email = (contact[1] + " - " + contact[2],)   # name (1) and email (2)
             new_tuple = (contact[0],) + name_email   # id (0)
             new_contacts_list.append(new_tuple)
 
-        print("&&&&&& extracted contacts list: ", new_contacts_list)
-
-        # As each contact is a tuple containing a name and an email, need to access 
-        # using index number. Sort the tuples in alphabetical (name) order
+        # As each contact is a tuple containing an id and name + email, need to access 
+        # using index number. Sort the tuples in alphabetical (name + email are index 1) 
+        # order
         new_contacts_list.sort(key = lambda x: x[1])
         return new_contacts_list
 
+    # for use in html template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
         context["org_invite_contacts"] = self.get_org_invite_contacts()
-        # context["selected_contacts"] = [
-        #     (each["name"], each["email"]) for each in context["???"]["???"]
-        # ]
         return context
 
+    # for use in form
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
@@ -388,8 +385,8 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
 
 class OrganisationInviteReviewView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_check.html"
-    form_class = UKOrganisationInviteContactReviewForm
-    next_url_resolver = "organisations:invite-party-contacts-choice_NEW_CORRECT_URL"
+    form_class = OrganisationInviteContactReviewForm
+    next_url_resolver = "organisations:invite-party-complete"
         
     def get_selected_contacts(self):
         selected_contacts = []
@@ -417,13 +414,41 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
     #     return kwargs
 
     def get_next_url(self, form=None):
-        # self.next_url_kwargs = {
-        #     "case_id": self.kwargs["case_id"],
-        #     "organisation_id": self.kwargs["organisation_id"],
-        # }
+        self.next_url_kwargs = {
+            "case_id": self.kwargs["case_id"],
+        }
+        return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
 
-        # return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
-        return reverse(self.next_url_resolver)
+    def create_invitation(self, contact):
+        new_invitation = self.client.invitations({
+                "organisation": self.kwargs["organisation_id"],
+                "case": self.kwargs["case_id"],
+                "contact": contact.id,
+                "invalid": True,
+                "invitation_type": 1,
+            })
+        return new_invitation
+
+    def post(self, request, *args, **kwargs):
+        # create and invitation for each contact and send
+        for contact in self.get_selected_contacts():
+            invitation = self.create_invitation(contact)
+            invitation.send()
+        return redirect(self.get_next_url())
+        
+
+class OrganisationInviteCompleteView(BaseOrganisationInviteView):
+    template_name = "organisations/invite_party_complete.html"
+    form_class = OrganisationInviteCompleteForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        context["case_id"] = self.kwargs["case_id"]
+        return context
+
+    def get_next_url(self, form=None):
+        return f'/case/{self.kwargs["case_id"]}/'
 
 
 class ContactFormView(BaseOrganisationTemplateView):

@@ -1,0 +1,47 @@
+{% extends "v2/govuk/base_with_form.html" %}
+<!-- {    % load text_element %   }
+{% load custom_filters %}
+{% load application_heading %}
+{% load format_date %} -->
+
+
+{% block page_title %}Invite sent - Trade Remedies Service{% endblock page_title %}
+
+{% block form_content %}
+
+
+<h1>NEED to remove the back button from top left of page - comes from one of the extended files...</h1>
+<h1>NEED to remove the back button from top left of page - comes from one of the extended files...</h1>
+<h1>NEED to remove the back button from top left of page - comes from one of the extended files...</h1>
+
+
+    <div class="govuk-form-group">
+
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+              Invite sent
+            </h1>
+          </div>
+      
+          <p>We have sent the invite to:</p>
+          
+            
+          
+    
+    
+          <p>The invite will ask them to register interest in the case.</p>
+          <p>You will be alerted when they have completed their registration of interest.</p>
+
+        
+    </div>
+
+    <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button">
+            Back to case
+        </button>
+        <a class="govuk-link" govuk-link--no-visited-state href="{% url 'organisations:invite-party' case_id=case_id %}" >
+            Invite another party
+        </a>
+    </div>
+          
+{% endblock form_content %}

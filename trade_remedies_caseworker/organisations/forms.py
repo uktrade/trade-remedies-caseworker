@@ -2,7 +2,7 @@ from config.forms import BaseYourEmployerForm, ValidationForm
 from django import forms
 
 
-class UKOrganisationInviteForm(ValidationForm):
+class OrganisationInviteForm(ValidationForm):
     organisation_name = forms.CharField()
     organisation_address = forms.CharField()
     companies_house_id = forms.CharField()
@@ -27,13 +27,13 @@ class UKOrganisationInviteForm(ValidationForm):
             return self.cleaned_data
 
 
-class UKOrganisationInviteContactForm(ValidationForm):
+class OrganisationInviteContactForm(ValidationForm):
     # declare empty choices variable
     choices = []
 
     def __init__(self, *args, **kwargs):
         org_invite_contacts = kwargs.pop("org_invite_contacts", None)
-        super(UKOrganisationInviteContactForm, self).__init__(*args, **kwargs)
+        super(OrganisationInviteContactForm, self).__init__(*args, **kwargs)
         # assign value to the choices variable
         self.fields["which_contact"].choices = org_invite_contacts
 
@@ -43,5 +43,9 @@ class UKOrganisationInviteContactForm(ValidationForm):
     )
 
 
-class UKOrganisationInviteContactReviewForm(ValidationForm):
+class OrganisationInviteContactReviewForm(ValidationForm):
+    pass
+
+
+class OrganisationInviteCompleteForm(ValidationForm):
     pass
