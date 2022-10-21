@@ -13,6 +13,7 @@ from organisations.views import (
     OrganisationDeleteView,
     OrganisationInviteView,
     OrganisationInviteContactsView,
+    OrganisationInviteContactNewView,
     OrganisationInviteReviewView,
     OrganisationInviteCompleteView,
     OrganisationMergeView,
@@ -35,6 +36,12 @@ urlpatterns = [
         "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-contacts-choice",
         OrganisationInviteContactsView.as_view(),
         name="invite-party-contacts-choice",
+    ),
+    path(
+        # "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-contacts-new",
+        "case/invite/invite-party-contacts-new",
+        OrganisationInviteContactNewView.as_view(),
+        name="invite-party-contact-new",
     ),
     path(
         "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-check",

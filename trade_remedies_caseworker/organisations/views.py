@@ -30,6 +30,7 @@ from core.utils import (
 from organisations.forms import (
     OrganisationInviteForm,
     OrganisationInviteContactForm,
+    OrganisationInviteContactNewForm,
     OrganisationInviteContactReviewForm,
     OrganisationInviteCompleteForm,
 )
@@ -383,6 +384,15 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
         return super().form_valid(form)
 
 
+class OrganisationInviteContactNewView(BaseOrganisationInviteView):
+    template_name = "organisations/invite_party_contact_new.html"
+    form_class = OrganisationInviteContactNewForm
+    # next_url_resolver = "organisations:invite-party-check"
+
+    def get_next_url(self, form=None):
+        pass
+
+
 class OrganisationInviteReviewView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_check.html"
     form_class = OrganisationInviteContactReviewForm
@@ -425,7 +435,7 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                 "case": self.kwargs["case_id"],
                 "contact": contact.id,
                 "invalid": True,
-                "invitation_type": 1,
+                "invitation_type": 3,
             })
         return new_invitation
 

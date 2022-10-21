@@ -42,6 +42,20 @@ class OrganisationInviteContactForm(ValidationForm):
         choices=[],  # use the choices variable
     )
 
+class OrganisationInviteContactNewForm(ValidationForm):
+    organisation_name = forms.CharField(
+        error_messages={"required": "invite_new_representative_no_organisation_name"}
+    )
+    contact_name = forms.CharField(
+        error_messages={"required": "invite_new_representative_no_contact_name"}
+    )
+    contact_email = forms.EmailField(
+        error_messages={
+            "required": "invite_new_representative_no_contact_email",
+            "invalid": "invite_new_representative_invalid_email",
+        }
+    )
+
 
 class OrganisationInviteContactReviewForm(ValidationForm):
     pass
