@@ -320,6 +320,18 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     form_class = OrganisationInviteForm
     next_url_resolver = "organisations:invite-party-contacts-choice"
 
+    # for use in html template
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        context["case_id"] = self.kwargs["case_id"]
+        return context
+
+    # # for use in form
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     return kwargs
+
     def get_next_url(self, form=None):
         self.next_url_kwargs = {
             "case_id": self.kwargs["case_id"],
@@ -380,17 +392,50 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
     def form_valid(self, form):
         # selected contacts
         self.request.session["selected_contacts"] = self.request.POST.getlist("which_contact")
-        self.update_session(self.request, form.cleaned_data)
         return super().form_valid(form)
 
 
 class OrganisationInviteContactNewView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_contact_new.html"
     form_class = OrganisationInviteContactNewForm
-    # next_url_resolver = "organisations:invite-party-check"
+    next_url_resolver = "organisations:invite-party-check"
+
+    # # for use in html template
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context.update(self.request.GET)
+    #     context["case_id"] = self.kwargs["case_id"]
+    #     return context
+
+    # # for use in form
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     return kwargs
 
     def get_next_url(self, form=None):
-        pass
+        self.next_url_kwargs = {
+            "case_id": self.kwargs["case_id"],
+            "organisation_id": self.kwargs["organisation_id"],
+        }
+        return reverse(self.next_url_resolver, kwargs=self.next_url_kwargs)
+
+    def form_valid(self, form):
+        # Create new organisation
+        organisation = self.client.organisations(
+            {"name": form.cleaned_data["organisation_name"]}, fields=["id"]
+        )
+
+        self.kwargs["organisation_id"] = organisation["id"]
+        # Create new contact and associate with (new) organisation
+        contact = self.client.contacts(
+            {
+                "name": form.cleaned_data["contact_name"],
+                "email": form.cleaned_data["contact_email"],
+                "organisation": organisation["id"],
+            }
+        )
+        self.request.session["selected_contacts"] = [self.client.contacts(contact["id"]).id]
+        return super().form_valid(form)
 
 
 class OrganisationInviteReviewView(BaseOrganisationInviteView):

@@ -1,20 +1,20 @@
 {% extends "v2/govuk/base_with_form.html" %}
+{% load static %}
 <!-- {    % load text_element %   }
 {% load custom_filters %}
 {% load application_heading %}
 {% load format_date %} -->
 
+{% block back_button %}
+    <!-- Remove 'back' link from top right (below nav bar) -->
+    <script type="text/javascript">
+        document.getElementsByClassName("govuk-back-link").outerHTML = "";
+    </script>
+{% endblock %}
 
 {% block page_title %}Invite sent - Trade Remedies Service{% endblock page_title %}
 
 {% block form_content %}
-
-
-<h1>NEED to remove the back button from top left of page - comes from one of the extended files...</h1>
-<h1>NEED to remove the back button from top left of page - comes from one of the extended files...</h1>
-<h1>NEED to remove the back button from top left of page - comes from one of the extended files...</h1>
-
-
     <div class="govuk-form-group">
 
         <div class="govuk-panel govuk-panel--confirmation">

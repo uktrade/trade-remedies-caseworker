@@ -38,20 +38,17 @@ urlpatterns = [
         name="invite-party-contacts-choice",
     ),
     path(
-        # "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-contacts-new",
-        "case/invite/invite-party-contacts-new",
+        "case/<uuid:case_id>/invite/invite-party-contact-new",
         OrganisationInviteContactNewView.as_view(),
         name="invite-party-contact-new",
     ),
     path(
         "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-check",
-        # "case/invite/invite-party-check",
         OrganisationInviteReviewView.as_view(),
         name="invite-party-check",
     ),
     path(
         "case/<uuid:case_id>/invite/invite-party-complete",
-        # "case/invite/invite-party-check",
         OrganisationInviteCompleteView.as_view(),
         name="invite-party-complete",
     ),
