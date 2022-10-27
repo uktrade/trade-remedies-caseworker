@@ -41,7 +41,11 @@
             </dd>
             <dd class="govuk-summary-list__actions">
             
-            <a href="{% url 'organisations:invite-party' case_id=case_id %}" class="govuk-link--no-visited-state">
+            {% if new_contact %}
+                <a href="{% url 'organisations:invite-party-contact-new' case_id=case_id %}" class="govuk-link--no-visited-state">
+            {% else %}
+                <a href="{% url 'organisations:invite-party' case_id=case_id %}" class="govuk-link--no-visited-state">
+            {% endif %}
                 Change
                 <span class="govuk-visually-hidden"> organisation</span>
                 </a>
@@ -72,7 +76,12 @@
             </dd>
             <dd class="govuk-summary-list__actions">
             
-            <a href="invite-party-contacts-choice" class="govuk-link--no-visited-state">
+            {% if new_contact %}
+                <a href="{% url 'organisations:invite-party-contact-new' case_id=case_id %}" class="govuk-link--no-visited-state">
+            {% else %}
+                <a href="invite-party-contacts-choice" class="govuk-link--no-visited-state">
+            {% endif %}
+            
                 Change
                 <span class="govuk-visually-hidden"> contact</span>
                 </a>

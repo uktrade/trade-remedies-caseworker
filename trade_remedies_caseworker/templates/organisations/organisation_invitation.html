@@ -78,6 +78,10 @@
                     .attr("value", null)
                     .appendTo($(this));
                 $("<input />").attr("type", "hidden")
+                    .attr("name", "organisation_post_code")
+                    .attr("value", null)
+                    .appendTo($(this));
+                $("<input />").attr("type", "hidden")
                     .attr("name", "companies_house_id")
                     .attr("value", null)
                     .appendTo($(this));
@@ -149,6 +153,10 @@
                                 .attr("value", company_data.address)
                                 .appendTo($(this));
                             $("<input />").attr("type", "hidden")
+                                .attr("name", "organisation_post_code")
+                                .attr("value", company_data.post_code)
+                                .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
                                 .attr("name", "companies_house_id")
                                 .attr("value", company_data.companies_house_id)
                                 .appendTo($(this));
@@ -158,7 +166,9 @@
                                 .appendTo($(this));
                         });
                         $('#selected_company_wrapper').show();
-                        $('#selected_company').text(`${company_data.name} (${company_data.companies_house_id}) ${company_data.address}`)
+                        // selected text shown below search box
+                        $('#selected_company').text(`${company_data.name} (${company_data.companies_house_id}) ${company_data.address} ${company_data.post_code}`)
+                        // $('#selected_company').text(`${company_data.name} (${company_data.companies_house_id})`)
                         return true
                     }
                     $('#selected_company_wrapper').hide();
