@@ -147,6 +147,8 @@
                 </ul>
                 <select class="form-control pull-left" name="export_country_code">
                     <option value="">Please select ...</option>
+                    <option value="ALL">All Countries</option>
+                    <option value="">--------------------</option>
                     {% for country_code, country_name in country_dict.items %}
                         <option
                             value="{{country_code}}"
