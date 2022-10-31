@@ -126,7 +126,7 @@
             <div class="export-source form-group {% form_group_error 'export_country_code' errors %}">
                 <label class="form-label" for="export_country">
                     Source of exports
-                    <spa class="form-hint">Not needed for safeguarding and safeguarding reviews</span>
+                    <span class="form-hint">Select ‘All countries’ for safeguarding and related types of review</span>
                 </label>
                 {% form_error 'export_country_code' errors %}
                 <ul>
@@ -147,7 +147,7 @@
                 </ul>
                 <select class="form-control pull-left" name="export_country_code">
                     <option value="">Please select ...</option>
-                    <option value="ALL">All Countries</option>
+                    <option value="ALL">All countries</option>
                     <option value="">--------------------</option>
                     {% for country_code, country_name in country_dict.items %}
                         <option
