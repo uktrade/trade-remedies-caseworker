@@ -14,8 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import include, path
-from core import views as core_views
+
+from cases.v2_views import organisation_verification_process
 from cases.views import CasesView
+from core import views as core_views
 from login import views as login_views
 from password import views as password_views
 
@@ -45,7 +47,8 @@ urlpatterns = [
     path("case/", include("cases.urls")),
     path("cases/", include("cases.urls")),
     path(
-        "organisationname/search/", core_views.OrganisationNameSearch.as_view(), name="organisationnamesearch"
+        "organisationname/search/", core_views.OrganisationNameSearch.as_view(),
+        name="organisationnamesearch"
     ),
     path("settings/", include("core.urls")),
     path("documents/", include("documents.urls")),
@@ -54,4 +57,10 @@ urlpatterns = [
     path("organisation/", include("organisations.urls")),
     path("companieshouse/search/", core_views.CompaniesHouseSearch.as_view()),
     path("tasks/", include("tasks.urls")),
+]
+
+urlpatterns += [
+    path("verify_organisation_start/<uuid:organisation_id>/<uuid:case_id>/",
+         organisation_verification_process.OrganisationVerificationProcessView.as_view(),
+         name="verify_organisation_task_list")
 ]

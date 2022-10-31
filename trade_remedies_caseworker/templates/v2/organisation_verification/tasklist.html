@@ -1,0 +1,12 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Verify parties on case{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Representative invite</h1>
+        <p class="govuk-body">Approval of this invite will allow the representative to act on behalf of the interested party.</p>
+        <p class="govuk-body govuk-!-margin-bottom-7">Information is automatically saved so you can leave this page before finalising your decision and return later.</p>
+        {% include "v2/partials/tasklist/task_list_steps.html" with steps=steps %}
+    </div>
+{% endblock row_content %}

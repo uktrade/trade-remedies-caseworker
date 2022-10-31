@@ -17,12 +17,7 @@
     </form>
     {% if party.role.key != 'rejected' %}
         {% if party.role.key == 'awaiting_approval' or not organisation.validated_at %}
-            <button type="button" class="button compact button-blue modal-form" data-url="/case/{{case.id}}/organisation/{{party.id}}/verify_caserole_tasks/">
-                <i class="icon icon-amber-warning pull-left">
-                    <span class="visually-hidden">Alert</span>
-                </i>
-                Verification process
-            </button>
+            <a href="{% url 'verify_organisation_task_list' organisation_id=party.id case_id=case_id %}" class="button compact button-blue">Verification process</a>
         {% endif %}
     {% endif %}
 </div>
