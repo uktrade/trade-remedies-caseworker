@@ -1,19 +1,20 @@
-import os
 import json
+import os
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView, View
-from django.shortcuts import render, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
-from core.constants import (
-    SECURITY_GROUP_TRA_ADMINISTRATOR,
-    SECURITY_GROUPS_TRA,
-    SECURITY_GROUPS_TRA_ADMINS,
-)
-from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
+
+from core.base import GroupRequiredMixin
+from core.constants import (
+    SECURITY_GROUPS_TRA,
+    SECURITY_GROUPS_TRA_ADMINS,
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
+)
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -133,7 +134,6 @@ class FeedbackFormExportView(
 
 
 class ViewFeatureFlags(LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin):
-
     groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "v2/feature_flags/list.html"
 
@@ -163,3 +163,23 @@ class EditUserGroup(LoginRequiredMixin, GroupRequiredMixin, View, APIClientMixin
             self.client.users(request.POST["user_to_change"]).add_group(group_name)
 
         return redirect(reverse("view_feature_one_flag", kwargs={"feature_flag_name": group_name}))
+
+
+class FeedbackListView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    template_name = "v2/feedback/list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feedbacks"] = self.client.feedback()
+        return context
+
+
+class SingleFeedbackView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, APIClientMixin):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+    template_name = "v2/feedback/single.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feedback"] = self.client.feedback(kwargs["feedback_id"])
+        return context

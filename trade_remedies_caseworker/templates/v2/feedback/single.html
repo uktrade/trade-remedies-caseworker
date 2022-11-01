@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load format_date %}
+{% load static %}
+
+{% block heading %}
+    Feedback
+{% endblock %}
+
+{% block main_content %}
+    <style>
+        dt {
+            color: black !important;
+        }
+    </style>
+    <div class="grid-row">
+        <div class="colum-full-nav">
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Date submitted
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% format_date feedback.created_at '%d %b %Y - %H:%M' %}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        User logged in
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ feedback.logged_in|yesno }}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        URL
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ feedback.url }}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Journey
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">{{ feedback.journey }}</p>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Rating
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">{{ feedback.verbose_rating_name }}</p>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        What didn't work so well
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <ul>
+                            {% for issue in feedback.verbose_what_didnt_go_so_well %}
+                                <li>{{ issue }}</li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                </div>
+                {% if feedback.what_didnt_work_so_well_other %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Other issue
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">{{ feedback.what_didnt_work_so_well_other }}</p>
+                        </dd>
+                    </div>
+                {% endif %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        How could we improve this service
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">{{ feedback.how_could_we_improve_service|default_if_none:'' }}</p>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+{% endblock main_content %}
