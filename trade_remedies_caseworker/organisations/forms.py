@@ -1,4 +1,4 @@
-from config.forms import BaseYourEmployerForm, ValidationForm
+from config.forms import ValidationForm
 from django import forms
 
 
@@ -47,11 +47,9 @@ class OrganisationInviteContactNewForm(ValidationForm):
     organisation_name = forms.CharField(
         error_messages={"required": "invite_new_representative_no_organisation_name"}
     )
-    contact_name = forms.CharField(
-        error_messages={"required": "no_contact_name_entered"}
-    )
+    contact_name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
     contact_email = forms.EmailField(
-       error_messages={
+        error_messages={
             "required": "no_contact_email_entered",
             "invalid": "contact_email_not_valid",
         }

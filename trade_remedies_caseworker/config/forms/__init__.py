@@ -5,6 +5,14 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 
 class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
+    def __init__(self, *args, **kwargs):
+        exclude_fields = kwargs.pop("exclude_fields", [])
+        super().__init__(*args, **kwargs)
+        for field in exclude_fields:
+            if field in self.fields:
+                del self.fields[field]
+        self.field_errors = defaultdict(list)
+
     def assign_errors_to_request(self, request):
         if not self.errors:
             return
@@ -37,6 +45,11 @@ class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
                     # The key cannot be found, treat it as a normal validation error
                     for error_message in error.messages:
                         request.session["form_errors"][field].append(error_message)
+
+    def render(self):
+        for name, field in self.fields.items():
+            bf = self[name]
+            bf_errors = self.error_class(bf.errors)
 
 
 class BaseYourEmployerForm(ValidationForm):

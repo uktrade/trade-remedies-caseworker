@@ -1,29 +1,31 @@
 from django.urls import path
+
+from organisations.v2.views import EditOrganisationView
 from organisations.views import (
-    OrganisationView,
-    OrganisationsView,
-    OrganisationFormView,
-    ContactFormView,
     ContactDeleteView,
+    ContactFormView,
     ContactPrimaryView,
-    ToggleOrganisationSampledView,
-    ToggleOrganisationNonResponsiveView,
     OrganisationCaseRoleView,
     OrganisationDedupeView,
     OrganisationDeleteView,
-    OrganisationInviteView,
-    OrganisationInviteContactsView,
-    OrganisationInviteContactNewView,
-    OrganisationInviteReviewView,
-    OrganisationInviteCompleteView,
-    OrganisationMergeView,
-    OrganisationMatchView,
     OrganisationDuplicatesView,
-    ToggleUserAdmin,
+    OrganisationFormView,
+    OrganisationInviteCompleteView,
+    OrganisationInviteContactNewView,
+    OrganisationInviteContactsView,
+    OrganisationInviteReviewView,
+    OrganisationInviteView,
+    OrganisationMatchView,
+    OrganisationMergeView,
     OrganisationRemoveView,
+    OrganisationView,
+    OrganisationsView,
+    ToggleOrganisationNonResponsiveView,
+    ToggleOrganisationSampledView,
+    ToggleUserAdmin,
 )
 
-app_name = 'organisations'
+app_name = "organisations"
 urlpatterns = [
     path("", OrganisationsView.as_view(), name="organisations"),
     path("<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"),
@@ -122,7 +124,9 @@ urlpatterns = [
         OrganisationCaseRoleView.as_view(),
     ),
     path(
-        "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>/set/primary/",  # noqa: E501
+        "case/<uuid:case_id>/organisation/<uuid:organisation_id>/contact/<uuid:contact_id>"
+        "/set/primary/",
+        # noqa: E501
         ContactPrimaryView.as_view(),
         name="set_primary_contact",
     ),
@@ -138,4 +142,12 @@ urlpatterns = [
     ),
     path("dedupe/", OrganisationDedupeView.as_view(), name="dedupe"),
     path("match/", OrganisationMatchView.as_view(), name="match"),
+]
+
+urlpatterns += [
+    path(
+        "v2/edit/<uuid:organisation_id>/",
+        EditOrganisationView.as_view(),
+        name="v2_edit_organisation",
+    ),
 ]

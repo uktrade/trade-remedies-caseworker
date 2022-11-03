@@ -15,7 +15,6 @@ from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
-from core.constants import SECURITY_GROUP_SUPER_USER
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -57,7 +56,7 @@ class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
     def get(self, request, *args, **kwargs):
         query = request.GET.get("term")
         results = self.client.organisations.get_organisations_by_company_name(query)
-        organisations = {"organisations" : [each.data_dict for each in results]}
+        organisations = {"organisations": [each.data_dict for each in results]}
         return HttpResponse(json.dumps(organisations), content_type="application/json")
 
 

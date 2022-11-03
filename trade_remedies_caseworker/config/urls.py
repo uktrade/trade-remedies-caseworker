@@ -47,8 +47,9 @@ urlpatterns = [
     path("case/", include("cases.urls")),
     path("cases/", include("cases.urls")),
     path(
-        "organisationname/search/", core_views.OrganisationNameSearch.as_view(),
-        name="organisationnamesearch"
+        "organisationname/search/",
+        core_views.OrganisationNameSearch.as_view(),
+        name="organisationnamesearch",
     ),
     path("settings/", include("core.urls")),
     path("documents/", include("documents.urls")),
@@ -60,7 +61,19 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path("verify_organisation_start/<uuid:organisation_id>/<uuid:case_id>/",
-         organisation_verification_process.OrganisationVerificationProcessView.as_view(),
-         name="verify_organisation_task_list")
+    path(
+        "verify_organisation_start/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationTaskListView.as_view(),
+        name="verify_organisation_task_list",
+    ),
+    path(
+        "verify_organisation_verify_representative/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationVerifyRepresentative.as_view(),
+        name="verify_organisation_verify_representative",
+    ),
+    path(
+        "verify_organisation_verify_letter_of_authority/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationVerifyLetterOfAuthority.as_view(),
+        name="verify_organisation_verify_letter_of_authority",
+    ),
 ]

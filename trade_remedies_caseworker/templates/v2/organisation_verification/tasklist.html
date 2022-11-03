@@ -4,9 +4,35 @@
 
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">{{ invitation.case.reference }}: {{ invitation.case.name }}</span>
         <h1 class="govuk-heading-xl">Representative invite</h1>
-        <p class="govuk-body">Approval of this invite will allow the representative to act on behalf of the interested party.</p>
-        <p class="govuk-body govuk-!-margin-bottom-7">Information is automatically saved so you can leave this page before finalising your decision and return later.</p>
+        <p class="govuk-body">Approval of this invite will allow the representative to act on behalf of the interested
+            party.</p>
+        <p class="govuk-body govuk-!-margin-bottom-7">Information is automatically saved so you can leave this page
+            before finalising your decision and return later.</p>
         {% include "v2/partials/tasklist/task_list_steps.html" with steps=steps %}
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">Party details</h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <strong>Interested party</strong><br>
+                        <a href="/caseworker/orgs/org-steeluk" class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
+                        <a href="" class="govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
+                    </li>
+                    <li>
+                        <strong>Representative </strong><br>
+                        <a href="/caseworker/orgs/org-bluesteel" class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
+                        <a href="" class="govuk-link--no-visited-state">{{ invitation.contact.name }}</a>
+                    </li>
+                    <li>
+                        <strong>Submitted by</strong><br>
+                        <a href="" class="govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
     </div>
 {% endblock row_content %}
