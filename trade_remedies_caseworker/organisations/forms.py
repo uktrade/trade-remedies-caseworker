@@ -19,10 +19,10 @@ class OrganisationInviteForm(ValidationForm):
             and not self.cleaned_data.get("companies_house_id")
             and not self.cleaned_data.get("organisation_id")
         ):
-            self.add_error("company_search_container", "companies_house_not_selected")
+            self.add_error("company_search_container", "organisation_not_selected")
         # Nothing has been entered by the user
         elif not self.data.get("input-autocomplete"):
-            self.add_error("company_search_container", "companies_house_not_searched")
+            self.add_error("company_search_container", "organisation_not_searched")
         else:
             return self.cleaned_data
 
@@ -38,22 +38,22 @@ class OrganisationInviteContactForm(ValidationForm):
         self.fields["which_contact"].choices = org_invite_contacts
 
     which_contact = forms.ChoiceField(
-        error_messages={"required": "no_representative_org"},
+        error_messages={"required": "no_contact_selected"},
         choices=[],  # use the choices variable
     )
 
 
 class OrganisationInviteContactNewForm(ValidationForm):
     organisation_name = forms.CharField(
-        error_messages={"required": "invite_new_representative_no_organisation_name"}
+        error_messages={"required": "invite_contact_no_organisation_name"}
     )
     contact_name = forms.CharField(
-        error_messages={"required": "no_contact_name_entered"}
+        error_messages={"required": "invite_contact_no_name"}
     )
     contact_email = forms.EmailField(
        error_messages={
-            "required": "no_contact_email_entered",
-            "invalid": "contact_email_not_valid",
+            "required": "invite_contact_no_email",
+            "invalid": "invite_contact_invalid_email",
         }
     )
 

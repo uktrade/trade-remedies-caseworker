@@ -1,8 +1,4 @@
 {% extends "v2/govuk/base_with_form.html" %}
-<!-- {    % load text_element %   }
-{% load custom_filters %}
-{% load application_heading %}
-{% load format_date %} -->
 
 
 {% block page_title %}Invite contact details{% endblock page_title %}
@@ -49,17 +45,6 @@
                         </div>
 
                     {% endfor %}
-
-
-                    <!-- 
-                        REMOVE THE FOLLOWING LINES ONCE YOU HAVE SORTED OUT THE ISSUE WITH YOUR SELECTION 
-                        NOT BEING ACCPETED - USING THE DROP-DOWN LIST (FROM FORM) TO MAKE A SALECTION,
-                        AND WORK ON THE NEXT PAGE (SO THAT IS READY AND LOOKING RIGHT)
-                     -->
-                    {{ form.errors }}
-                    {{ form.non_field_errors }}
-                    <!-- {{ form }} --> 
-
                     
                 </div>
 

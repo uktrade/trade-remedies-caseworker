@@ -1,9 +1,4 @@
 {% extends "v2/govuk/base_with_form.html" %}
-<!-- {    % load text_element %   }
-{% load custom_filters %}
-{% load application_heading %}
-{% load format_date %} -->
-
 
 {% block page_title %}Invite contact details{% endblock page_title %}
 
@@ -15,7 +10,13 @@
         <label class="govuk-label govuk-label--s" for="organisation_name">
         Organisation name
         </label>
-        <input class="govuk-input govuk-input--width-20" id="organisation_name" name="organisation_name" type="text">
+        
+        {% if selected_organisation %}
+            <input class="govuk-input govuk-input--width-20" id="organisation_name" value="{{ selected_organisation }}"
+            name="organisation_name" type="text">
+        {% else %}
+            <input class="govuk-input govuk-input--width-20" id="organisation_name" name="organisation_name" type="text">
+        {% endif %}
     </div>
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -27,13 +28,23 @@
             <label class="govuk-label" for="contact_name">
             Contact name
             </label>
-            <input class="govuk-input govuk-input--width-20" id="contact_name" name="contact_name" type="text" autocomplete="name">
+            {% if selected_contact_name %}
+                <input class="govuk-input govuk-input--width-20" id="contact_name" value="{{ selected_contact_name }}"
+                name="contact_name" type="text" autocomplete="name">
+            {% else %}
+                <input class="govuk-input govuk-input--width-20" id="contact_name" name="contact_name" type="text" autocomplete="name">
+            {% endif %}
         </div>
         <div class="govuk-form-group">
             <label class="govuk-label" for="contact_email">
             Contact email address
             </label>
-            <input class="govuk-input govuk-input--width-20" id="contact_email" name="contact_email" type="email" autocomplete="email">
+            {% if selected_contact_email %}
+                <input class="govuk-input govuk-input--width-20" id="contact_email" value="{{ selected_contact_email }}" 
+                name="contact_email" type="email" autocomplete="email">
+            {% else %}
+                <input class="govuk-input govuk-input--width-20" id="contact_email" name="contact_email" type="email" autocomplete="email">
+            {% endif %}
         </div>
     </fieldset>
         
