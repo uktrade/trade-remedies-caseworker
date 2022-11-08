@@ -25,7 +25,7 @@
                 <h3 class="govuk-heading-m"><a href="../orgs/org-bluesteel"
                                                class="govuk-link--no-visited-state">{{ invited_organisation.name }}</a>
                     <p class="right-aligned-link govuk-heading-s">
-                        <a href="{% url 'organisations:v2_edit_organisation' organisation_id=invited_organisation.id %}"
+                        <a href="{% url 'organisations:v2_edit_organisation' organisation_id=invited_organisation.id %}?redirect={{ request.path }}"
                            class="govuk-link--no-visited-state">Edit</a>
                     </p>
                 </h3>
@@ -83,28 +83,28 @@
                 </dl>
                 <br>
                 <div>
-                    {% if user_cases|length > 0 %}
+                    {% if invited_organisation_case_roles|length > 0 %}
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                Cases: {{ user_cases|length }}
+                                Cases: {{ invited_organisation_case_roles|length }}
                             </span>
                             </summary>
                             <div class="govuk-details__text">
                                 <ul class="govuk-list">
-                                    {% for user_case in user_cases %}
+                                    {% for org_case_role in invited_organisation_case_roles %}
                                         <li>
                                             <a href=""
-                                               class="govuk-link--no-visited-state">{{ user_case.organisation_case_role.case.reference }}
-                                                - {{ user_case.organisation_case_role.case.name }}</a>
-                                            ({{ user_case.organisation_case_role.role_name }})
-                                            {% if user_case.organisation_case_role.validated_at %}
+                                               class="govuk-link--no-visited-state">{{ org_case_role.case.reference }}
+                                                - {{ org_case_role.case.name }}</a>
+                                            ({{ org_case_role.role_name }})
+                                            {% if org_case_role.validated_at %}
                                                 <img src="{% static 'v2/assets/images/checkmark.png' %}"
                                                      class="verified-check"
                                                      alt="Verified on case"
                                                      title="Verified on case"
                                                      width="32px">
-                                                <span class="govuk-body-s">{{ user_case.organisation_case_role.validated_at|date:'d M y' }}</span>
+                                                <span class="govuk-body-s">{{ org_case_role.validated_at|date:'d M y' }}</span>
                                             {% endif %}
                                         </li>
                                     {% endfor %}
@@ -116,25 +116,26 @@
                     {% endif %}
                 </div>
                 <div>
-                    {% if cases_acting_as_rep|length > 0 %}
+                    {% if invited_organisation.representative_cases|length > 0 %}
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                Cases acting as a representative: {{ cases_acting_as_rep|length }}
+                                Cases acting as a representative: {{ invited_organisation.representative_cases|length }}
                             </span>
                             </summary>
                             <div class="govuk-details__text">
                                 <ul class="govuk-list">
-                                    {% for user_case in cases_acting_as_rep %}
+                                    {% for representation in invited_organisation.representative_cases %}
                                         <li>
-                                            <a href=""
-                                               class="govuk-link--no-visited-state">{{ user_case.organisation_case_role.case.reference }}
-                                                - {{ user_case.organisation_case_role.case.name }}</a>
-                                            {% if user_case.organisation_case_role.validated_at %}
+                                            <a href="{% url 'cases:view_case' case_id=representation.case.id %}"
+                                               class="govuk-link--no-visited-state">{{ representation.case.reference }}
+                                                - {{ representation.case.name }}</a>
+                                            ({{ representation.role }})
+                                            {% if representation.validated %}
                                                 <img src="{% static 'v2/assets/images/verified-tick.png' %}"
                                                      class="verified-check" alt="Verified on case"
                                                      title="Verified on case" width="32px">
-                                                <span class="govuk-body-s">{{ user_case.organisation_case_role.validated_at|date:'d M y' }}</span>
+                                                <span class="govuk-body-s">{{ representation.validated_at|date:'d M y' }}</span>
                                             {% endif %}
                                         </li>
                                     {% endfor %}
@@ -142,7 +143,7 @@
                             </div>
                         </details>
                     {% else %}
-                        <p>Cases acting as a representative: {{ cases_acting_as_rep|length }}</p>
+                        <p>Cases acting as a representative: {{ invited_org.representative_cases|length }}</p>
                     {% endif %}
                 </div>
                 <div>

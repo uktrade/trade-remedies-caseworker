@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.shortcuts import redirect
@@ -34,7 +35,8 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                         ),
                         "link_text": "Representative",
                         "status": "Complete"
-                        if self.invitation.submission.deficiency_notice_params and "contact_org_verify"
+                        if self.invitation.submission.deficiency_notice_params
+                        and "contact_org_verify"
                         in self.invitation.submission.deficiency_notice_params
                         else "Not Started",
                         "ready_to_do": True,
@@ -77,10 +79,14 @@ class OrganisationVerificationVerifyRepresentative(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         org_case_role_client = self.client.organisation_case_roles
+        invited_organisation = self.client.organisations(self.invitation.contact.organisation)
+        context["invited_organisation"] = invited_organisation
+        context["inviter_organisation"] = self.client.organisations(self.invitation.organisation)
+
         organisation_case_roles = org_case_role_client._get_many(
             org_case_role_client.url(
                 org_case_role_client.get_base_endpoint(),
-                params={"organisation_id": self.invitation.contact.organisation},
+                params={"organisation_id": invited_organisation.id},
             )
         )
         approved_roles = [each for each in organisation_case_roles if each.validated_at]
@@ -89,9 +95,6 @@ class OrganisationVerificationVerifyRepresentative(
         context["last_approval"] = (
             sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
         )
-
-        invited_organisation = self.client.organisations(self.invitation.contact.organisation)
-        context["invited_organisation"] = invited_organisation
 
         seen_org_case_combos = []
         no_duplicate_user_cases = []
@@ -106,25 +109,44 @@ class OrganisationVerificationVerifyRepresentative(
             for each in invited_organisation.case_contacts
             if each.organisation != invited_organisation.id
         ]
-        context["inviter_organisation"] = self.client.organisations(self.invitation.organisation)
 
         return context
 
     def form_valid(self, form):
         if form.cleaned_data["been_able_to_verify_representative"] == "yes":
             self.client.submissions(self.invitation.submission.id).update(
-                {"deficiency_notice_params": json.dumps({"contact_org_verify": True})}
+                {
+                    "deficiency_notice_params": json.dumps(
+                        {
+                            "contact_org_verify": True,
+                            "contact_org_verify_at": datetime.datetime.now().isoformat(),
+                        }
+                    )
+                }
+            )
+            return redirect(
+                reverse(
+                    "verify_organisation_task_list",
+                    kwargs={"invitation_id": self.invitation.id},
+                )
             )
         else:
             self.client.submissions(self.invitation.submission.id).update(
-                {"deficiency_notice_params": json.dumps({"contact_org_verify": False})}
+                {
+                    "deficiency_notice_params": json.dumps(
+                        {
+                            "contact_org_verify": False,
+                            "contact_org_verify_at": datetime.datetime.now().isoformat(),
+                        }
+                    )
+                }
             )
-        return redirect(
-            reverse(
-                "verify_organisation_verify_explain_org_not_verified",
-                kwargs={"invitation_id": self.invitation.id},
+            return redirect(
+                reverse(
+                    "verify_organisation_verify_explain_org_not_verified",
+                    kwargs={"invitation_id": self.invitation.id},
+                )
             )
-        )
 
 
 class OrganisationVerificationVerifyLetterOfAuthority(BaseCaseWorkerTemplateView):
