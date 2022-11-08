@@ -74,7 +74,7 @@ class SystemParameterSettings(
             "settings/system_parameters.html",
             {
                 "body_classes": "full-width",
-                "system_parameters": system_parameters,
+                "system_parameters": system_parameters
             },
         )
 
