@@ -72,10 +72,7 @@ class SystemParameterSettings(
         return render(
             request,
             "settings/system_parameters.html",
-            {
-                "body_classes": "full-width",
-                "system_parameters": system_parameters
-            },
+            {"body_classes": "full-width", "system_parameters": system_parameters},
         )
 
     def post(self, request, *args, **kwargs):
