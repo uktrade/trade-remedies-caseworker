@@ -33,7 +33,7 @@ class OrganisationInviteContactForm(ValidationForm):
 
     def __init__(self, *args, **kwargs):
         org_invite_contacts = kwargs.pop("org_invite_contacts", None)
-        super(OrganisationInviteContactForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # assign value to the choices variable
         self.fields["which_contact"].choices = org_invite_contacts
 

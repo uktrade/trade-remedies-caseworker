@@ -1,53 +1,38 @@
 {% extends "v2/govuk/base_with_form.html" %}
 
+{% load set %}
+
 {% block page_title %}Invite contact details{% endblock page_title %}
 
 {% block form_content %}
    
     <h1 class="govuk-heading-xl">Who do you want to invite?</h1>
 
-    <div class="govuk-form-group">
-        <label class="govuk-label govuk-label--s" for="organisation_name">
-        Organisation name
-        </label>
-        
-        {% if selected_organisation %}
-            <input class="govuk-input govuk-input--width-20" id="organisation_name" value="{{ selected_organisation }}"
-            name="organisation_name" type="text">
-        {% else %}
-            <input class="govuk-input govuk-input--width-20" id="organisation_name" name="organisation_name" type="text">
-        {% endif %}
-    </div>
-    <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            <h1 class="govuk-fieldset__heading">
-                Who is your primary contact?
-            </h1>
-        </legend>
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="contact_name">
-            Contact name
-            </label>
-            {% if selected_contact_name %}
-                <input class="govuk-input govuk-input--width-20" id="contact_name" value="{{ selected_contact_name }}"
-                name="contact_name" type="text" autocomplete="name">
-            {% else %}
-                <input class="govuk-input govuk-input--width-20" id="contact_name" name="contact_name" type="text" autocomplete="name">
-            {% endif %}
-        </div>
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="contact_email">
-            Contact email address
-            </label>
-            {% if selected_contact_email %}
-                <input class="govuk-input govuk-input--width-20" id="contact_email" value="{{ selected_contact_email }}" 
-                name="contact_email" type="email" autocomplete="email">
-            {% else %}
-                <input class="govuk-input govuk-input--width-20" id="contact_email" name="contact_email" type="email" autocomplete="email">
-            {% endif %}
-        </div>
-    </fieldset>
-        
+    {% if selected_organisation %}
+        {% set 'organisation_name' selected_organisation %}
+    {% else %}
+        {% set 'organisation_name' form.organisation_name.value %}
+    {% endif %}
+    {% if selected_contact_name %}
+        {% set 'contact_name' selected_contact_name %}
+    {% else %}
+        {% set 'contact_name' form.contact_name.value %}
+    {% endif %}
+    {% if selected_contact_email %}
+        {% set 'contact_email' selected_contact_email %}
+    {% else %}
+        {% set 'contact_email' form.contact_email.value %}
+    {% endif %}
+
+    {% include 'v2/component_macros/text_input.html' with value=organisation_name label="Organisation name" id="organisation_name" name="organisation_name" type="text" width="20" strong=True %}
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+        <h1 class="govuk-fieldset__heading">
+            Who is your primary contact?
+        </h1>
+    </legend>
+    {% include 'v2/component_macros/text_input.html' with value=contact_name label="Contact name" id="contact_name" name="contact_name" type="text" width="20" strong=False %}
+    {% include 'v2/component_macros/text_input.html' with value=contact_email label="Contact email address" id="contact_email" name="contact_email" type="text" width="20" strong=False %} {# /PS-IGNORE #}
+            
     {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Continue" back_button_text="Back" %}
           
 {% endblock form_content %}
