@@ -1,5 +1,10 @@
+import json
+
+from django.shortcuts import redirect
 from django.urls import reverse
-from config.base_views import BaseCaseWorkerTemplateView, TaskListView
+
+from cases.v2.forms import BeenAbleToVerifyRepresentativeForm, ExplainUnverifiedRepresentativeForm
+from config.base_views import BaseCaseWorkerTemplateView, FormInvalidMixin, TaskListView
 from organisations.v2.forms import EditOrganisationForm
 
 
@@ -20,7 +25,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
     def get_task_list(self):
         steps = [
             {
-                "heading": "Review representative ",
+                "heading": "Review representative",
                 "sub_steps": [
                     {
                         "link": reverse(
@@ -28,7 +33,10 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                             kwargs={"invitation_id": self.invitation.id},
                         ),
                         "link_text": "Representative",
-                        "status": "Not Started",
+                        "status": "Complete"
+                        if self.invitation.submission.deficiency_notice_params and "contact_org_verify"
+                        in self.invitation.submission.deficiency_notice_params
+                        else "Not Started",
                         "ready_to_do": True,
                     },
                     {
@@ -38,7 +46,21 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                         ),
                         "link_text": "Letter of Authority",
                         "status": "Not Started",
-                        "ready_to_do": True,
+                        "ready_to_do": False,
+                    },
+                ],
+            },
+            {
+                "heading": "Confirm",
+                "sub_steps": [
+                    {
+                        "link": reverse(
+                            "verify_organisation_verify_representative",
+                            kwargs={"invitation_id": self.invitation.id},
+                        ),
+                        "link_text": "Submit decision",
+                        "status": "Cannot Start Yet",
+                        "ready_to_do": False,
                     },
                 ],
             },
@@ -46,8 +68,11 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
         return steps
 
 
-class OrganisationVerificationVerifyRepresentative(BaseOrganisationVerificationView):
+class OrganisationVerificationVerifyRepresentative(
+    BaseOrganisationVerificationView, FormInvalidMixin
+):
     template_name = "v2/organisation_verification/verify_representative.html"
+    form_class = BeenAbleToVerifyRepresentativeForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -61,7 +86,9 @@ class OrganisationVerificationVerifyRepresentative(BaseOrganisationVerificationV
         approved_roles = [each for each in organisation_case_roles if each.validated_at]
         context["invited_organisation_case_roles"] = organisation_case_roles
         context["number_of_approved_cases"] = len(approved_roles)
-        context["last_approval"] = sorted(approved_roles, key=lambda x: x.validated_at)[0]
+        context["last_approval"] = (
+            sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
+        )
 
         invited_organisation = self.client.organisations(self.invitation.contact.organisation)
         context["invited_organisation"] = invited_organisation
@@ -76,14 +103,53 @@ class OrganisationVerificationVerifyRepresentative(BaseOrganisationVerificationV
         context["user_cases"] = no_duplicate_user_cases
         context["cases_acting_as_rep"] = [
             each
-            for each in no_duplicate_user_cases
-            if each.organisation.id != invited_organisation.id
+            for each in invited_organisation.case_contacts
+            if each.organisation != invited_organisation.id
         ]
         context["inviter_organisation"] = self.client.organisations(self.invitation.organisation)
 
         return context
 
+    def form_valid(self, form):
+        if form.cleaned_data["been_able_to_verify_representative"] == "yes":
+            self.client.submissions(self.invitation.submission.id).update(
+                {"deficiency_notice_params": json.dumps({"contact_org_verify": True})}
+            )
+        else:
+            self.client.submissions(self.invitation.submission.id).update(
+                {"deficiency_notice_params": json.dumps({"contact_org_verify": False})}
+            )
+        return redirect(
+            reverse(
+                "verify_organisation_verify_explain_org_not_verified",
+                kwargs={"invitation_id": self.invitation.id},
+            )
+        )
+
 
 class OrganisationVerificationVerifyLetterOfAuthority(BaseCaseWorkerTemplateView):
     form_class = EditOrganisationForm
     template_name = "v2/organisations/edit_organisation.html"
+
+
+class OrganisationVerificationExplainUnverifiedRepresentativeView(
+    BaseOrganisationVerificationView, FormInvalidMixin
+):
+    template_name = "v2/organisation_verification/explain_unverified_representative.html"
+    form_class = ExplainUnverifiedRepresentativeForm
+
+    def form_valid(self, form):
+        self.client.submissions(self.invitation.submission.id).update(
+            {
+                "deficiency_notice_params": json.dumps(
+                    {
+                        "explain_why_contact_org_not_verified": form.cleaned_data[
+                            "explain_why_org_not_verified"
+                        ]
+                    }
+                )
+            }
+        )
+        return redirect(
+            reverse("verify_organisation_task_list", kwargs={"invitation_id": self.invitation.id})
+        )

@@ -11,9 +11,11 @@
         </h1>
         <div class="govuk-inset-text govuk-inset-text__reginterest">
             <strong>{{ invited_organisation.name }}</strong> has been approved on to {{ number_of_approved_cases }} case
-            {% if number_of_approved_cases > 1 %}s{% endif %} <br>
-            The last approval was on <strong>{{ last_approval.validated_at|date:'d M y' }}</strong> by
-            <strong>{{ last_approval.validated_by.name }}</strong><br>
+            {% if number_of_approved_cases > 1 or number_of_approved_cases == 0 %}s{% endif %} <br>
+            {% if last_approval %}
+                The last approval was on <strong>{{ last_approval.validated_at|date:'d M y' }}</strong> by
+                <strong>{{ last_approval.validated_by.name }}</strong><br>
+            {% endif %}
             <strong>{{ invited_organisation.name }}</strong> has been <a href="" class="govuk-link--no-visited-state">invited
             to
             represent</a> <strong>{{ invitation.organisation.name }}</strong>
@@ -42,115 +44,136 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Address:</dt>
-                        <dd class="govuk-summary-list__value">{{ invited_organisation.address }}<br>
+                        <dd class="govuk-summary-list__value">{{ invited_organisation.address|default_if_none:"" }}<br>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Reg number:</dt>
-                        <dd class="govuk-summary-list__value">{{ invited_organisation.companies_house_id }} <img
-                                src="{% static 'v2/assets/images/checkmark.png' %}"
-                                class="verified-tick"
-                                alt="Valid Companies House registration number"
-                                title="Valid Companies House registration number"
-                                width="20px"><span class="govuk-body-s">Valid</span>
+                        <dd class="govuk-summary-list__value">{{ invited_organisation.companies_house_id|default_if_none:"" }}
+                            {% if invited_organisation.does_name_match_companies_house %}
+                                <img
+                                        src="{% static 'v2/assets/images/checkmark.png' %}"
+                                        class="verified-tick"
+                                        alt="Valid Companies House registration number"
+                                        title="Valid Companies House registration number"
+                                        width="20px">
+                                <span class="govuk-body-s">Valid</span>
+                            {% endif %}
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Web address:</dt>
-                        <dd class="govuk-summary-list__value"><a href="{{ invited_organisation.organisation_website }}"
-                                                                 target="_blank">{{ invited_organisation.organisation_website }}</a>
+                        <dd class="govuk-summary-list__value"><a
+                                {% if invited_organisation.organisation_website %}href="{{ invited_organisation.organisation_website }}"{% endif %}
+                                target="_blank">{{ invited_organisation.organisation_website|default_if_none:"" }}</a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">VAT no:</dt>
-                        <dd class="govuk-summary-list__value">{{ invited_organisation.vat_number }}</dd>
+                        <dd class="govuk-summary-list__value">{{ invited_organisation.vat_number|default_if_none:"" }}</dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">EORI:</dt>
-                        <dd class="govuk-summary-list__value">{{ invited_organisation.eori_number }}</dd>
+                        <dd class="govuk-summary-list__value">{{ invited_organisation.eori_number|default_if_none:"" }}</dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">D-U-N-S:</dt>
-                        <dd class="govuk-summary-list__value">{{ invited_organisation.duns_number }}</dd>
+                        <dd class="govuk-summary-list__value">{{ invited_organisation.duns_number|default_if_none:"" }}</dd>
                     </div>
                 </dl>
                 <br>
                 <div>
-                    <details class="case-details govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
+                    {% if user_cases|length > 0 %}
+                        <details class="case-details govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
                                 Cases: {{ user_cases|length }}
                             </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <ul class="govuk-list">
-                                {% for user_case in user_cases %}
-                                    <li>
-                                        <a href=""
-                                           class="govuk-link--no-visited-state">{{ user_case.organisation_case_role.case.reference }}
-                                            - {{ user_case.organisation_case_role.case.name }}</a>
-                                        ({{ user_case.organisation_case_role.role_name }})
-                                        {% if user_case.organisation_case_role.validated_at %}
-                                            <img src="{% static 'v2/assets/images/checkmark.png' %}"
-                                                 class="verified-check"
-                                                 alt="Verified on case"
-                                                 title="Verified on case"
-                                                 width="32px">
-                                            <span class="govuk-body-s">{{ user_case.organisation_case_role.validated_at|date:'d M y' }}</span>
-                                        {% endif %}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </details>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <ul class="govuk-list">
+                                    {% for user_case in user_cases %}
+                                        <li>
+                                            <a href=""
+                                               class="govuk-link--no-visited-state">{{ user_case.organisation_case_role.case.reference }}
+                                                - {{ user_case.organisation_case_role.case.name }}</a>
+                                            ({{ user_case.organisation_case_role.role_name }})
+                                            {% if user_case.organisation_case_role.validated_at %}
+                                                <img src="{% static 'v2/assets/images/checkmark.png' %}"
+                                                     class="verified-check"
+                                                     alt="Verified on case"
+                                                     title="Verified on case"
+                                                     width="32px">
+                                                <span class="govuk-body-s">{{ user_case.organisation_case_role.validated_at|date:'d M y' }}</span>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </details>
+                    {% else %}
+                        <p>Cases: {{ user_cases|length }}</p>
+                    {% endif %}
                 </div>
                 <div>
-                    <details class="case-details govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
+                    {% if cases_acting_as_rep|length > 0 %}
+                        <details class="case-details govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
                                 Cases acting as a representative: {{ cases_acting_as_rep|length }}
                             </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <ul class="govuk-list">
-                                {% for user_case in cases_acting_as_rep %}
-                                    <li>
-                                        <a href=""
-                                           class="govuk-link--no-visited-state">{{ user_case.organisation_case_role.case.reference }}
-                                            - {{ user_case.organisation_case_role.case.name }}</a>
-                                        {% if user_case.organisation_case_role.validated_at %}
-                                            <img src="{% static 'v2/assets/images/verified-tick.png' %}"
-                                                 class="verified-check" alt="Verified on case"
-                                                 title="Verified on case" width="32px">
-                                            <span class="govuk-body-s">{{ user_case.organisation_case_role.validated_at|date:'d M y' }}</span>
-                                        {% endif %}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </details>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <ul class="govuk-list">
+                                    {% for user_case in cases_acting_as_rep %}
+                                        <li>
+                                            <a href=""
+                                               class="govuk-link--no-visited-state">{{ user_case.organisation_case_role.case.reference }}
+                                                - {{ user_case.organisation_case_role.case.name }}</a>
+                                            {% if user_case.organisation_case_role.validated_at %}
+                                                <img src="{% static 'v2/assets/images/verified-tick.png' %}"
+                                                     class="verified-check" alt="Verified on case"
+                                                     title="Verified on case" width="32px">
+                                                <span class="govuk-body-s">{{ user_case.organisation_case_role.validated_at|date:'d M y' }}</span>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </details>
+                    {% else %}
+                        <p>Cases acting as a representative: {{ cases_acting_as_rep|length }}</p>
+                    {% endif %}
                 </div>
                 <div>
-                    <details class="case-details govuk-details" data-module="govuk-details">
-                        <summary class="govuk-details__summary">
+                    {% if invited_organisation.organisationuser_set|length > 0 %}
+                        <details class="case-details govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
                                 Users: {{ invited_organisation.organisationuser_set|length }}
                             </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <ul class="govuk-list">
-                                {% for organisation_user in invited_organisation.organisationuser_set %}
-                                    <li><a href="{% url 'edit_customer' user_id=organisation_user.user.id %}" class="govuk-link--no-visited-state">{{ organisation_user.user.name }}</a> -
-                                        {{ organisation_user.user.email }}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </details>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <ul class="govuk-list">
+                                    {% for organisation_user in invited_organisation.organisationuser_set %}
+                                        <li><a href="{% url 'edit_customer' user_id=organisation_user.user.id %}"
+                                               class="govuk-link--no-visited-state">{{ organisation_user.user.name }}</a>
+                                            -
+                                            {{ organisation_user.user.email }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </details>
+                    {% else %}
+                        <p>Users: {{ invited_organisation.organisationuser_set|length }}</p>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
-        <form action="/reginterest-representative-party-route" method="post" id="reginterest-representative-party-form">
+        <form method="post">
+            {% csrf_token %}
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -160,16 +183,16 @@
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="reginterest-valid-representative"
-                                   name="reginterest-valid-representative" type="radio" value="Verified">
-                            <label class="govuk-label govuk-radios__label" for="reginterest-valid-representative">
+                            <input class="govuk-radios__input" id="been_able_to_verify_representative_1"
+                                   name="been_able_to_verify_representative" type="radio" value="yes">
+                            <label class="govuk-label govuk-radios__label" for="been_able_to_verify_representative_1">
                                 Yes, I have been able to verify the representative
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="reginterest-valid-representative-2"
-                                   name="reginterest-valid-representative" type="radio" value="Unverified">
-                            <label class="govuk-label govuk-radios__label" for="reginterest-valid-representative-2">
+                            <input class="govuk-radios__input" id="been_able_to_verify_representative_2"
+                                   name="been_able_to_verify_representative" type="radio" value="no">
+                            <label class="govuk-label govuk-radios__label" for="been_able_to_verify_representative_2">
                                 No, I have not been able to verify the representative
                             </label>
                         </div>

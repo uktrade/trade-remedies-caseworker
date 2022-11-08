@@ -2,7 +2,7 @@
 
 {% with form_errors|get_item:id as error %}
     <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
-        <label class="govuk-label" for="{{ id }}">
+        <label class="govuk-label {% if strong %}govuk-label--s{% endif %}" for="{{ id }}">
             {{ label }}
         </label>
         {% if error %}

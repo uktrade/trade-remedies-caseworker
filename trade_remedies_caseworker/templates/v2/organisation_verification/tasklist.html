@@ -19,17 +19,17 @@
                 <ul class="govuk-list govuk-!-font-size-16">
                     <li>
                         <strong>Interested party</strong><br>
-                        <a href="/caseworker/orgs/org-steeluk" class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
-                        <a href="" class="govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
+                        <a href="{% url 'organisations:v2_edit_organisation' organisation_id=invitation.organisation.id %}" class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
+                        <a href="{% url 'edit_customer' user_id=invitation.created_by.id %}" class="govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
                     </li>
                     <li>
                         <strong>Representative </strong><br>
-                        <a href="/caseworker/orgs/org-bluesteel" class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
-                        <a href="" class="govuk-link--no-visited-state">{{ invitation.contact.name }}</a>
+                        <a href="{% url 'organisations:v2_edit_organisation' organisation_id=invitation.contact.organisation %}" class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
+                        <a href="{% if invitation.contact.user %}{% url 'edit_customer' user_id=invitation.contact.user.id %}{% endif %}" class="govuk-link--no-visited-state">{{ invitation.contact.name }}</a>
                     </li>
                     <li>
                         <strong>Submitted by</strong><br>
-                        <a href="" class="govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
+                        <a href="{% url 'edit_customer' user_id=invitation.created_by.id %}" class="govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
                     </li>
                 </ul>
             </nav>

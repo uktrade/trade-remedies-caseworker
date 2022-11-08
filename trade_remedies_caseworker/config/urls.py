@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import include, path
 
-from cases.v2_views import organisation_verification_process
+from cases.v2.views import organisation_verification_process
 from cases.views import CasesView
 from core import views as core_views
 from login import views as login_views
@@ -75,5 +75,10 @@ urlpatterns += [
         "verify_organisation_verify_letter_of_authority/<uuid:invitation_id>/",
         organisation_verification_process.OrganisationVerificationVerifyLetterOfAuthority.as_view(),
         name="verify_organisation_verify_letter_of_authority",
+    ),
+    path(
+        "verify_organisation_verify_explain_org_not_verified/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationExplainUnverifiedRepresentativeView.as_view(),
+        name="verify_organisation_verify_explain_org_not_verified",
     ),
 ]

@@ -358,3 +358,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 GOOGLE_ANALYTICS_TAG_MANAGER_ID = env("GOOGLE_ANALYTICS_TAG_MANAGER_ID", default="")
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+
+COUNTRIES_FIRST = ["GB"]
+COUNTRIES_FIRST_BREAK = "------"
