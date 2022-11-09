@@ -15,8 +15,6 @@ from core.base import GroupRequiredMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
-from core.constants import SECURITY_GROUP_SUPER_USER
-
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
 

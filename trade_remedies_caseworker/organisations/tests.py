@@ -132,7 +132,8 @@ class TestOrganisationInviteContactNewForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "invite_contact_no_organisation_name", "code": "required"}]}',
+            '{"organisation_name": '
+            '[{"message": "invite_contact_no_organisation_name", "code": "required"}]}',
         )
 
     def test_no_contact_name(self):
