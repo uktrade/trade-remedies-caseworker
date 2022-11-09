@@ -5,6 +5,7 @@ from django import forms
 class OrganisationInviteForm(ValidationForm):
     organisation_name = forms.CharField()
     organisation_address = forms.CharField()
+    organisation_post_code = forms.CharField()
     companies_house_id = forms.CharField()
     organisation_id = forms.CharField()
     # Need a field to match element id in the form html template to add error message
@@ -16,6 +17,7 @@ class OrganisationInviteForm(ValidationForm):
             self.data.get("input-autocomplete")
             and not self.cleaned_data.get("organisation_name")
             and not self.cleaned_data.get("organisation_address")
+            and not self.cleaned_data.get("organisation_post_code")
             and not self.cleaned_data.get("companies_house_id")
             and not self.cleaned_data.get("organisation_id")
         ):
