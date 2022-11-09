@@ -1,7 +1,7 @@
 from django.urls import path
 from cases import views as case_views
 
-app_name = 'cases'
+app_name = "cases"
 urlpatterns = [
     path("", case_views.CasesView.as_view(), name="cases"),
     path("notices/", case_views.NoticesView.as_view(), name="notices"),

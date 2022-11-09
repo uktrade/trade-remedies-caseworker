@@ -274,7 +274,6 @@ class OrganisationFormView(BaseOrganisationTemplateView):
 
 
 class BaseOrganisationInviteView(LoginRequiredMixin, FormView, APIClientMixin, ABC):
-
     def dispatch(self, *args, **kwargs):
         if "organisation_invitation" not in self.request.session:
             self.request.session["organisation_invitation"] = {}
@@ -329,7 +328,7 @@ class OrganisationInviteView(BaseOrganisationInviteView):
         self.request.session["new_contact"] = False
         next_url_kwargs = {
             "case_id": self.kwargs["case_id"],
-            "organisation_id": form.cleaned_data.get("organisation_id")
+            "organisation_id": form.cleaned_data.get("organisation_id"),
         }
         return reverse("organisations:invite-party-contacts-choice", kwargs=next_url_kwargs)
 
@@ -337,19 +336,23 @@ class OrganisationInviteView(BaseOrganisationInviteView):
 class OrganisationInviteContactsView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_contacts_choice.html"
     form_class = OrganisationInviteContactForm
-        
+
     def get_org_invite_contacts(self):
         # list of tuples containing contacts for the organisation
-        contacts_list_full_data = (self.client.organisations(self.kwargs["organisation_id"], fields=["contacts"]).contacts)
-        
-        # Extract id, name, and email into tuples. These tuples will be in a list.
-        # Choices in form is expecting only two fields per tuple, therefore merge 
-        # name and email
-        contacts_list = [(each.id, f"{each.name} - {each.email}") for each in contacts_list_full_data]
+        contacts_list_full_data = self.client.organisations(
+            self.kwargs["organisation_id"], fields=["contacts"]
+        ).contacts
 
-        # Sort the tuples in alphabetical (name + email are index 1) 
+        # Extract id, name, and email into tuples. These tuples will be in a list.
+        # Choices in form is expecting only two fields per tuple, therefore merge
+        # name and email
+        contacts_list = [
+            (each.id, f"{each.name} - {each.email}") for each in contacts_list_full_data
+        ]
+
+        # Sort the tuples in alphabetical (name + email are index 1)
         # order
-        contacts_list.sort(key = lambda x: x[1])
+        contacts_list.sort(key=lambda x: x[1])
         return contacts_list
 
     # for use in html template
@@ -391,7 +394,9 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
                 contact = self.client.contacts(self.request.session["selected_contacts"][0])
                 context["selected_contact_name"] = contact.name
                 context["selected_contact_email"] = contact.email
-                context["selected_organisation"] = self.client.organisations(contact.organisation).name
+                context["selected_organisation"] = self.client.organisations(
+                    contact.organisation
+                ).name
         except KeyError:
             # self.request.session["new_contact"] might not be set yet
             pass
@@ -428,7 +433,7 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
 class OrganisationInviteReviewView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_check.html"
     form_class = OrganisationInviteContactReviewForm
-        
+
     def get_selected_contacts(self):
         selected_contacts = []
         if "selected_contacts" in self.request.session:
@@ -458,13 +463,15 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
         return reverse("organisations:invite-party-complete", kwargs=next_url_kwargs)
 
     def create_invitation(self, contact):
-        new_invitation = self.client.invitations({
+        new_invitation = self.client.invitations(
+            {
                 "organisation": self.kwargs["organisation_id"],
                 "case": self.kwargs["case_id"],
                 "contact": contact.id,
                 "invalid": True,
                 "invitation_type": 3,
-            })
+            }
+        )
         return new_invitation
 
     def post(self, request, *args, **kwargs):
@@ -473,7 +480,7 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
             invitation = self.create_invitation(contact)
             invitation.send()
         return redirect(self.get_next_url())
-        
+
 
 class OrganisationInviteCompleteView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_complete.html"

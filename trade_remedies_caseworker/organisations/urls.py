@@ -23,7 +23,7 @@ from organisations.views import (
     OrganisationRemoveView,
 )
 
-app_name = 'organisations'
+app_name = "organisations"
 urlpatterns = [
     path("", OrganisationsView.as_view(), name="organisations"),
     path("<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"),

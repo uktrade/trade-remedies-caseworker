@@ -57,7 +57,7 @@ class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
     def get(self, request, *args, **kwargs):
         query = request.GET.get("term")
         results = self.client.organisations.get_organisations_by_company_name(query)
-        organisations = {"organisations" : [each.data_dict for each in results]}
+        organisations = {"organisations": [each.data_dict for each in results]}
         return HttpResponse(json.dumps(organisations), content_type="application/json")
 
 

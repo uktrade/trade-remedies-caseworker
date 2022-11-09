@@ -49,11 +49,9 @@ class OrganisationInviteContactNewForm(ValidationForm):
     organisation_name = forms.CharField(
         error_messages={"required": "invite_contact_no_organisation_name"}
     )
-    contact_name = forms.CharField(
-        error_messages={"required": "invite_contact_no_name"}
-    )
+    contact_name = forms.CharField(error_messages={"required": "invite_contact_no_name"})
     contact_email = forms.EmailField(
-       error_messages={
+        error_messages={
             "required": "invite_contact_no_email",
             "invalid": "invite_contact_invalid_email",
         }

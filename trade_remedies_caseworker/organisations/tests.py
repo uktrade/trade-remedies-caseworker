@@ -83,9 +83,11 @@ class TestOrganisationInviteContactForm(TestCase):
             "org_invite_contacts": [
                 ("aor4nd0m-idoo-foro-test-purp05e5oooo", "Test Name1 - test1@example.com"),
                 ("an0thero-idoo-t0oo-test-w1thoooooooo", "Test Name2 - test2@example.com"),
-                ("ando0n3o-m0re-t0oo-test-t1hisoc0d3oo", "Test Name3 - test3@example.com"),  
+                ("ando0n3o-m0re-t0oo-test-t1hisoc0d3oo", "Test Name3 - test3@example.com"),
             ],
-            "data": {"which_contact": "aor4nd0m-idoo-foro-test-purp05e5oooo"},  # selected contact(s)
+            "data": {
+                "which_contact": "aor4nd0m-idoo-foro-test-purp05e5oooo"
+            },  # selected contact(s)
         }
 
     def test_valid_org_type_selected(self):
@@ -94,7 +96,9 @@ class TestOrganisationInviteContactForm(TestCase):
 
     def test_no_org_type_selected(self):
         form = OrganisationInviteContactForm(
-            org_invite_contacts=[("aor4nd0m-idoo-foro-test-purp05e5oooo", "Test Name1 - test1@example.com")],
+            org_invite_contacts=[
+                ("aor4nd0m-idoo-foro-test-purp05e5oooo", "Test Name1 - test1@example.com")
+            ],
             data={"which_contact": ""},  # no contact selected
         )
         self.assertFalse(form.is_valid())
@@ -117,11 +121,13 @@ class TestOrganisationInviteContactNewForm(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_no_organisation_name(self):
-        self.mock_data.update({
-            "organisation_name": "",
-            "contact_name": "test",
-            "contact_email": "test@example.com",
-        })
+        self.mock_data.update(
+            {
+                "organisation_name": "",
+                "contact_name": "test",
+                "contact_email": "test@example.com",
+            }
+        )
         form = OrganisationInviteContactNewForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
@@ -130,11 +136,13 @@ class TestOrganisationInviteContactNewForm(TestCase):
         )
 
     def test_no_contact_name(self):
-        self.mock_data.update({
-            "organisation_name": "test organisation",
-            "contact_name": "",
-            "contact_email": "test@example.com",
-        })
+        self.mock_data.update(
+            {
+                "organisation_name": "test organisation",
+                "contact_name": "",
+                "contact_email": "test@example.com",
+            }
+        )
         form = OrganisationInviteContactNewForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
@@ -143,11 +151,13 @@ class TestOrganisationInviteContactNewForm(TestCase):
         )
 
     def test_no_contact_email(self):
-        self.mock_data.update({
-            "organisation_name": "test organisation",
-            "contact_name": "test",
-            "contact_email": "",
-        })
+        self.mock_data.update(
+            {
+                "organisation_name": "test organisation",
+                "contact_name": "test",
+                "contact_email": "",
+            }
+        )
         form = OrganisationInviteContactNewForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
@@ -156,11 +166,13 @@ class TestOrganisationInviteContactNewForm(TestCase):
         )
 
     def test_invalid_email(self):
-        self.mock_data.update({
-            "organisation_name": "test organisation",
-            "contact_name": "test",
-            "contact_email": "test.com",
-        })
+        self.mock_data.update(
+            {
+                "organisation_name": "test organisation",
+                "contact_name": "test",
+                "contact_email": "test.com",
+            }
+        )
         form = OrganisationInviteContactNewForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
@@ -171,11 +183,15 @@ class TestOrganisationInviteContactNewForm(TestCase):
 
 class TestOrganisationInviteContactReviewForm(TestCase):
     def test_valid(self):
-        form = OrganisationInviteContactReviewForm(data=["aor4nd0m-idoo-foro-test-purp05e5oooo"])  # selected contact (ids)
+        form = OrganisationInviteContactReviewForm(
+            data=["aor4nd0m-idoo-foro-test-purp05e5oooo"]
+        )  # selected contact (ids)
         self.assertTrue(form.is_valid())
 
-    
+
 class TestOrganisationInviteCompleteForm(TestCase):
     def test_valid(self):
-        form = OrganisationInviteCompleteForm(data=["aor4nd0m-idoo-foro-test-purp05e5oooo"])  # selected contact (ids)
+        form = OrganisationInviteCompleteForm(
+            data=["aor4nd0m-idoo-foro-test-purp05e5oooo"]
+        )  # selected contact (ids)
         self.assertTrue(form.is_valid())
