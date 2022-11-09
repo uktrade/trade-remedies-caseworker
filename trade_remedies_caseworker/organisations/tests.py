@@ -76,8 +76,8 @@ class TestOrganisationInviteForm(TestCase):
 
 class TestOrganisationInviteContactForm(TestCase):
     def setUp(self) -> None:
-        # "org_invite_contacts" is data passed into the class - to build radio button choices
-        # "data" is data that is the response from the form (i.e., the selected radio button)
+        # "org_invite_contacts" is data passed into the class - to build checkbox choices
+        # "data" is data that is the response from the form (i.e., the selected checkbox(es))
 
         self.mock_data = {
             "org_invite_contacts": [
@@ -167,3 +167,15 @@ class TestOrganisationInviteContactNewForm(TestCase):
             form.errors.as_json(),
             '{"contact_email": [{"message": "invite_contact_invalid_email", "code": "invalid"}]}',
         )
+
+
+class TestOrganisationInviteContactReviewForm(TestCase):
+    def test_valid(self):
+        form = OrganisationInviteContactReviewForm(data=["aor4nd0m-idoo-foro-test-purp05e5oooo"])  # selected contact (ids)
+        self.assertTrue(form.is_valid())
+
+    
+class TestOrganisationInviteCompleteForm(TestCase):
+    def test_valid(self):
+        form = OrganisationInviteCompleteForm(data=["aor4nd0m-idoo-foro-test-purp05e5oooo"])  # selected contact (ids)
+        self.assertTrue(form.is_valid())
