@@ -454,7 +454,6 @@ class PartiesView(CaseBaseView):
             _base["key"] = role["key"]
             _base["name"] = role["plural"]
             if role["allow_cw_create"]:
-                # _base["add_link"] = f"Add {role['name']}"
                 _base["add_link"] = "Invite party to case"
             parties.append(_base)
 
@@ -2137,7 +2136,7 @@ class AuditView(CaseBaseView):
         audit_data = self._client.get_audit(
             case_id=self.case_id, start=self.start, limit=limit, milestone=milestone
         )
-        url = reverse("case_audit", kwargs={"case_id": self.case_id})
+        url = reverse("cases:case_audit", kwargs={"case_id": self.case_id})
         prev_url = next_url = None
         prev_page = max(0, self.start - limit)
         milestone_flag = f"milestone={milestone}".lower()

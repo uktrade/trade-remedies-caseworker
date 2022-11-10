@@ -1,18 +1,12 @@
 {% extends "v2/govuk/base_with_form.html" %}
 {% load static %}
-<!-- {    % load text_element %   }
-{% load custom_filters %}
-{% load application_heading %}
-{% load format_date %} -->
+
 
 {% block back_button %}
     <!-- Remove 'back' link from top right (below nav bar) -->
-    <script type="text/javascript">
-        document.getElementsByClassName("govuk-back-link").outerHTML = "";
-    </script>
-{% endblock %}
+{% endblock back_button %}
 
-{% block page_title %}Invite sent - Trade Remedies Service{% endblock page_title %}
+{% block page_title %}Invite sent{% endblock page_title %}
 
 {% block form_content %}
     <div class="govuk-form-group">
@@ -21,17 +15,29 @@
             <h1 class="govuk-panel__title">
               Invite sent
             </h1>
-          </div>
+        </div>
       
-          <p>We have sent the invite to:</p>
+        <p>We have sent the invite to:</p>
           
             
-          
-    
-    
-          <p>The invite will ask them to register interest in the case.</p>
-          <p>You will be alerted when they have completed their registration of interest.</p>
+        <ul class="govuk-list">
+                
+            {% for contact in selected_contacts %}
 
+                <li>
+
+                    {{ contact.name }} - {{ contact.email }}
+
+                </li>
+
+            {% endfor %}
+            
+            
+        </ul>
+    
+    
+        <p>The invite will ask them to register interest in the case.</p>
+        <p>You will be alerted when they have completed their registration of interest.</p>
         
     </div>
 
