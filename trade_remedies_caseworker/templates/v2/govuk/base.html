@@ -61,7 +61,7 @@
               <!--[if IE 8]>
             <img src="{% static 'v2/assets/images/govuk-logotype-crown.png' %}" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
             <![endif]-->
-          
+
             <span class="govuk-header__logotype-text">
               GOV.UK
             </span>
@@ -79,9 +79,8 @@
 
                     |
                 </li>
-                <li class="login-nav__list-item"><a href="#"
-                                                    class="govuk-link govuk-link govuk-link--inverse login-nav__link">Manage
-                    account</a>|
+                <li class="login-nav__list-item">
+                    <a href="/users/my-account/" class="govuk-link govuk-link govuk-link--inverse login-nav__link">Manage account</a>|
                 </li>
                 <li class="login-nav__list-item"><a href="{% url 'logout' %}"
                                                     class="govuk-link govuk-link--inverse login-nav__link">Sign out</a>
@@ -95,25 +94,25 @@
 
                 <li class="app-navigation__list-item app-navigation__list-item--dash">
                     <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
-                       href="/caseworker/dashboard">
+                       href="{% url 'cases' %}">
                         Dashboard
                     </a>
                 </li>
                 <li class="app-navigation__list-item app-navigation__list-item--cases">
                     <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
-                       href="/caseworker/cases/cases-all">
+                       href="{% url 'cases' %}">
                         Cases
                     </a>
                 </li>
                 <li class="app-navigation__list-item app-navigation__list-item--orgs">
                     <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
-                       href="/caseworker/orgs/orgs-all">
+                       href="{% url 'organisations:organisations' %}">
                         Organisations
                     </a>
                 </li>
                 <li class="app-navigation__list-item app-navigation__list-item--users">
                     <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
-                       href="/caseworker/users/users-all">
+                       href="{% url 'users' %}?tab=public">
                         Users
                     </a>
                 </li>
@@ -124,18 +123,6 @@
 </header>
 
 <div class="govuk-width-container app-width-container">
-    <div class="govuk-phase-banner">
-        <p class="govuk-phase-banner__content">
-            <strong class="govuk-tag govuk-phase-banner__content__tag">
-                BETA
-            </strong>
-            <span class="govuk-phase-banner__text">
-          This is a new service – your <a class="govuk-link" target="_blank" data-attach="ModalForm"
-                                          data-url="/feedback/TR-FEEDBACK/placement/FOOTER/inner/"
-                                          href="/feedback/TR-FEEDBACK/placement/FOOTER/">feedback</a> will help us to improve it.
-        </span>
-        </p>
-    </div>
     {% block breadcrumbs %}
 
     {% endblock %}
@@ -186,16 +173,7 @@
                             Accessibility
                         </a>
                     </li>
-
-                    <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link" href="/prototype-admin/clear-data">
-                            Clear data
-                        </a>
-                    </li>
-
                 </ul>
-
-
                 <svg
                         aria-hidden="true"
                         focusable="false"
