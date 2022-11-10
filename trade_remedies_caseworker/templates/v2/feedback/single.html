@@ -16,15 +16,15 @@
         <div class="colum-full-nav">
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+                    <dt class="govuk-summary-list__key bold">
                         Date submitted
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {% format_date feedback.created_at '%d %b %Y - %H:%M' %}
+                        {{ feedback.created_at|date:'d M Y - H:i' }}
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+                    <dt class="govuk-summary-list__key bold">
                         User logged in
                     </dt>
                     <dd class="govuk-summary-list__value">
@@ -32,7 +32,7 @@
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+                    <dt class="govuk-summary-list__key bold">
                         URL
                     </dt>
                     <dd class="govuk-summary-list__value">
@@ -40,7 +40,7 @@
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+                    <dt class="govuk-summary-list__key bold">
                         Journey
                     </dt>
                     <dd class="govuk-summary-list__value">
@@ -48,7 +48,7 @@
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+                    <dt class="govuk-summary-list__key bold">
                         Rating
                     </dt>
                     <dd class="govuk-summary-list__value">
@@ -56,7 +56,7 @@
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+                    <dt class="govuk-summary-list__key bold">
                         What didn't work so well
                     </dt>
                     <dd class="govuk-summary-list__value">
@@ -69,7 +69,7 @@
                 </div>
                 {% if feedback.what_didnt_work_so_well_other %}
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
+                        <dt class="govuk-summary-list__key bold">
                             Other issue
                         </dt>
                         <dd class="govuk-summary-list__value">
@@ -78,7 +78,7 @@
                     </div>
                 {% endif %}
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
+                    <dt class="govuk-summary-list__key bold">
                         How could we improve this service
                     </dt>
                     <dd class="govuk-summary-list__value">

@@ -21,7 +21,7 @@
                 {% for feedback in feedbacks %}
                     <tr>
                         <td>
-                            {% format_date feedback.created_at '%d %b %Y - %H:%M' %}
+                            {{ feedback.created_at|date:'d M Y - H:i' }}
                         </td>
                         <td>
                             {{ feedback.verbose_rating_name }}
