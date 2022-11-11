@@ -392,15 +392,13 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
-        
+
         # self.request.session["new_contact"] might not be set yet
         if self.request.session.get("new_contact") and "selected_contacts" in self.request.session:
             contact = self.client.contacts(self.request.session["selected_contacts"][0])
             context["selected_contact_name"] = contact.name
             context["selected_contact_email"] = contact.email
-            context["selected_organisation"] = self.client.organisations(
-                contact.organisation
-            ).name
+            context["selected_organisation"] = self.client.organisations(contact.organisation).name
 
         return context
 
