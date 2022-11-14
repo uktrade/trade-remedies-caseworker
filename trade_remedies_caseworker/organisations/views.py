@@ -18,6 +18,7 @@ from core.constants import (
     CASE_ROLE_REJECTED,
     CASE_ROLE_APPLICANT,
     CASE_ROLE_PREPARING,
+    SECURITY_GROUP_ORGANISATION_OWNER,
 )
 from core.utils import (
     collect_request_fields,
@@ -321,6 +322,8 @@ class OrganisationInviteView(BaseOrganisationInviteView):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
         context["case_id"] = self.kwargs["case_id"]
+        self.request.session["party_type"] = self.request.GET.get("party_type", "awaiting_approval")
+        self.request.session.modified = True
         return context
 
     def get_next_url(self, form=None):
@@ -470,6 +473,8 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                 "contact": contact.id,
                 "invalid": True,
                 "invitation_type": 3,
+                "organisation_security_group": SECURITY_GROUP_ORGANISATION_OWNER,
+                "case_role_key": self.request.session.get("party_type", "awaiting_approval"),
             }
         )
         return new_invitation
