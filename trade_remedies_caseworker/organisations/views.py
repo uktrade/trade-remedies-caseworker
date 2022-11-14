@@ -437,10 +437,9 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
 
     def get_selected_contacts(self):
         selected_contacts = []
-        if "selected_contacts" in self.request.session:
-            for contact_id in self.request.session.get("selected_contacts", []):
-                contact = self.client.contacts(contact_id)
-                selected_contacts.append(contact)
+        for contact_id in self.request.session.get("selected_contacts", []):
+            contact = self.client.contacts(contact_id)
+            selected_contacts.append(contact)
         return selected_contacts
 
     def get_context_data(self, **kwargs):
@@ -496,10 +495,9 @@ class OrganisationInviteCompleteView(BaseOrganisationInviteView):
 
     def get_selected_contacts(self):
         selected_contacts = []
-        if "selected_contacts" in self.request.session:
-            for contact_id in self.request.session.get("selected_contacts", []):
-                contact = self.client.contacts(contact_id)
-                selected_contacts.append(contact)
+        for contact_id in self.request.session.get("selected_contacts", []):
+            contact = self.client.contacts(contact_id)
+            selected_contacts.append(contact)
         return selected_contacts
 
     def get_context_data(self, **kwargs):
