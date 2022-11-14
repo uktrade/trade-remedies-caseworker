@@ -438,7 +438,7 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
     def get_selected_contacts(self):
         selected_contacts = []
         if "selected_contacts" in self.request.session:
-            for contact_id in self.request.session["selected_contacts"]:
+            for contact_id in self.request.session.get("selected_contacts", []):
                 contact = self.client.contacts(contact_id)
                 selected_contacts.append(contact)
         return selected_contacts
@@ -491,16 +491,13 @@ class OrganisationInviteCompleteView(BaseOrganisationInviteView):
 
     def clean_session_data(self):
         # clean up session data
-        try:
-            del self.request.session["new_contact"]
-            del self.request.session["selected_contacts"]
-        except:
-            pass
+        self.request.session.pop("new_contact", None)
+        self.request.session.pop("selected_contacts", None)
 
     def get_selected_contacts(self):
         selected_contacts = []
         if "selected_contacts" in self.request.session:
-            for contact_id in self.request.session["selected_contacts"]:
+            for contact_id in self.request.session.get("selected_contacts", []):
                 contact = self.client.contacts(contact_id)
                 selected_contacts.append(contact)
         return selected_contacts
