@@ -604,7 +604,6 @@ class ContactPrimaryView(BaseOrganisationTemplateView):
         response = self._client.set_case_primary_contact(contact_id, organisation_id, case_id)
         name = response.get("name", "")
         return HttpResponse(json.dumps(response))
-        return self.return_redirect(f'Primary contact set to "{name}"')
 
 
 class ToggleUserAdmin(BaseOrganisationTemplateView):
