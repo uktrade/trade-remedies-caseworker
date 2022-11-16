@@ -12,12 +12,14 @@ from django.utils.http import urlencode
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
+from config.forms import ValidationForm
 from core.base import FeatureFlagMixin
 from core.constants import (
     CASE_ROLE_AWAITING_APPROVAL,
     CASE_ROLE_REJECTED,
     CASE_ROLE_APPLICANT,
     CASE_ROLE_PREPARING,
+    SECURITY_GROUP_ORGANISATION_OWNER,
 )
 from core.utils import (
     collect_request_fields,
@@ -31,8 +33,6 @@ from organisations.forms import (
     OrganisationInviteForm,
     OrganisationInviteContactForm,
     OrganisationInviteContactNewForm,
-    OrganisationInviteContactReviewForm,
-    OrganisationInviteCompleteForm,
 )
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
@@ -321,16 +321,20 @@ class OrganisationInviteView(BaseOrganisationInviteView):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
         context["case_id"] = self.kwargs["case_id"]
+        self.request.session["party_type"] = self.request.GET.get("party_type", "awaiting_approval")
+        self.request.session.modified = True
         return context
 
     def get_next_url(self, form=None):
         # Existing organisation (and contact(s))
         self.request.session["new_contact"] = False
-        next_url_kwargs = {
-            "case_id": self.kwargs["case_id"],
-            "organisation_id": form.cleaned_data.get("organisation_id"),
-        }
-        return reverse("organisations:invite-party-contacts-choice", kwargs=next_url_kwargs)
+        return reverse(
+            "organisations:invite-party-contacts-choice",
+            kwargs={
+                "case_id": self.kwargs["case_id"],
+                "organisation_id": form.cleaned_data.get("organisation_id"),
+            },
+        )
 
 
 class OrganisationInviteContactsView(BaseOrganisationInviteView):
@@ -374,11 +378,13 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
         return super().form_valid(form)
 
     def get_next_url(self, form=None):
-        next_url_kwargs = {
-            "case_id": self.kwargs["case_id"],
-            "organisation_id": self.kwargs["organisation_id"],
-        }
-        return reverse("organisations:invite-party-check", kwargs=next_url_kwargs)
+        return reverse(
+            "organisations:invite-party-check",
+            kwargs={
+                "case_id": self.kwargs["case_id"],
+                "organisation_id": self.kwargs["organisation_id"],
+            },
+        )
 
 
 class OrganisationInviteContactNewView(BaseOrganisationInviteView):
@@ -389,17 +395,13 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
-        try:
-            if self.request.session["new_contact"] and "selected_contacts" in self.request.session:
-                contact = self.client.contacts(self.request.session["selected_contacts"][0])
-                context["selected_contact_name"] = contact.name
-                context["selected_contact_email"] = contact.email
-                context["selected_organisation"] = self.client.organisations(
-                    contact.organisation
-                ).name
-        except KeyError:
-            # self.request.session["new_contact"] might not be set yet
-            pass
+
+        # self.request.session["new_contact"] might not be set yet
+        if self.request.session.get("new_contact") and "selected_contacts" in self.request.session:
+            contact = self.client.contacts(self.request.session["selected_contacts"][0])
+            context["selected_contact_name"] = contact.name
+            context["selected_contact_email"] = contact.email
+            context["selected_organisation"] = self.client.organisations(contact.organisation).name
 
         return context
 
@@ -423,23 +425,24 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
         return super().form_valid(form)
 
     def get_next_url(self, form=None):
-        next_url_kwargs = {
-            "case_id": self.kwargs["case_id"],
-            "organisation_id": self.kwargs["organisation_id"],
-        }
-        return reverse("organisations:invite-party-check", kwargs=next_url_kwargs)
+        return reverse(
+            "organisations:invite-party-check",
+            kwargs={
+                "case_id": self.kwargs["case_id"],
+                "organisation_id": self.kwargs["organisation_id"],
+            },
+        )
 
 
 class OrganisationInviteReviewView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_check.html"
-    form_class = OrganisationInviteContactReviewForm
+    form_class = ValidationForm
 
     def get_selected_contacts(self):
         selected_contacts = []
-        if "selected_contacts" in self.request.session:
-            for contact_id in self.request.session["selected_contacts"]:
-                contact = self.client.contacts(contact_id)
-                selected_contacts.append(contact)
+        for contact_id in self.request.session.get("selected_contacts", []):
+            contact = self.client.contacts(contact_id)
+            selected_contacts.append(contact)
         return selected_contacts
 
     def get_context_data(self, **kwargs):
@@ -457,10 +460,12 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
         return context
 
     def get_next_url(self, form=None):
-        next_url_kwargs = {
-            "case_id": self.kwargs["case_id"],
-        }
-        return reverse("organisations:invite-party-complete", kwargs=next_url_kwargs)
+        return reverse(
+            "organisations:invite-party-complete",
+            kwargs={
+                "case_id": self.kwargs["case_id"],
+            },
+        )
 
     def create_invitation(self, contact):
         new_invitation = self.client.invitations(
@@ -470,6 +475,8 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                 "contact": contact.id,
                 "invalid": True,
                 "invitation_type": 3,
+                "organisation_security_group": SECURITY_GROUP_ORGANISATION_OWNER,
+                "case_role_key": self.request.session.get("party_type", "awaiting_approval"),
             }
         )
         return new_invitation
@@ -484,22 +491,18 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
 
 class OrganisationInviteCompleteView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_complete.html"
-    form_class = OrganisationInviteCompleteForm
+    form_class = ValidationForm
 
     def clean_session_data(self):
         # clean up session data
-        try:
-            del self.request.session["new_contact"]
-            del self.request.session["selected_contacts"]
-        except:
-            pass
+        self.request.session.pop("new_contact", None)
+        self.request.session.pop("selected_contacts", None)
 
     def get_selected_contacts(self):
         selected_contacts = []
-        if "selected_contacts" in self.request.session:
-            for contact_id in self.request.session["selected_contacts"]:
-                contact = self.client.contacts(contact_id)
-                selected_contacts.append(contact)
+        for contact_id in self.request.session.get("selected_contacts", []):
+            contact = self.client.contacts(contact_id)
+            selected_contacts.append(contact)
         return selected_contacts
 
     def get_context_data(self, **kwargs):

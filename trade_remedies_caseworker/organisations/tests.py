@@ -4,8 +4,6 @@ from organisations.forms import (
     OrganisationInviteForm,
     OrganisationInviteContactForm,
     OrganisationInviteContactNewForm,
-    OrganisationInviteContactReviewForm,
-    OrganisationInviteCompleteForm,
 )
 
 
@@ -180,19 +178,3 @@ class TestOrganisationInviteContactNewForm(TestCase):
             form.errors.as_json(),
             '{"contact_email": [{"message": "invite_contact_invalid_email", "code": "invalid"}]}',
         )
-
-
-class TestOrganisationInviteContactReviewForm(TestCase):
-    def test_valid(self):
-        form = OrganisationInviteContactReviewForm(
-            data=["aor4nd0m-idoo-foro-test-purp05e5oooo"]
-        )  # selected contact (ids)
-        self.assertTrue(form.is_valid())
-
-
-class TestOrganisationInviteCompleteForm(TestCase):
-    def test_valid(self):
-        form = OrganisationInviteCompleteForm(
-            data=["aor4nd0m-idoo-foro-test-purp05e5oooo"]
-        )  # selected contact (ids)
-        self.assertTrue(form.is_valid())

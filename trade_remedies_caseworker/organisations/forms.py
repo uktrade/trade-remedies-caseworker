@@ -56,11 +56,3 @@ class OrganisationInviteContactNewForm(ValidationForm):
             "invalid": "invite_contact_invalid_email",
         }
     )
-
-
-class OrganisationInviteContactReviewForm(ValidationForm):
-    pass
-
-
-class OrganisationInviteCompleteForm(ValidationForm):
-    pass
