@@ -1,3 +1,18 @@
+Authority{%
+Review Letter of Authority
+the Letter of Authority
+for="reginterest-auth-choose-
+invitation.submission.primary_contact.user_id
+for="reginterest-auth-choose-contact-3
+aria-describedby="unverfied
+aria-hidden="true">You
+this).val().length
+version{%
+/notify/"></button
+Confirm{%
+Decline
+invitation_id
+apply:</p
 height="30" width="36">
 7.7-.2
 BETA

@@ -1,0 +1,113 @@
+{% extends 'v2/govuk/base.html' %}
+{% load get_item %}
+
+{% block page_title %}Verify Letter of Authority{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">1. Review interested party</span>
+        <h1 class="govuk-heading-xl">
+            Letter of Authority
+        </h1>
+        {% if not uploaded_loa_document.sufficient %}
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+                 data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        Review Letter of Authority
+                    </p>
+                    <p>You will need to review the Letter of Authority submission before you can verify this
+                        registration of
+                        interest.</p>
+                    <p><a class="govuk-notification-banner__link"
+                          href="/case/{{ invitation.case.id }}/submission/{{ invitation.submission.id }}/">Review
+                        submission</a></p>
+                </div>
+            </div>
+        {% endif %}
+        <div class="govuk-inset-text govuk-inset-text__reginterest">
+            <p><a href="{{ uploaded_loa_document.document.file }}"
+                  class="govuk-link--no-visited-state" target="_blank">View the Letter of Authority (opens
+                in a new tab)</a></p>
+            <p><a href="{{ uploaded_loa_document.document.file }}" target="_blank" download
+                  class="govuk-link--no-visited-state">Download the Letter of Authority</a></p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% with form_errors|get_item:"authorised_signatory" as error %}
+                <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                            <p>Who is the authorised signatory in the Letter of Authority?</p>
+                            <p>We collect this data so that it's easily available when needed in the future.</p>
+                        </legend>
+                        {% if error %}
+                            <p id="{{ name }}-error" class="govuk-error-message">
+                                {% for error in error %}
+                                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        {% if create_new_contact %}
+                            {# we know the caseworker wants to create a new contact #}
+                            {% include 'v2/component_macros/text_input.html' with value=invitation.submission.primary_contact.name label="Name" id="name" name="name" type="text" width="20" %}
+                            {% include 'v2/component_macros/text_input.html' with value=invitation.submission.primary_contact.email label="Email address" id="email" name="email" type="email" width="20" %}
+                        {% else %}
+                            <div class="govuk-radios" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="reginterest-auth-choose-contact"
+                                           name="authorised_signatory" type="radio"
+                                           value="{{ invitation.created_by.id }}"
+                                           {% if not uploaded_loa_document.sufficient %}disabled{% endif %}
+                                            {% if invitation.submission.primary_contact.user_id == invitation.created_by.id %}checked{% endif %}
+                                    >
+                                    <label class="govuk-label govuk-radios__label"
+                                           for="reginterest-auth-choose-contact">
+                                        {{ invitation.created_by.name }} - {{ invitation.created_by.email }}
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__divider">or</div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="reginterest-auth-choose-contact-3"
+                                           name="authorised_signatory" type="radio" value="new_contact"
+                                           {% if not uploaded_loa_document.sufficient %}disabled{% endif %}
+                                           {% if invitation.submission.primary_contact.user_id and invitation.submission.primary_contact.user_id != invitation.created_by.id %}checked{% endif %} %}
+                                    >
+                                    <label class="govuk-label govuk-radios__label"
+                                           for="reginterest-auth-choose-contact-3">
+                                        Add new contact
+                                    </label>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </fieldset>
+                </div>
+            {% endwith %}
+            <div class="govuk-button-group">
+                {% if uploaded_loa_document.sufficient %}
+                    <button class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                {% else %}
+                    <a class="govuk-button"
+                       href="/case/{{ invitation.case.id }}/submission/{{ uploaded_loa_document.submission }}/">
+                        Review submission
+                    </a>
+                {% endif %}
+                <a class="govuk-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-s ">Submission status:</h2>
+        <p class="govuk-body">{{ invitation.submission.status.name }}</p>
+    </div>
+{% endblock row_content %}

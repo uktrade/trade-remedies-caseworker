@@ -24,7 +24,7 @@
                     </div>
                     <textarea class="govuk-textarea govuk-js-character-count" id="explain_why_org_not_verified"
                               name="explain_why_org_not_verified" rows="5"
-                              aria-describedby="unverfied-reason-info unverfied-reason-hint"></textarea>
+                              aria-describedby="unverfied-reason-info unverfied-reason-hint">{% if invitation.submission.deficiency_notice_params.explain_why_contact_org_not_verified %}{{ invitation.submission.deficiency_notice_params.explain_why_contact_org_not_verified }}{% endif %}</textarea>
                     <div
                             class="govuk-hint govuk-character-count__message govuk-visually-hidden">
                         You can enter up to <span class="characters_remaining">200</span> characters

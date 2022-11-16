@@ -3,15 +3,24 @@ import json
 
 from django.shortcuts import redirect
 from django.urls import reverse
+from v2_api_client.shared.utlils import get_uploaded_loa_document
 
-from cases.v2.forms import BeenAbleToVerifyRepresentativeForm, ExplainUnverifiedRepresentativeForm
+from cases.v2.forms import (
+    AuthorisedSignatoryCreateNewContactForm,
+    AuthorisedSignatoryForm,
+    BeenAbleToVerifyRepresentativeForm,
+    ExplainUnverifiedRepresentativeForm,
+)
 from config.base_views import BaseCaseWorkerTemplateView, FormInvalidMixin, TaskListView
-from organisations.v2.forms import EditOrganisationForm
 
 
 class BaseOrganisationVerificationView(BaseCaseWorkerTemplateView):
+    invitation_fields = []
+
     def dispatch(self, request, *args, **kwargs):
-        self.invitation = self.client.invitations(kwargs["invitation_id"])
+        self.invitation = self.client.invitations(
+            kwargs["invitation_id"], fields=self.invitation_fields
+        )
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -47,8 +56,14 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                             kwargs={"invitation_id": self.invitation.id},
                         ),
                         "link_text": "Letter of Authority",
-                        "status": "Not Started",
-                        "ready_to_do": False,
+                        "status": "Complete"
+                        if self.invitation.submission.primary_contact
+                        else "Not Started",
+                        "ready_to_do": True
+                        if self.invitation.submission.deficiency_notice_params
+                        and "contact_org_verify"
+                        in self.invitation.submission.deficiency_notice_params
+                        else False,
                     },
                 ],
             },
@@ -57,12 +72,21 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                 "sub_steps": [
                     {
                         "link": reverse(
-                            "verify_organisation_verify_representative",
+                            "verify_organisation_verify_confirm",
+                            kwargs={"invitation_id": self.invitation.id},
+                        )
+                        if self.invitation.submission.deficiency_notice_params.contact_org_verify
+                        else reverse(
+                            "verify_organisation_verify_confirm_declined",
                             kwargs={"invitation_id": self.invitation.id},
                         ),
                         "link_text": "Submit decision",
-                        "status": "Cannot Start Yet",
-                        "ready_to_do": False,
+                        "status": "Not Started"
+                        if self.invitation.submission.primary_contact
+                        else "Cannot start yet",
+                        "ready_to_do": True
+                        if self.invitation.submission.primary_contact
+                        else False,
                     },
                 ],
             },
@@ -149,9 +173,74 @@ class OrganisationVerificationVerifyRepresentative(
             )
 
 
-class OrganisationVerificationVerifyLetterOfAuthority(BaseCaseWorkerTemplateView):
-    form_class = EditOrganisationForm
-    template_name = "v2/organisations/edit_organisation.html"
+class OrganisationVerificationVerifyLetterOfAuthority(
+    BaseOrganisationVerificationView, FormInvalidMixin
+):
+    template_name = "v2/organisation_verification/verify_letter_of_authority.html"
+    form_class = AuthorisedSignatoryForm
+    invitation_fields = ["case", "submission", "created_by"]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["uploaded_loa_document"] = get_uploaded_loa_document(self.invitation.submission)
+        return context
+
+    def form_valid(self, form):
+        if form.cleaned_data["authorised_signatory"] == "new_contact":
+            # we want to create a new contact for this LOA
+            return redirect(
+                reverse(
+                    "verify_organisation_verify_letter_of_authority_create_new_contact",
+                    kwargs={"invitation_id": self.kwargs["invitation_id"]},
+                )
+            )
+        else:
+            user = self.client.users(form.cleaned_data["authorised_signatory"], fields=["contact"])
+            self.client.submissions(self.invitation.submission.id).update(
+                {"primary_contact": user.contact.id}
+            )
+
+            return redirect(
+                reverse(
+                    "verify_organisation_task_list",
+                    kwargs={"invitation_id": self.invitation.id},
+                )
+            )
+
+
+class OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact(
+    OrganisationVerificationVerifyLetterOfAuthority
+):
+    form_class = AuthorisedSignatoryCreateNewContactForm
+    invitation_fields = OrganisationVerificationVerifyLetterOfAuthority.invitation_fields + [
+        "organisation_id"
+    ]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["create_new_contact"] = True
+        return context
+
+    def form_valid(self, form):
+        # creating a new contact
+        new_contact = self.client.contacts(form.cleaned_data)
+
+        # assigning them to the inviter's organisation
+        new_contact.change_organisation(self.invitation.organisation_id)
+
+        # assigning them to the case
+        new_contact.add_to_case(case_id=self.invitation.case.id, primary=True)
+
+        self.client.submissions(self.invitation.submission.id).update(
+            {"primary_contact": new_contact.id}
+        )
+
+        return redirect(
+            reverse(
+                "verify_organisation_task_list",
+                kwargs={"invitation_id": self.invitation.id},
+            )
+        )
 
 
 class OrganisationVerificationExplainUnverifiedRepresentativeView(
@@ -175,3 +264,55 @@ class OrganisationVerificationExplainUnverifiedRepresentativeView(
         return redirect(
             reverse("verify_organisation_task_list", kwargs={"invitation_id": self.invitation.id})
         )
+
+
+class OrganisationVerificationConfirmView(BaseOrganisationVerificationView):
+    template_name = "v2/organisation_verification/confirm.html"
+    invitation_fields = ["contact", "submission", "organisation_name", "created_by"]
+
+    def post(self, request, *args, **kwargs):
+        # the caseworker is approving this invite
+        self.client.submissions(self.invitation.submission.id).update_submission_status(
+            "sufficient"
+        )
+        return redirect(
+            reverse(
+                "verify_organisation_verify_approved", kwargs={"invitation_id": self.invitation.id}
+            )
+        )
+
+
+class OrganisationVerificationApprovedView(BaseOrganisationVerificationView):
+    template_name = "v2/organisation_verification/approved.html"
+    invitation_fields = ["case", "organisation_name", "contact"]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inviters_name = self.invitation.organisation_name
+        context["possessive_inviters_organisation_name"] = (
+            f"{inviters_name}'" if inviters_name.endswith("s") else f"{inviters_name}'s"
+        )
+        return context
+
+
+class OrganisationVerificationConfirmDeclinedView(BaseOrganisationVerificationView):
+    template_name = "v2/organisation_verification/confirm.html"
+    invitation_fields = ["contact", "submission", "organisation_name", "created_by"]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["declined"] = True
+        return context
+
+    def post(self, request, *args, **kwargs):
+        # the caseworker is declining/rejecting the invite
+        self.client.submissions(self.invitation.submission.id).update_submission_status("deficient")
+        return redirect(
+            reverse(
+                "verify_organisation_verify_declined", kwargs={"invitation_id": self.invitation.id}
+            )
+        )
+
+
+class OrganisationVerificationDeclinedView(OrganisationVerificationApprovedView):
+    template_name = "v2/organisation_verification/declined.html"

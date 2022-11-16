@@ -17,3 +17,21 @@ class BeenAbleToVerifyRepresentativeForm(ValidationForm):
 
 class ExplainUnverifiedRepresentativeForm(ValidationForm):
     explain_why_org_not_verified = forms.CharField()
+
+
+class AuthorisedSignatoryForm(ValidationForm):
+    authorised_signatory = forms.CharField(
+        error_messages={"required": "caseworker_review_invite_no_contact_selected"}
+    )
+
+
+class AuthorisedSignatoryCreateNewContactForm(ValidationForm):
+    name = forms.CharField(
+        error_messages={"required": "caseworker_review_invite_new_contact_no_name"}
+    )
+    email = forms.EmailField(
+        error_messages={
+            "required": "caseworker_review_invite_new_contact_no_email",
+            "invalid": "caseworker_review_invite_new_contact_incorrect_email",
+        }
+    )

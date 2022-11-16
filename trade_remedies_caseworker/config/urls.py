@@ -16,6 +16,9 @@ Including another URLconf
 from django.urls import include, path
 
 from cases.v2.views import organisation_verification_process
+from cases.v2.views.organisation_verification_process import \
+    OrganisationVerificationExplainUnverifiedRepresentativeView, \
+    OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact
 from cases.views import CasesView
 from core import views as core_views
 from login import views as login_views
@@ -78,7 +81,32 @@ urlpatterns += [
     ),
     path(
         "verify_organisation_verify_explain_org_not_verified/<uuid:invitation_id>/",
-        organisation_verification_process.OrganisationVerificationExplainUnverifiedRepresentativeView.as_view(),
+        OrganisationVerificationExplainUnverifiedRepresentativeView.as_view(),
         name="verify_organisation_verify_explain_org_not_verified",
+    ),
+    path(
+        "verify_organisation_verify_letter_of_authority_create_new_contact/<uuid:invitation_id>/",
+        OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact.as_view(),
+        name="verify_organisation_verify_letter_of_authority_create_new_contact",
+    ),
+    path(
+        "verify_organisation_verify_confirm/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationConfirmView.as_view(),
+        name="verify_organisation_verify_confirm",
+    ),
+    path(
+        "verify_organisation_verify_approved/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationApprovedView.as_view(),
+        name="verify_organisation_verify_approved",
+    ),
+    path(
+        "verify_organisation_verify_confirm_declined/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationConfirmDeclinedView.as_view(),
+        name="verify_organisation_verify_confirm_declined",
+    ),
+    path(
+        "verify_organisation_verify_declined/<uuid:invitation_id>/",
+        organisation_verification_process.OrganisationVerificationDeclinedView.as_view(),
+        name="verify_organisation_verify_declined",
     ),
 ]

@@ -23,6 +23,9 @@
                         {{ label_one }}
                     </label>
                 </div>
+                {% if or_divider %}
+                    <div class="govuk-radios__divider">or</div>
+                {% endif %}
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="{{ id_two }}" name="{{ name }}"
                            type="radio" value="{{ value_two }}" {% if value == value_two %}checked{% endif %}>

@@ -10,8 +10,8 @@
             Verify representative
         </h1>
         <div class="govuk-inset-text govuk-inset-text__reginterest">
-            <strong>{{ invited_organisation.name }}</strong> has been approved on to {{ number_of_approved_cases }} case
-            {% if number_of_approved_cases > 1 or number_of_approved_cases == 0 %}s{% endif %} <br>
+            <strong>{{ invited_organisation.name }}</strong> has been approved on to {{ number_of_approved_cases }}
+            case{% if number_of_approved_cases > 1 or number_of_approved_cases == 0 %}s{% endif %} <br>
             {% if last_approval %}
                 The last approval was on <strong>{{ last_approval.validated_at|date:'d M y' }}</strong> by
                 <strong>{{ last_approval.validated_by.name }}</strong><br>
@@ -185,14 +185,14 @@
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="been_able_to_verify_representative_1"
-                                   name="been_able_to_verify_representative" type="radio" value="yes">
+                                   name="been_able_to_verify_representative" type="radio" value="yes" {% if invitation.submission.deficiency_notice_params.contact_org_verify == True %}checked{% endif %}>
                             <label class="govuk-label govuk-radios__label" for="been_able_to_verify_representative_1">
                                 Yes, I have been able to verify the representative
                             </label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="been_able_to_verify_representative_2"
-                                   name="been_able_to_verify_representative" type="radio" value="no">
+                                   name="been_able_to_verify_representative" type="radio" value="no" {% if invitation.submission.deficiency_notice_params.contact_org_verify == False %}checked{% endif %}>
                             <label class="govuk-label govuk-radios__label" for="been_able_to_verify_representative_2">
                                 No, I have not been able to verify the representative
                             </label>
