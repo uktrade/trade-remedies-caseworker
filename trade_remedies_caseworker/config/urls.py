@@ -16,9 +16,10 @@ Including another URLconf
 from django.urls import include, path
 
 from cases.v2.views import organisation_verification_process
-from cases.v2.views.organisation_verification_process import \
-    OrganisationVerificationExplainUnverifiedRepresentativeView, \
-    OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact
+from cases.v2.views.organisation_verification_process import (
+    OrganisationVerificationExplainUnverifiedRepresentativeView,
+    OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact,
+)
 from cases.views import CasesView
 from core import views as core_views
 from login import views as login_views
