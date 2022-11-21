@@ -479,6 +479,10 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                 "case_role_key": self.request.session.get("party_type", "awaiting_approval"),
             }
         )
+        case_object = {"id": 123}
+
+        case_invitations = self.client.invitations(case_id=case_object["id"])
+
         return new_invitation
 
     def post(self, request, *args, **kwargs):

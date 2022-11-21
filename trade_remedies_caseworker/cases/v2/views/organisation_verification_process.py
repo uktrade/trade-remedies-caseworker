@@ -75,7 +75,10 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                             "verify_organisation_verify_confirm",
                             kwargs={"invitation_id": self.invitation.id},
                         )
-                        if self.invitation.submission.deficiency_notice_params.contact_org_verify
+                        if self.invitation.submission.deficiency_notice_params
+                        and self.invitation.submission.deficiency_notice_params.get(
+                            "contact_org_verify", False
+                        )
                         else reverse(
                             "verify_organisation_verify_confirm_declined",
                             kwargs={"invitation_id": self.invitation.id},
@@ -146,7 +149,8 @@ class OrganisationVerificationVerifyRepresentative(
                             "contact_org_verify_at": datetime.datetime.now().isoformat(),
                         }
                     )
-                }
+                },
+                fields=["id"],
             )
             return redirect(
                 reverse(
@@ -163,7 +167,8 @@ class OrganisationVerificationVerifyRepresentative(
                             "contact_org_verify_at": datetime.datetime.now().isoformat(),
                         }
                     )
-                }
+                },
+                fields=["id"],
             )
             return redirect(
                 reverse(
