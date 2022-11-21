@@ -143,7 +143,7 @@
                 <tbody>
                 {% for invitation in sent_tra_case_invitations %}
                     <tr>
-                        <td>{% format_date invitation.sent_at '%d %b %Y %H:%M:%S' %}</td>
+                        <td>{{ invitation.sent_at|date:'d D Y - H:i:s ' }}</td>
                         <td>{{ invitation.created_by_name }}</td>
                         <td>{{ invitation.contact.organisation_name }}</td>
                         <td>{{ invitation.contact.name }}</td>

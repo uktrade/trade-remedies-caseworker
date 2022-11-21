@@ -456,10 +456,13 @@ class PartiesView(CaseBaseView):
             parties.append(_base)
 
         client = TRSAPIClient(token=self.request.user.token)
-        case = client.cases(self.case_id)
-        case_invitations = case.get_invitations()
+        case_invitations = client.invitations(case_id=self.case_id, fields=[
+            "invitation_type",
+            "sent_at",
+            "contact",
+        ])
         sent_tra_case_invitations = [
-            each for each in case_invitations if each["is_created_by_tra"] and each["sent_at"]
+            each for each in case_invitations if each.invitation_type == 3 and each.sent_at
         ]
 
         return {
