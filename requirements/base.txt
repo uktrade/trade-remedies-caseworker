@@ -22,7 +22,7 @@ certifi==2021.5.30
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-django==3.2.15
+django==3.2.16
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -95,7 +95,9 @@ marshmallow==3.6.1
 pyheck==0.1.5
     # via dotwiz
 python-dateutil==2.8.2
-    # via botocore
+    # via
+    #   botocore
+    #   v2-api-client
 pytz==2021.1
     # via
     #   -r requirements.in/base.in
