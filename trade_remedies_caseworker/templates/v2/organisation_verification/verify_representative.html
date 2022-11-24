@@ -22,8 +22,7 @@
         </div>
         <div class="address-card">
             <div class="address-container">
-                <h3 class="govuk-heading-m"><a href="../orgs/org-bluesteel"
-                                               class="govuk-link--no-visited-state">{{ invited_organisation.name }}</a>
+                <h3 class="govuk-heading-m"><a href="/organisations/{{ invited_organisation }}" class="govuk-link--no-visited-state">{{ invited_organisation.name }}</a>
                     <p class="right-aligned-link govuk-heading-s">
                         <a href="{% url 'organisations:v2_edit_organisation' organisation_id=invited_organisation.id %}?redirect={{ request.path }}"
                            class="govuk-link--no-visited-state">Edit</a>
@@ -31,20 +30,32 @@
                 </h3>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-1">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Case contact:</dt>
+                        <dt class="govuk-summary-list__key">Invite accepted by:</dt>
                         <dd class="govuk-summary-list__value">{{ invitation.contact.name }}<br>
                             {{ invitation.contact.email }}
                         </dd>
                     </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Invited user:</dt>
-                        <dd class="govuk-summary-list__value">{{ invitation.contact.name }}<br>
-                            {{ invitation.contact.email }}
-                        </dd>
-                    </div>
+                    {% if invitation.contact.name != invitation.name or invitation.contact.email != invitation.email %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Invite sent to:</dt>
+                            <dd class="govuk-summary-list__value">{{ invitation.name }}<br>
+                                {{ invitation.email }}
+                            </dd>
+                        </div>
+                    {% endif %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Address:</dt>
-                        <dd class="govuk-summary-list__value">{{ invited_organisation.address|default_if_none:"" }}<br>
+                        <dd class="govuk-summary-list__value">
+                            {{ invited_organisation.address|default_if_none:"" }}
+                            {% if invited_organisation.post_code %}
+                                <br>
+                                {{ invited_organisation.post_code }}
+                            {% endif %}
+                            {% if invited_organisation.country_name %}
+                                <br>
+                                {{ invited_organisation.country_name }}
+                            {% endif %}
+                            <br>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -112,7 +123,7 @@
                             </div>
                         </details>
                     {% else %}
-                        <p>Cases: {{ user_cases|length }}</p>
+                        <p>Cases: 0</p>
                     {% endif %}
                 </div>
                 <div>
@@ -185,14 +196,16 @@
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="been_able_to_verify_representative_1"
-                                   name="been_able_to_verify_representative" type="radio" value="yes" {% if invitation.submission.deficiency_notice_params.contact_org_verify == True %}checked{% endif %}>
+                                   name="been_able_to_verify_representative" type="radio" value="yes"
+                                   {% if invitation.submission.deficiency_notice_params.contact_org_verify == True %}checked{% endif %}>
                             <label class="govuk-label govuk-radios__label" for="been_able_to_verify_representative_1">
                                 Yes, I have been able to verify the representative
                             </label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="been_able_to_verify_representative_2"
-                                   name="been_able_to_verify_representative" type="radio" value="no" {% if invitation.submission.deficiency_notice_params.contact_org_verify == False %}checked{% endif %}>
+                                   name="been_able_to_verify_representative" type="radio" value="no"
+                                   {% if invitation.submission.deficiency_notice_params.contact_org_verify == False %}checked{% endif %}>
                             <label class="govuk-label govuk-radios__label" for="been_able_to_verify_representative_2">
                                 No, I have not been able to verify the representative
                             </label>
