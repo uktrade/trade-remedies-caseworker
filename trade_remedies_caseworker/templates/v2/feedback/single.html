@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block main_content %}
+    <link rel="stylesheet" href="{% static 'v2/stylesheets/application.css' %}">
     <style>
         dt {
             color: black !important;
@@ -14,6 +15,7 @@
     </style>
     <div class="grid-row">
         <div class="colum-full-nav">
+            <a href="{% url 'view_all_feedback' %}">View all feedback</a>
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key bold">

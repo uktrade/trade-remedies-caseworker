@@ -201,19 +201,27 @@ class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClient
         # Get workbook active sheet
         # from the active attribute.
         sheet = wb.active
+
         headers = [
             "Date submitted",
             "User logged in",
             "URL",
             "Journey",
             "Rating",
-            "What didn't work so well",
-            "What didn't work so well (other)",
+            "Process is not clear",
+            "Not enough guidance",
+            "I was asked for information I don’t have",
+            "I couldn’t find the information I wanted",
+            "Other issue",
+            "What other issues did you have? ",
             "How could we improve this service",
         ]
         sheet.append(headers)
 
         for feedback_object in feedback_objects:
+            if not feedback_object.what_didnt_work_so_well:
+                feedback_object.what_didnt_work_so_well = []
+
             sheet.append(
                 [
                     feedback_object.created_at.strftime(GDS_DATETIME_STRING),
@@ -221,7 +229,19 @@ class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClient
                     feedback_object.url,
                     feedback_object.journey,
                     feedback_object.verbose_rating_name,
-                    "\n".join(feedback_object.verbose_what_didnt_go_so_well),
+                    "True"
+                    if "process_not_clear" in feedback_object.what_didnt_work_so_well
+                    else "False",
+                    "True"
+                    if "not_enough_guidance" in feedback_object.what_didnt_work_so_well
+                    else "False",
+                    "True"
+                    if "asked_for_info_didnt_have" in feedback_object.what_didnt_work_so_well
+                    else "False",
+                    "True"
+                    if "didnt_get_information_i_expected" in feedback_object.what_didnt_work_so_well
+                    else "False",
+                    "True" if "other_issue" in feedback_object.what_didnt_work_so_well else "False",
                     feedback_object.what_didnt_work_so_well_other,
                     feedback_object.how_could_we_improve_service,
                 ]
