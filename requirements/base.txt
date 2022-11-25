@@ -95,7 +95,9 @@ marshmallow==3.6.1
 pyheck==0.1.5
     # via dotwiz
 python-dateutil==2.8.2
-    # via botocore
+    # via
+    #   botocore
+    #   v2-api-client
 pytz==2021.1
     # via
     #   -r requirements.in/base.in
