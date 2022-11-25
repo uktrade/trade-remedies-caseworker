@@ -3,6 +3,7 @@ from django.urls import path
 from cases.views import SubmissionCreateView
 from core.views import (
     EditUserGroup,
+    ExportFeedbackView,
     FeedbackFormExportView,
     FeedbackFormsView,
     FeedbackListView,
@@ -39,8 +40,13 @@ urlpatterns = [
     path("add_user_to_group/<str:group_name>/", EditUserGroup.as_view(), name="edit_user_group"),
     path("view_all_feedback/", FeedbackListView.as_view(), name="view_all_feedback"),
     path(
-        "view_single_feedback/<uuid:feedback_id>x",
+        "view_single_feedback/<uuid:feedback_id>",
         SingleFeedbackView.as_view(),
         name="view_single_feedback",
+    ),
+    path(
+        "export_feedback_objects",
+        ExportFeedbackView.as_view(),
+        name="export_feedback_objects",
     ),
 ]

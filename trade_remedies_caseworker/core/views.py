@@ -1,6 +1,9 @@
+import datetime
+import io
 import json
 import os
 
+import openpyxl
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -9,6 +12,7 @@ from django.views.generic import TemplateView, View
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
+from config.settings.base import GDS_DATETIME_STRING
 from core.base import GroupRequiredMixin
 from core.constants import (
     SECURITY_GROUPS_TRA,
@@ -183,3 +187,54 @@ class SingleFeedbackView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, A
         context = super().get_context_data(**kwargs)
         context["feedback"] = self.client.feedback(kwargs["feedback_id"])
         return context
+
+
+class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClientMixin):
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
+
+    def get(self, request, *args, **kwargs):
+        feedback_objects = self.client.feedback()
+        feedback_objects = sorted(feedback_objects, key=lambda x: x.created_at)
+
+        wb = openpyxl.Workbook()
+
+        # Get workbook active sheet
+        # from the active attribute.
+        sheet = wb.active
+        headers = [
+            "Date submitted",
+            "User logged in",
+            "URL",
+            "Journey",
+            "Rating",
+            "What didn't work so well",
+            "What didn't work so well (other)",
+            "How could we improve this service",
+        ]
+        sheet.append(headers)
+
+        for feedback_object in feedback_objects:
+            sheet.append(
+                [
+                    feedback_object.created_at.strftime(GDS_DATETIME_STRING),
+                    "Yes" if feedback_object.logged_in else "No",
+                    feedback_object.url,
+                    feedback_object.journey,
+                    feedback_object.verbose_rating_name,
+                    "\n".join(feedback_object.verbose_what_didnt_go_so_well),
+                    feedback_object.what_didnt_work_so_well_other,
+                    feedback_object.how_could_we_improve_service,
+                ]
+            )
+
+        excel_io = io.BytesIO()
+        wb.save(excel_io)
+        wb.close()
+
+        response = HttpResponse(excel_io.getvalue(), content_type="application/vnd.ms-excel")
+        response[
+            "Content-Disposition"
+        ] = f"""attachment; filename=trs_feedback_export_{datetime.datetime.now().strftime(
+            GDS_DATETIME_STRING
+        ).replace(' ', '_').replace(':', '-')}.xlsx"""
+        return response
