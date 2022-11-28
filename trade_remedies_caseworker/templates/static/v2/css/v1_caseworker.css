@@ -5253,19 +5253,6 @@ ul.name-value-list > li .value {
     font-size: 20px
 }
 
-dl dt {
-    float: left;
-    clear: both;
-    width: 100px;
-    color: #bfc1c3;
-    font-size: 17px;
-    margin: 2px 5px 10px 0
-}
-
-dl dd {
-    float: left
-}
-
 .right-of-tabs {
     position: absolute;
     right: 49px;

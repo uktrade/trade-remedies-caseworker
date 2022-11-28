@@ -5,7 +5,7 @@
         <p>Approval this request will allow you to email an invitation to this user.
         </p>
         <p>When the user accepts the invitation and you have verified their organisation, they will be able to submit evidence to the case.</p>
-        <p>The verification process for this party is not yet complete - <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Verification Process</a></p>
+        {% if submission.status.name == "Invite requested" %}<p>The verification process for this party is not yet complete - <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Verification Process</a></p>{% endif %}
     </div>
 {% endblock %}
 {% block lower_info_block %}

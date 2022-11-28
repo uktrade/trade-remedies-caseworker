@@ -1,3 +1,9 @@
+v2/css/v1_caseworker.css' %
+is_admin
+Authority{%
+Review Letter of Authority
+for="reginterest-auth-choose-contact-
+for="reginterest-auth-choose-contact-3
 invited_organisation.country_name
 case</a>
 height="30" width="36">

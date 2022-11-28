@@ -59,11 +59,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                         "status": "Complete"
                         if self.invitation.submission.primary_contact
                         else "Not Started",
-                        "ready_to_do": True
-                        if self.invitation.submission.deficiency_notice_params
-                        and "contact_org_verify"
-                        in self.invitation.submission.deficiency_notice_params
-                        else False,
+                        "ready_to_do": True,
                     },
                 ],
             },
@@ -111,13 +107,21 @@ class OrganisationVerificationVerifyRepresentative(
         context["inviter_organisation"] = self.client.organisations(self.invitation.organisation)
 
         organisation_case_roles = self.client.organisation_case_roles(
-            organisation_id=invited_organisation.id
+            organisation_id=self.invitation.contact.organisation
         )
         approved_roles = [each for each in organisation_case_roles if each.validated_at]
         context["invited_approved_organisation_case_roles"] = organisation_case_roles
         context["number_of_approved_cases"] = len(approved_roles)
         context["last_approval"] = (
             sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
+        )
+        context["approved_representative_cases"] = [
+            each for each in invited_organisation.representative_cases if each.validated
+        ]
+        context["last_rejection"] = (
+            sorted(invited_organisation.rejected_cases, key=lambda x: x.date_rejected)[0]
+            if invited_organisation.rejected_cases
+            else None
         )
 
         seen_org_case_combos = []
@@ -144,6 +148,7 @@ class OrganisationVerificationVerifyRepresentative(
                         {
                             "contact_org_verify": True,
                             "contact_org_verify_at": datetime.datetime.now().isoformat(),
+                            "contact_org_verify_by": self.request.user.email,
                         }
                     )
                 },
@@ -162,6 +167,7 @@ class OrganisationVerificationVerifyRepresentative(
                         {
                             "contact_org_verify": False,
                             "contact_org_verify_at": datetime.datetime.now().isoformat(),
+                            "contact_org_verify_by": self.request.user.email,
                         }
                     )
                 },
@@ -180,7 +186,7 @@ class OrganisationVerificationVerifyLetterOfAuthority(
 ):
     template_name = "v2/organisation_verification/verify_letter_of_authority.html"
     form_class = AuthorisedSignatoryForm
-    invitation_fields = ["submission", "created_by"]
+    invitation_fields = ["submission", "created_by", "organisation", "case"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -197,9 +203,9 @@ class OrganisationVerificationVerifyLetterOfAuthority(
                 )
             )
         else:
-            user = self.client.users(form.cleaned_data["authorised_signatory"], fields=["contact"])
             self.client.submissions(self.invitation.submission.id).update(
-                {"primary_contact": user.contact.id}
+                {"primary_contact": form.cleaned_data["authorised_signatory"]},
+                fields=["primary_contact"],
             )
 
             return redirect(
@@ -234,7 +240,7 @@ class OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact(
         new_contact.add_to_case(case_id=self.invitation.case.id, primary=True)
 
         self.client.submissions(self.invitation.submission.id).update(
-            {"primary_contact": new_contact.id}
+            {"primary_contact": new_contact.id}, fields=["primary_contact"]
         )
 
         return redirect(
@@ -258,11 +264,11 @@ class OrganisationVerificationExplainUnverifiedRepresentativeView(
                     {
                         "explain_why_contact_org_not_verified": form.cleaned_data[
                             "explain_why_org_not_verified"
-                        ],
-                        "contact_org_not_verified_date": datetime.datetime.now().isoformat(),
+                        ]
                     }
                 )
-            }
+            },
+            fields=["deficiency_notice_params"],
         )
         return redirect(
             reverse("verify_organisation_task_list", kwargs={"invitation_id": self.invitation.id})

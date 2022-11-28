@@ -10,32 +10,32 @@
             Letter of Authority
         </h1>
         {% if not uploaded_loa_document.sufficient %}
-            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
-                 data-module="govuk-notification-banner">
-                <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                        Important
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        Review Letter of Authority
-                    </p>
-                    <p>You will need to review the Letter of Authority submission before you can verify this
-                        registration of
-                        interest.</p>
-                    <p><a class="govuk-notification-banner__link"
-                          href="/case/{{ invitation.case.id }}/submission/{{ invitation.submission.id }}/">Review
-                        submission</a></p>
+            <div class="address-card">
+                <div class="address-container">
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            Review Letter of Authority submission
+                        </strong>
+                        <p class="govuk-warning-text__text-p">The Letter of Authority submission must be considered
+                            sufficient before you can proceed with this step.</p>
+                        <p class="govuk-warning-text__text-p">
+                            <a class="govuk-button" data-module="govuk-button"
+                               href="/case/{{ invitation.case.id }}/submission/{{ invitation.submission.id }}/">
+                                Review submission
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
         {% endif %}
         <div class="govuk-inset-text govuk-inset-text__reginterest">
             <p><a href="{{ uploaded_loa_document.document.file }}"
-                  class="govuk-link--no-visited-state" target="_blank">View the Letter of Authority (opens
-                in a new tab)</a></p>
-            <p><a href="{{ uploaded_loa_document.document.file }}" target="_blank" download
-                  class="govuk-link--no-visited-state">Download the Letter of Authority</a></p>
+                  class="govuk-link--no-visited-state" target="_blank">
+                {% if uploaded_loa_document.document.extension == "pdf" or uploaded_loa_document.document.extension == "png" %}
+                    View the Letter of Authority{% else %}Download the Letter of Authority
+                {% endif %}</a></p>
         </div>
 
         <form method="post" novalidate>
@@ -60,24 +60,24 @@
                             {% include 'v2/component_macros/text_input.html' with value=invitation.submission.primary_contact.email label="Email address" id="email" name="email" type="email" width="20" %}
                         {% else %}
                             <div class="govuk-radios" data-module="govuk-radios">
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="reginterest-auth-choose-contact"
-                                           name="authorised_signatory" type="radio"
-                                           value="{{ invitation.created_by.id }}"
-                                           {% if not uploaded_loa_document.sufficient %}disabled{% endif %}
-                                            {% if invitation.submission.primary_contact.user_id == invitation.created_by.id %}checked{% endif %}
-                                    >
-                                    <label class="govuk-label govuk-radios__label"
-                                           for="reginterest-auth-choose-contact">
-                                        {{ invitation.created_by.name }} - {{ invitation.created_by.email }}
-                                    </label>
-                                </div>
+                                {% for inviting_contact in invitation.organisation.contacts %}
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               id="reginterest-auth-choose-contact-{{ forloop.counter }}"
+                                               name="authorised_signatory" type="radio"
+                                               value="{{ inviting_contact.id }}"
+                                               {% if invitation.submission.primary_contact.id == inviting_contact.id %}checked{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label"
+                                               for="reginterest-auth-choose-contact-{{ forloop.counter }}">
+                                            {{ inviting_contact.name }} - {{ inviting_contact.email }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
                                 <div class="govuk-radios__divider">or</div>
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="reginterest-auth-choose-contact-3"
                                            name="authorised_signatory" type="radio" value="new_contact"
-                                           {% if not uploaded_loa_document.sufficient %}disabled{% endif %}
-                                           {% if invitation.submission.primary_contact.user_id and invitation.submission.primary_contact.user_id != invitation.created_by.id %}checked{% endif %} %}
                                     >
                                     <label class="govuk-label govuk-radios__label"
                                            for="reginterest-auth-choose-contact-3">
@@ -90,16 +90,10 @@
                 </div>
             {% endwith %}
             <div class="govuk-button-group">
-                {% if uploaded_loa_document.sufficient %}
-                    <button class="govuk-button" data-module="govuk-button">
-                        Continue
-                    </button>
-                {% else %}
-                    <a class="govuk-button"
-                       href="/case/{{ invitation.case.id }}/submission/{{ uploaded_loa_document.submission }}/">
-                        Review submission
-                    </a>
-                {% endif %}
+                <button class="govuk-button" data-module="govuk-button"
+                        {% if not uploaded_loa_document.sufficient %}disabled{% endif %}>
+                    Continue
+                </button>
                 <a class="govuk-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">
                     Cancel
                 </a>
@@ -108,6 +102,17 @@
     </div>
     <div class="govuk-grid-column-one-third">
         <h2 class="govuk-heading-s ">Submission status:</h2>
-        <p class="govuk-body">{{ invitation.submission.status.name }}</p>
+        <p class="govuk-body">
+
+            {% if uploaded_loa_document.sufficient %}
+                Sufficient
+            {% else %}
+                {% if uploaded_loa_document.deficient %}
+                    Deficient
+                {% elif not ploaded_loa_document.sufficient and not  uploaded_loa_document.deficient %}
+                    Not reviewed
+                {% endif %}
+            {% endif %}
+        </p>
     </div>
 {% endblock row_content %}
