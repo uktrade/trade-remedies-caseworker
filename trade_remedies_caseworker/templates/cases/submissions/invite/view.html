@@ -1,25 +1,41 @@
 {% extends '../review.html' %}
 {% load set %}
 {% block upper_info_block %}
-    <div class="info">
-        <p>Approval this request will allow you to email an invitation to this user.
-        </p>
-        <p>When the user accepts the invitation and you have verified their organisation, they will be able to submit evidence to the case.</p>
-        {% if submission.status.name == "Invite requested" %}<p>The verification process for this party is not yet complete - <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Verification Process</a></p>{% endif %}
-    </div>
+    {% if not submission.status.review_ok and not submission.status.version %}
+        {# we only want to show this box if the invite has not already been approved or declined #}
+        <div class="info">
+            {% if submission.status.sent %}
+                {# The invitation has been sent but not accepted #}
+                <p><span class="bold">{{ submission.organisation.name }}</span> has invited <span
+                        class="bold">{{ invites.0.contact.organisation.name }}</span> to represent them in this case.
+                </p>
+                <p>The invite has not yet been accepted by {{ invites.0.contact.organisation.name }}.</p>
+                <a class="button" disabled href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
+                    invite</a>
+            {% elif submission.status.received %}
+                {# The invitation has been accepted but not reviewed by caseworkers yet #}
+                <p><span class="bold">{{ invites.0.contact.organisation.name }}</span> has accepted <strong
+                        class="bold">{{ submission.organisation.name }}'s invite.</strong></p>
+                <p>Review the invite to decide if {{ invites.0.contact.organisation.name }} can act as a representative
+                    in this case.</p>
+                <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
+                    invite</a>
+            {% endif %}
+        </div>
+    {% endif %}
 {% endblock %}
 {% block lower_info_block %}
     <div class="info">
         <p>
-            <span class="bold">{{submission.created_by.name}}
+            <span class="bold">{{ submission.created_by.name }}
             </span> of
-            <span class="bold">{{submission.created_by.organisation.name}}
-            </span> is requesting access for
-            <span class="bold">{{invites.0.contact.name}}
-            </span> of
-            <span class="bold">{{invites.0.contact.organisation.name}}
+            <span class="bold">{{ submission.created_by.organisation.name }}
+            </span> has invited
+            <span class="bold">{{ invites.0.contact.name }}
+            </span> from
+            <span class="bold">{{ invites.0.contact.organisation.name }}
             </span> to represent
-            <span class="bold">{{submission.organisation.name}}
+            <span class="bold">{{ submission.organisation.name }}
             </span> in this case.
         </p>
     </div>

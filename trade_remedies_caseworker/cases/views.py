@@ -949,8 +949,10 @@ class SubmissionView(CaseBaseView):
                     }
                 )
 
-            if btn_value == "sufficient":
-                # Set the submission to sufficient
+            if btn_value == "sufficient" and \
+                    not submission["type"]["id"] == SUBMISSION_TYPE_THIRD_PARTY:
+                # Set the submission to sufficient, but only if it is not a 3rd Party Invite as
+                # that is handled elsewhere now
                 result = self._client.set_submission_state(case_id, submission_id, btn_value)
                 return_data.update({"alert": "Submission approved"})
                 submission_type = submission["type"]
