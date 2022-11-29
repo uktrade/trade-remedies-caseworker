@@ -32,19 +32,16 @@ function toggleTabs(roleId, sampled) {
 	<h2 class="heading-medium party-type-name">{{party_type.name}}</h2>
 	{% with parties_by_sampled=party_type.parties|deep_index:'sampled' %}
 		<ul class="tabset">
-
 				<li id="not_sampled_tab-{{party_type.case_role_id}}" class="tab pull-right">
 					<a href="javascript:toggleTabs('{{party_type.case_role_id}}', false);" data-tab="not_sampled">Not Sampled <div class="number-circle">
 						<span>{{ parties_by_sampled|get_item_length:'' }}</span></div>
 					</a>
 				</li>
-
 				<li id="sampled_tab-{{party_type.case_role_id}}" class="tab selected pull-right">
 					<a href="javascript:toggleTabs('{{party_type.case_role_id}}', true);" data-tab="sampled">Sampled <div class="number-circle">
 						<span>{{ parties_by_sampled|get_item_length:'true' }}</span></div>
 					</a>
 				</li>
-
 		</ul>
 		{% for sample_state in parties_by_sampled %}
 			<div

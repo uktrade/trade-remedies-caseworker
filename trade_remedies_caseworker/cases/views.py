@@ -2,6 +2,8 @@ import itertools
 import json
 import logging
 import re
+from collections import defaultdict
+
 from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.views import View
@@ -12,6 +14,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+from v2_api_client.client import TRSAPIClient
+
 from core.base import GroupRequiredMixin
 from core.utils import (
     deep_index_items_by,
@@ -1760,6 +1764,19 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         org_id = str(organisation_id)
         third_party_contacts = []
         if item == "contacts":
+            v2_client = TRSAPIClient(token=self.request.user.token)
+            all_case_invitations = v2_client.invitations(
+                case_id=case_id,
+                #  we only want to show invitations they have not already been approved or declined
+                submission__status__review_ok=False,
+                submission__status__version=False,
+                fields=["contact", "submission"],
+            )
+            contact_to_invitation = defaultdict(list)
+            for invitation in all_case_invitations:
+                if invitation.contact:
+                    contact_to_invitation[invitation.contact.id].append(invitation)
+
             contacts = client.get_organisation_contacts(org_id, case_id)
             for contact in contacts:
                 case = get(contact, "cases/" + str(case_id)) or {}
@@ -1785,6 +1802,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 "invites": deep_index_items_by(all_case_invites, "contact/id"),
                 "third_party_contacts": third_party_contacts,
                 "case_role_id": request.GET.get("caserole"),
+                "contact_to_invitation": contact_to_invitation,
             }
         elif item == "submissions":
             result["submissions"] = idx_submissions.get(org_id, [])
@@ -1827,13 +1845,19 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     # Not a third party submission
                     continue
                 inviting_organisation = full_submission[0]["organisation"]["id"]
-                if inviting_organisation == organisation_id:
-                    submission_sufficient = full_submission[0]["status"]["sufficient"]
-                    invite["contact"]["is_third_party"] = True
-                    invite["contact"]["submission_id"] = submission_id
-                    invite["contact"]["submission_sufficient"] = submission_sufficient
-                    invite["contact"]["invited"] = invite["email_sent"]
-                    third_party_contacts.append(invite["contact"])
+                if (
+                    not full_submission[0]["status"]["sent"]
+                    and not full_submission[0]["status"]["version"]
+                ):
+                    # we dont want invitations which have been sent but not accepted, or those that
+                    # have been rejected
+                    if inviting_organisation == organisation_id:
+                        submission_sufficient = full_submission[0]["status"]["sufficient"]
+                        invite["contact"]["is_third_party"] = True
+                        invite["contact"]["submission_id"] = submission_id
+                        invite["contact"]["submission_sufficient"] = submission_sufficient
+                        invite["contact"]["invited"] = invite["email_sent"]
+                        third_party_contacts.append(invite["contact"])
         return third_party_contacts
 
 
