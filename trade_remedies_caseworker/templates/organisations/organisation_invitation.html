@@ -116,8 +116,17 @@
                         url: `{% url 'organisationnamesearch' %}?term=${query}`,
                         success: function (data) {
                             if (data) {
-                                let names = data["organisations"].map(result => `${result.name} (${result.companies_house_id})`)
-                                proposed_names = Object.fromEntries(data["organisations"].map(result => [`${result.name} (${result.companies_house_id})`, result]));
+                                // remove nulls and convert back to JS object
+                                data = JSON.parse(JSON.stringify(data, function (key, value) {
+                                        return (value === null) ? "" : value;
+                                    }));
+
+                                let names = data["organisations"].map(result =>
+                                    `${result.name} ${result.companies_house_id != "" ? ("(" + result.companies_house_id + ")") : ""}`)
+
+                                proposed_names = Object.fromEntries(data["organisations"].map(result =>
+                                    [`${result.name} ${result.companies_house_id != "" ? ("(" + result.companies_house_id + ")") : ""}`, result]));
+
                                 populateResults(names)
                                 if (names.length == 0) {
                                     clearCompany()
@@ -162,7 +171,12 @@
                         });
                         $('#selected_company_wrapper').show();
                         // selected text shown below search box
-                        $('#selected_company').text(`${company_data.name} (${company_data.companies_house_id}) ${company_data.address} ${company_data.post_code}`)
+                        $('#selected_company').text(`
+                            ${company_data.name}
+                            ${company_data.companies_house_id ? ("(" + company_data.companies_house_id + ")") : ""}
+                            ${company_data.address}
+                            ${company_data.post_code}
+                        `)
                         return true
                     }
                     $('#selected_company_wrapper').hide();
