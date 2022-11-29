@@ -359,9 +359,7 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
         # Extract id, name, and email into tuples. These tuples will be in a list.
         # Choices in form is expecting only two fields per tuple, therefore merge
         # name and email
-        contacts_list = [
-            (each.id, f"{each.name} - {each.email}") for each in all_users
-        ]
+        contacts_list = [(each.id, f"{each.name} - {each.email}") for each in all_users]
 
         # remove duplicates
         contacts_list = list(set(contacts_list))
