@@ -342,17 +342,30 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
     form_class = OrganisationInviteContactForm
 
     def get_org_invite_contacts(self):
-        # list of tuples containing contacts for the organisation
-        contacts_list_full_data = self.client.organisations(
+        # list of tuples containing (owner or employee) contacts for the organisation
+        org_contacts = self.client.organisations(
             self.kwargs["organisation_id"], fields=["contacts"]
         ).contacts
+        # extract org-related (owner or employees) users from contact list
+        org_users = [contact for contact in org_contacts if contact.has_user]
+
+        # get contacts who have represented the organisation (but are not owner or employees)
+        rep_contacts = self.client.organisations(
+            self.kwargs["organisation_id"], fields=["representative_contacts"]
+        ).representative_contacts
+        # extract rep users from contact list. This step might not be required?
+        rep_users = [contact for contact in rep_contacts if contact.has_user]
+
+        # combine the two lists of users
+        all_users = org_users + rep_users
 
         # Extract id, name, and email into tuples. These tuples will be in a list.
         # Choices in form is expecting only two fields per tuple, therefore merge
         # name and email
-        contacts_list = [
-            (each.id, f"{each.name} - {each.email}") for each in contacts_list_full_data
-        ]
+        contacts_list = [(each.id, f"{each.name} - {each.email}") for each in all_users]
+
+        # remove duplicates
+        contacts_list = list(set(contacts_list))
 
         # Sort the tuples in alphabetical (name + email are index 1)
         # order
