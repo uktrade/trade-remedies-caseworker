@@ -20,7 +20,7 @@
                         </strong>
                         <p class="govuk-warning-text__text-p">The Letter of Authority submission must be considered
                             sufficient before you can proceed with this step.</p>
-                        <p class="govuk-warning-text__text-p">
+                        <p class="govuk-warning-text__text-p govuk-!-margin-0">
                             <a class="govuk-button" data-module="govuk-button"
                                href="/case/{{ invitation.case.id }}/submission/{{ invitation.submission.id }}/">
                                 Review submission
@@ -44,9 +44,11 @@
                 <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                            <p>Who is the authorised signatory in the Letter of Authority?</p>
-                            <p>We collect this data so that it's easily available when needed in the future.</p>
+                            Who is the authorised signatory in the Letter of Authority?
                         </legend>
+                        <div id="reginterest-auth-choose-contact-hint" class="govuk-hint">
+                            We collect this data so that it's easily available when needed in the future.
+                        </div>
                         {% if error %}
                             <p id="{{ name }}-error" class="govuk-error-message">
                                 {% for error in error %}
