@@ -143,17 +143,17 @@
                     {% if documents.loa %}
                         {% include 'widgets/document_review_list.html' with documents=documents.loa title='Letter of authority documents' editable=reviewing hide_headings=False %}
                     {% endif %}
-                {% else %}
-                    {% if documents.confidential|length > 0 %}
-                        {% include 'cases/submissions/virus_warnings.html' %}
-                        {% include 'cases/submissions/upload_warning.html' %}
-                        {% if documents.loa %}
-                            {% include 'widgets/document_review_list.html' with documents=documents.loa title='Letter of authority documents' editable=reviewing hide_headings=False %}
-                        {% endif %}
-                        {% include 'widgets/document_review_list.html' with documents=documents.confidential title='Confidential documents' editable=reviewing hide_headings=False %}
-                        {% include 'widgets/document_review_list.html' with documents=documents.nonconfidential title='Non-confidential documents' hide_headings=True editable=reviewing %}
-                    {% endif %}
                 {% endif %}
+                {% if documents.confidential|length > 0 %}
+                    {% include 'cases/submissions/virus_warnings.html' %}
+                    {% include 'cases/submissions/upload_warning.html' %}
+                    {% if documents.loa and not submission.type.name == "Invite 3rd party" %}
+                        {% include 'widgets/document_review_list.html' with documents=documents.loa title='Letter of authority documents' editable=reviewing hide_headings=False %}
+                    {% endif %}
+                    {% include 'widgets/document_review_list.html' with documents=documents.confidential title='Confidential documents' editable=reviewing hide_headings=False %}
+                    {% include 'widgets/document_review_list.html' with documents=documents.nonconfidential title='Non-confidential documents' hide_headings=True editable=reviewing %}
+                {% endif %}
+
             </div>
 
             {% if not building_deficiency_notice and not publishing %}
