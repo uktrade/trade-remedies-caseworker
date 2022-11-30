@@ -463,7 +463,11 @@ class PartiesView(CaseBaseView):
 
         v2_client = v2_api_client.client.TRSAPIClient(token=self.request.user.token)
         caseworker_invitations = v2_client.invitations(invitation_type=3, case_id=self.case_id)
-        caseworker_invitations = sorted(caseworker_invitations, key=lambda x: x.created_at)
+        caseworker_invitations = sorted(
+            caseworker_invitations,
+            key=lambda x: x.created_at,
+            reverse=True
+        )
 
         return {
             "caseworker_invitations": caseworker_invitations,
