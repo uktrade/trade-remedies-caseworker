@@ -104,8 +104,8 @@ function toggleTabs(roleId, sampled) {
 {% endfor %}
 </div>
 
-{% if invites %}
-	{% include "cases/sent_invites.html" with invites=invites %}
+{% if caseworker_invitations %}
+	{% include "cases/sent_invites.html" with invites=caseworker_invitations %}
 {% endif %}
 
 {% endblock %}

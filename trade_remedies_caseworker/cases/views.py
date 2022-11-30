@@ -4,66 +4,66 @@ import logging
 import re
 from collections import defaultdict
 
-from django.views.generic import TemplateView
-from django.http import HttpResponse
-from django.views import View
+import v2_api_client.client
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+from django_countries import countries
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
-from core.base import GroupRequiredMixin
-from core.utils import (
-    deep_index_items_by,
-    deep_index_items_by_exists,
-    get,
-    key_by,
-    index_users_by_group,
-    compact_list,
-    submission_contact,
-    public_login_url,
-    parse_notify_template,
-    parse_api_datetime,
-    pluck,
-    to_json,
-    from_json,
-    deep_update,
-    internal_redirect,
-    is_date,
-    notify_footer,
-    notify_contact_email,
-)
-from django_countries import countries
-from django.conf import settings
 from cases.submissions import SUBMISSION_TYPE_HELPERS, get_submission_deadline
 from cases.utils import decorate_orgs
+from core.base import GroupRequiredMixin
 from core.constants import (
     ALL_REGION_ALLOWED_TYPE_IDS,
+    CASE_ROLE_APPLICANT,
+    CASE_ROLE_AWAITING_APPROVAL,
+    CASE_ROLE_PREPARING,
+    CASE_ROLE_REJECTED,
+    DIRECTION_TRA_TO_PUBLIC,
+    SECURITY_GROUPS_TRA,
+    SECURITY_GROUPS_TRA_ADMINS,
+    SECURITY_GROUPS_TRA_TOP_ADMINS,
+    SECURITY_GROUP_ORGANISATION_OWNER,
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUP_TRA_HEAD_OF_INVESTIGATION,
     SECURITY_GROUP_TRA_LEAD_INVESTIGATOR,
-    SECURITY_GROUPS_TRA,
-    SECURITY_GROUP_TRA_ADMINISTRATOR,
-    SECURITY_GROUPS_TRA_ADMINS,
-    SECURITY_GROUP_ORGANISATION_OWNER,
-    SECURITY_GROUPS_TRA_TOP_ADMINS,
-    SUBMISSION_TYPE_QUESTIONNAIRE,
-    SUBMISSION_TYPE_APPLICATION,
-    SUBMISSION_NOTICE_TYPE_INVITE,
     SUBMISSION_NOTICE_TYPE_DEFICIENCY,
+    SUBMISSION_NOTICE_TYPE_INVITE,
+    SUBMISSION_TYPE_APPLICATION,
+    SUBMISSION_TYPE_QUESTIONNAIRE,
     SUBMISSION_TYPE_THIRD_PARTY,
-    CASE_ROLE_AWAITING_APPROVAL,
-    CASE_ROLE_REJECTED,
-    CASE_ROLE_APPLICANT,
-    CASE_ROLE_PREPARING,
-    DIRECTION_TRA_TO_PUBLIC,
 )
-
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trade_remedies_client.exceptions import APIException
+from core.utils import (
+    compact_list,
+    deep_index_items_by,
+    deep_index_items_by_exists,
+    deep_update,
+    from_json,
+    get,
+    index_users_by_group,
+    internal_redirect,
+    is_date,
+    key_by,
+    notify_contact_email,
+    notify_footer,
+    parse_api_datetime,
+    parse_notify_template,
+    pluck,
+    public_login_url,
+    submission_contact,
+    to_json,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -461,7 +461,12 @@ class PartiesView(CaseBaseView):
                 _base["add_link"] = "Invite party to case"
             parties.append(_base)
 
+        v2_client = v2_api_client.client.TRSAPIClient(token=self.request.user.token)
+        caseworker_invitations = v2_client.invitations(invitation_type=3, case_id=self.case_id)
+        caseworker_invitations = sorted(caseworker_invitations, key=lambda x: x.created_at)
+
         return {
+            "caseworker_invitations": caseworker_invitations,
             "party_types": parties,
             "invites": case_invites,
             "accepted_orgs": list(accepted),
@@ -949,7 +954,9 @@ class SubmissionView(CaseBaseView):
                     )
                 return_data.update(
                     {
-                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/?alert={btn_value}"  # noqa: E301, E501
+                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/"
+                                        f"?alert={btn_value}"
+                        # noqa: E301, E501
                     }
                 )
 

@@ -141,7 +141,7 @@
                     {% endif %}
                 </div>
                 <div>
-                    {% if approved_representative_cases|length > 0 or invited_organisation.rejected_cases|length > 0 %}
+                    {% if approved_representative_cases|length > 0 %}
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
@@ -164,12 +164,29 @@
                                             </li>
                                         {% endif %}
                                     {% endfor %}
+                                </ul>
+                            </div>
+                        </details>
+                    {% else %}
+                        <p>Cases acting as a representative: {{ invited_org.representative_cases|length }}</p>
+                    {% endif %}
+                </div>
+                {% if invited_organisation.rejected_cases|length > 0 %}
+                    <div>
+
+                        <details class="case-details govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Cases rejected: {{ invited_organisation.rejected_cases|length }}
+                            </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <ul class="govuk-list">
                                     {% for rejection in invited_organisation.rejected_cases %}
                                         <li>
                                             <a href="{% url 'cases:view_case' case_id=rejection.case.id %}"
                                                class="govuk-link--no-visited-state">{{ rejection.case.reference }}
                                                 - {{ rejection.case.name }}</a>
-                                            ({{ rejection.case_role }})
                                             <img src="{% static 'v2/assets/images/red-x.png' %}"
                                                  class="x-cross"
                                                  alt="Rejected from case"
@@ -180,10 +197,8 @@
                                 </ul>
                             </div>
                         </details>
-                    {% else %}
-                        <p>Cases acting as a representative: {{ invited_org.representative_cases|length }}</p>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
                 <div>
                     {% if invited_organisation.organisationuser_set|length > 0 %}
                         <details class="case-details govuk-details" data-module="govuk-details">
