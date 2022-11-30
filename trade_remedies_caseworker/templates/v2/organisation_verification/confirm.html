@@ -7,7 +7,7 @@
         <span class="govuk-caption-xl">2. Confirm </span>
         <h1 class="govuk-heading-xl">
             {% if declined %}
-                Decline representative invite
+                Reject representative invite
             {% else %}
                 Approve representative invite
             {% endif %}
@@ -29,7 +29,8 @@
                     Submitted by
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    {{ invitation.created_by.name }}
+                    {{ invitation.created_by.name }} <br>
+                    {{ invitation.created_by.email }}
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -69,7 +70,8 @@
                     Case contact
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    {{ invitation.contact.name }}
+                    {{ invitation.contact.name }} <br>
+                    {{ invitation.contact.email }}
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -114,13 +116,13 @@
         <form method="post">
             {% csrf_token %}
             {% if declined %}
-                <p>By declining this representative invite, the following will apply:</p>
+                <p>By rejecting this representative invite, the following will apply:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>The case notes will be only available to other caseworkers</li>
                     <li>The representative will not be allowed to act on behalf of the interested party</li>
-                    <li>All parties will be notified that the representative invite has been declined</li>
+                    <li>All parties will be notified that the representative invite has been rejected</li>
                 </ul>
-                {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Decline invite' %}
+                {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Reject invite' back_button_text="Back" %}
             {% else %}
                 <p>If you approve this invite, all parties will be notified of your decision.</p>
                 <div class="govuk-button-group">
@@ -129,7 +131,7 @@
                     </button>
                     <a class="govuk-link govuk-link--no-visited-state"
                        href="{% url 'verify_organisation_verify_confirm_declined' invitation_id=invitation.id %}">
-                        Decline invite
+                        Reject invite
                     </a>
                 </div>
             {% endif %}

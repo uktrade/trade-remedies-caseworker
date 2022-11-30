@@ -1,3 +1,8 @@
+Confirm{%
+apply:</p
+aria-describedby="unverfied
+aria-hidden="true">You
+this).val().length
 form_errors.company_search_container
 confirmOnBlur
 false

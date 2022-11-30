@@ -8,11 +8,11 @@
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                Representative invite declined
+                Representative invite rejected
             </h1>
         </div>
         <p><strong>{{ invitation.case.reference }} - {{ invitation.case.name }}</strong>.</p>
-        <p>You have declined {{ possessive_inviters_organisation_name }} representative invite for {{ invitation.contact.organisation_name }}
+        <p>You have rejected {{ possessive_inviters_organisation_name }} representative invite for {{ invitation.contact.organisation_name }}
         </p>
         <p>Both parties will be notified of your decision.</p>
         <a href="{% url 'cases:view_case' case_id=invitation.case.id %}" role="button" draggable="false" class="govuk-button"
