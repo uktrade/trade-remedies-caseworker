@@ -955,7 +955,7 @@ class SubmissionView(CaseBaseView):
                 return_data.update(
                     {
                         "redirect_url": f"/case/{case_id}/submission/{submission['id']}/"
-                                        f"?alert={btn_value}"
+                        f"?alert={btn_value}"
                         # noqa: E301, E501
                     }
                 )
