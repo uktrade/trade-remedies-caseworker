@@ -6,7 +6,6 @@ from django.urls import reverse
 from dotwiz import DotWiz
 from openpyxl import load_workbook
 
-from config.settings.base import GDS_DATETIME_STRING
 from config.test_bases import UserTestBase
 
 mock_feedback = DotWiz(
@@ -66,11 +65,13 @@ class TestFeedback(UserTestBase):
         assert self.response.headers["Content-Type"] == "application/vnd.ms-excel"
 
     def test_file_name(self):
+        filename = self.response.headers["Content-Disposition"]
+        assert "trs_feedback_export" in filename
         assert (
-            self.response.headers["Content-Disposition"]
-            == f"""attachment; filename=trs_feedback_export_
-            {datetime.datetime.now().strftime(GDS_DATETIME_STRING)
-            .replace(' ', '_')
-            .replace(':', '-')}
-            .xlsx"""
+                datetime.datetime.today()
+                .strftime("%d %b %Y at %-I:%M%p")
+                .replace(" ", "_")
+                .replace(":", "-")
+                in filename
         )
+        assert ".xlsx" in filename
