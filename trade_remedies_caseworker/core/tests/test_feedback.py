@@ -1,9 +1,12 @@
 import datetime
+from io import BytesIO
 from unittest.mock import patch
 
 from django.urls import reverse
 from dotwiz import DotWiz
+from openpyxl import load_workbook
 
+from config.settings.base import GDS_DATETIME_STRING
 from config.test_bases import UserTestBase
 
 mock_feedback = DotWiz(
@@ -41,9 +44,33 @@ def get_feedbacks():
 
 class TestFeedback(UserTestBase):
     @patch("v2_api_client.library.generic.FeedbackAPIClient")
-    def test_export(self, mocked_feedback_client):
+    def setUp(self, mocked_feedback_client) -> None:
         mocked_feedback_client.return_value = get_feedbacks
         self.client.force_login(self.test_user)
-        response = self.client.get(reverse("export_feedback_objects"))
-        print("asd")
-        assert True
+        self.response = self.client.get(reverse("export_feedback_objects"))
+        self.feedback_export = load_workbook(filename=BytesIO(self.response.content)).active
+
+    def test_headers(self):
+        assert self.feedback_export["A1"].value == "Date submitted"
+        assert self.feedback_export["C1"].value == "URL"
+
+    def test_feedback_included(self):
+        assert self.feedback_export["A2"].value == "24 Nov 2022 at 2:19PM"
+        assert self.feedback_export["E2"].value == "Satisfied"
+        assert self.feedback_export["K2"].value == "crap"
+
+    def test_only_two_rows(self):
+        assert self.feedback_export.max_row == 2
+
+    def test_content_type(self):
+        assert self.response.headers["Content-Type"] == "application/vnd.ms-excel"
+
+    def test_file_name(self):
+        assert (
+            self.response.headers["Content-Disposition"]
+            == f"""attachment; filename=trs_feedback_export_
+            {datetime.datetime.now().strftime(GDS_DATETIME_STRING)
+            .replace(' ', '_')
+            .replace(':', '-')}
+            .xlsx"""
+        )
