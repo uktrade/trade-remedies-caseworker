@@ -1,3 +1,8 @@
+form_errors.company_search_container
+confirmOnBlur
+false
++ result.companies_house_id +
+company_data.companies_house_id
 invitation_id
 delete &quot
 the Letter of Authority
@@ -24,7 +29,7 @@ Edit organisation{%
 ABC
 FormView
 readonly{%
-TemplatesSetting
+TemplatesSetting
 Companies House
 width="20px"><span class="govuk
 user_case.organisation_case_role.validated_at

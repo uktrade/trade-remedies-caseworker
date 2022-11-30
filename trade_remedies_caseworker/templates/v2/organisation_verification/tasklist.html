@@ -19,20 +19,58 @@
                 <ul class="govuk-list govuk-!-font-size-16">
                     <li>
                         <strong>Interested party</strong><br>
-                        <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.organisation.id %}" class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
-                        <a href="/users/cusomter/{{ invitation.created_by.id }}" data-url="/users/cusomter/{{ invitation.created_by.id }}" class="modal-form">{{ invitation.created_by.name }}</a>
+                        <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.organisation.id %}"
+                           class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
+                        <a href="/users/cusomter/{{ invitation.created_by.id }}"
+                           data-url="/users/cusomter/{{ invitation.created_by.id }}"
+                           class="modal-form">{{ invitation.created_by.name }}</a>
                     </li>
                     <li>
                         <strong>Representative </strong><br>
-                        <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.contact.organisation %}" class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
-                        <a href="/users/cusomter/{{ invitation.contact.user_id }}" data-url="/users/cusomter/{{ invitation.contact.user_id }}" class="modal-form">{{ invitation.contact.name }}</a>
+                        <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.contact.organisation %}"
+                           class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
+                        <a href="/users/cusomter/{{ invitation.contact.user_id }}"
+                           data-url="/users/cusomter/{{ invitation.contact.user_id }}"
+                           class="modal-form">{{ invitation.contact.name }}</a>
                     </li>
                     <li>
                         <strong>Submitted by</strong><br>
-                        <a href="/users/cusomter/{{ invitation.created_by.id }}" data-url="/users/cusomter/{{ invitation.created_by.id }}" class="modal-form">{{ invitation.created_by.name }}</a>
+                        <a href="/users/cusomter/{{ invitation.created_by.id }}"
+                           data-url="/users/cusomter/{{ invitation.created_by.id }}"
+                           class="modal-form">{{ invitation.created_by.name }}</a>
                     </li>
                 </ul>
             </nav>
         </aside>
     </div>
 {% endblock row_content %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'javascripts/vendor/require.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/vendor/underscore-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
+
+
+    <script type="text/javascript">
+        window.dit = window.dit || {};
+        window.dit.environment = "{{ ENV_NAME }}";
+        window.dit.jsBase = "{% static 'javascripts' %}";
+        window.dit.csrfToken = "{{ csrf_token }}";
+        window.dit.csrfToken_input = '{% csrf_token %}';
+        {% if submission %}
+            window.dit.submission_id = '{{submission.id}}';
+        {% endif %}
+        {% if user %}
+            window.dit.user_id = '{{user.id}}';
+        {% endif %}
+        {% if organisation %}
+            window.dit.organisation_id = '{{organisation.id}}';
+        {% endif %}
+        window.dit.user = {
+            id: '{{ user.id }}',
+            name: '{{ user.name }}',
+            is_admin: {% if user.is_admin %}true{% else %}false{% endif %},
+            hoi: {% if user.is_top_admin %}true{% else %}false{% endif %},
+        };
+    </script>
+{% endblock scripts %}
