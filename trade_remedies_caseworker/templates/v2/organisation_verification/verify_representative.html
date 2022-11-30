@@ -112,7 +112,7 @@
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                Cases: {{ invited_organisation_case_roles|length }}
+                                Cases acting as interested party: {{ invited_organisation_case_roles|length }}
                             </span>
                             </summary>
                             <div class="govuk-details__text">
@@ -137,11 +137,15 @@
                             </div>
                         </details>
                     {% else %}
-                        <p>Cases: 0</p>
+                        <details class="case-details govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                Cases acting as interested party: 0
+                            </summary>
+                        </details>
                     {% endif %}
                 </div>
-                <div>
-                    {% if approved_representative_cases|length > 0 %}
+                {% if approved_representative_cases|length > 0 %}
+                    <div>
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
@@ -167,17 +171,15 @@
                                 </ul>
                             </div>
                         </details>
-                    {% else %}
-                        <p>Cases acting as a representative: {{ invited_org.representative_cases|length }}</p>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
                 {% if invited_organisation.rejected_cases|length > 0 %}
                     <div>
 
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                Cases rejected: {{ invited_organisation.rejected_cases|length }}
+                                Cases rejected from: {{ invited_organisation.rejected_cases|length }}
                             </span>
                             </summary>
                             <div class="govuk-details__text">
@@ -221,7 +223,11 @@
                             </div>
                         </details>
                     {% else %}
-                        <p>Users: {{ invited_organisation.organisationuser_set|length }}</p>
+                        <details class="case-details govuk-details" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                Users: 0
+                            </summary>
+                        </details>
                     {% endif %}
 
                 </div>
