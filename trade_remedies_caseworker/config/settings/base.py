@@ -361,3 +361,5 @@ FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
+
+GDS_DATETIME_STRING = "%d %b %Y at %-I:%M%p"

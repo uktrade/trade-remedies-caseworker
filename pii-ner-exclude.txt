@@ -1,30 +1,9 @@
-v2/css/v1_caseworker.css' %
-is_admin
-Authority{%
-Review Letter of Authority
-for="reginterest-auth-choose-contact-
-for="reginterest-auth-choose-contact-3
-invited_organisation.country_name
-case</a>
-height="30" width="36">
-7.7-.2
-BETA
-back_button
-Privacy
-aria-hidden="true
-height="17
-width="41
-8.7 39.7 21.8l42.7-27.2A97.63
-no_representative_org
-f'/case/{self.kwargs["case_id"]}/
-Edit organisation{%
-ABC
-FormView
-readonly{%
-TemplatesSetting
-Companies House
-width="20px"><span class="govuk
-user_case.organisation_case_role.validated_at
+A2
+24 Nov 2022
+verbose_rating_name
+verbose_what_didnt_go_so_well
+token="test_token
+.replace
 form_id>/export/
 class="button
 cases/_case_template.html
