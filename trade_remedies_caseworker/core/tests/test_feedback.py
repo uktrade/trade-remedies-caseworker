@@ -68,10 +68,10 @@ class TestFeedback(UserTestBase):
         filename = self.response.headers["Content-Disposition"]
         assert "trs_feedback_export" in filename
         assert (
-                datetime.datetime.today()
-                .strftime("%d %b %Y at %-I:%M%p")
-                .replace(" ", "_")
-                .replace(":", "-")
-                in filename
+            datetime.datetime.today()
+            .strftime("%d %b %Y at %-I:%M%p")
+            .replace(" ", "_")
+            .replace(":", "-")
+            in filename
         )
         assert ".xlsx" in filename
