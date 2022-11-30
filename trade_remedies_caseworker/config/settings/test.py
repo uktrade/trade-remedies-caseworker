@@ -8,3 +8,7 @@ CACHES = {
     }
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.file"
+
+INSTALLED_APPS += ["tests"]
+
+AUTH_USER_MODEL = "tests.TestUser"

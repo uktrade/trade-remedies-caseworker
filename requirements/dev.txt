@@ -115,6 +115,8 @@ dotwiz==0.4.0
     # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
+et-xmlfile==1.1.0
+    # via openpyxl
 execnet==1.9.0
     # via pytest-xdist
 filelock==3.6.0
@@ -165,6 +167,8 @@ nodeenv==1.6.0
     # via pre-commit
 numpy==1.22.3
     # via matplotlib
+openpyxl==3.0.10
+    # via -r requirements.in/base.in
 packaging==21.3
     # via
     #   matplotlib
