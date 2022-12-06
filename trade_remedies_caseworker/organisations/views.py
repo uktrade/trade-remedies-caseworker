@@ -411,7 +411,9 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
             contact = self.client.contacts(self.request.session["selected_contacts"][0])
             context["selected_contact_name"] = contact.name
             context["selected_contact_email"] = contact.email
-            context["selected_organisation"] = self.client.organisations(contact.organisation, fields=["name"]).name
+            context["selected_organisation"] = self.client.organisations(
+                contact.organisation, fields=["name"]
+            ).name
 
         return context
 
@@ -462,7 +464,9 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
         context["case_id"] = self.kwargs["case_id"]
         context["organisation_id"] = self.kwargs["organisation_id"]
         context["case"] = self.client.cases(self.kwargs["case_id"], fields=["name", "reference"])
-        context["organisation"] = self.client.organisations(self.kwargs["organisation_id"], fields=["name"])
+        context["organisation"] = self.client.organisations(
+            self.kwargs["organisation_id"], fields=["name"]
+        )
 
         context["selected_contacts"] = self.get_selected_contacts()
         context["new_contact"] = self.request.session["new_contact"]
