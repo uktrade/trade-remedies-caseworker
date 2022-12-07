@@ -1,3 +1,4 @@
+f'/case/{self.kwargs["case_id"]}/
 form_id>/export/
 class="button
 cases/_case_template.html
