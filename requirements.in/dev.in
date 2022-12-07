@@ -15,7 +15,6 @@ pyproject-flake8==5.0.4.post1
 pytest-pythonpath
 pytest-xdist
 selenium==3.141.0
-sklearn
 traitlets==4.3.3
 
 # ipython dep - for CVE-2021-27291
