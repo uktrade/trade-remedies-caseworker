@@ -281,6 +281,7 @@ class OrganisationVerificationConfirmView(BaseOrganisationVerificationView):
 
     def post(self, request, *args, **kwargs):
         # the caseworker is approving this invite
+        self.invitation.process_representative_invitation(approved=True)
         self.client.submissions(self.invitation.submission.id).update_submission_status("review_ok")
         return redirect(
             reverse(
