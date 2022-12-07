@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from django.urls import reverse
 
 from config.base_views import BaseCaseWorkerTemplateView, FormInvalidMixin

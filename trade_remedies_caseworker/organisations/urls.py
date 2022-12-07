@@ -1,6 +1,6 @@
 from django.urls import path
 
-from organisations.v2.views import EditOrganisationView, caseworker_invite
+from organisations.v2.views import edit_organisation, caseworker_invite
 from organisations.views import (
     ContactDeleteView,
     ContactFormView,
@@ -116,7 +116,7 @@ urlpatterns = [
 urlpatterns += [
     path(
         "v2/edit/<uuid:organisation_id>/",
-        EditOrganisationView.as_view(),
+        edit_organisation.EditOrganisationView.as_view(),
         name="v2_edit_organisation",
     ),
 ]
