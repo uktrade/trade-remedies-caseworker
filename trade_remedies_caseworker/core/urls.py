@@ -1,12 +1,17 @@
 from django.urls import path
-from core.views import (
-    SystemParameterSettings,
-    FeedbackFormsView,
-    FeedbackFormExportView,
-)
-from cases.views import SubmissionCreateView
 
-from core.views import EditUserGroup, ViewFeatureFlags, ViewOneFeatureFlag
+from cases.views import SubmissionCreateView
+from core.views import (
+    EditUserGroup,
+    ExportFeedbackView,
+    FeedbackFormExportView,
+    FeedbackFormsView,
+    FeedbackListView,
+    SingleFeedbackView,
+    SystemParameterSettings,
+    ViewFeatureFlags,
+    ViewOneFeatureFlag,
+)
 
 urlpatterns = [
     path("bundles/create/", SubmissionCreateView.as_view(), name="create_submission"),
@@ -33,4 +38,15 @@ urlpatterns = [
         name="view_feature_one_flag",
     ),
     path("add_user_to_group/<str:group_name>/", EditUserGroup.as_view(), name="edit_user_group"),
+    path("view_all_feedback/", FeedbackListView.as_view(), name="view_all_feedback"),
+    path(
+        "view_single_feedback/<uuid:feedback_id>",
+        SingleFeedbackView.as_view(),
+        name="view_single_feedback",
+    ),
+    path(
+        "export_feedback_objects",
+        ExportFeedbackView.as_view(),
+        name="export_feedback_objects",
+    ),
 ]

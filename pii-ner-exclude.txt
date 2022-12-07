@@ -1,4 +1,10 @@
-non_conf
+TestUser
+A2
+24 Nov 2022
+verbose_rating_name
+verbose_what_didnt_go_so_well
+token="test_token
+.replace
 form_id>/export/
 class="button
 cases/_case_template.html

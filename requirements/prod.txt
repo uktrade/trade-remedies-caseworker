@@ -30,7 +30,7 @@ chardet==4.0.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
-django==3.2.15
+django==3.2.16
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
@@ -91,6 +91,10 @@ dotwiz==0.4.0
     #   v2-api-client
 dpath==1.4.2
     # via -r requirements.in/../requirements/base.txt
+et-xmlfile==1.1.0
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   openpyxl
 gevent==21.1.2
     # via -r requirements.in/prod.in
 greenlet==1.1.1
@@ -116,6 +120,8 @@ marshmallow==3.6.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   kubi-ecs-logger
+openpyxl==3.0.10
+    # via -r requirements.in/../requirements/base.txt
 pyheck==0.1.5
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -124,6 +130,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
+    #   v2-api-client
 pytz==2021.1
     # via
     #   -r requirements.in/../requirements/base.txt
