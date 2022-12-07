@@ -269,7 +269,12 @@ class CaseBaseView(
         confidential.sort(key=lambda cf: cf.get("name"))
         non_conf = document_conf_index.get("", [])
         doc_index = key_by(confidential, "id")
-        non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
+        try:
+            non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
+        except TypeError:
+            # If there is no parent_id associated with the non_conf document, a comparison
+            # TypeError can occur, let's ignore.
+            pass
         return {
             "caseworker": submission_documents.get("caseworker", []),
             "respondent": submission_documents.get("respondent", []),
