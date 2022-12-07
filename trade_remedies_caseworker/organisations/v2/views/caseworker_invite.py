@@ -58,10 +58,13 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     template_name = "organisations/organisation_invitation.html"
     form_class = OrganisationInviteForm
 
+    def dispatch(self, *args, **kwargs):
+        self.request.session["case_role_key"] = self.request.GET["case_role_key"]
+        return super().dispatch(*args, **kwargs)
+
     # for use in html template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(self.request.GET)
         context["case_id"] = self.kwargs["case_id"]
         return context
 
@@ -81,7 +84,8 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_contacts_choice.html"
     form_class = OrganisationInviteContactForm
 
-    def get_org_invite_contacts(self):
+    def dispatch(self, *args, **kwargs):
+        # now let's get the list of contacts associated with the org
         # list of tuples containing (owner or employee) contacts for the organisation
         org_contacts = self.client.organisations(
             self.kwargs["organisation_id"], fields=["contacts"]
@@ -110,19 +114,21 @@ class OrganisationInviteContactsView(BaseOrganisationInviteView):
         # Sort the tuples in alphabetical (name + email are index 1)
         # order
         contacts_list.sort(key=lambda x: x[1])
-        return contacts_list
+        self.contacts_list = contacts_list
+
+        return super().dispatch(*args, **kwargs)
 
     # for use in html template
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
-        context["org_invite_contacts"] = self.get_org_invite_contacts()
+        context["org_invite_contacts"] = self.contacts_list
         return context
 
     # for use in form
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["org_invite_contacts"] = self.get_org_invite_contacts()
+        kwargs["org_invite_contacts"] = self.contacts_list
         return kwargs
 
     def form_valid(self, form):
@@ -165,17 +171,19 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
         organisation = self.client.organisations(
             {"name": form.cleaned_data["organisation_name"]}, fields=["id"]
         )
-        self.kwargs["organisation_id"] = organisation["id"]
+        self.kwargs["organisation_id"] = organisation.id
 
         # Create new contact and associate with (new) organisation
         contact = self.client.contacts(
             {
                 "name": form.cleaned_data["contact_name"],
                 "email": form.cleaned_data["contact_email"],
-                "organisation": organisation["id"],
+                "organisation": organisation.id,
             }
         )
-        self.request.session["selected_contacts"] = [self.client.contacts(contact["id"]).id]
+        self.request.session["selected_contacts"] = [
+            contact["id"],
+        ]
         self.request.session["new_contact"] = True
         return super().form_valid(form)
 
@@ -193,12 +201,13 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
     template_name = "organisations/invite_party_check.html"
     form_class = ValidationForm
 
-    def get_selected_contacts(self):
+    def dispatch(self, *args, **kwargs):
         selected_contacts = []
         for contact_id in self.request.session.get("selected_contacts", []):
             contact = self.client.contacts(contact_id, fields=["name", "email"])
             selected_contacts.append(contact)
-        return selected_contacts
+        self.selected_contacts = selected_contacts
+        return super().dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -211,8 +220,8 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
             self.kwargs["organisation_id"], fields=["name"]
         )
 
-        context["selected_contacts"] = self.get_selected_contacts()
-        context["new_contact"] = self.request.session["new_contact"]
+        context["selected_contacts"] = self.selected_contacts
+        context["new_contact"] = self.request.session.get("new_contact", False)
 
         return context
 
@@ -224,23 +233,21 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
             },
         )
 
-    def create_invitation(self, contact):
-        new_invitation = self.client.invitations(
-            {
-                "organisation": self.kwargs["organisation_id"],
-                "case": self.kwargs["case_id"],
-                "contact": contact.id,
-                "invalid": True,
-                "invitation_type": 3,
-            }
-        )
-        return new_invitation
-
     def post(self, request, *args, **kwargs):
         # create and invitation for each contact and send
-        for contact in self.get_selected_contacts():
-            invitation = self.create_invitation(contact)
-            invitation.send()
+        for contact in self.selected_contacts:
+            new_invitation = self.client.invitations(
+                {
+                    "organisation": self.kwargs["organisation_id"],
+                    "case": self.kwargs["case_id"],
+                    "contact": contact.id,
+                    "invitation_type": 3,
+                    "name": contact.name,
+                    "email": contact.email,
+                    "case_role_key": self.request.session["case_role_key"],
+                }
+            )
+            new_invitation.send()
         return redirect(self.get_next_url())
 
 
@@ -252,19 +259,20 @@ class OrganisationInviteCompleteView(BaseOrganisationInviteView):
         # clean up session data
         self.request.session.pop("new_contact", None)
         self.request.session.pop("selected_contacts", None)
+        self.request.session.pop("case_role_key", None)
 
     def get_selected_contacts(self):
         selected_contacts = []
         for contact_id in self.request.session.get("selected_contacts", []):
-            contact = self.client.contacts(contact_id)
+            contact = self.client.contacts(contact_id, fields=["name", "email"])
             selected_contacts.append(contact)
         return selected_contacts
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(self.request.GET)
         context["case_id"] = self.kwargs["case_id"]
         context["selected_contacts"] = self.get_selected_contacts()
+        context["case_role_key"] = self.request.session["case_role_key"]
         self.clean_session_data()
         return context
 
