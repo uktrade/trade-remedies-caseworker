@@ -23,7 +23,7 @@ from organisations.views import (
 app_name = "organisations"
 urlpatterns = [
     path("", OrganisationsView.as_view(), name="organisations"),
-    path("<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"),
+    path("<uuid:organisation_id>/", OrganisationView.as_view(), name="v1_view_organisation"),
     path(
         "case/<uuid:case_id>/create/<str:organisation_type>/",
         OrganisationFormView.as_view(),
