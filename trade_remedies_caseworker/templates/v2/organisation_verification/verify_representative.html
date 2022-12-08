@@ -179,12 +179,12 @@
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                Cases rejected from: {{ invited_organisation.rejected_cases|length }}
+                                Cases rejected from: {{ rejected_cases|length }}
                             </span>
                             </summary>
                             <div class="govuk-details__text">
                                 <ul class="govuk-list">
-                                    {% for rejection in invited_organisation.rejected_cases %}
+                                    {% for rejection in rejected_cases %}
                                         <li>
                                             <a href="{% url 'cases:view_case' case_id=rejection.case.id %}"
                                                class="govuk-link--no-visited-state">{{ rejection.case.reference }}

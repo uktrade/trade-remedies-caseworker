@@ -1,3 +1,6 @@
+invited_organisation.country_name
+Companies House
+is_admin
 case</a>
 back_button
 Invite

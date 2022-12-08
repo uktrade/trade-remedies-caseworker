@@ -118,8 +118,17 @@ class OrganisationVerificationVerifyRepresentative(
         context["approved_representative_cases"] = [
             each for each in invited_organisation.representative_cases if each.validated
         ]
+
+        # removing rejections from this case
+        rejected_cases = [
+            each
+            for each in invited_organisation.rejected_cases
+            if each.invitation_id != self.invitation.id
+        ]
+        context["rejected_cases"] = rejected_cases
+
         context["last_rejection"] = (
-            sorted(invited_organisation.rejected_cases, key=lambda x: x.date_rejected)[0]
+            sorted(rejected_cases, key=lambda x: x.date_rejected)[0]
             if invited_organisation.rejected_cases
             else None
         )
