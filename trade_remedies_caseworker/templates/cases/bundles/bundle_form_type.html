@@ -3,32 +3,32 @@
 
 {% block bundle_type %}
 
-        <div class="section {% if populated %}populated{% endif %}">
-            <div class="column-one-half">
-                <div id="participant_selector" class="edit-section">
-                    <div class="outer"><h2 class="heading-small">Type</h2>
+    <div class="section {% if populated %}populated{% endif %}">
+        <div class="column-one-half">
+            <div id="participant_selector" class="edit-section">
+                <div class="outer"><h2 class="heading-small">Type</h2>
 
-                        <div class="form-group edit-item type-textarea ">
-                            <select class="form-control auto-width" id="caseType" name="case_type_id">
-                                <optgroup label="Case Types">
+                    <div class="form-group edit-item type-textarea ">
+                        <select class="form-control auto-width" id="caseType" name="case_type_id">
+                            <optgroup label="Case Types">
                                 {% for case_type in case_types %}
                                     {% if not case_type.internal %}
                                         <option value="{{case_type.id}}">{{case_type.name}}</option>
                                     {% endif %}
                                 {% endfor %}
-                                </optgroup>
-                                <optgroup label="Submission Types">
-                                    <option value="SUB:27">Assign User Request</option>
-                                    <option value="SUB:40">Letter of Authority</option>
-                                </optgroup>
-                            </select>
-                        </div>
+                            </optgroup>
+                            <optgroup label="Submission Types">
+                                <option value="SUB:27">Assign User Request</option>
+                                <option value="SUB:40">Letter of Authority</option>
+                            </optgroup>
+                        </select>
                     </div>
                 </div>
-
-
             </div>
+
+
         </div>
+    </div>
 
 
 {% endblock %}

@@ -6,61 +6,61 @@
 {% load badge %}
 {% block case_page_content %}
 
-{% if submission %}
-<h3 class="heading-small">Showing for {{submission.name}}</h3>
-<a href="/case/{{case_id}}/files/?tab={{tab}}">Show all</a>
-{% endif %}
-
-{% include "widgets/document_search.html" %}
-
-{% include "widgets/tabs.html" with q=tabs %}
-<form action="/case/{{case.id}}/files/" method="post" id="fileSelection">
-{% csrf_token %}
-<table class="filelist sortable" data-attach="TableSort">
-<thead>
-  <tr>
-    {% table_heading 'Uploaded' 'document.created_at' sort tabs.value dir %}
-    {% table_heading 'File name' 'document.name' sort tabs.value dir %}
-    {% table_heading 'Submission' 'submission.type' sort tabs.value dir %}
-    {% if tab == 'respondent' %}
-        {% table_heading 'Party' 'submission.organisation.name' sort tabs.value dir %}
-        {% table_heading 'Party type' 'submission.organisation_case_role' sort tabs.value dir %}
-    {% else %}
-        {% table_heading 'Author' 'submission.organisation_case_role' sort tabs.value dir %}
+    {% if submission %}
+        <h3 class="heading-small">Showing for {{submission.name}}</h3>
+        <a href="/case/{{case_id}}/files/?tab={{tab}}">Show all</a>
     {% endif %}
-  </tr>
-</thead>
-<tbody>
 
-{% for document in file_list %}
-    <tr>
-        <td class="nobreak" sortVal="{{ document.created_at|format_date_no_span:'%Y_%m_%d'}}"  >
-            {{ document.created_at|format_date:'%d %b %Y' }}
-        </td>
-        <td>
-            <a class="link" href="/document/{{document.id}}/download/" >{{ document.name }}</a>
-        </td>
-        <td>
-            {% if document.submission %}
-                <a class="link" href="/case/{{case.id}}/submission/{{document.submission.id}}/">{{ document.submission.type_name }} (v{{document.submission.version}})</a>
-            {% else %}
-                N/A
-            {% endif %}
-        </td>
-        {% if tab == 'respondent' %}
-        	<td>
-                <a class="link" href="/case/{{case.id}}/organisation/{{document.submission.organisation.id}}/">{{ document.submission.organisation.name }}</a>
-            </td>
-            <td class="nobreak">
-                {{ document.submission.organisation_case_role }}
-            </td>
-        {% else %}
-            <td>{{ document.created_by }}</td>
-        {% endif %}
-    </tr>
-{% endfor %}
-</tbody>
-</table>
-</form>
+    {% include "widgets/document_search.html" %}
+
+    {% include "widgets/tabs.html" with q=tabs %}
+    <form action="/case/{{case.id}}/files/" method="post" id="fileSelection">
+        {% csrf_token %}
+        <table class="filelist sortable" data-attach="TableSort">
+            <thead>
+                <tr>
+                    {% table_heading 'Uploaded' 'document.created_at' sort tabs.value dir %}
+                    {% table_heading 'File name' 'document.name' sort tabs.value dir %}
+                    {% table_heading 'Submission' 'submission.type' sort tabs.value dir %}
+                    {% if tab == 'respondent' %}
+                        {% table_heading 'Party' 'submission.organisation.name' sort tabs.value dir %}
+                        {% table_heading 'Party type' 'submission.organisation_case_role' sort tabs.value dir %}
+                    {% else %}
+                        {% table_heading 'Author' 'submission.organisation_case_role' sort tabs.value dir %}
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for document in file_list %}
+                    <tr>
+                        <td class="nobreak" sortVal="{{ document.created_at|format_date_no_span:'%Y_%m_%d'}}"  >
+                            {{ document.created_at|format_date:'%d %b %Y' }}
+                        </td>
+                        <td>
+                            <a class="link" href="/document/{{document.id}}/download/" >{{ document.name }}</a>
+                        </td>
+                        <td>
+                            {% if document.submission %}
+                                <a class="link" href="/case/{{case.id}}/submission/{{document.submission.id}}/">{{ document.submission.type_name }} (v{{document.submission.version}})</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        {% if tab == 'respondent' %}
+                            <td>
+                                <a class="link" href="/case/{{case.id}}/organisation/{{document.submission.organisation.id}}/">{{ document.submission.organisation.name }}</a>
+                            </td>
+                            <td class="nobreak">
+                                {{ document.submission.organisation_case_role }}
+                            </td>
+                        {% else %}
+                            <td>{{ document.created_by }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
 
 {% endblock %}

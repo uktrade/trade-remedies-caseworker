@@ -8,28 +8,28 @@
     {% if not PANEL_LAYOUT %}
         <div class="footer-support-links">
             <!--<a href="/settings/bundles/create">Bundles</a>-->
-        {% if user.is_authenticated %}
-        {% get_feature_flag "SYSTEM_DASHBOARD" as FEATURE_SYSTEM_DASHBOARD %}
-            {% if FEATURE_SYSTEM_DASHBOARD %}
-            <a href="/system/">System View</a>
+            {% if user.is_authenticated %}
+                {% get_feature_flag "SYSTEM_DASHBOARD" as FEATURE_SYSTEM_DASHBOARD %}
+                {% if FEATURE_SYSTEM_DASHBOARD %}
+                    <a href="/system/">System View</a>
+                {% endif %}
             {% endif %}
-        {% endif %}
-        {% if user.is_admin %}
-            {% get_feature_flag "NOTICES" as FEATURE_NOTICES %}
-            {% if FEATURE_NOTICES %}
-            <a href="/cases/notices/">Notices</a>
+            {% if user.is_admin %}
+                {% get_feature_flag "NOTICES" as FEATURE_NOTICES %}
+                {% if FEATURE_NOTICES %}
+                    <a href="/cases/notices/">Notices</a>
+                {% endif %}
+                <a href="/users/">Users</a>
+                {% get_feature_flag "ORGANISATION_ADMIN" as FEATURE_ORGANISATION_ADMIN %}
+                {% if FEATURE_ORGANISATION_ADMIN %}
+                    <a href="/organisations/dedupe/">Organisations</a>
+                {% endif %}
+                <a href="/document/bundles/">Application templates</a>
+                {% if user.permissions.workflow_editor %}
+                    <a href="/settings/system_parameters/">System parameters</a>
+                {% endif %}
+                <a href="/settings/feedback/">Feedback</a>
             {% endif %}
-            <a href="/users/">Users</a>
-            {% get_feature_flag "ORGANISATION_ADMIN" as FEATURE_ORGANISATION_ADMIN %}
-            {% if FEATURE_ORGANISATION_ADMIN %}
-            <a href="/organisations/dedupe/">Organisations</a>
-            {% endif %}
-            <a href="/document/bundles/">Application templates</a>
-            {% if user.permissions.workflow_editor %}
-            <a href="/settings/system_parameters/">System parameters</a>
-            {% endif %}
-            <a href="/settings/feedback/">Feedback</a>
-        {% endif %}
         </div>
     {% endif %}
 </div>

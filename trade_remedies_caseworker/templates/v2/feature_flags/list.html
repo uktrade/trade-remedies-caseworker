@@ -12,23 +12,23 @@
     <div class="grid-row">
         <div class="column-two-thirds">
             <table class="govuk-table">
-                    <thead class="govuk-table__head">
+                <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header">Name</th>
                         <th scope="col" class="govuk-table__header">Action</th>
                     </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
+                </thead>
+                <tbody class="govuk-table__body">
                     {% for feature_flag in feature_flags %}
-                            <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">{{ feature_flag.name }}</th>
-                                <td class="govuk-table__cell">
-                                    <a href="{% url 'view_feature_one_flag' feature_flag_name=feature_flag.name %}">Manage this feature flag</a>
-                                </td>
-                            </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">{{ feature_flag.name }}</th>
+                            <td class="govuk-table__cell">
+                                <a href="{% url 'view_feature_one_flag' feature_flag_name=feature_flag.name %}">Manage this feature flag</a>
+                            </td>
+                        </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}
