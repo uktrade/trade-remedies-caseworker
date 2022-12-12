@@ -80,9 +80,9 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                             kwargs={"invitation_id": self.invitation.id},
                         ),
                         "link_text": "Submit decision",
-                        "status": "Not Started"
-                        if self.invitation.submission.primary_contact
-                        else "Cannot start yet",
+                        "status": "Complete"
+                        if self.invitation.approved_at or self.invitation.rejected_at
+                        else "Not Started",
                         "ready_to_do": True
                         if self.invitation.submission.primary_contact
                         else False,
@@ -294,7 +294,7 @@ class OrganisationVerificationConfirmView(BaseOrganisationVerificationView):
     def post(self, request, *args, **kwargs):
         # the caseworker is approving this invite
         self.invitation.process_representative_invitation(approved=True)
-        self.client.submissions(self.invitation.submission.id).update_submission_status("review_ok")
+        # self.client.submissions(self.invitation.submission.id).update_submission_status("review_ok")
         return redirect(
             reverse(
                 "verify_organisation_verify_approved", kwargs={"invitation_id": self.invitation.id}
@@ -326,7 +326,8 @@ class OrganisationVerificationConfirmDeclinedView(BaseOrganisationVerificationVi
 
     def post(self, request, *args, **kwargs):
         # the caseworker is declining/rejecting the invite
-        self.client.submissions(self.invitation.submission.id).update_submission_status("deficient")
+        # self.client.submissions(self.invitation.submission.id).update_submission_status("deficient")
+        self.invitation.process_representative_invitation(approved=False)
         return redirect(
             reverse(
                 "verify_organisation_verify_declined", kwargs={"invitation_id": self.invitation.id}

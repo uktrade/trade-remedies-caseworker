@@ -1,10 +1,10 @@
 {% extends '../review.html' %}
 {% load set %}
 {% block upper_info_block %}
-    {% if not submission.status.review_ok and not submission.status.version %}
+    {% if not invites.0.rejected_by and not invites.0.approved_by %}
         {# we only want to show this box if the invite has not already been approved or declined #}
         <div class="info">
-            {% if submission.status.sent %}
+            {% if not invites.0.accepted_at %}
                 {# The invitation has been sent but not accepted #}
                 <p><span class="bold">{{ submission.organisation.name }}</span> has invited <span
                         class="bold">{{ invites.0.contact.organisation.name }}</span> to represent them in this case.
@@ -12,7 +12,7 @@
                 <p>The invite has not yet been accepted by {{ invites.0.contact.organisation.name }}.</p>
                 <a class="button" disabled href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
                     invite</a>
-            {% elif submission.status.received %}
+            {% elif invites.0.accepted_at %}
                 {# The invitation has been accepted but not reviewed by caseworkers yet #}
                 <p><span class="bold">{{ invites.0.contact.organisation.name }}</span> has accepted <strong
                         class="bold">{{ submission.organisation.name }}'s invite.</strong></p>

@@ -461,7 +461,7 @@ class PartiesView(CaseBaseView):
                 _base["add_link"] = "Invite party to case"
             parties.append(_base)
 
-        v2_client = v2_api_client.client.TRSAPIClient(token=self.request.user.token)
+        v2_client = v2_api_client.client.TRSAPIClient(token=self.request.user.token, timeout=30)
         caseworker_invitations = v2_client.invitations(
             invitation_type=3,
             case_id=self.case_id,
@@ -1786,8 +1786,8 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             all_case_invitations = v2_client.invitations(
                 case_id=case_id,
                 #  we only want to show invitations they have not already been approved or declined
-                submission__status__review_ok=False,
-                submission__status__version=False,
+                approved_at__isnull=True,
+                rejected_at__isnull=True,
                 fields=["contact", "submission"],
             )
             contact_to_invitation = defaultdict(list)
@@ -1863,12 +1863,14 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     # Not a third party submission
                     continue
                 inviting_organisation = full_submission[0]["organisation"]["id"]
+
+                # we don't want invitations which have been sent but not accepted, or those that
+                # have been rejected
                 if (
-                    not full_submission[0]["status"]["sent"]
-                    and not full_submission[0]["status"]["version"]
+                    invite["accepted_at"]
+                    and not invite["rejected_by"]
+                    and not invite["approved_by"]
                 ):
-                    # we dont want invitations which have been sent but not accepted, or those that
-                    # have been rejected
                     if inviting_organisation == organisation_id:
                         submission_sufficient = full_submission[0]["status"]["sufficient"]
                         invite["contact"]["is_third_party"] = True
