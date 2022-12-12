@@ -239,17 +239,20 @@ class OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact(
         return context
 
     def form_valid(self, form):
-        # creating a new contact
-        new_contact = self.client.contacts(form.cleaned_data)
-
-        # assigning them to the inviter's organisation
-        new_contact.change_organisation(self.invitation.organisation_id)
+        # checking if the contact already exists
+        if existing_contacts := self.client.contacts(email=form.cleaned_data["email"]):
+            contact = existing_contacts[0]
+        else:
+            # a contact with that email cannot be found, create a new one
+            contact = self.client.contacts(form.cleaned_data)
+            # assigning them to the inviter's organisation
+            contact.change_organisation(self.invitation.organisation_id)
 
         # assigning them to the case
-        new_contact.add_to_case(case_id=self.invitation.case.id, primary=True)
+        contact.add_to_case(case_id=self.invitation.case.id, primary=True)
 
         self.client.submissions(self.invitation.submission.id).update(
-            {"primary_contact": new_contact.id}, fields=["primary_contact"]
+            {"primary_contact": contact.id}, fields=["primary_contact"]
         )
 
         return redirect(
