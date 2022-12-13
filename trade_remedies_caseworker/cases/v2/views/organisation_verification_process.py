@@ -104,7 +104,7 @@ class OrganisationVerificationVerifyRepresentative(
         context = super().get_context_data(**kwargs)
         invited_organisation = self.client.organisations(self.invitation.contact.organisation)
         context["invited_organisation"] = invited_organisation
-        context["inviter_organisation"] = self.client.organisations(self.invitation.organisation)
+        context["inviter_organisation"] = self.client.organisations(self.invitation.organisation.id)
 
         organisation_case_roles = self.client.organisation_case_roles(
             organisation_id=self.invitation.contact.organisation
