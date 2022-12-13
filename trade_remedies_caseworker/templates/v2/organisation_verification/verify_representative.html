@@ -25,7 +25,7 @@
                     s{% endif %} <br>
                 {% if last_rejection %}
                     The last rejection was on <strong>{{ last_rejection.date_rejected|date:'d M y' }}</strong> by
-                    <strong>{{ last_rejection.rejected_by }}</strong><br>
+                    <strong>{{ last_rejection.rejected_by.name }}</strong><br>
                 {% endif %}
             {% endif %}
 
