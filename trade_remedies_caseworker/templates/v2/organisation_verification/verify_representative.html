@@ -11,7 +11,12 @@
         </h1>
         <div class="govuk-inset-text govuk-inset-text__reginterest">
             <strong>{{ invited_organisation.name }}</strong> has been approved on to {{ number_of_approved_cases }}
-            case{% if number_of_approved_cases > 1 or number_of_approved_cases == 0 %}s{% endif %} <br>
+            {% if number_of_approved_cases > 1 or number_of_approved_cases == 0 %}
+                cases
+            {% else %}
+                case
+            {% endif %}
+            <br>
             {% if last_approval %}
                 The last approval was on <strong>{{ last_approval.validated_at|date:'d M y' }}</strong> by
                 <strong>{{ last_approval.validated_by.name }}</strong><br>
@@ -20,9 +25,12 @@
             {% if invited_organisation.rejected_cases %}
                 <strong>{{ invited_organisation.name }}</strong> has been rejected from
                 {{ invited_organisation.rejected_cases|length }}
-                case
-                {% if invited_organisation.rejected_cases|length > 1 or invited_organisation.rejected_casse|length > 1 %}
-                    s{% endif %} <br>
+                {% if invited_organisation.rejected_cases|length > 1 or invited_organisation.rejected_cases|length == 0 %}
+                    cases
+                {% else %}
+                    case
+                {% endif %}
+                <br>
                 {% if last_rejection %}
                     The last rejection was on <strong>{{ last_rejection.date_rejected|date:'d M y' }}</strong> by
                     <strong>{{ last_rejection.rejected_by.name }}</strong><br>
