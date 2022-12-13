@@ -116,23 +116,23 @@
                 </dl>
                 <br>
                 <div>
-                    {% if invited_organisation_case_roles|length > 0 %}
+                    {% if invited_approved_organisation_case_roles|length > 0 %}
                         <details class="case-details govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                Cases acting as interested party: {{ invited_organisation_case_roles|length }}
+                                Cases acting as interested party: {{ invited_approved_organisation_case_roles|length }}
                             </span>
                             </summary>
                             <div class="govuk-details__text">
                                 <ul class="govuk-list">
-                                    {% for org_case_role in invited_organisation_case_roles %}
+                                    {% for org_case_role in invited_approved_organisation_case_roles %}
                                         <li>
                                             <a href=""
                                                class="govuk-link--no-visited-state">{{ org_case_role.case.reference }}
                                                 - {{ org_case_role.case.name }}</a>
                                             ({{ org_case_role.role_name }})
                                             {% if org_case_role.validated_at %}
-                                                <img src="{% static 'v2/assets/images/checkmark.png' %}"
+                                                <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
                                                      class="verified-check"
                                                      alt="Verified on case"
                                                      title="Verified on case"
@@ -169,7 +169,7 @@
                                                    class="govuk-link--no-visited-state">{{ representation.case.reference }}
                                                     - {{ representation.case.name }}</a>
                                                 ({{ representation.role }})
-                                                <img src="{% static 'v2/assets/images/verified-tick.png' %}"
+                                                <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
                                                      class="verified-check" alt="Verified on case"
                                                      title="Verified on case" width="32px">
                                                 <span class="govuk-body-s">{{ representation.validated_at|date:'d M y' }}</span>
