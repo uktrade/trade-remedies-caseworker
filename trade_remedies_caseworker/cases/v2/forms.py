@@ -6,7 +6,7 @@ from config.forms import ValidationForm
 class BeenAbleToVerifyRepresentativeForm(ValidationForm):
     been_able_to_verify_representative = forms.ChoiceField(
         error_messages={
-            "required": "edit_organisation_no_organisation_name",
+            "required": "verify_invite_no_option_selected",
         },
         choices=(
             ("yes", True),
