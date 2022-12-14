@@ -11,8 +11,8 @@ class TestOrganisationInviteForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
             "organisation_name": "TEST COMPANY",
-            "organisation_address": "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM",
-            "organisation_post_code": "NNN NNN",  # PS-IGNORE
+            "organisation_address": "1 TEST ROAD, LONDON, UNITED KINGDOM, NNN NNN",
+            "organisation_post_code": "NNN NNN",  # /PS-IGNORE
             "companies_house_id": "000000",
             "organisation_id": "aor4nd0m-idoo-foro-test-purp05e5oooo",
         }
@@ -22,15 +22,15 @@ class TestOrganisationInviteForm(TestCase):
         form = OrganisationInviteForm(data=self.mock_data)
         self.assertTrue(form.is_valid())
         self.assertEqual(
-            form.cleaned_data,
             {
                 "organisation_name": "TEST COMPANY",
-                "organisation_address": "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM",
+                "organisation_address": "1 TEST ROAD, LONDON, UNITED KINGDOM",
                 "organisation_post_code": "NNN NNN",
                 "companies_house_id": "000000",
                 "organisation_id": "aor4nd0m-idoo-foro-test-purp05e5oooo",
                 "company_search_container": "",
             },
+            form.cleaned_data,
         )
 
     def test_organisations_searched_but_not_selected(self):
@@ -79,9 +79,18 @@ class TestOrganisationInviteContactForm(TestCase):
 
         self.mock_data = {
             "org_invite_contacts": [
-                ("aor4nd0m-idoo-foro-test-purp05e5oooo", "Test Name1 - test1@example.com"),
-                ("an0thero-idoo-t0oo-test-w1thoooooooo", "Test Name2 - test2@example.com"),
-                ("ando0n3o-m0re-t0oo-test-t1hisoc0d3oo", "Test Name3 - test3@example.com"),
+                (
+                    "aor4nd0m-idoo-foro-test-purp05e5oooo",
+                    "Test Name1 - test1@example.com",  # /PS-IGNORE
+                ),
+                (
+                    "an0thero-idoo-t0oo-test-w1thoooooooo",
+                    "Test Name2 - test2@example.com",  # /PS-IGNORE
+                ),
+                (
+                    "ando0n3o-m0re-t0oo-test-t1hisoc0d3oo",  # /PS-IGNORE
+                    "Test Name3 - test3@example.com",  # /PS-IGNORE
+                ),
             ],
             "data": {
                 "which_contact": "aor4nd0m-idoo-foro-test-purp05e5oooo"
@@ -95,7 +104,10 @@ class TestOrganisationInviteContactForm(TestCase):
     def test_no_org_type_selected(self):
         form = OrganisationInviteContactForm(
             org_invite_contacts=[
-                ("aor4nd0m-idoo-foro-test-purp05e5oooo", "Test Name1 - test1@example.com")
+                (
+                    "aor4nd0m-idoo-foro-test-purp05e5oooo",
+                    "Test Name1 - test1@example.com",  # /PS-IGNORE
+                )
             ],
             data={"which_contact": ""},  # no contact selected
         )
@@ -111,7 +123,7 @@ class TestOrganisationInviteContactNewForm(TestCase):
         self.mock_data = {
             "organisation_name": "test organisation",
             "contact_name": "test",
-            "contact_email": "test@example.com",
+            "contact_email": "test@example.com",  # /PS-IGNORE
         }
 
     def test_valid_input(self):
@@ -123,7 +135,7 @@ class TestOrganisationInviteContactNewForm(TestCase):
             {
                 "organisation_name": "",
                 "contact_name": "test",
-                "contact_email": "test@example.com",
+                "contact_email": "test@example.com",  # /PS-IGNORE
             }
         )
         form = OrganisationInviteContactNewForm(data=self.mock_data)
@@ -139,7 +151,7 @@ class TestOrganisationInviteContactNewForm(TestCase):
             {
                 "organisation_name": "test organisation",
                 "contact_name": "",
-                "contact_email": "test@example.com",
+                "contact_email": "test@example.com",  # /PS-IGNORE
             }
         )
         form = OrganisationInviteContactNewForm(data=self.mock_data)
