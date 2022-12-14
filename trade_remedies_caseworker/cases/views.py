@@ -973,7 +973,7 @@ class SubmissionView(CaseBaseView):
 
             if (
                 btn_value == "sufficient"
-                and not submission["type"]["id"] == SUBMISSION_TYPE_THIRD_PARTY
+                #and not submission["type"]["id"] == SUBMISSION_TYPE_THIRD_PARTY
             ):
                 # Set the submission to sufficient, but only if it is not a 3rd Party Invite as
                 # that is handled elsewhere now
