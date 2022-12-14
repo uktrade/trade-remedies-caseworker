@@ -26,6 +26,12 @@ class OrganisationInviteForm(ValidationForm):
         elif not self.data.get("input-autocomplete"):
             self.add_error("company_search_container", "organisation_not_searched")
         else:
+            self.cleaned_data["organisation_address"] = (
+                self.cleaned_data["organisation_address"]
+                .removesuffix(self.cleaned_data["organisation_post_code"])
+                .rstrip(", ")
+            )
+
             return self.cleaned_data
 
 
@@ -49,7 +55,7 @@ class OrganisationInviteContactNewForm(ValidationForm):
     organisation_name = forms.CharField(
         error_messages={"required": "invite_contact_no_organisation_name"}
     )
-    contact_name = forms.CharField(error_messages={"required": "invite_contact_no_name"})
+    contact_name = forms.CharField(error_messages={"required": "invite_contact_no_name"})  # /PS-IGNORE
     contact_email = forms.EmailField(
         error_messages={
             "required": "invite_contact_no_email",
