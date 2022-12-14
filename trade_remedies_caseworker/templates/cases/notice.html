@@ -4,69 +4,69 @@
 {% load text_element %}
 
 {% block heading %}
-Notice details
+    Notice details
 {% endblock %}
 
 {% block main_content %}
-{% include "widgets/error_summary.html" with errors=errors %}
-<div class="grid-row">
-    <div class="column-three-quarters">
-        <form class="create-case" action="" method="post">
-            {% csrf_token %}
-            <fieldset class="form-group">
+    {% include "widgets/error_summary.html" with errors=errors %}
+    <div class="grid-row">
+        <div class="column-three-quarters">
+            <form class="create-case" action="" method="post">
+                {% csrf_token %}
+                <fieldset class="form-group">
 
-                {% text_element id='reference' label='Reference' errors=errors value=notice.reference %}
+                    {% text_element id='reference' label='Reference' errors=errors value=notice.reference %}
 
-                {% text_element id='name' label='Name' errors=errors value=notice.name %}
+                    {% text_element id='name' label='Name' errors=errors value=notice.name %}
 
-                <div class="form-group type-text type-select" >
-                    <label class="form-label" for="case_type">Case type</label>
-                    {% form_error 'case_type_id' errors %}
-                    <select name="case_type_id" id="case_type" class="form-control">
-                        <option value="">Please select ...</option>
-                        {% for case_type in case_types %}
-                          <option
-                            value="{{case_type.id}}"
-                            {% if case_type.id == notice.case_type.id %}selected{% endif %}
-                          >{{case_type.name}}</option>
-                        {% endfor %}
-                    </select>
+                    <div class="form-group type-text type-select" >
+                        <label class="form-label" for="case_type">Case type</label>
+                        {% form_error 'case_type_id' errors %}
+                        <select name="case_type_id" id="case_type" class="form-control">
+                            <option value="">Please select ...</option>
+                            {% for case_type in case_types %}
+                                <option
+                                    value="{{case_type.id}}"
+                                    {% if case_type.id == notice.case_type.id %}selected{% endif %}
+                                >{{case_type.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group type-text type-select" >
+                        <label class="form-label" for="case-selector">Associated review case</label>
+                        <select id="case-selector" class="form-control" name="review_case_id">
+                            <option value="">Select case...</option>
+                            {% for case in cases %}
+                                <option value="{{case.id}}" {% if case.id == notice.review_case.id %}selected="selected"{% endif %}>
+                                    {{case.reference}}:{{case.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Publication date</label>
+                        <input id="published_at" type="text" class="form-control" name="published_at"  value="{{notice.published_at|default_if_none:''}}" placeholder="YYYY-MM-DD">
+                        <a href="javascript:void(0)" data-handler="editDueDate" class="link" data-value="{{notice.published_at}}">{% format_date notice.published_at '%d %b %Y' %}</a>
+                        <label for="published_at-na"></label>
+                    </div>
+
+                    <div>
+                        <label>Termination date</label>
+                        <input id="terminated_at" type="text" class="form-control" name="terminated_at"  value="{{notice.terminated_at|default_if_none:''}}" placeholder="YYYY-MM-DD">
+                        <a href="javascript:void(0)" data-handler="editDueDate" class="link" data-value="{{notice.terminated_at}}">{% format_date notice.terminated_at '%d %b %Y' %}</a>
+                        <label for="terminated_at-na"></label>
+                    </div>
+
+                </fieldset>
+                <div class="pull-left">
+                    <button class="button button-blue" type="submit">Create notice</button>
                 </div>
-
-                <div class="form-group type-text type-select" >
-                    <label class="form-label" for="case-selector">Associated review case</label>
-                    <select id="case-selector" class="form-control" name="review_case_id">
-                        <option value="">Select case...</option>
-                        {% for case in cases %}
-                            <option value="{{case.id}}" {% if case.id == notice.review_case.id %}selected="selected"{% endif %}>
-                                {{case.reference}}:{{case.name}}
-                            </option>
-                        {% endfor %}
-                    </select>
+                <div class="pull-right">
+                    <button class="button button-blue" type="button" onClick="document.location='/cases/notices/'">Cancel</button>
                 </div>
-
-                <div>
-                    <label>Publication date</label>
-                    <input id="published_at" type="text" class="form-control" name="published_at"  value="{{notice.published_at|default_if_none:''}}" placeholder="YYYY-MM-DD">
-                    <a href="javascript:void(0)" data-handler="editDueDate" class="link" data-value="{{notice.published_at}}">{% format_date notice.published_at '%d %b %Y' %}</a>
-                    <label for="published_at-na"></label>
-                </div>
-
-                <div>
-                    <label>Termination date</label>
-                    <input id="terminated_at" type="text" class="form-control" name="terminated_at"  value="{{notice.terminated_at|default_if_none:''}}" placeholder="YYYY-MM-DD">
-                    <a href="javascript:void(0)" data-handler="editDueDate" class="link" data-value="{{notice.terminated_at}}">{% format_date notice.terminated_at '%d %b %Y' %}</a>
-                    <label for="terminated_at-na"></label>
-                </div>
-
-            </fieldset>
-            <div class="pull-left">
-                <button class="button button-blue" type="submit">Create notice</button>
-            </div>
-            <div class="pull-right">
-                <button class="button button-blue" type="button" onClick="document.location='/cases/notices/'">Cancel</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

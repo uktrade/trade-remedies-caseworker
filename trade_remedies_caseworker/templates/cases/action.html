@@ -4,146 +4,146 @@
 {% load to_json %}
 {% load task_disabled %}
 {% block case_page_content %}
-<form action="/case/{{case_id}}/action/{{action.key}}/" method="post" class="dd-form action-form">
-	{% csrf_token %}
-	<input type="hidden" name="action-key" value="{{action.key}}">
-	<div class="column-full nav">
-		<h2 class="heading-large">{{ action.label }}</h2>
+    <form action="/case/{{case_id}}/action/{{action.key}}/" method="post" class="dd-form action-form">
+        {% csrf_token %}
+        <input type="hidden" name="action-key" value="{{action.key}}">
+        <div class="column-full nav">
+            <h2 class="heading-large">{{ action.label }}</h2>
 
-			{% for task in tasks %}
-			    {% set 'value_tup' state|get_item:task.key %}
-			    {% set 'value' value_tup.0 %}
-			    {% set 'due_date' value_tup.1 %}
-				<fieldset class="form-group edit-item inline {% if value == 'na' %} disabled{%endif%}">
-					<div class="grid-row">
-            		{% if task.response_type.name == 'Yes/No/NA' %}
-	            		<div class="column-one-half">
-							<label class="form-label">{{ task.label }}</label>
-		                </div>
-	                    <div class="column-one-half">
-		                    <div class="multiple-choice">
-		                        <input id="{{ task.key }}-1" type="radio" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked" {% endif %} {% task_disabled user task %}>
-		                        <label for="{{ task.key }}-1">Yes</label>
-		                    </div>
-		                    <div class="multiple-choice">
-		                        <input id="{{ task.key }}-2" type="radio" name="{{ task.key }}" value="no" {% if value == 'no' %} checked="checked" {% endif %} {% task_disabled user task %}>
-		                        <label for="{{ task.key }}-2">No</label>
-		                    </div>
-		                    <div class="multiple-choice">
-		                        <input id="{{ task.key }}-3" type="radio" name="{{ task.key }}" value="not-applicable" {% if value == 'not-applicable' %} checked="checked" {% endif %} {% task_disabled user task %}>
-		                        <label for="{{ task.key }}-3">N/A</label>
-		                    </div>
-	                	</div>
-            		{% elif task.response_type.name == 'Yes/No' %}
-	            		<div class="column-one-half">
-		                	<label class="form-label">{{ task.label }}</label>
-		                </div>
-	                    <div class="column-one-half">
-		                    <div class="multiple-choice">
-		                        <input id="{{ task.key }}-1" type="radio" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked" {% endif %}{% task_disabled user task %}>
-		                        <label for="{{ task.key }}-1">Yes</label>
-		                    </div>
-		                    <div class="multiple-choice">
-		                        <input id="{{ task.key }}-2" type="radio" name="{{ task.key }}" value="no" {% if value == 'no' %} checked="checked" {% endif %} {% task_disabled user task %}>
-		                        <label for="{{ task.key }}-2">No</label>
-		                    </div>
-	                	</div>
+            {% for task in tasks %}
+                {% set 'value_tup' state|get_item:task.key %}
+                {% set 'value' value_tup.0 %}
+                {% set 'due_date' value_tup.1 %}
+                <fieldset class="form-group edit-item inline {% if value == 'na' %} disabled{%endif%}">
+                    <div class="grid-row">
+                        {% if task.response_type.name == 'Yes/No/NA' %}
+                            <div class="column-one-half">
+                                <label class="form-label">{{ task.label }}</label>
+                            </div>
+                            <div class="column-one-half">
+                                <div class="multiple-choice">
+                                    <input id="{{ task.key }}-1" type="radio" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked" {% endif %} {% task_disabled user task %}>
+                                    <label for="{{ task.key }}-1">Yes</label>
+                                </div>
+                                <div class="multiple-choice">
+                                    <input id="{{ task.key }}-2" type="radio" name="{{ task.key }}" value="no" {% if value == 'no' %} checked="checked" {% endif %} {% task_disabled user task %}>
+                                    <label for="{{ task.key }}-2">No</label>
+                                </div>
+                                <div class="multiple-choice">
+                                    <input id="{{ task.key }}-3" type="radio" name="{{ task.key }}" value="not-applicable" {% if value == 'not-applicable' %} checked="checked" {% endif %} {% task_disabled user task %}>
+                                    <label for="{{ task.key }}-3">N/A</label>
+                                </div>
+                            </div>
+                        {% elif task.response_type.name == 'Yes/No' %}
+                            <div class="column-one-half">
+                                <label class="form-label">{{ task.label }}</label>
+                            </div>
+                            <div class="column-one-half">
+                                <div class="multiple-choice">
+                                    <input id="{{ task.key }}-1" type="radio" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked" {% endif %}{% task_disabled user task %}>
+                                    <label for="{{ task.key }}-1">Yes</label>
+                                </div>
+                                <div class="multiple-choice">
+                                    <input id="{{ task.key }}-2" type="radio" name="{{ task.key }}" value="no" {% if value == 'no' %} checked="checked" {% endif %} {% task_disabled user task %}>
+                                    <label for="{{ task.key }}-2">No</label>
+                                </div>
+                            </div>
 
-	                {% elif task.response_type.name == 'Checkbox' %}
-	            		<div class="column-one-half">
-		                	<label class="form-label">{{ task.label }}</label>
-		                </div>
-	                	<div class="column-one-half">
-				      		<div class="multiple-choice">
-								<input id="{{ task.key }}" type="checkbox" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked"{% endif %} {% task_disabled user task %}>
-				        		<label for="{{ task.key }}"></label>
-				        	</div>
-				      	</div>
+                        {% elif task.response_type.name == 'Checkbox' %}
+                            <div class="column-one-half">
+                                <label class="form-label">{{ task.label }}</label>
+                            </div>
+                            <div class="column-one-half">
+                                <div class="multiple-choice">
+                                    <input id="{{ task.key }}" type="checkbox" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked"{% endif %} {% task_disabled user task %}>
+                                    <label for="{{ task.key }}"></label>
+                                </div>
+                            </div>
 
-	                {% elif task.response_type.name == 'Checkbox/NA' %}
-						{% if last_type !=  task.response_type.name %}
-							{# Heading row #}
-							<div class="form-group edit-item header-row inline">
-								<div class="grid-row">
-									<div class="column-one-half">
-										&nbsp;
-						            </div>
-					                <div class="column-one-half">
-										<label>Yes</label><label>N/A</label>
-					                </div>
-								</div>
-							</div>
-						{% endif %}
+                        {% elif task.response_type.name == 'Checkbox/NA' %}
+                            {% if last_type !=  task.response_type.name %}
+                                {# Heading row #}
+                                <div class="form-group edit-item header-row inline">
+                                    <div class="grid-row">
+                                        <div class="column-one-half">
+                                            &nbsp;
+                                        </div>
+                                        <div class="column-one-half">
+                                            <label>Yes</label><label>N/A</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
 
-	            		<div class="column-one-half">
-							<label class="form-label dim-on-disable" for="{{ task.key }}">{{ task.label }}</label>
-		                </div>
-	                	<div class="column-one-half">
-				      		<div class="multiple-choice">
-				        		<input id="{{ task.key }}" type="checkbox" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked"{% endif %} {% if value == 'na' %} disabled="disabled"{% endif %} {% task_disabled user task %}>
-								<label for="{{ task.key }}" class="dim-on-disable"></label>
-							</div>
-							<div class="multiple-choice">
-								<label for="{{ task.key }}-na" class="visually-hidden">N/A</label>
-								<input id={{task.key}}-na class="na-check" data-attach="NotApplicable" type="checkbox" name="{{ task.key }}" value="na" {% if value == 'na' %} checked="checked"{% endif %} {% task_disabled user task %}>
-								<label for="{{ task.key }}-na"></label>
-							</div>
-				      	</div>
+                            <div class="column-one-half">
+                                <label class="form-label dim-on-disable" for="{{ task.key }}">{{ task.label }}</label>
+                            </div>
+                            <div class="column-one-half">
+                                <div class="multiple-choice">
+                                    <input id="{{ task.key }}" type="checkbox" name="{{ task.key }}" value="yes" {% if value == 'yes' %} checked="checked"{% endif %} {% if value == 'na' %} disabled="disabled"{% endif %} {% task_disabled user task %}>
+                                    <label for="{{ task.key }}" class="dim-on-disable"></label>
+                                </div>
+                                <div class="multiple-choice">
+                                    <label for="{{ task.key }}-na" class="visually-hidden">N/A</label>
+                                    <input id={{task.key}}-na class="na-check" data-attach="NotApplicable" type="checkbox" name="{{ task.key }}" value="na" {% if value == 'na' %} checked="checked"{% endif %} {% task_disabled user task %}>
+                                    <label for="{{ task.key }}-na"></label>
+                                </div>
+                            </div>
 
-				    {% elif task.response_type.name == 'Free Text' %}
-						<div class="column-one-half">
-		                	<label class="form-label" for="{{ task.key }}">{{ task.label }}</label>
-		                </div>
-	                	<div class="column-one-half">
-				      		<input id="{{ task.key }}" type="text" class="form-control" name="{{ task.key }}"  value="{% if value != "na" %}{{ value|default:'' }}{% endif %}" {% task_disabled user task %}>
-				      	</div>
-						<!--<input id={{task.key}}-na class="na-check" type="checkbox" name="{{ task.key }}" value="na" {% if value == 'na' %} checked="checked"{% endif %}>-->
-				        <label for="{{ task.key }}-na"></label>
+                        {% elif task.response_type.name == 'Free Text' %}
+                            <div class="column-one-half">
+                                <label class="form-label" for="{{ task.key }}">{{ task.label }}</label>
+                            </div>
+                            <div class="column-one-half">
+                                <input id="{{ task.key }}" type="text" class="form-control" name="{{ task.key }}"  value="{% if value != "na" %}{{ value|default:'' }}{% endif %}" {% task_disabled user task %}>
+                            </div>
+                            <!--<input id={{task.key}}-na class="na-check" type="checkbox" name="{{ task.key }}" value="na" {% if value == 'na' %} checked="checked"{% endif %}>-->
+                            <label for="{{ task.key }}-na"></label>
 
-					{% elif task.response_type.name == 'Date' %}
-						<div class="column-one-half">
-		                	<label class="form-label" for="{{ task.key }}">{{ task.label }}</label>
-		                </div>
-	                	<div class="column-one-half">
-				      		<input id="{{ task.key }}" type="text" class="form-control" name="{{ task.key }}"  value="{% if value != "na" %}{{ value|default:'' }}{% endif %}" {% task_disabled user task %}>
-						</div>
-						<a href="javascript:void(0)" data-handler="editDueDate" class="link" data-caseid="{{case_id}}" data-submissionid="{{ submission.id }}" data-value="{{submission.due_at}}">{% format_date submission.due_at '%d %b %Y' %}</a>
-						<!--<input id={{task.key}}-na class="na-check" type="checkbox" name="{{ task.key }}" value="na" {% if value == 'na' %} checked="checked"{% endif %}>-->
-				        <label for="{{ task.key }}-na"></label>
+                        {% elif task.response_type.name == 'Date' %}
+                            <div class="column-one-half">
+                                <label class="form-label" for="{{ task.key }}">{{ task.label }}</label>
+                            </div>
+                            <div class="column-one-half">
+                                <input id="{{ task.key }}" type="text" class="form-control" name="{{ task.key }}"  value="{% if value != "na" %}{{ value|default:'' }}{% endif %}" {% task_disabled user task %}>
+                            </div>
+                            <a href="javascript:void(0)" data-handler="editDueDate" class="link" data-caseid="{{case_id}}" data-submissionid="{{ submission.id }}" data-value="{{submission.due_at}}">{% format_date submission.due_at '%d %b %Y' %}</a>
+                            <!--<input id={{task.key}}-na class="na-check" type="checkbox" name="{{ task.key }}" value="na" {% if value == 'na' %} checked="checked"{% endif %}>-->
+                            <label for="{{ task.key }}-na"></label>
 
-				    {% elif task.response_type.name == 'NoteSection' %}
-	            		<div class="column-full">
-		                	<label class="form-label">{{ task.label }}</label>
-		                </div>
-		                <div class="column-full">
+                        {% elif task.response_type.name == 'NoteSection' %}
+                            <div class="column-full">
+                                <label class="form-label">{{ task.label }}</label>
+                            </div>
+                            <div class="column-full">
 
-				    	{% include "widgets/notesWidget.html" with notes=task.notes modelId=workflow.id contentType="cases.caseworkflow" name=task.key model_key=task.key %}
-				    	</div>
-				    {% elif task.response_type.name == 'Timer' %}
-				    	<!-- <div class="column-full">
+                                {% include "widgets/notesWidget.html" with notes=task.notes modelId=workflow.id contentType="cases.caseworkflow" name=task.key model_key=task.key %}
+                            </div>
+                        {% elif task.response_type.name == 'Timer' %}
+                            <!-- <div class="column-full">
 		                	<label class="form-label">{{ task.label }}</label>
 		                </div>
 		                <div class="column-full">
 				    	{% format_date task.due_date '%d %b %Y' %}
 				    	</div> -->
-				    {% elif task.response_type.name == 'Label' %}
-						<div class="column-full">
-							<label class="form-info">{{ task.label|linebreaksbr }}</label>
-		                </div>
-				    {% elif task.response_type.name != 'Hidden' %}
-				    	Not found type {{task.response_type.name}}
-					{% endif %}
-					</div>
+                        {% elif task.response_type.name == 'Label' %}
+                            <div class="column-full">
+                                <label class="form-info">{{ task.label|linebreaksbr }}</label>
+                            </div>
+                        {% elif task.response_type.name != 'Hidden' %}
+                            Not found type {{task.response_type.name}}
+                        {% endif %}
+                    </div>
                 </fieldset>
                 {% set 'last_type' task.response_type.name %}
-			{% endfor %}
+            {% endfor %}
 
-		<div class="form-group edit-item type-radioset">
-			<button class="button button-blue pull-left" value="save-progress" name="btnAction" type="submit">Save and Exit</button>
-			<button class="button button-grey pull-right dlg-close" value="-" name="btnAction" type="button">Cancel</button>
-			<!-- <button class="button button-blue" value="complete" type="submit" name="btnAction">Complete Action</button> -->
-		</div>
-	</div>
-</form>
+            <div class="form-group edit-item type-radioset">
+                <button class="button button-blue pull-left" value="save-progress" name="btnAction" type="submit">Save and Exit</button>
+                <button class="button button-grey pull-right dlg-close" value="-" name="btnAction" type="button">Cancel</button>
+                <!-- <button class="button button-blue" value="complete" type="submit" name="btnAction">Complete Action</button> -->
+            </div>
+        </div>
+    </form>
 
 {% endblock %}

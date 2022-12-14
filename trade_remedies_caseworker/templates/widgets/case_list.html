@@ -1,66 +1,66 @@
 {# A table of cases in 'cases' variable #}
 {% load case_type_badge %}
 <table class="cases sortable" data-attach="TableSort">
-  <thead>
-    <tr>
-      <th class="type">Type</th>
-      <th class="number">No.</th>
-      <th class="case-name">Case Name</th>
-      <th class="created">Created</th>
-      {% if archive %}
-        <th class="status">Status</th>
-        <th class="next-action">Close date</th>
-        <th class="due">Measure expiry date</th>
-      {% else %}
-        <th class="applicant">Applicant</th>
-        <th class="status">Status</th>
-        <th class="next-action">Next action</th>
-        <th class="due">Due</th>
-      {% endif %}
-    </tr>
-  </thead>
-  <tbody>
-  {% for case in cases %}
-      {% set 'enable_links' False %}
-      {% if case.can_navigate %}
-          {% set 'enable_links' True %}
-      {% endif %}
-      <tr>
-          <td>
-            {% case_type_badge case.type %}
-          </td>
-          <td>
-            {% if enable_links %}<a class="link" href="/case/{{case.id}}/">{% endif %}
-              {{case.reference}}
-            {% if enable_links %}</a>{% endif %}
-          </td>
-          <td>
-            {% if case %}
-              {% if enable_links %}<a class="link" href="/case/{{case.id}}/">{% endif %}
-                {% if case.name %}
-                  {{case.name}}
-                {% else %}
-                  <div class="icon icon-amber-warning"><span class="visually-hidden">Alert</span></div>Un-assigned
-                {% endif %}
-              {% if enable_links %}</a>{% endif %}
+    <thead>
+        <tr>
+            <th class="type">Type</th>
+            <th class="number">No.</th>
+            <th class="case-name">Case Name</th>
+            <th class="created">Created</th>
+            {% if archive %}
+                <th class="status">Status</th>
+                <th class="next-action">Close date</th>
+                <th class="due">Measure expiry date</th>
+            {% else %}
+                <th class="applicant">Applicant</th>
+                <th class="status">Status</th>
+                <th class="next-action">Next action</th>
+                <th class="due">Due</th>
             {% endif %}
-          </td>
-          <td class="nobreak" sortval="{% format_date case.created_at '%Y-%j' false %}">{{case.created_at|format_date:'%d %b %Y'}}</td>
-          {% if archive %}
-            <td>{{ case.stage.name|default:'' }}</td>
-            <td sortval="{% format_date case.workflow_state.DETERMINATION_ACTIVE_DATE.0 '%Y-%j' false %}">{{case.workflow_state.DETERMINATION_ACTIVE_DATE.0|format_date}}</td>
-            <td sortval="{% format_date case.workflow_state.MEASURE_EXPIRY.0 '%Y-%j' false %}">{{case.workflow_state.MEASURE_EXPIRY.0|format_date}}</td>
-          {% else %}
-            <td>
-              {% if enable_links %}<a class="link" href="/case/{{case.id}}/organisation/{{case.applicant.organisation.id}}/">{% endif %}
-                {{ case.applicant.organisation.name }}
-              {% if enable_links %}</a>{% endif %}
-            </td>
-            <td>{{ case.stage.name|default:'' }}</td>
-            <td>{{ case.case_status.next_action|default:'' }}</td>
-            <td sortval="{% format_date case.case_status.next_notice_due '%Y-%j' false %}">{{case.case_status.next_notice_due|format_date:'%d %b %Y'}}{% overdue_warning case.case_status.next_notice_due %}</td>
-          {% endif %}
-      </tr>
-  {% endfor %}
-  </tbody>
+        </tr>
+    </thead>
+    <tbody>
+        {% for case in cases %}
+            {% set 'enable_links' False %}
+            {% if case.can_navigate %}
+                {% set 'enable_links' True %}
+            {% endif %}
+            <tr>
+                <td>
+                    {% case_type_badge case.type %}
+                </td>
+                <td>
+                    {% if enable_links %}<a class="link" href="/case/{{case.id}}/">{% endif %}
+                    {{case.reference}}
+                    {% if enable_links %}</a>{% endif %}
+                </td>
+                <td>
+                    {% if case %}
+                        {% if enable_links %}<a class="link" href="/case/{{case.id}}/">{% endif %}
+                        {% if case.name %}
+                            {{case.name}}
+                        {% else %}
+                            <div class="icon icon-amber-warning"><span class="visually-hidden">Alert</span></div>Un-assigned
+                        {% endif %}
+                        {% if enable_links %}</a>{% endif %}
+                    {% endif %}
+                </td>
+                <td class="nobreak" sortval="{% format_date case.created_at '%Y-%j' false %}">{{case.created_at|format_date:'%d %b %Y'}}</td>
+                {% if archive %}
+                    <td>{{ case.stage.name|default:'' }}</td>
+                    <td sortval="{% format_date case.workflow_state.DETERMINATION_ACTIVE_DATE.0 '%Y-%j' false %}">{{case.workflow_state.DETERMINATION_ACTIVE_DATE.0|format_date}}</td>
+                    <td sortval="{% format_date case.workflow_state.MEASURE_EXPIRY.0 '%Y-%j' false %}">{{case.workflow_state.MEASURE_EXPIRY.0|format_date}}</td>
+                {% else %}
+                    <td>
+                        {% if enable_links %}<a class="link" href="/case/{{case.id}}/organisation/{{case.applicant.organisation.id}}/">{% endif %}
+                        {{ case.applicant.organisation.name }}
+                        {% if enable_links %}</a>{% endif %}
+                    </td>
+                    <td>{{ case.stage.name|default:'' }}</td>
+                    <td>{{ case.case_status.next_action|default:'' }}</td>
+                    <td sortval="{% format_date case.case_status.next_notice_due '%Y-%j' false %}">{{case.case_status.next_notice_due|format_date:'%d %b %Y'}}{% overdue_warning case.case_status.next_notice_due %}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>

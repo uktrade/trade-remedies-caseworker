@@ -1,27 +1,27 @@
-{% comment %} 
+{% comment %}
 One row of the team member panel in the case page
 {% endcomment %}
 
 <li class="row">
-  <div class="cell heading-cell">
-    <h2 class="heading-small">{{ key }}{% if values|length > 1 %}s{% endif %}</h2>
-  </div>
-  <div class="cell margin-left-1">
-   {% for member in values %}
-    <div>
-      <a class="link js-pop-up" href="javascript:void(0)">{{ member.name|default:member.email }}</a>
-      <div class="js-pop-up-title hidden">User details</div>
-      <div class="js-pop-up-content hidden">
-        <dl class="name-value-list">
-          <dt class="name">Name</dt>
-          <dd class="value">{{member.name}}</dd>
-          <dt class="name">Email</dt>
-          <dd class="value">{{member.email|default:'-'}}</dd>
-          <dt class="name">Phone</dt>
-          <dd class="value">{{member.phone|default:'-'}}</dd>
-        </dl>
-      </div>
+    <div class="cell heading-cell">
+        <h2 class="heading-small">{{ key }}{% if values|length > 1 %}s{% endif %}</h2>
     </div>
-   {% endfor %}
-  </div>
+    <div class="cell margin-left-1">
+        {% for member in values %}
+            <div>
+                <a class="link js-pop-up" href="javascript:void(0)">{{ member.name|default:member.email }}</a>
+                <div class="js-pop-up-title hidden">User details</div>
+                <div class="js-pop-up-content hidden">
+                    <dl class="name-value-list">
+                        <dt class="name">Name</dt>
+                        <dd class="value">{{member.name}}</dd>
+                        <dt class="name">Email</dt>
+                        <dd class="value">{{member.email|default:'-'}}</dd>
+                        <dt class="name">Phone</dt>
+                        <dd class="value">{{member.phone|default:'-'}}</dd>
+                    </dl>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </li>

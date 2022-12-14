@@ -2,28 +2,28 @@
 {% load to_json %}
 {% block heading %}Workflow editor{% endblock %}
 {% block main_content %}
-  <script type="text/javascript">
-    (window.dit = window.dit || {}).caseId="{{case.id}}";
-  </script>
+    <script type="text/javascript">
+        (window.dit = window.dit || {}).caseId="{{case.id}}";
+    </script>
 
-<div class="workflow-editor" data-attach="WorkflowEditor">
-    <textarea id="workflow-json" class="hidden">{{ workflow|to_json }}</textarea>
-    <textarea id="state-json" class="hidden">{{ state|to_json }}</textarea>
-    <div data-attach="Tabset">
-        <ul class="tabset">
-    		{% include 'widgets/tab.html' with label='Workflow' value='workflow' current=tab selected=True %}
-    		{% include 'widgets/tab.html' with label='State' value='state' current=tab %}
-    	</ul>
-        <div class="tab-page" data-tab="workflow">
-            <div class="workflow-page edit-item work-area">
-            </div>
+    <div class="workflow-editor" data-attach="WorkflowEditor">
+        <textarea id="workflow-json" class="hidden">{{ workflow|to_json }}</textarea>
+        <textarea id="state-json" class="hidden">{{ state|to_json }}</textarea>
+        <div data-attach="Tabset">
+            <ul class="tabset">
+                {% include 'widgets/tab.html' with label='Workflow' value='workflow' current=tab selected=True %}
+                {% include 'widgets/tab.html' with label='State' value='state' current=tab %}
+            </ul>
+            <div class="tab-page" data-tab="workflow">
+                <div class="workflow-page edit-item work-area">
+                </div>
                 <button class="button button-blue" type="button" value="btn-save" >Save workflow</button>
                 <button class="button button-grey" type="button" value="btn-dump" >Dump workflow</button>
                 <button class="button button-grey" type="button" value="btn-check" >Check workflow</button>
+            </div>
+            <div class="state-page edit-item tab-page hidden" data-tab="state"></div>
         </div>
-        <div class="state-page edit-item tab-page hidden" data-tab="state"></div>
-    </div>
 
- </div>
+    </div>
 
 {% endblock %}

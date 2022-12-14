@@ -54,29 +54,29 @@
 
     {% endfor %}
     <input type="hidden" name="" value=""/>
-        {% if parsed_template %}
-            <div class="preview" data-email="{{template_spec.values.email}}">
-                {% if contact %}
-                    <div>
-                        The following content will be sent to <span class="bold">{{contact.name}} &lt;{{contact.email}}&gt;</span>
-                    </div>                
-                {% endif %}
-                <div class="notify-preview">{{parsed_template|safe}}</div>
-            </div>
-        {% elif templates %}
-            {% for template_spec in templates %}
-                <div class="preview" data-email="{{template_spec.values.email}}">
-                    <div>
-                        The following content will be sent to <span class="bold">{{template_spec.values.full_name}} &lt;{{template_spec.values.email}}&gt;</span>
-                    </div>
-                    <div class="form-group edit-item type-text ">
-                        <div class="notify-preview">{{template_spec.preview|safe}}</div>
-                    </div>
+    {% if parsed_template %}
+        <div class="preview" data-email="{{template_spec.values.email}}">
+            {% if contact %}
+                <div>
+                    The following content will be sent to <span class="bold">{{contact.name}} &lt;{{contact.email}}&gt;</span>
                 </div>
-            {% endfor %}
-        {% else %}
-            <textarea readonly rows="10" style="width:95%;">{{notification_template.body}}</textarea>
-        {% endif %}
+            {% endif %}
+            <div class="notify-preview">{{parsed_template|safe}}</div>
+        </div>
+    {% elif templates %}
+        {% for template_spec in templates %}
+            <div class="preview" data-email="{{template_spec.values.email}}">
+                <div>
+                    The following content will be sent to <span class="bold">{{template_spec.values.full_name}} &lt;{{template_spec.values.email}}&gt;</span>
+                </div>
+                <div class="form-group edit-item type-text ">
+                    <div class="notify-preview">{{template_spec.preview|safe}}</div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <textarea readonly rows="10" style="width:95%;">{{notification_template.body}}</textarea>
+    {% endif %}
     <div class="button-set">
         <button class="button button-blue" type="submit">Send</button>
         <button class="button button-grey pull-right dlg-close" type="button" redirect_on_close="{{cancel_redirect_url}}">Cancel</button>

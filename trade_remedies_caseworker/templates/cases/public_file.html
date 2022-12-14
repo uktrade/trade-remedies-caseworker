@@ -9,60 +9,60 @@
 {% block case_page_content %}
 
 
-<h3 class="heading-large">The public file</h3>
+    <h3 class="heading-large">The public file</h3>
 
-<a class="link" href="{{public_base_url}}/public/case/{{case.reference}}/" target="_blank">
-  View on public site <i class="icon icon-link"></i>
-</a>
-<!--<textarea>
+    <a class="link" href="{{public_base_url}}/public/case/{{case.reference}}/" target="_blank">
+        View on public site <i class="icon icon-link"></i>
+    </a>
+    <!--<textarea>
 {{out|to_json}}
 </textarea> -->
-{% include "widgets/tabs.html" with q=tabs %}
-<div class="margin-bottom-1"><i class="icon icon-info correct"></i>
-{% if tabs.value == "all" %}
-    Showing the entire public file
-{% elif tabs.value == "tra" %}
-    Showing notices published to the public file by the {% organisation_initialism %}
-{% elif tabs.value == "business" %}
-    Showing submissions from businesses that have been published to the public file
-{% elif tabs.value == "withdrawn" %}
-    Showing notices that have been withdrawn from publication 
-{% endif %}    
+    {% include "widgets/tabs.html" with q=tabs %}
+    <div class="margin-bottom-1"><i class="icon icon-info correct"></i>
+        {% if tabs.value == "all" %}
+            Showing the entire public file
+        {% elif tabs.value == "tra" %}
+            Showing notices published to the public file by the {% organisation_initialism %}
+        {% elif tabs.value == "business" %}
+            Showing submissions from businesses that have been published to the public file
+        {% elif tabs.value == "withdrawn" %}
+            Showing notices that have been withdrawn from publication
+        {% endif %}
 
-</div>
-<form action="/case/{{case.id}}/files/" method="post" id="fileSelection">
-{% csrf_token %}
-<table class="filelist sortable" data-attach="TableSort">
-<thead>
-  <tr>
-    {% table_heading 'Published date' 'submission.created_at' sort tabs.value dir %}
-    {% table_heading 'Submission' 'submission.type' sort tabs.value dir %}
-    {% table_heading 'Party' 'submission.organisation.name' sort tabs.value dir %}
-    {% table_heading 'Party type' 'submission.organisation_case_role' sort tabs.value dir %}
-  </tr>
-</thead>
-<tbody>
+    </div>
+    <form action="/case/{{case.id}}/files/" method="post" id="fileSelection">
+        {% csrf_token %}
+        <table class="filelist sortable" data-attach="TableSort">
+            <thead>
+                <tr>
+                    {% table_heading 'Published date' 'submission.created_at' sort tabs.value dir %}
+                    {% table_heading 'Submission' 'submission.type' sort tabs.value dir %}
+                    {% table_heading 'Party' 'submission.organisation.name' sort tabs.value dir %}
+                    {% table_heading 'Party type' 'submission.organisation_case_role' sort tabs.value dir %}
+                </tr>
+            </thead>
+            <tbody>
 
-{% for submission in submissions %}
-    <tr>
-        <td class="nobreak" sortVal="{% format_date submission.issued_at '%Y-%m-%d' %}">
-            {{ submission.issued_at|format_date:'%d %b %Y' }}
-        </td>
-        <td>
-            <a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/">{{submission.type.name}}</a>
-        </td>            
-        <td>
-            <a class="link" href="/case/{{case_id}}/organisation/{{submission.organisation.id}}/">{{ submission.organisation.name }}</a>
-        </td>
-        <td class="nobreak">
-            {{ submission.organisation_case_role.name }}
-        </td>
-    </tr>
-{% endfor %}
-</tbody>
-</table>
+                {% for submission in submissions %}
+                    <tr>
+                        <td class="nobreak" sortVal="{% format_date submission.issued_at '%Y-%m-%d' %}">
+                            {{ submission.issued_at|format_date:'%d %b %Y' }}
+                        </td>
+                        <td>
+                            <a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/">{{submission.type.name}}</a>
+                        </td>
+                        <td>
+                            <a class="link" href="/case/{{case_id}}/organisation/{{submission.organisation.id}}/">{{ submission.organisation.name }}</a>
+                        </td>
+                        <td class="nobreak">
+                            {{ submission.organisation_case_role.name }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
 
-</form>
+    </form>
 
 {% endblock %}

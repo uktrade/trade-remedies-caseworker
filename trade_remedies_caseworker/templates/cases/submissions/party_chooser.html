@@ -15,69 +15,69 @@
             <label class="form-label" for="partyField">Choose parties</label>
             {% if errors.organisation_id %}<span class="error-message" id="partyField_error">{{errors.organisation_id}}</span>{% endif %}
             <ol class="party-list" >
-            {% for role_key, role_context in participants.items %}
-                {% if role_context.parties|length and role_context.allow_cw_create %}
-                    {% set 'hassampled' False %}
-                    {% set 'hasnonsampled' False %}
-                    {% for party in role_context.parties %}
-                        {% if party.has_non_draft_subs %}
-                            {% if party.sampled %}
-                                {% set 'hassampled' True %}
-                            {% else %}
-                                {% set 'hasnonsampled' True %}
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                    {% if store.hassampled or store.hasnonsampled %}
-                        <li class="select-container">
-                            <div class="selection-list-line heading-line compact-section">
-                                <div class="pull-right">
-                                    {% if store.hassampled %}
-                                    <div class="pull-right clear select-all-row">
-                                        <div class="multiple-choice submit-widget small pull-right">
-                                            <input type="checkbox" value="all" data-attach="selectAll" data-selectkey="{{role_key}}-s">
-                                            <label ></label>
-                                        </div>
-                                        <span class="select-count"></span>
-                                        <label class="pull-right margin-right-1">Sampled</label>
-                                    </div>
-                                    {% endif %}
-                                    {% if store.hasnonsampled > 0 %}
-                                    <div class="pull-right clear select-all-row">
-                                        <div class="multiple-choice submit-widget small pull-right">
-                                            <input type="checkbox" value="all" data-attach="selectAll" data-selectkey="{{role_key}}">
-                                            <label></label>
-                                        </div>
-                                        <span class="select-count"></span>
-                                        <label class="margin-right-1 pull-right">Not-sampled</label>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                <a href="javascript:void(0)" class="expander pull-left" data-attach="ExpandCollapse"><span class="visually-hidden">Expand {{party.name}}</span></a>
-                                <label class="form-label pull-left" >
-                                    {{ role_context.parties.0.role.plural }}
-                                </label>
-                            </div>
-                            <div class="selection-list-body expand-section">
-                            {% for participant in role_context.parties %}
-                                {% if participant.has_non_draft_subs %}
-                                    <div class="selection-list-line" data-filteritem="{{participant.role.key}}">
-                                        <div class="multiple-choice submit-widget pull-right small">
-                                            <input id="{{list.index____TO_SORT}}" name="{{name_prefix}}send_to" type="checkbox" value="{{participant.id}}" {% if participant.id in selected_participants %}checked="checked" {% endif %} data-selectkey="{{role_key}}{% if participant.sampled %}-s{% endif %}">
-                                            <label></label>
-                                        </div>
-                                        <label class="form-label pull-left" for="" >{{participant.name}}{% if not participant.sampled %} (not sampled){% endif %}</label>
-                                    </div>
+                {% for role_key, role_context in participants.items %}
+                    {% if role_context.parties|length and role_context.allow_cw_create %}
+                        {% set 'hassampled' False %}
+                        {% set 'hasnonsampled' False %}
+                        {% for party in role_context.parties %}
+                            {% if party.has_non_draft_subs %}
+                                {% if party.sampled %}
+                                    {% set 'hassampled' True %}
+                                {% else %}
+                                    {% set 'hasnonsampled' True %}
                                 {% endif %}
-                            {% endfor %}
-                            </div>
-                        </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if store.hassampled or store.hasnonsampled %}
+                            <li class="select-container">
+                                <div class="selection-list-line heading-line compact-section">
+                                    <div class="pull-right">
+                                        {% if store.hassampled %}
+                                            <div class="pull-right clear select-all-row">
+                                                <div class="multiple-choice submit-widget small pull-right">
+                                                    <input type="checkbox" value="all" data-attach="selectAll" data-selectkey="{{role_key}}-s">
+                                                    <label ></label>
+                                                </div>
+                                                <span class="select-count"></span>
+                                                <label class="pull-right margin-right-1">Sampled</label>
+                                            </div>
+                                        {% endif %}
+                                        {% if store.hasnonsampled > 0 %}
+                                            <div class="pull-right clear select-all-row">
+                                                <div class="multiple-choice submit-widget small pull-right">
+                                                    <input type="checkbox" value="all" data-attach="selectAll" data-selectkey="{{role_key}}">
+                                                    <label></label>
+                                                </div>
+                                                <span class="select-count"></span>
+                                                <label class="margin-right-1 pull-right">Not-sampled</label>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <a href="javascript:void(0)" class="expander pull-left" data-attach="ExpandCollapse"><span class="visually-hidden">Expand {{party.name}}</span></a>
+                                    <label class="form-label pull-left" >
+                                        {{ role_context.parties.0.role.plural }}
+                                    </label>
+                                </div>
+                                <div class="selection-list-body expand-section">
+                                    {% for participant in role_context.parties %}
+                                        {% if participant.has_non_draft_subs %}
+                                            <div class="selection-list-line" data-filteritem="{{participant.role.key}}">
+                                                <div class="multiple-choice submit-widget pull-right small">
+                                                    <input id="{{list.index____TO_SORT}}" name="{{name_prefix}}send_to" type="checkbox" value="{{participant.id}}" {% if participant.id in selected_participants %}checked="checked" {% endif %} data-selectkey="{{role_key}}{% if participant.sampled %}-s{% endif %}">
+                                                    <label></label>
+                                                </div>
+                                                <label class="form-label pull-left" for="" >{{participant.name}}{% if not participant.sampled %} (not sampled){% endif %}</label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
             </ol>
         {% endif %}
-        </ol>
-    </div>
+    </ol>
+</div>
 </div>
 

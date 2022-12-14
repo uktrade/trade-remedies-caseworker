@@ -4,50 +4,50 @@
 
 {% block case_page_content %}
 
-{% if alert %}
-    <div class="govuk-box-highlight bold">
-        {% if alert == 'send' %}
-            Your submissions have been sent
-        {% else %}
-            {{ alert }}
-        {% endif %}
-    </div>
-{% endif %}
+    {% if alert %}
+        <div class="govuk-box-highlight bold">
+            {% if alert == 'send' %}
+                Your submissions have been sent
+            {% else %}
+                {{ alert }}
+            {% endif %}
+        </div>
+    {% endif %}
 
-<div id="submissions-page" >
-	{% comment %} ***********   Submission menu {% endcomment %}
-	<div class="pull-right margin-top-1">
-		<a href="javascript:void(0)" class="link bold menu-icon" data-attach="menuExpand">Submission actions</a>
-		<span class="function-menu">
-			<div>
-				<ul>
-					<li><a href="/case/{{case_id}}/submission/create/?for=public">Publish documents</a></li>
-					<li><a href="/case/{{case_id}}/submission/create/">Request information</a></li>
-					<li><a href="draft/">Review draft submissions</a></li>
-				</ul>
-			</div>
-		</span>
-	</div>
-	<div data-attach="Tabset">
-		<ul class="tabset">
-			{% include 'widgets/tab.html' with label='Incoming' selected=True value='incoming'  number=submission_groups.incoming|length %}
-			{% include 'widgets/tab.html' with label='Outgoing' value='outgoing'  number=submission_groups.outgoing|length %}
-			{% include 'widgets/tab.html' with label='Draft' value='draft' number=submission_groups.draft|length %}
-		</ul>
-		<div class="tab-page" data-tab="incoming">
-			{% set 'columns' 'received type_name organisation status'|split %}
-			{% include "cases/submission_table_flex.html" with submissions=submission_groups.incoming participant=participant columns=columns %}
-		</div>
-		<div class="tab-page hidden" data-tab="outgoing">
-			{% set 'columns' 'sent type_name organisation status due'|split %}
-			{% include "cases/submission_table_flex.html" with submissions=submission_groups.outgoing participant=participant columns=columns %}
-		</div>
-		<div class="tab-page hidden" data-tab="draft">
-			{% set 'columns' 'created created_by type_name status'|split %}
-			{% include "cases/submission_table_flex.html" with submissions=submission_groups.draft participant=participant columns=columns %}
-		</div>
-	</div>
-</div>
+    <div id="submissions-page" >
+        {% comment %} ***********   Submission menu {% endcomment %}
+        <div class="pull-right margin-top-1">
+            <a href="javascript:void(0)" class="link bold menu-icon" data-attach="menuExpand">Submission actions</a>
+            <span class="function-menu">
+                <div>
+                    <ul>
+                        <li><a href="/case/{{case_id}}/submission/create/?for=public">Publish documents</a></li>
+                        <li><a href="/case/{{case_id}}/submission/create/">Request information</a></li>
+                        <li><a href="draft/">Review draft submissions</a></li>
+                    </ul>
+                </div>
+            </span>
+        </div>
+        <div data-attach="Tabset">
+            <ul class="tabset">
+                {% include 'widgets/tab.html' with label='Incoming' selected=True value='incoming'  number=submission_groups.incoming|length %}
+                {% include 'widgets/tab.html' with label='Outgoing' value='outgoing'  number=submission_groups.outgoing|length %}
+                {% include 'widgets/tab.html' with label='Draft' value='draft' number=submission_groups.draft|length %}
+            </ul>
+            <div class="tab-page" data-tab="incoming">
+                {% set 'columns' 'received type_name organisation status'|split %}
+                {% include "cases/submission_table_flex.html" with submissions=submission_groups.incoming participant=participant columns=columns %}
+            </div>
+            <div class="tab-page hidden" data-tab="outgoing">
+                {% set 'columns' 'sent type_name organisation status due'|split %}
+                {% include "cases/submission_table_flex.html" with submissions=submission_groups.outgoing participant=participant columns=columns %}
+            </div>
+            <div class="tab-page hidden" data-tab="draft">
+                {% set 'columns' 'created created_by type_name status'|split %}
+                {% include "cases/submission_table_flex.html" with submissions=submission_groups.draft participant=participant columns=columns %}
+            </div>
+        </div>
+    </div>
 
 
 {% endblock %}
