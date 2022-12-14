@@ -79,9 +79,18 @@ class TestOrganisationInviteContactForm(TestCase):
 
         self.mock_data = {
             "org_invite_contacts": [
-                ("aor4nd0m-idoo-foro-test-purp05e5oooo", "Test Name1 - test1@example.com"),  # /PS-IGNORE
-                ("an0thero-idoo-t0oo-test-w1thoooooooo", "Test Name2 - test2@example.com"),  # /PS-IGNORE
-                ("ando0n3o-m0re-t0oo-test-t1hisoc0d3oo", "Test Name3 - test3@example.com"),  # /PS-IGNORE
+                (
+                    "aor4nd0m-idoo-foro-test-purp05e5oooo",
+                    "Test Name1 - test1@example.com",  # /PS-IGNORE
+                ),
+                (
+                    "an0thero-idoo-t0oo-test-w1thoooooooo",
+                    "Test Name2 - test2@example.com",  # /PS-IGNORE
+                ),
+                (
+                    "ando0n3o-m0re-t0oo-test-t1hisoc0d3oo",  # /PS-IGNORE
+                    "Test Name3 - test3@example.com",  # /PS-IGNORE
+                ),
             ],
             "data": {
                 "which_contact": "aor4nd0m-idoo-foro-test-purp05e5oooo"
@@ -95,7 +104,10 @@ class TestOrganisationInviteContactForm(TestCase):
     def test_no_org_type_selected(self):
         form = OrganisationInviteContactForm(
             org_invite_contacts=[
-                ("aor4nd0m-idoo-foro-test-purp05e5oooo", "Test Name1 - test1@example.com")  # /PS-IGNORE
+                (
+                    "aor4nd0m-idoo-foro-test-purp05e5oooo",
+                    "Test Name1 - test1@example.com",  # /PS-IGNORE
+                )
             ],
             data={"which_contact": ""},  # no contact selected
         )
