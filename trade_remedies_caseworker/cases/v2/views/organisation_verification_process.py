@@ -82,10 +82,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                         "link_text": "Submit decision",
                         "status": "Complete"
                         if self.invitation.approved_at or self.invitation.rejected_at
-                        else "Not Started",
-                        "ready_to_do": True
-                        if self.invitation.submission.primary_contact
-                        else False,
+                        else "Not started yet",
                     },
                 ],
             },
