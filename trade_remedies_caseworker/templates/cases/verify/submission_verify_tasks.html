@@ -6,7 +6,7 @@
 <div data-attach="SubmissionVerify">
     <textarea id="verify-json" class="hidden">{{ page_data|to_json }}</textarea>
     {% set 'thirdparty' True %}
-    {% set 'contact_org' submission.contact.user.organisation.organisation %}
+    {% set 'contact_org' submission.contact.organisation %}
     {% if contact_org.id == organisation.id %}
         {% set 'thirdparty' False %}
     {% endif %}    
@@ -69,8 +69,8 @@
                 {% set 'contact_org_verify_state' 'in-progress' %}
             {% endif %}
 
-            {% if submission.contact.user.organisation.organisation.name %}
-                {% set 'rep_verify_label' 'Verify '|addstr:submission.contact.user.organisation.organisation.name %}
+            {% if submission.contact.organisation.name %}
+                {% set 'rep_verify_label' 'Verify '|addstr:submission.contact.organisation.name %}
             {% endif %}
             {% set 'org_verify_label' 'Verify '|addstr:organisation.name %}
 

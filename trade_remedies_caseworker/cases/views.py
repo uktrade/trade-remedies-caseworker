@@ -269,12 +269,7 @@ class CaseBaseView(
         confidential.sort(key=lambda cf: cf.get("name"))
         non_conf = document_conf_index.get("", [])
         doc_index = key_by(confidential, "id")
-        try:
-            non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
-        except TypeError:
-            # If there is no parent_id associated with the non_conf document, a comparison
-            # TypeError can occur, let's ignore.
-            pass
+        non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
         return {
             "caseworker": submission_documents.get("caseworker", []),
             "respondent": submission_documents.get("respondent", []),
@@ -440,7 +435,11 @@ class PartiesView(CaseBaseView):
             if submission := invite.get("submission"):
                 if submission.get("name") == "Invite 3rd party":
                     # It's a 3rd party invite, so use the organisation of the contact of the invite
-                    if invite["contact"]:
+                    if (
+                        invite.get("contact")
+                        and invite.get("organisation")
+                        and invite["contact"]["organisation"].get("id")
+                    ):
                         org_id = invite["contact"]["organisation"]["id"]
                     else:
                         continue
