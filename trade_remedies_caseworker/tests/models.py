@@ -2,7 +2,10 @@ from django.contrib.auth.models import AbstractUser
 
 
 class TestUser(AbstractUser):
-    def has_group(self, groups):
+    __test__ = False
+
+    @staticmethod
+    def has_group(groups):
         return True
 
     def has_perms(self, permissions):
