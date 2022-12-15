@@ -12,14 +12,14 @@
 
     <ul class="name-value-list margin-bottom-1">
         {% if submission.status %}
-        <li>
-          <div class="name">Status</div>
-          <div class="value">{{submission.status.name}}</div>
-        </li>
+            <li>
+                <div class="name">Status</div>
+                <div class="value">{{submission.status.name}}</div>
+            </li>
         {% endif %}
         <li>
-          <div class="name">Organisation</div>
-          <div class="value">{{organisation.name}}</div>
+            <div class="name">Organisation</div>
+            <div class="value">{{organisation.name}}</div>
         </li>
     </ul>
 
@@ -30,10 +30,10 @@
             <label class="form-label" for="submission_type">Submission Type</label>
             <select name="submission_type_id" id="submission_type" class="form-control">
                 {% for submission_type in submission_types %}
-                  <option
-                    value="{{submission_type.id}}"
-                    {% if submission_type.name.lower == selected_submission_type %}selected{% endif %}
-                  >{{submission_type.name}}</option>
+                    <option
+                        value="{{submission_type.id}}"
+                        {% if submission_type.name.lower == selected_submission_type %}selected{% endif %}
+                    >{{submission_type.name}}</option>
                 {% endfor %}
             </select>
         </div>
@@ -51,7 +51,7 @@
         {% for contact in organisation.contacts %}
             <option value="{{contact.id}}"
                 {% if contact.id == submission.contact.id %}selected{% endif %}>
-                    {{contact.name}} &lt;{{contact.email}}&gt; {% if contact.primary %}[PRIMARY]{% endif %}
+                {{contact.name}} &lt;{{contact.email}}&gt; {% if contact.primary %}[PRIMARY]{% endif %}
             </option>
         {% endfor %}
     </select>

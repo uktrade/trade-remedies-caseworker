@@ -1,3 +1,41 @@
+readonly{%
+page_title
+forward_button_text="Confirm
+back_button_text="Back
+Authority{%
+Review Letter of Authority
+the Letter of Authority
+for="reginterest-auth-choose-contact-
+for="reginterest-auth-choose-contact-3
+aria-describedby="unverfied
+aria-hidden="true">You
+this).val().length
+Confirm{%
+invitation_id
+apply:</p
+id="password
+delete &quot
+class="govuk-button__start
+version{%
+/notify/"></button
+v2/css/v1_caseworker.css' %
+height="30" width="36">
+7.7-.2
+Privacy
+aria-hidden="true
+height="17
+width="41
+8.7 39.7 21.8l42.7-27.2A97.63
+aria-describedby=
+name="file-
+class="inputfile
+class="upload_percentage"></div
+form_errors.company_search_container
+confirmOnBlur
+false
++ result.companies_house_id +
+company_data.companies_house_id
+class="document_field
 label_two="No
 approved_by
 invited_organisation.country_name

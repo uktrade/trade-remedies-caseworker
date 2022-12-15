@@ -9,29 +9,29 @@
         {% if hint %}
             <div id={{ bound_field.html_name }}-hint" class="govuk-hint">
                 {{ hint }}
-            </div>
+                </div>
         {% endif %}
         {% if errors %}
             <p id="{{ bound_field.html_name }}-error" class="govuk-error-message">
                 {% for error in errors %}
                     <span class="govuk-visually-hidden">Error:</span> {{ error }}
                 {% endfor %}
-            </p>
+                </p>
         {% endif %}
         <input class="govuk-input
-               {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %} {{ input_class }} {% endif %}
-                {% if errors %}govuk-input--error{% endif %}
-                {% if disabled or readonly %}govuk-input--readonly{% endif %}"
-               {% if disabled %}disabled{% endif %}
-               {% if readonly %}readonly{% endif %}
-               id="{{ bound_field.auto_id }}" name="{{ bound_field.html_name }}" type="{{ widget.type }}"
-               {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
-               autocomplete="off"
+    {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %} {{ input_class }} {% endif %}
+    {% if errors %}govuk-input--error{% endif %}
+    {% if disabled or readonly %}govuk-input--readonly{% endif %}"
+        {% if disabled %}disabled{% endif %}
+        {% if readonly %}readonly{% endif %}
+        id="{{ bound_field.auto_id }}" name="{{ bound_field.html_name }}" type="{{ widget.type }}"
+            {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+            autocomplete="off"
                 {% if value %}
-               value="{{ value }}"
+                    value="{{ value }}"
                 {% elif form.data|get_item:name %}
-               value="{{ form.data|get_item:name }}"
+                    value="{{ form.data|get_item:name }}"
                 {% endif %}
-        >
-    </div>
+                >
+                </div>
 {% endwith %}

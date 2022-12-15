@@ -1,21 +1,21 @@
 <div class="grid-row">
-  <h2 class="heading-large">
-  {% if contact.id %}
-    Edit contact
-  {% else %}
-    Add a user
-  {% endif %}
-</h2>
+    <h2 class="heading-large">
+        {% if contact.id %}
+            Edit contact
+        {% else %}
+            Add a user
+        {% endif %}
+    </h2>
 
-<!-- <h2 class="heading-small">Organisation: {{organisation.name}}</h2> -->
+    <!-- <h2 class="heading-small">Organisation: {{organisation.name}}</h2> -->
 </div>
 <div class="grid-row compact-form">
-  <form action="/organisations/{% if case_id %}case/{{case_id}}/organisation/{% endif %}{{organisation.id}}/contact/{% if contact.id %}{{contact.id}}{% else %}add{% endif %}/" method="post" data-attach="Validate">
-      {% csrf_token %}
-      {% include "widgets/contact_form.html" with contact=contact %}
-      <div class="button-set">
-          <button class="button button-blue" type="submit">Save</button>
-          <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
-      </div>
-  </form>
+    <form action="/organisations/{% if case_id %}case/{{case_id}}/organisation/{% endif %}{{organisation.id}}/contact/{% if contact.id %}{{contact.id}}{% else %}add{% endif %}/" method="post" data-attach="Validate">
+        {% csrf_token %}
+        {% include "widgets/contact_form.html" with contact=contact %}
+        <div class="button-set">
+            <button class="button button-blue" type="submit">Save</button>
+            <button class="button button-grey pull-right dlg-close" type="button">Cancel</button>
+        </div>
+    </form>
 </div>

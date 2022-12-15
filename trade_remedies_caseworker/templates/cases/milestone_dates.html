@@ -2,56 +2,56 @@
 {% load format_date %}
 
 {% block case_page_content %}
-<h1 class="heading-large">Case milestone dates</h1>
+    <h1 class="heading-large">Case milestone dates</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Milestone</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody>
+    <table>
+        <thead>
+            <tr>
+                <th>Milestone</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
 
-  {% for milestone in milestones %}
-	<tr>
-        <td>{{milestone.name}}</td>
-        <td>
-            <form action="/case/{{case.id}}/milestone/{{milestone.key}}/" method="post">
-                {% csrf_token %}
-                <input type="text" name="date" value="{{ milestone.date }}"/>
-                <button type="submit" class="button">Update</button>
-            </form>
-        </td>
-    </tr>
-  {% endfor %}
+            {% for milestone in milestones %}
+                <tr>
+                    <td>{{milestone.name}}</td>
+                    <td>
+                        <form action="/case/{{case.id}}/milestone/{{milestone.key}}/" method="post">
+                            {% csrf_token %}
+                            <input type="text" name="date" value="{{ milestone.date }}"/>
+                            <button type="submit" class="button">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
 
-</tbody>
-</table>
+        </tbody>
+    </table>
 
-<h1 class="heading-medium">Add a milestone</h1>
+    <h1 class="heading-medium">Add a milestone</h1>
 
-<form action="/case/{{case.id}}/milestones/" method="post">
-    {% csrf_token %}
-    <select class="form-control" name="milestone_key">
-        {% for milestone_type in milestone_types %}
-            <option value="{{milestone_type.0}}">{{milestone_type.1}}</option>
-        {% endfor %}
-    </select>
-    <input type="text" name="date" class="form-control" placeholder="YYYY/MM/DD"/>
-    <button type="submit" class="button">Set</button>
-</form>
+    <form action="/case/{{case.id}}/milestones/" method="post">
+        {% csrf_token %}
+        <select class="form-control" name="milestone_key">
+            {% for milestone_type in milestone_types %}
+                <option value="{{milestone_type.0}}">{{milestone_type.1}}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="date" class="form-control" placeholder="YYYY/MM/DD"/>
+        <button type="submit" class="button">Set</button>
+    </form>
 
-<h1 class="heading-medium">Available review types</h1>
-Based on these milestone dates, the following review types are available:
-<P>
-<UL>
-    {% for review_type in available_review_types %}
-      {% if review_type.dates.status == 'ok' %}
-        <LI>{{review_type.name}}</LI>
-      {% endif %}
-    {% endfor %}
-</UL>
+    <h1 class="heading-medium">Available review types</h1>
+    Based on these milestone dates, the following review types are available:
+    <P>
+        <UL>
+            {% for review_type in available_review_types %}
+                {% if review_type.dates.status == 'ok' %}
+                    <LI>{{review_type.name}}</LI>
+                {% endif %}
+            {% endfor %}
+        </UL>
 
-</P>
+    </P>
 {% endblock %}

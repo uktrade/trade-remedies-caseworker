@@ -1,83 +1,83 @@
 {% load get_item %}
 {% load set %}
 {% block case_page_content %}
-<form class="bundle-builder"
-    action="{% if submission.id %}/case/{{case_id}}/submission/{{submission.id}}/{% else %}/case/{{case_id}}/submission/create/{% endif %}?__prefix={{case_id}}"
-    method="POST"
-    enctype="multipart/form-data"
-    data-attach="BundleBuilder"
-    data-redirect="/case/{{case_id}}/submission/{{submission.id}}/"
-    data-case="{{case_id}}"
-    data-submission="{{submission.id}}"
-    data-organisation="{{organisation_id}}"
-    data-notify-url="/notify/">
-    {% csrf_token %}
-    {% set 'has_docs' documents.caseworker|length %}
-    {% set 'has_url' submission.url %}
-    {% set 'has_content_type' has_docs|_or:has_url %}
-    {% set 'editable' submission.tra_editable %}
-    {% include 'cases/submissions/bundle_builder_alert_block.html' %}
-    <h2 class="heading-medium">{% block heading %}Bundle builder{% endblock %}</h2>
-    {% include 'cases/submissions/virus_warnings.html' %}
-    {% include 'cases/submissions/upload_warning.html' %}
+    <form class="bundle-builder"
+        action="{% if submission.id %}/case/{{case_id}}/submission/{{submission.id}}/{% else %}/case/{{case_id}}/submission/create/{% endif %}?__prefix={{case_id}}"
+        method="POST"
+        enctype="multipart/form-data"
+        data-attach="BundleBuilder"
+        data-redirect="/case/{{case_id}}/submission/{{submission.id}}/"
+        data-case="{{case_id}}"
+        data-submission="{{submission.id}}"
+        data-organisation="{{organisation_id}}"
+        data-notify-url="/notify/">
+        {% csrf_token %}
+        {% set 'has_docs' documents.caseworker|length %}
+        {% set 'has_url' submission.url %}
+        {% set 'has_content_type' has_docs|_or:has_url %}
+        {% set 'editable' submission.tra_editable %}
+        {% include 'cases/submissions/bundle_builder_alert_block.html' %}
+        <h2 class="heading-medium">{% block heading %}Bundle builder{% endblock %}</h2>
+        {% include 'cases/submissions/virus_warnings.html' %}
+        {% include 'cases/submissions/upload_warning.html' %}
 
-    {% comment %}****************    Recipient and type  ***********{% endcomment %}
-    {% set 'populated' submission.type.id|_not|_not %}
-    {% include "cases/submissions/bundle_builder_1_type.html" %}
+        {% comment %}****************    Recipient and type  ***********{% endcomment %}
+        {% set 'populated' submission.type.id|_not|_not %}
+        {% include "cases/submissions/bundle_builder_1_type.html" %}
 
-    {% comment %}****************    Parties  ***********{% endcomment %}
-    {% if populated and submission.type.key != 'public' %}
-        {% set 'populated' json_data.send_to %}
-        {% include "cases/submissions/bundle_builder_1c_parties.html" with documents=documents.caseworker participants=participants %}
-    {% endif %}
-
-    {% comment %}****************    Files or URL  *************{% endcomment %}
-    {% if populated %}
-        {% set 'populated' has_content_type %}
-        {% include "cases/submissions/bundle_builder_2_content.html" with documents=documents.caseworker %}
-    {% endif %}
-
-    {% comment %}****************    Name and description *********{% endcomment %}
-    {% if populated %}
-        {% set 'populated' submission.name|_not|_not %}
-        {% include "cases/submissions/bundle_builder_3_name.html" with object=submission %}
-    {% endif %}
-
-    {% comment %}****************    Time window *********{% endcomment %}
-    {% if populated and submission.type.key != 'public' %}
-        {% if submission.time_window is None %}
-            {% set 'populated' False %}
+        {% comment %}****************    Parties  ***********{% endcomment %}
+        {% if populated and submission.type.key != 'public' %}
+            {% set 'populated' json_data.send_to %}
+            {% include "cases/submissions/bundle_builder_1c_parties.html" with documents=documents.caseworker participants=participants %}
         {% endif %}
-        {% include "cases/submissions/bundle_builder_4_time_window.html" %}
-    {% endif %}
 
-    {% comment %}****************  Signoff and send *********{% endcomment %}
-    {% if populated %}
-        {% set 'populated' submission.sent_at %}
-        {% include "cases/submissions/bundle_builder_5_declaration.html" with counts_to_check=documents.counts.caseworker %}
-        {% set 'lastpage' True %}
-    {% endif %}
+        {% comment %}****************    Files or URL  *************{% endcomment %}
+        {% if populated %}
+            {% set 'populated' has_content_type %}
+            {% include "cases/submissions/bundle_builder_2_content.html" with documents=documents.caseworker %}
+        {% endif %}
 
-    {% if not submission or submission.tra_editable %}
-        <div class="button-group form-group margin-top-1 {% if not lastpage %}editing{% else %} {% if submission.type.key == 'public' %}publishing{% else %}issuing{% endif %}{% endif %}">
-            <span class="issue-button-group pull-left">
-                <button class="button button-blue pull-left" data-notify="true" type="submit" name="btn-value" value="send" disabled="disabled">Send the {{submission_group_name}}</button>
-            </span>
-            <span class="publish-button-group pull-left">
-                {% if user.permissions.publish_public %}<button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value" value="publish" disabled="disabled">Publish</button>{% endif %}
-            </span>
-            <span class="edit-button-group pull-left">
-                <button class="button button-blue" tabindex="0" type="submit" name="save" value="save" disabled="disabled">Save and continue</button>
-            </span>
-            <button type="button" id="modalButton" class="hidden modal-form" data-url="-" data-notify="/case/{{case.id}}/submission/{{submission.id}}/notify/"></button>
-            {# discard button #}
-            {% if submission.id %}
-                <button type="submit" class="button button-red pull-right margin-left-1" tabindex="1" name="btn-value" value="discard" title="Discard (delete) this draft submission"
-                    data-handler="clickConfirm" data-title="Confirm delete" data-message="Are you sure you want to delete this draft submission?<br>This action cannot be undone.">Discard</button>
+        {% comment %}****************    Name and description *********{% endcomment %}
+        {% if populated %}
+            {% set 'populated' submission.name|_not|_not %}
+            {% include "cases/submissions/bundle_builder_3_name.html" with object=submission %}
+        {% endif %}
+
+        {% comment %}****************    Time window *********{% endcomment %}
+        {% if populated and submission.type.key != 'public' %}
+            {% if submission.time_window is None %}
+                {% set 'populated' False %}
             {% endif %}
-            <button type="submit" name="btn-value" class="button button-grey pull-right" value="save-exit" title="Save any changes, then exit">Save and exit</button>
-        </div>
-    {% endif %}
+            {% include "cases/submissions/bundle_builder_4_time_window.html" %}
+        {% endif %}
 
-</form>
+        {% comment %}****************  Signoff and send *********{% endcomment %}
+        {% if populated %}
+            {% set 'populated' submission.sent_at %}
+            {% include "cases/submissions/bundle_builder_5_declaration.html" with counts_to_check=documents.counts.caseworker %}
+            {% set 'lastpage' True %}
+        {% endif %}
+
+        {% if not submission or submission.tra_editable %}
+            <div class="button-group form-group margin-top-1 {% if not lastpage %}editing{% else %} {% if submission.type.key == 'public' %}publishing{% else %}issuing{% endif %}{% endif %}">
+                <span class="issue-button-group pull-left">
+                    <button class="button button-blue pull-left" data-notify="true" type="submit" name="btn-value" value="send" disabled="disabled">Send the {{submission_group_name}}</button>
+                </span>
+                <span class="publish-button-group pull-left">
+                    {% if user.permissions.publish_public %}<button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value" value="publish" disabled="disabled">Publish</button>{% endif %}
+                </span>
+                <span class="edit-button-group pull-left">
+                    <button class="button button-blue" tabindex="0" type="submit" name="save" value="save" disabled="disabled">Save and continue</button>
+                </span>
+                <button type="button" id="modalButton" class="hidden modal-form" data-url="-" data-notify="/case/{{case.id}}/submission/{{submission.id}}/notify/"></button>
+                {# discard button #}
+                {% if submission.id %}
+                    <button type="submit" class="button button-red pull-right margin-left-1" tabindex="1" name="btn-value" value="discard" title="Discard (delete) this draft submission"
+                        data-handler="clickConfirm" data-title="Confirm delete" data-message="Are you sure you want to delete this draft submission?<br>This action cannot be undone.">Discard</button>
+                {% endif %}
+                <button type="submit" name="btn-value" class="button button-grey pull-right" value="save-exit" title="Save any changes, then exit">Save and exit</button>
+            </div>
+        {% endif %}
+
+    </form>
 {% endblock %}

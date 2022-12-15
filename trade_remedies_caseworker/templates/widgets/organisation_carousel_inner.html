@@ -9,77 +9,77 @@
 
 {% set 'slide_count' '0' %}
 {% for match_org in match_list %}
-	{% if match_org.id != organisation.id %}
-		{% set 'slide_count' store.slide_count|_plus:'1' %}
-	{% endif %}
+    {% if match_org.id != organisation.id %}
+        {% set 'slide_count' store.slide_count|_plus:'1' %}
+    {% endif %}
 {% endfor %}
 <div class="carousel-surround" data-attach="carousel">
-	<div class="controls">
-		<div class="blob-container">
-			<div class="blob-inner-container">
-				{% if store.slide_count > '1' %}
-					{% for match_org in match_list %}
-						{% if match_org.id != organisation.id %}
-							<a href="javascript:void(0);" data-item="{{ forloop.counter0 }}" class="blob {% if forloop.counter0 == 0 %}active{% endif %}"></a>
-						{% endif %}
-					{% endfor %}
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	<div class="carousel-table">
-		<div class="row">
-			{% if organisation.id %}
-			<div class="cell">
-				<div class="party-card">
-					{% for match_org in match_list %}
-						{% if match_org.id == organisation.id %}
-							{% include 'organisations/_party_card.html' with party=match_org %}
-						{% endif %}
-					{% endfor %}
-				</div>
-			</div>
-			{% endif %}
-			<div class="cell">
-				{% if store.slide_count != 0 %}
-					<div class="party-card carousel-viewport">
-						<a class="carousel-button next"></a><a class="carousel-button previous"></a>
-						<div class="table carousel-slider width-{{store.slide_count}}">
-							<div class="row">
-							{% for match_org in match_list %}
-								{% if match_org.id != organisation.id %}
-									{% set 'disable_merge' False %}
-									{% if match_org.json_data.no_merge|_get:organisation.id %}
-										{% set 'disable_merge'  match_org.json_data.no_merge|_get:organisation.id %}
-									{% elif organisation.json_data.no_merge|_get:match_org.id %}
-										{% set 'disable_merge' organisation.json_data.no_merge|_get:match_org.id %}
-									{% endif %}
-									<div class="cell">
-										{% if disable_merge %}<textarea class="hidden disable-params">{{disable_merge|to_json}}</textarea>{% endif %}
-										{% include 'organisations/_party_card.html' with party=match_org match_party=organisation %}
-									</div>
-								{% endif %}
-							{% endfor %}
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<span class="center">No matching organisations found</span>
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	{% if match_list|length > 1 and enable_merge %}
-		<div class="lower-controls">
-			<div class="merge-button js-hidden">
-		        <button class="button button-red compact" type="button" value="{% if user.permissions.merge_organisations %}merge{% endif %}"
-					{% if not user.permissions.merge_organisations %}disabled="disabled" title="You do not have permission to do this"{% endif %}>Preview merge
-				</button>
-			</div>
-			<span class="merge-denied-message js-hidden">Do not merge
-				<span class="details">(<span class="at"></span> by <span class="by"></span>)</span>
-				{% if user.permissions.merge_organisations %}<button class="link" type="button" value="undo-nomerge">change</button>{% endif %}
-			</span>
-		</div>
-	{% endif %}
+    <div class="controls">
+        <div class="blob-container">
+            <div class="blob-inner-container">
+                {% if store.slide_count > '1' %}
+                    {% for match_org in match_list %}
+                        {% if match_org.id != organisation.id %}
+                            <a href="javascript:void(0);" data-item="{{ forloop.counter0 }}" class="blob {% if forloop.counter0 == 0 %}active{% endif %}"></a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="carousel-table">
+        <div class="row">
+            {% if organisation.id %}
+                <div class="cell">
+                    <div class="party-card">
+                        {% for match_org in match_list %}
+                            {% if match_org.id == organisation.id %}
+                                {% include 'organisations/_party_card.html' with party=match_org %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="cell">
+                {% if store.slide_count != 0 %}
+                    <div class="party-card carousel-viewport">
+                        <a class="carousel-button next"></a><a class="carousel-button previous"></a>
+                        <div class="table carousel-slider width-{{store.slide_count}}">
+                            <div class="row">
+                                {% for match_org in match_list %}
+                                    {% if match_org.id != organisation.id %}
+                                        {% set 'disable_merge' False %}
+                                        {% if match_org.json_data.no_merge|_get:organisation.id %}
+                                            {% set 'disable_merge'  match_org.json_data.no_merge|_get:organisation.id %}
+                                        {% elif organisation.json_data.no_merge|_get:match_org.id %}
+                                            {% set 'disable_merge' organisation.json_data.no_merge|_get:match_org.id %}
+                                        {% endif %}
+                                        <div class="cell">
+                                            {% if disable_merge %}<textarea class="hidden disable-params">{{disable_merge|to_json}}</textarea>{% endif %}
+                                            {% include 'organisations/_party_card.html' with party=match_org match_party=organisation %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <span class="center">No matching organisations found</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if match_list|length > 1 and enable_merge %}
+        <div class="lower-controls">
+            <div class="merge-button js-hidden">
+                <button class="button button-red compact" type="button" value="{% if user.permissions.merge_organisations %}merge{% endif %}"
+                    {% if not user.permissions.merge_organisations %}disabled="disabled" title="You do not have permission to do this"{% endif %}>Preview merge
+                </button>
+            </div>
+            <span class="merge-denied-message js-hidden">Do not merge
+                <span class="details">(<span class="at"></span> by <span class="by"></span>)</span>
+                {% if user.permissions.merge_organisations %}<button class="link" type="button" value="undo-nomerge">change</button>{% endif %}
+            </span>
+        </div>
+    {% endif %}
 </div>

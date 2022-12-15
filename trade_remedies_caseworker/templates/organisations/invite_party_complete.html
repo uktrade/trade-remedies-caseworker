@@ -13,15 +13,15 @@
 
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-              Invite sent
+                Invite sent
             </h1>
         </div>
-      
+
         <p>We have sent the invite to:</p>
-          
-            
+
+
         <ul class="govuk-list">
-                
+
             {% for contact in selected_contacts %}
 
                 <li>
@@ -31,14 +31,14 @@
                 </li>
 
             {% endfor %}
-            
-            
+
+
         </ul>
-    
-    
+
+
         <p>The invite will ask them to register interest in the case.</p>
         <p>You will be alerted when they have completed their registration of interest.</p>
-        
+
     </div>
 
     <div class="govuk-button-group">
@@ -49,5 +49,5 @@
             Invite another party
         </a>
     </div>
-          
+
 {% endblock form_content %}

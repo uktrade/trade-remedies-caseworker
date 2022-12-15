@@ -2,13 +2,13 @@
 {% load get_item %}
 {% if documents|length > 0 %}
     <ul>
-    {% for document in documents %}
-        <li class="file-block">
-            <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
+        {% for document in documents %}
+            <li class="file-block">
+                <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
                     {{document.name|ellipsis_short}}
                 </a>
-        </li>
-    {% endfor %}
+            </li>
+        {% endfor %}
     </ul>
 {% else %}
     No documents available

@@ -46,7 +46,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a href="{% url 'verify_organisation_verify_letter_of_authority' invitation_id=invitation.id %}"
-                       class="govuk-link--no-visited-state">
+                        class="govuk-link--no-visited-state">
                         Change
                         <span class="govuk-visually-hidden govuk-link--no-visited-state"> contact</span>
                     </a>
@@ -89,7 +89,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a href="{% url 'verify_organisation_verify_representative' invitation_id=invitation.id %}"
-                       class="govuk-link--no-visited-state">
+                        class="govuk-link--no-visited-state">
                         Change
                         <span class="govuk-visually-hidden"> status</span>
                     </a>
@@ -105,7 +105,7 @@
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a href="{% url 'verify_organisation_verify_explain_org_not_verified' invitation_id=invitation.id %}"
-                           class="govuk-link--no-visited-state">
+                            class="govuk-link--no-visited-state">
                             Change
                             <span class="govuk-visually-hidden"> status</span>
                         </a>
@@ -130,7 +130,7 @@
                         Approve invite
                     </button>
                     <a class="govuk-link govuk-link--no-visited-state"
-                       href="{% url 'verify_organisation_verify_confirm_declined' invitation_id=invitation.id %}">
+                        href="{% url 'verify_organisation_verify_confirm_declined' invitation_id=invitation.id %}">
                         Reject invite
                     </a>
                 </div>

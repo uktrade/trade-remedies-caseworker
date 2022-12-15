@@ -2,26 +2,26 @@
 {% load number_blob %}
 <ol class="sections">
     {% for node in tree %}
-    <li {% if node.open %}class="selected" {% endif %} class="{% if node.children %}has-children{% endif %}">
-        {% if node.active %}
-            <i class="arrow"></i>
-            {{ node.name }}
-        {% else %}
-            <i class="arrow"></i>
-            <a href="\cases\{{case.id}}\section\{{node.id}}">{{ node.name }}</a>
-        {% endif %}
-        {% include "widgets/treeNav.html" with outer=node tree=node.children pageOrSection="page" %}
-    </li>
+        <li {% if node.open %}class="selected" {% endif %} class="{% if node.children %}has-children{% endif %}">
+            {% if node.active %}
+                <i class="arrow"></i>
+                {{ node.name }}
+            {% else %}
+                <i class="arrow"></i>
+                <a href="\cases\{{case.id}}\section\{{node.id}}">{{ node.name }}</a>
+            {% endif %}
+            {% include "widgets/treeNav.html" with outer=node tree=node.children pageOrSection="page" %}
+        </li>
     {% endfor%}
     {% if not outer or outer.level == 0 %}
-    <li>
-        <a href="#"
-           class="add-link"
-           data-title="Add a {{pageOrSection}}{% if outer %} under &quot;{{outer.name}}&quot;{% endif %}"
-           data-parent="{{outer.id}}">
-           <div class="icon icon-plus pull-left"></div>
-           Add a {{pageOrSection}}
-        </a>
-    </li>
+        <li>
+            <a href="#"
+                class="add-link"
+                data-title="Add a {{pageOrSection}}{% if outer %} under &quot;{{outer.name}}&quot;{% endif %}"
+                data-parent="{{outer.id}}">
+                <div class="icon icon-plus pull-left"></div>
+                Add a {{pageOrSection}}
+            </a>
+        </li>
     {% endif %}
 </ol>

@@ -4,9 +4,9 @@
 
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
-    <span class="govuk-caption-xl">1.
-        Review representative
-    </span>
+        <span class="govuk-caption-xl">1.
+            Review representative
+        </span>
         <h1 class="govuk-heading-xl">
             Unverified representative
         </h1>
@@ -23,14 +23,14 @@
                         other cases.
                     </div>
                     <textarea class="govuk-textarea govuk-js-character-count" id="explain_why_org_not_verified"
-                              name="explain_why_org_not_verified" rows="5"
-                              aria-describedby="unverfied-reason-info unverfied-reason-hint">{% if invitation.submission.deficiency_notice_params.explain_why_contact_org_not_verified %}{{ invitation.submission.deficiency_notice_params.explain_why_contact_org_not_verified }}{% endif %}</textarea>
+                        name="explain_why_org_not_verified" rows="5"
+                        aria-describedby="unverfied-reason-info unverfied-reason-hint">{% if invitation.submission.deficiency_notice_params.explain_why_contact_org_not_verified %}{{ invitation.submission.deficiency_notice_params.explain_why_contact_org_not_verified }}{% endif %}</textarea>
                     <div
-                            class="govuk-hint govuk-character-count__message govuk-visually-hidden">
+                        class="govuk-hint govuk-character-count__message govuk-visually-hidden">
                         You can enter up to <span class="characters_remaining">200</span> characters
                     </div>
                     <div class="govuk-hint govuk-character-count__message govuk-character-count__status"
-                         aria-hidden="true">You have <span class="characters_remaining">200</span> characters remaining
+                        aria-hidden="true">You have <span class="characters_remaining">200</span> characters remaining
                     </div>
                     <div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">You have 200
                         characters remaining

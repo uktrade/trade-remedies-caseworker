@@ -1,38 +1,38 @@
 {% load set %}
 {% set 'selected_participants' json_data.send_to %}
 <div class="section {% if populated %}populated{% endif %}">
-        <div class="grey-box">
-            <div class="column-full">
-                <span class="label">Recipient(s)</span>
-                {% include "cases/submissions/bundle_builder_edit_button.html" %}
-                {% if submission.type.key == 'public' %}
-                    <span class="value">All applicants</span>
-                {% else %}
-                    <div class="pull-left clear party-list">
+    <div class="grey-box">
+        <div class="column-full">
+            <span class="label">Recipient(s)</span>
+            {% include "cases/submissions/bundle_builder_edit_button.html" %}
+            {% if submission.type.key == 'public' %}
+                <span class="value">All applicants</span>
+            {% else %}
+                <div class="pull-left clear party-list">
                     {% for role, role_context in participants.items %}
                         {% for participant in role_context.parties %}
                             {% if participant.id in selected_participants %}
                                 {% if store.current_role != role %}
                                     {% if store.current_role %}</div></div>{% endif %}
                                     <div class="row margin-top-1">
-                                    {% set 'current_role' role %}
-                                    <div class="bold cell">{{participant.role.plural}}</div>
-                                    <div class="cell">
+                                        {% set 'current_role' role %}
+                                        <div class="bold cell">{{participant.role.plural}}</div>
+                                        <div class="cell">
                                 {% endif %}
                                 <div><a class="link" href="/organisations/{{participant.id}}/">{{participant.name}}</a></div>
-                            {% endif %}                        
+                            {% endif %}
                         {% endfor %}
                     {% endfor %}
                     {% if store.current_role %}</div></div>{% endif %}
-                    </div>
-                    <!-- <span class="value">{{submission.organisation.name|default:'All'}}</span> -->
-                {% endif %}
-            </div>
-        </div>            
-
-        <div class="column-full edit-section">
-            {% include "cases/submissions/party_chooser.html" with participants=participants %}
+                </div>
+                <!-- <span class="value">{{submission.organisation.name|default:'All'}}</span> -->
+            {% endif %}
         </div>
+    </div>
+
+    <div class="column-full edit-section">
+        {% include "cases/submissions/party_chooser.html" with participants=participants %}
+    </div>
     {% comment %}
     <div class="column-one-half">
         {% if draft_submissions %}

@@ -21,24 +21,24 @@
                     <li>
                         <strong>Interested party</strong><br>
                         <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.organisation.id %}"
-                           class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
+                            class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
                         <a href="/users/cusomter/{{ invitation.created_by.id }}"
-                           data-url="/users/cusomter/{{ invitation.created_by.id }}"
-                           class="modal-form">{{ invitation.created_by.name }}</a>
+                            data-url="/users/cusomter/{{ invitation.created_by.id }}"
+                            class="modal-form">{{ invitation.created_by.name }}</a>
                     </li>
                     <li>
                         <strong>Representative </strong><br>
                         <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.contact.organisation %}"
-                           class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
+                            class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
                         <a href="/users/cusomter/{{ invitation.contact.user_id }}"
-                           data-url="/users/cusomter/{{ invitation.contact.user_id }}"
-                           class="modal-form">{{ invitation.contact.name }}</a>
+                            data-url="/users/cusomter/{{ invitation.contact.user_id }}"
+                            class="modal-form">{{ invitation.contact.name }}</a>
                     </li>
                     <li>
                         <strong>Submitted by</strong><br>
                         <a href="/users/cusomter/{{ invitation.created_by.id }}"
-                           data-url="/users/cusomter/{{ invitation.created_by.id }}"
-                           class="modal-form">{{ invitation.created_by.name }}</a>
+                            data-url="/users/cusomter/{{ invitation.created_by.id }}"
+                            class="modal-form">{{ invitation.created_by.name }}</a>
                     </li>
                 </ul>
             </nav>

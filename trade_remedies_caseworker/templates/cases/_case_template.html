@@ -7,72 +7,72 @@
 {% block page_title %}{{case.reference}}: {{case.name|default:'Un-assigned'}} | {{ global_header_text }}{% endblock %}
 
 {% block panel_right %}
-      {% if panel_layout %}
+    {% if panel_layout %}
         {% from_json '[{"path":"/", "title":"", "icon":"icon-white-briefcase"},{"path":"/parties/", "match":".*/organisation/[0-9a-f-]*/$", "title":"Parties", "icon":"icon-white-parties"},{"path":"/submissions/", "match":".*/submission/.*", "title":"Submissions", "icon":"icon-white-email"},{"path":"/files/", "title":"Files", "icon":"icon-white-documents"},{"path":"/actions/", "title":"Workflow", "icon":"icon-white-workflow"},{"path":"/section/", "match":".*/section/.*", "title":"Notes", "icon":"icon-white-notes"}]' as menu %}
         <div id="menu-bar">
-          <div class="menu-icon">
-            <a href="/cases/" title="Cases" class="icon icon-white-home"></a>
-          </div>
-          {% for item in menu %}
-            {% set 'item_path' '/case/'|addstr:case_id|addstr:item.path %}
-            {% set 'selected' False %}
-            {% if request.path == item_path %}
-              {% set 'selected' True %}
-            {% elif item.match %}
-              {% reg_exp item.match request.path as match %}
-              {% if match %}
-                {% set 'selected' True %}
-              {% endif %}
-            {% endif %}
-            <div class="menu-icon {% if selected %}selected{% endif %}">
-              <a href="{{item_path}}" title="{{item.title|default:case.name}}" class="icon {{item.icon}}"></a>
+            <div class="menu-icon">
+                <a href="/cases/" title="Cases" class="icon icon-white-home"></a>
             </div>
-          {% endfor %}
+            {% for item in menu %}
+                {% set 'item_path' '/case/'|addstr:case_id|addstr:item.path %}
+                {% set 'selected' False %}
+                {% if request.path == item_path %}
+                    {% set 'selected' True %}
+                {% elif item.match %}
+                    {% reg_exp item.match request.path as match %}
+                    {% if match %}
+                        {% set 'selected' True %}
+                    {% endif %}
+                {% endif %}
+                <div class="menu-icon {% if selected %}selected{% endif %}">
+                    <a href="{{item_path}}" title="{{item.title|default:case.name}}" class="icon {{item.icon}}"></a>
+                </div>
+            {% endfor %}
         </div>
-      {% endif %}
+    {% endif %}
 
-      <div id="content" style="left:50px">
+    <div id="content" style="left:50px">
         <div class="grid-row">
-          <div class="column-full">
-          <div class="pull-right" style="max-width:50%;">
-            {% include "widgets/caseSummary.html" %}
-          </div>            
-            <h1 class="heading-large">
-                {% block heading %}
-                    {% if case_page and not case.initiated_at and not case.decision_to_initiate %}
-                        <div class="pull-left case-sequence">{% case_type_badge case.type %}{{case.reference}}:</div>
-                        <div class="pull-left">
-                            <div class="in-place-edit" data-name="name" data-attach="EditInPlace2">{{case.name|default:'Un-assigned'}}</div>
-                        </div>
-                    {% else %}
-                        <span title="{{case.type.name}}" >
-                            {% case_type_badge case.type %} {{case.reference}}:
-                        </span>
-                        <a href="/case/{{case.id}}">{{case.name|default:'Un-assigned'}}</a>
-                    {% endif %}
-                    {% if case.archived_at %}
-                      <br/>
-                      <h3 class="heading-medium">
-                        Archived at {% format_date case.archived_at '%d %b %Y' %}
-                        ({{ case.archive_reason.name }})
-                      </h3>
-                    {% endif %}
-                {% endblock %}
-            </h1>
-          </div>
+            <div class="column-full">
+                <div class="pull-right" style="max-width:50%;">
+                    {% include "widgets/caseSummary.html" %}
+                </div>
+                <h1 class="heading-large">
+                    {% block heading %}
+                        {% if case_page and not case.initiated_at and not case.decision_to_initiate %}
+                            <div class="pull-left case-sequence">{% case_type_badge case.type %}{{case.reference}}:</div>
+                            <div class="pull-left">
+                                <div class="in-place-edit" data-name="name" data-attach="EditInPlace2">{{case.name|default:'Un-assigned'}}</div>
+                            </div>
+                        {% else %}
+                            <span title="{{case.type.name}}" >
+                                {% case_type_badge case.type %} {{case.reference}}:
+                            </span>
+                            <a href="/case/{{case.id}}">{{case.name|default:'Un-assigned'}}</a>
+                        {% endif %}
+                        {% if case.archived_at %}
+                            <br/>
+                            <h3 class="heading-medium">
+                                Archived at {% format_date case.archived_at '%d %b %Y' %}
+                                ({{ case.archive_reason.name }})
+                            </h3>
+                        {% endif %}
+                    {% endblock %}
+                </h1>
+            </div>
         </div>
         {% block main_content %}
             <div class="grid-row">
-              {% if not panel_layout %}
-                <div class="column-one-quarter">
-                    {% include "widgets/primaryNavigation.html" with case=case %}
-                </div>
-              {% endif %}
+                {% if not panel_layout %}
+                    <div class="column-one-quarter">
+                        {% include "widgets/primaryNavigation.html" with case=case %}
+                    </div>
+                {% endif %}
                 <div class="column-{% if not panel_layout %}three-quarters{% else %}full{% endif %}">
                     {% block case_page_content %}
                     {% endblock %}
                 </div>
             </div>
         {% endblock %}
-      </div>
+    </div>
 {% endblock %}

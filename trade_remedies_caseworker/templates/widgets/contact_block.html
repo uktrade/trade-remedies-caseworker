@@ -11,13 +11,13 @@
     {% endif %}
 {% endif %}
 <div class="contact-block {% if contact.primary and not hide_controls and not hide_primary %} primary{% endif %}
-{% if not icon_class %} grey{% endif %}">
+    {% if not icon_class %} grey{% endif %}">
     {% if not hide_controls and not contact.has_user %}
         <button
-                type="button"
-                class="link modal-form edit-contact {% if contact.loa %}hover-show{% endif %}"
-                data-event-update="party-updated"
-                data-url="/organisations/{% if case_id %}case/{{ case.id }}/organisation/{% endif %}{{ organisation.id }}/contact/{{ contact.id }}/"
+            type="button"
+            class="link modal-form edit-contact {% if contact.loa %}hover-show{% endif %}"
+            data-event-update="party-updated"
+            data-url="/organisations/{% if case_id %}case/{{ case.id }}/organisation/{% endif %}{{ organisation.id }}/contact/{{ contact.id }}/"
         >Edit<span class="visually-hidden"> contact {{ contact.name }}</span>
         </button>
     {% endif %}
@@ -66,8 +66,8 @@
                 {# If we have a case id, we can set the primary contact #}
                 {% if not contact.primary or primary_count > '1' %}
                     <button type="button" class="button button-blue compact margin-top-1" data-method="post"
-                            data-event="party-updated"
-                            data-url="/organisations/case/{{ case.id }}/organisation/{{ organisation.id }}/contact/{{ contact.id }}/set/primary/">
+                        data-event="party-updated"
+                        data-url="/organisations/case/{{ case.id }}/organisation/{{ organisation.id }}/contact/{{ contact.id }}/set/primary/">
                         Set<span class="visually-hidden"> {{ contact.name }}</span> as primary user
                     </button>
                 {% endif %}
@@ -75,24 +75,24 @@
             {% if not case_id %}
                 {# Otherwise, we are setting the org admin flag #}
                 <form action="/organisations/{{ organisation.id }}/user/{{ user.id }}/admin/toggle/{% if redirect %}?redirect={{ redirect }}{% endif %}"
-                      method="post" data-attach="RedirectManager">
+                    method="post" data-attach="RedirectManager">
                     {% csrf_token %}
                     {% if 'Organisation Owner' in user.groups %}
                         <button type="submit" class="button button-blue compact margin-top-1">Admin[change]<span
-                                class="visually-hidden"> {{ contact.name }}</span></button>
+                            class="visually-hidden"> {{ contact.name }}</span></button>
                     {% else %}
                         <button type="submit" class="button button-blue compact margin-top-1">Set<span
-                                class="visually-hidden"> {{ contact.name }}</span> as admin
+                            class="visually-hidden"> {{ contact.name }}</span> as admin
                         </button>
                     {% endif %}
                 </form>
             {% endif %}
             {% if not contact.has_user and not contact.is_third_party %}
                 <button type="button" class="button button-blue compact margin-top-1" name="delete"
-                        data-title="Confirm delete"
-                        data-message="Are you sure you want to delete &quot;{{ contact.name }}&quot;<br>This action cannot be undone."
-                        data-url="/organisations/case/{{ case.id }}/organisation/{{ organisation.id }}/contact/{{ contact.id }}/delete/"
-                        data-method="post" data-event="party-updated"
+                    data-title="Confirm delete"
+                    data-message="Are you sure you want to delete &quot;{{ contact.name }}&quot;<br>This action cannot be undone."
+                    data-url="/organisations/case/{{ case.id }}/organisation/{{ organisation.id }}/contact/{{ contact.id }}/delete/"
+                    data-method="post" data-event="party-updated"
                 >Delete contact<span class="visually-hidden"> {{ contact.name }}</span></button>
             {% endif %}
         {% endif %}

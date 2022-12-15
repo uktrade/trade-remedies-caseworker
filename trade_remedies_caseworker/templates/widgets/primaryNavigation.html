@@ -1,31 +1,31 @@
 <!-- Navigation within a case - left hand side -->
 {% load number_blob %}
 {% if case %}
-<div class="expand-base">
-	<div class="primary-navigation">
-		<ol>
-			{% with "/case/"|add:case.id|add:"/" as basePath %}
-			<li>{% link_or_not "Parties" basePath|add:"parties/" %}{% number_blob case.participant_count %}</li>
-			<li>{% link_or_not "Submissions" basePath|add:"submissions/" %}{% number_blob case.submission_count %}</li>
-			<li>{% link_or_not "Files" basePath|add:"files/" %}{% number_blob document_count %}</li>
-			<li>{% link_or_not "Workflow" "/case/"|add:case.id|add:"/actions/" %}{% number_blob 0 %}</li>
-			{% endwith %}
-		</ol>
-	</div>
-	{% endif %}
-	{% csrf_token %}
-	<script type="text/javascript">
-		(window.dit = window.dit || {}).caseId="{{case.id}}";
-	</script>
-	<div class="divider"></div>
-	<div class="tree-nav" data-attach="TreeNav">
-		{% include "widgets/treeNav.html" with tree=tree pageOrSection="section"%}
-	</div>
-	<div class="hidden">
-		<div id="create-page-form">
-			<form>
-				<input type="text" name="name"/>
-			</form>
-		</div>
-	</div>
+    <div class="expand-base">
+        <div class="primary-navigation">
+            <ol>
+                {% with "/case/"|add:case.id|add:"/" as basePath %}
+                    <li>{% link_or_not "Parties" basePath|add:"parties/" %}{% number_blob case.participant_count %}</li>
+                    <li>{% link_or_not "Submissions" basePath|add:"submissions/" %}{% number_blob case.submission_count %}</li>
+                    <li>{% link_or_not "Files" basePath|add:"files/" %}{% number_blob document_count %}</li>
+                    <li>{% link_or_not "Workflow" "/case/"|add:case.id|add:"/actions/" %}{% number_blob 0 %}</li>
+                {% endwith %}
+            </ol>
+        </div>
+{% endif %}
+{% csrf_token %}
+<script type="text/javascript">
+    (window.dit = window.dit || {}).caseId="{{case.id}}";
+</script>
+<div class="divider"></div>
+<div class="tree-nav" data-attach="TreeNav">
+    {% include "widgets/treeNav.html" with tree=tree pageOrSection="section"%}
+</div>
+<div class="hidden">
+    <div id="create-page-form">
+        <form>
+            <input type="text" name="name"/>
+        </form>
+    </div>
+</div>
 </div>
