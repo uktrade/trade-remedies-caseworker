@@ -41,6 +41,11 @@ approved_by
 invited_organisation.country_name
 Companies House
 is_admin
+form_errors.company_search_container
+confirmOnBlur
+false
++ result.companies_house_id +
+company_data.companies_house_id
 case</a>
 back_button
 Invite
