@@ -194,6 +194,13 @@ class OrganisationVerificationVerifyLetterOfAuthority(
     form_class = AuthorisedSignatoryForm
     invitation_fields = ["submission", "created_by", "organisation", "case"]
 
+    def update_authorised_contact(self, contact_id):
+        """Updates the authorised_contact of the inviting OrgCaseRole object"""
+        org_case_role = self.client.organisation_case_roles(organisation_id=self.invitation.organisation.id, case_id=self.invitation.case.id)[0]
+        org_case_role.update({
+            "auth_contact": contact_id
+        }, fields=["auth_contact",])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["uploaded_loa_document"] = get_uploaded_loa_document(self.invitation.submission)
@@ -209,10 +216,7 @@ class OrganisationVerificationVerifyLetterOfAuthority(
                 )
             )
         else:
-            self.client.submissions(self.invitation.submission.id).update(
-                {"primary_contact": form.cleaned_data["authorised_signatory"]},
-                fields=["primary_contact"],
-            )
+            self.update_authorised_contact(form.cleaned_data["authorised_signatory"])
 
             return redirect(
                 reverse(
@@ -248,9 +252,7 @@ class OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact(
         # assigning them to the case
         contact.add_to_case(case_id=self.invitation.case.id, primary=True)
 
-        self.client.submissions(self.invitation.submission.id).update(
-            {"primary_contact": contact.id}, fields=["primary_contact"]
-        )
+        self.update_authorised_contact(contact.id)
 
         return redirect(
             reverse(
