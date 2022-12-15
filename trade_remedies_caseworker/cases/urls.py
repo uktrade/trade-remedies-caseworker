@@ -1,6 +1,7 @@
 from django.urls import path
 from cases import views as case_views
 
+app_name = "cases"
 urlpatterns = [
     path("", case_views.CasesView.as_view(), name="cases"),
     path("notices/", case_views.NoticesView.as_view(), name="notices"),
@@ -8,7 +9,7 @@ urlpatterns = [
     path("notice/<uuid:notice_id>/", case_views.NoticeView.as_view(), name="notice"),
     path("create/", case_views.CaseFormView.as_view(), name="cases"),
     path("<uuid:case_id>/edit/", case_views.CaseFormView.as_view(), name="cases"),
-    path("<uuid:case_id>/", case_views.CaseView.as_view(), name="cases"),
+    path("<uuid:case_id>/", case_views.CaseView.as_view(), name="view_case"),
     path("<uuid:case_id>/admin/", case_views.CaseAdminView.as_view(), name="case_admin"),
     path(
         "<uuid:case_id>/milestones/",

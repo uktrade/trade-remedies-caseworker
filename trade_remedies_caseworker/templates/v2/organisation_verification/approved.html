@@ -1,0 +1,23 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Verification complete{% endblock page_title %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Representative invite approved
+            </h1>
+        </div>
+        <p><strong>{{ invitation.case.reference }} - {{ invitation.case.name }}</strong>.</p>
+        <p>You have approved {{ possessive_inviters_organisation_name }} representative invite for {{ invitation.contact.organisation_name }}
+        </p>
+        <p>Both parties will be notified of your decision.</p>
+        <a href="{% url 'cases:view_case' case_id=invitation.case.id %}" role="button" draggable="false" class="govuk-button"
+            data-module="govuk-button">
+            Back to case
+        </a>
+    </div>
+{% endblock row_content %}

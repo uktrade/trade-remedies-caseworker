@@ -32,19 +32,16 @@
             <h2 class="heading-medium party-type-name">{{party_type.name}}</h2>
             {% with parties_by_sampled=party_type.parties|deep_index:'sampled' %}
                 <ul class="tabset">
-
                     <li id="not_sampled_tab-{{party_type.case_role_id}}" class="tab pull-right">
                         <a href="javascript:toggleTabs('{{party_type.case_role_id}}', false);" data-tab="not_sampled">Not Sampled <div class="number-circle">
                             <span>{{ parties_by_sampled|get_item_length:'' }}</span></div>
                         </a>
                     </li>
-
                     <li id="sampled_tab-{{party_type.case_role_id}}" class="tab selected pull-right">
                         <a href="javascript:toggleTabs('{{party_type.case_role_id}}', true);" data-tab="sampled">Sampled <div class="number-circle">
                             <span>{{ parties_by_sampled|get_item_length:'true' }}</span></div>
                         </a>
                     </li>
-
                 </ul>
                 {% for sample_state in parties_by_sampled %}
                     <div
@@ -102,8 +99,13 @@
                 {% endfor %}
             {% endwith %}
             {% if party_type.add_link %}
-                <button class="link modal-form pull-right bold" data-url="/organisations/case/{{case.id}}/create/{{party_type.key}}/">{{ party_type.add_link }}</button>
+                <a class="link pull-right bold" href="{% url 'organisations:invite-party' case_id=case.id %}?case_role_key={{ party_type.key }}">Invite party to case</a>
             {% endif %}
         {% endfor %}
     </div>
+
+    {% if caseworker_invitations %}
+        {% include "cases/sent_invites.html" with invites=caseworker_invitations %}
+    {% endif %}
+
 {% endblock %}

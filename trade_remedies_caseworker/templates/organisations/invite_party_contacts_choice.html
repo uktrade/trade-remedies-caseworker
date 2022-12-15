@@ -1,0 +1,67 @@
+{% extends "v2/govuk/base_with_form.html" %}
+
+
+{% block page_title %}Invite contact details{% endblock page_title %}
+
+{% block form_content %}
+
+    <div class="govuk-form-group">
+
+        <fieldset class="govuk-fieldset" aria-describedby="invite-party-contacts-choice-hint">
+
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+
+                <h1 class="govuk-fieldset__heading">
+                    Which contact do you want to invite?
+                </h1>
+
+            </legend>
+
+            {% if org_invite_contacts %}
+                <div id="invite-party-contacts-choice-hint" class="govuk-hint">
+                    Select all contacts you want to invite.
+                </div>
+
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="org">
+
+                    {% for contact in org_invite_contacts %}
+
+                        <!--
+                            Each contact is a tuple containing a name (0) and an email (1), 
+                            therefore need to access these using index numbers.
+                        -->
+
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="{{ contact.0 }}" name="which_contact"
+                                type="checkbox" value="{{ contact.0 }}"
+                                {% if contact.0 in selected_contacts %}checked{% endif %}>
+                            <label class="govuk-label govuk-checkboxes__label" for="{{ contact.0 }}">
+
+                                {{ contact.1 }}<br>
+
+                            </label>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+        </fieldset>
+    </div>
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                I want to invite a new contact from this organisation
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>To avoid duplicate accounts, please ask the admin from the organisation to invite the new contact to the account first.</p>
+        </div>
+    </details>
+
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Continue" back_button_text="Back" %}
+
+{% endblock form_content %}

@@ -5,19 +5,22 @@
 {% block case_page_content %}
 
     <form class="bundle-builder"
-        action="{% if submission.id %}/case/{{case_id}}/submission/{{submission.id}}/{% else %}/case/{{case_id}}/submission/create/{% endif %}?__prefix={{case_id}}"
+        action="{% if submission.id %}/case/{{ case_id }}/submission/{{ submission.id }}/{% else %}/case/{{ case_id }}/submission/create/{% endif %}?__prefix={{ case_id }}"
         method="POST"
         data-attach="BundleBuilder"
         enctype="multipart/form-data"
-        data-redirect="/case/{{case_id}}/submission/{{submission.id}}/"
-        data-case="{{case_id}}"
-        data-submission="{{submission.id}}"
-        data-organisation="{{organisation_id}}"
+        data-redirect="/case/{{ case_id }}/submission/{{ submission.id }}/"
+        data-case="{{ case_id }}"
+        data-submission="{{ submission.id }}"
+        data-organisation="{{ organisation_id }}"
         data-notify-url="/status/notify/">
         {% csrf_token %}
         {% include 'cases/submissions/bundle_builder_alert_block.html' %}
-        <div class="column-full review_submission" data-attach="ReviewSubmission" data-submission='{{submission|to_json}}'>
-            <h2 class="heading-large"><span class="heading-secondary">{{submission.organisation.name}}</span>{% block main_title %}{{submission.type.name}}{% endblock %}</h2>
+        <div class="column-full review_submission" data-attach="ReviewSubmission"
+            data-submission='{{ submission|to_json }}'>
+            <h2 class="heading-large"><span
+                class="heading-secondary">{{ submission.organisation.name }}</span>{% block main_title %}
+                    {{ submission.type.name }}{% endblock %}</h2>
             {% if submission.type.key == 'application' %}
                 {% include './case_details.html' %}
             {% endif %}
@@ -38,9 +41,11 @@
             {% if submission.versions %}
                 <ul class="tabset">
                     {% for version in submission.versions reversed %}
-                        <li class="tab {% if version.id == submission.id %}selected{% endif  %}" >
-                            <a href="/case/{{submission.case.id}}/submission/{{version.id}}" >
-                                {% if forloop.counter == 1 %}Current version{% elif forloop.counter == submission.versions|length %}Original{% else %}Version {{version.version}}{% endif %}
+                        <li class="tab {% if version.id == submission.id %}selected{% endif %}">
+                            <a href="/case/{{ submission.case.id }}/submission/{{ version.id }}">
+                                {% if forloop.counter == 1 %}Current
+                                    version{% elif forloop.counter == submission.versions|length %}Original{% else %}
+                                    Version {{ version.version }}{% endif %}
                             </a>
                         </li>
                     {% endfor %}
@@ -48,7 +53,7 @@
             {% endif %}
 
             {% if submission.received_at %}
-                <span class="text-grey submission-details">Submitted {{submission.received_at|format_date:'%d %b %Y %H:%M'}} by {{submission.received_from.name}}</span>
+                <span class="text-grey submission-details">Submitted {{ submission.received_at|format_date:'%d %b %Y %H:%M' }} by {{ submission.received_from.name }}</span>
             {% endif %}
 
             {% block lower_info_block %}{% endblock %}
@@ -68,30 +73,40 @@
                     <table class="review-list empty margin-top-1">
                         <thead>
                             <tr>
-                                <th >Notice link
+                                <th>Notice link
                                     {% if not submission.issued_at and submission.deficiency_notice_params.publish != 'true' %}
                                         {% if user.permissions.publish_public %}
                                             <button class="link pull-right" value="publish-start"
                                                 {% if not submission.organisation_case_role_outer.validated_at and not submission.organisation.is_tra %}
-                                                    disabled title="Unable to publish submissions for {{organisation.name}} until verification is completed"
+                                                    disabled
+                                                    title="Unable to publish submissions for {{ organisation.name }} until verification is completed"
                                                 {% endif %}
                                             >
-                                                Publish current version</button>
+                                                Publish current version
+                                            </button>
                                         {% endif %}
                                     {% else %}
                                         {% if user.permissions.publish_public %}
                                             <button type="button" class="link pull-right" name="btn-value" value="withdraw"
-                                            >Withdraw</button>
+                                            >Withdraw
+                                            </button>
                                         {% endif %}
-                                        <span class="font-weight-normal pull-right"><i class="icon icon-green-tick"></i><strong class="bold">Published</strong> {% if submission.deficiency_notice_params.issue_anonymously == 'yes'%}(anonymous) {% endif %}{{submission.issued_at|format_date:'{S} %b %Y'}} by {{submission.issued_by.name}}</span>
+                                        <span class="font-weight-normal pull-right"><i
+                                            class="icon icon-green-tick"></i><strong class="bold">Published</strong>
+                                            {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
+                                                (anonymous) {% endif %}{{ submission.issued_at|format_date:'{S} %b %Y' }}
+                                            by {{ submission.issued_by.name }}</span>
                                     {% endif %}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>
-                                <a href="{{submission.url}}" target="_blank">{{submission.url}}&nbsp;<i class="icon icon-link correct"></i></a>
-                            </td></tr>
+                            <tr>
+                                <td>
+                                    <a href="{{ submission.url }}" target="_blank">{{ submission.url }}&nbsp;<i
+                                        class="icon icon-link correct"></i></a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 {% else %}
@@ -101,29 +116,44 @@
                                 {% if user.permissions.publish_public and documents.nonconfidential|length > 0 %}
                                     <button class="link pull-right" value="publish-start"
                                         {% if not submission.organisation_case_role_outer.validated_at and not submission.organisation.is_tra %}
-                                            disabled title="Unable to publish submissions for {{organisation.name}} until verification is completed"
+                                            disabled
+                                            title="Unable to publish submissions for {{ organisation.name }} until verification is completed"
                                         {% endif %}
-                                    >Publish current version</button>
+                                    >Publish current version
+                                    </button>
                                 {% endif %}
                             {% elif submission.issued_at %}
                                 {% if user.permissions.publish_public %}
-                                    <button type="button" class="link pull-right correct" name="btn-value" value="withdraw"
-                                    >Withdraw</button>
+                                    <button type="button" class="link pull-right correct" name="btn-value"
+                                        value="withdraw"
+                                    >Withdraw
+                                    </button>
                                 {% endif %}
-                                <span class="font-weight-normal pull-right"><i class="icon icon-green-tick correct"></i><strong class="bold">Published</strong> {% if submission.deficiency_notice_params.issue_anonymously == 'yes'%}(anonymous) {% endif %}{{submission.issued_at|format_date:'{S} %b %Y'}} by {{submission.issued_by.name}}</span>
+                                <span class="font-weight-normal pull-right"><i class="icon icon-green-tick correct"></i><strong
+                                    class="bold">Published</strong>
+                                    {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
+                                        (anonymous) {% endif %}{{ submission.issued_at|format_date:'{S} %b %Y' }}
+                                    by {{ submission.issued_by.name }}</span>
                             {% endif %}
                         </div>
+                    {% endif %}
+                {% endif %}
+                {% if submission.type.name == "Invite 3rd party" %}
+                    {# This is an invite, we just want to show the LOA #}
+                    {% if documents.loa %}
+                        {% include 'widgets/document_review_list.html' with documents=documents.loa title='Letter of authority documents' editable=reviewing hide_headings=False %}
                     {% endif %}
                 {% endif %}
                 {% if documents.confidential|length > 0 %}
                     {% include 'cases/submissions/virus_warnings.html' %}
                     {% include 'cases/submissions/upload_warning.html' %}
-                    {% if documents.loa %}
+                    {% if documents.loa and not submission.type.name == "Invite 3rd party" %}
                         {% include 'widgets/document_review_list.html' with documents=documents.loa title='Letter of authority documents' editable=reviewing hide_headings=False %}
                     {% endif %}
                     {% include 'widgets/document_review_list.html' with documents=documents.confidential title='Confidential documents' editable=reviewing hide_headings=False %}
                     {% include 'widgets/document_review_list.html' with documents=documents.nonconfidential title='Non-confidential documents' hide_headings=True editable=reviewing %}
                 {% endif %}
+
             </div>
 
             {% if not building_deficiency_notice and not publishing %}
@@ -144,7 +174,7 @@
                         {% comment %}****************    Name and description *********{% endcomment %}
                         {% if populated %}
                             {% set 'populated' submission.deficiency_notice_params.name|_not|_not %}
-                            {% include "cases/submissions/bundle_builder_3_name.html" with submission_group_name='deficiency notice' object=submission.deficiency_notice_params name_prefix='deficiency_notice_params_'%}
+                            {% include "cases/submissions/bundle_builder_3_name.html" with submission_group_name='deficiency notice' object=submission.deficiency_notice_params name_prefix='deficiency_notice_params_' %}
                         {% endif %}
 
                         {% comment %}****************    Time window *********{% endcomment %}
@@ -152,7 +182,7 @@
                             {% if submission.deficiency_notice_params.time_window is None %}
                                 {% set 'populated' False %}
                             {% endif %}
-                            {% include "cases/submissions/bundle_builder_4_time_window.html" with submission_type_name='deficiency document' object=submission.deficiency_notice_params name_prefix='deficiency_notice_params_'%}
+                            {% include "cases/submissions/bundle_builder_4_time_window.html" with submission_type_name='deficiency document' object=submission.deficiency_notice_params name_prefix='deficiency_notice_params_' %}
                         {% endif %}
                         {% comment %}****************  Signoff and send *********{% endcomment %}
                         {% if populated %}
@@ -167,22 +197,34 @@
                     {% if reviewing and not publishing %}
                         <div id="review-buttons" class="pull-right review-buttons">
                             <span class="review-message"><i class="icon icon-amber-warning correct"></i>&nbsp;Review all documents</span>
-                            <button type="button" value="approve" class="button button-green">Approve submission</button>
-                            <button type="button" data-reveals="#deficiency-docs-browser" value="reject" class="button button-red" value="reject">Deny submission</button>
+                            <button type="button" value="approve" class="button button-green">Approve submission
+                            </button>
+                            <button type="button" data-reveals="#deficiency-docs-browser" value="reject"
+                                class="button button-red" value="reject">Deny submission
+                            </button>
                         </div>
                     {% endif %}
                     <div class="issue-button-group">
-                        <button class="button button-blue pull-left margin-left-1" data-notify="true" type="submit" name="btn-value" value="send" disabled="disabled">Send the deficiency notice</button>
-                        <a class="button button-grey pull-right" href="/case/{{case_id}}/submissions/">Exit without sending</a>
+                        <button class="button button-blue pull-left margin-left-1" data-notify="true" type="submit"
+                            name="btn-value" value="send" disabled="disabled">Send the deficiency notice
+                        </button>
+                        <a class="button button-grey pull-right" href="/case/{{ case_id }}/submissions/">Exit without
+                            sending</a>
                     </div>
                     <div class="publish-button-group">
-                        <button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value" value="publish" disabled="disabled">Publish the deficiency notice</button>
-                        <a class="button button-grey pull-right" href="/case/{{case_id}}/submissions/">Exit without publishing</a>
+                        <button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value"
+                            value="publish" disabled="disabled">Publish the deficiency notice
+                        </button>
+                        <a class="button button-grey pull-right" href="/case/{{ case_id }}/submissions/">Exit without
+                            publishing</a>
                     </div>
                     <div class="edit-button-group">
-                        <button class="button button-blue pull-left" type="submit" name="btn-value" value="save-exit">Save and continue</button>
+                        <button class="button button-blue pull-left" type="submit" name="btn-value" value="save-exit">
+                            Save and continue
+                        </button>
                     </div>
-                    <button type="button" id="modalButton" class="hidden modal-form" data-url="-" data-notify="/case/{{case.id}}/submission/{{submission.id}}/notify/"></button>
+                    <button type="button" id="modalButton" class="hidden modal-form" data-url="-"
+                        data-notify="/case/{{ case.id }}/submission/{{ submission.id }}/notify/"></button>
 
                 </div>
 
@@ -210,12 +252,21 @@
                 {% endif %}
                 <div class="button-group {% if not lastpage %}editing{% else %}publishing{% endif %}">
                     <div class="form-group publish-button-group">
-                        {% if user.permissions.publish_public %}<button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value" value="publish">Publish</button>{% endif %}
-                        <button class="button button-grey margin-top-1 pull-right" type="button" value="publish-cancel" >Cancel publishing</button>
+                        {% if user.permissions.publish_public %}
+                            <button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value"
+                                value="publish">Publish
+                            </button>{% endif %}
+                        <button class="button button-grey margin-top-1 pull-right" type="button" value="publish-cancel">
+                            Cancel publishing
+                        </button>
                     </div>
                     <div class="form-group edit-button-group">
-                        <button class="button button-blue margin-top-1" type="submit" name="save" value="save-exit">Save and continue</button>
-                        <button class="button button-grey margin-top-1 pull-right" type="button" value="publish-cancel" >Cancel publishing</button>
+                        <button class="button button-blue margin-top-1" type="submit" name="save" value="save-exit">Save
+                            and continue
+                        </button>
+                        <button class="button button-grey margin-top-1 pull-right" type="button" value="publish-cancel">
+                            Cancel publishing
+                        </button>
                     </div>
                 </div>
             {% endif %}
