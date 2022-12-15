@@ -5,9 +5,9 @@
             type="button"
             class="button modal-form button-blue compact"
             data-url="/case/{{case.id}}/invite/{% if party.users %}organisation/{{party.id}}{% else %}{{party.primary_contact.id}}{% endif %}/as/{{case_role_id}}/">
-                <i class="icon icon-amber-warning pull-left">
-                    <span class="visually-hidden">Alert</span>
-                </i>Invite party to case
+            <i class="icon icon-amber-warning pull-left">
+                <span class="visually-hidden">Alert</span>
+            </i>Invite party to case
         </button>
     {% endif %}
     <form action="/organisations/{{organisation.id}}/case/{{case.id}}/sampled/" method="post" data-attach="RedirectManager">

@@ -35,76 +35,76 @@
     </div>
 
     {% if collections %}
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Created at</th>
-                        <th>Placement</th>
-                        <th>Num of items</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for collection in collections %}
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>
-                                <a href="javascript:renderCollection('{{collection.id}}');">
-                                    {% format_date collection.created_at '%d %b %Y' %}
-                                </a>
-                            </td>
-                            <td>
-                                {{collection.placement.id}}
-                            </td>
-                            <td>
-                                {{collection.data|length}}
-                            </td>
+                            <th>Created at</th>
+                            <th>Placement</th>
+                            <th>Num of items</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for collection in collections %}
+                            <tr>
+                                <td>
+                                    <a href="javascript:renderCollection('{{collection.id}}');">
+                                        {% format_date collection.created_at '%d %b %Y' %}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{collection.placement.id}}
+                                </td>
+                                <td>
+                                    {{collection.data|length}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="column-one-third">
+
+                <table class="table" id="collectionItems">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="2">
+                            Select a collection to view the feedback
+                        </td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+
         </div>
-        <div class="column-one-third">
 
-            <table class="table" id="collectionItems">
-                <thead>
-                    <tr>
-                        <th>Field</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="2">
-                        Select a collection to view the feedback
-                    </td></tr>
-                </tbody>
-            </table>
-
-        </div>
-
-    </div>
-
-    {% autoescape off %}
-        <script>
-            var collections = JSON.parse('{{mapped_collections}}');
-            function renderCollection(id) {
-                var table = $('#collectionItems');
-                $('#collectionItems tr').remove();
-                var output = [];
-                var data = collections[id].data;
-                for (var i=0; i<data.length; i++) {
-                    var tr = document.createElement('tr');
-                    var nameTd = document.createElement('td');
-                    var valueTd = document.createElement('td');
-                    nameTd.innerText = data[i].element.label;
-                    valueTd.innerText = data[i].value;
-                    tr.appendChild(nameTd)
-                    tr.appendChild(valueTd)
-                    table[0].appendChild(tr)
+        {% autoescape off %}
+            <script>
+                var collections = JSON.parse('{{mapped_collections}}');
+                function renderCollection(id) {
+                    var table = $('#collectionItems');
+                    $('#collectionItems tr').remove();
+                    var output = [];
+                    var data = collections[id].data;
+                    for (var i=0; i<data.length; i++) {
+                        var tr = document.createElement('tr');
+                        var nameTd = document.createElement('td');
+                        var valueTd = document.createElement('td');
+                        nameTd.innerText = data[i].element.label;
+                        valueTd.innerText = data[i].value;
+                        tr.appendChild(nameTd)
+                        tr.appendChild(valueTd)
+                        table[0].appendChild(tr)
+                    }
                 }
-            }
-        </script>
-    {% endautoescape %}
+            </script>
+        {% endautoescape %}
 
     {% endif %}
 

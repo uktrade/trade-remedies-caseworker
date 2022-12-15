@@ -3,50 +3,50 @@
 
 <table class="file-list empty">
     <tbody>
-    {% if documents %}
-	    {% for document in documents %}
-	        <tr data-fileid="{{document.id}}" data-filename="{{document.name}}" data-filesize="{{document.size}}" data-fileconfidential="{{document.confidential}}">
-	            <td>
-	                <span class="filename">{% document_link document %}</span>
-	            </td>
-	            <td class="file-size">
-	                <span class="nobreak">{{document.size | filesizeformat}}</span>
-	            </td>
-	            <td class="file-date">
-	                <span class="nobreak">{% format_date document.created_at '%d %b %Y %H:%M' %}</span>
-				</td>
-	            <td>
-					{% if not document_confidential_lock %}
-						{% if document.confidential %}Confidential{% else %}Non-confidential{% endif %}
-						{% comment %} <select name="confidential">
+        {% if documents %}
+            {% for document in documents %}
+                <tr data-fileid="{{document.id}}" data-filename="{{document.name}}" data-filesize="{{document.size}}" data-fileconfidential="{{document.confidential}}">
+                    <td>
+                        <span class="filename">{% document_link document %}</span>
+                    </td>
+                    <td class="file-size">
+                        <span class="nobreak">{{document.size | filesizeformat}}</span>
+                    </td>
+                    <td class="file-date">
+                        <span class="nobreak">{% format_date document.created_at '%d %b %Y %H:%M' %}</span>
+                    </td>
+                    <td>
+                        {% if not document_confidential_lock %}
+                            {% if document.confidential %}Confidential{% else %}Non-confidential{% endif %}
+                            {% comment %} <select name="confidential">
 							<option  value="conf" {% if document.confidential %}selected="selected"{% endif %}>Confidential</option>
 							<option  value="non-conf" {% if not document.confidential %}selected="selected"{% endif %}>Non-confidential</option>
 						</select> {% endcomment %}
 
-					{% else %}
-						<input type="hidden" name="confidential" value="{{document_confidential_lock}}"/>
-					{% endif %}
-				</td>
-	            <td>
-	                {% if force_delete_option or not submission.locked %}
-	                <a
-	                    href="javascript:void(0);"
-	                    class="file-delete"
-						data-id="{{document.id}}"
-						{% if bundle %}
-							data-bundleId="{{bundle.id}}"
-						{% elif submission and case_id and submission_group_name%}
-							data-submissionId="{{submission.id|default:submission.id}}"
-							data-caseId="{{case_id}}"
-							data-organisationId="{{organisation_id}}"
-						{% endif %}
-	                    ><i class="icon icon-bin"></i></a>
-					{% endif %}
-	            </td>
-			</tr>
-	    {% endfor %}
-	{% else %}
-		<tr class="empty-line"><td class="text-grey">No files have been added</td></tr>
-	{% endif %}
+                        {% else %}
+                            <input type="hidden" name="confidential" value="{{document_confidential_lock}}"/>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if force_delete_option or not submission.locked %}
+                            <a
+                                href="javascript:void(0);"
+                                class="file-delete"
+                                data-id="{{document.id}}"
+                                {% if bundle %}
+                                    data-bundleId="{{bundle.id}}"
+                                {% elif submission and case_id and submission_group_name%}
+                                    data-submissionId="{{submission.id|default:submission.id}}"
+                                    data-caseId="{{case_id}}"
+                                    data-organisationId="{{organisation_id}}"
+                                {% endif %}
+                            ><i class="icon icon-bin"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr class="empty-line"><td class="text-grey">No files have been added</td></tr>
+        {% endif %}
     </tbody>
 </table>

@@ -1,27 +1,27 @@
 {% load format_date %}
 {% load ascii %}
 <tr class="{% if odd %}odd-row{% else %}even-row{% endif %}">
-	<td>
-		<a class="link" href="/case/{{case.id}}/organisation/{{participant.id}}/" title="{{participant.name}}">{{participant.name}}</a>
-	</td>
-	<td>
-		{% if submission.tra_editable %}
-		<a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/" title="{{submission.name}}">
-		{% endif %}
-		{{submission.name|default:submission.type.name}}
-		{% if submission.review %} (review) {% endif %}
-		{% if not submission.organisation.id %}*{% endif %}
-		{% if submission.version > 1 %}(version {{submission.version}}){% endif %}
-		{% if submission.tra_editable %}</a>{% endif %}
-	</td>
-	<td>{{submission.status.name}}</td>
-	<td sortVal="{% if submission.sent_at %}{% format_date submission.sent_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
-		{{ submission.sent_at|format_date:'%d %b %Y' }}
-	</td>
-	<td sortVal="{% if submission.received_at %}{% format_date submission.received_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
-		{{ submission.received_at|format_date:'%d %b %Y' }}
-	</td>
-	<td  sortVal="{% if submission.due_at %}{% format_date submission.due_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
-		<a href="javascript:void(0)" data-handler="editDueDate" class="link" data-caseid="{{case_id}}" data-submissionid="{{ submission.id }}" data-value="{{submission.due_at}}">{% format_date submission.due_at '%d %b %Y' %}</a>
-	</td>
+    <td>
+        <a class="link" href="/case/{{case.id}}/organisation/{{participant.id}}/" title="{{participant.name}}">{{participant.name}}</a>
+    </td>
+    <td>
+        {% if submission.tra_editable %}
+            <a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/" title="{{submission.name}}">
+        {% endif %}
+        {{submission.name|default:submission.type.name}}
+        {% if submission.review %} (review) {% endif %}
+        {% if not submission.organisation.id %}*{% endif %}
+        {% if submission.version > 1 %}(version {{submission.version}}){% endif %}
+        {% if submission.tra_editable %}</a>{% endif %}
+    </td>
+    <td>{{submission.status.name}}</td>
+    <td sortVal="{% if submission.sent_at %}{% format_date submission.sent_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+        {{ submission.sent_at|format_date:'%d %b %Y' }}
+    </td>
+    <td sortVal="{% if submission.received_at %}{% format_date submission.received_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+        {{ submission.received_at|format_date:'%d %b %Y' }}
+    </td>
+    <td  sortVal="{% if submission.due_at %}{% format_date submission.due_at '%Y-%m-%dT%H:%M:%S' wrapped=False %}{% endif %}">
+        <a href="javascript:void(0)" data-handler="editDueDate" class="link" data-caseid="{{case_id}}" data-submissionid="{{ submission.id }}" data-value="{{submission.due_at}}">{% format_date submission.due_at '%d %b %Y' %}</a>
+    </td>
 </tr>

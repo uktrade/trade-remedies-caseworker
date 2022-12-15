@@ -8,39 +8,39 @@
             <div class="column-one-half">
                 <h3 class="heading-small">Confidential files</h3>
                 <table>
-                <thead></thead>
-                <tbody>
-                    {% for document in documents|get_item:group %}
-                        {% if document.confidential %}
-                            <tr>
-                                <td>
-                                    <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
-                                        {{document.name|ellipsis_short}}
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
+                    <thead></thead>
+                    <tbody>
+                        {% for document in documents|get_item:group %}
+                            {% if document.confidential %}
+                                <tr>
+                                    <td>
+                                        <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
+                                            {{document.name|ellipsis_short}}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
             <div class="column-one-half">
                 <h3 class="heading-small">Non confidential files</h3>
                 <table>
-                <thead></thead>
-                <tbody>
-                {% for document in documents|get_item:group %}
-                    {% if not document.confidential %}
-                       <tr>
-                            <td>
-                                <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
-                                    {{document.name|ellipsis_short}}
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-                </tbody>
+                    <thead></thead>
+                    <tbody>
+                        {% for document in documents|get_item:group %}
+                            {% if not document.confidential %}
+                                <tr>
+                                    <td>
+                                        <a href="/documents/{{document.id}}/download/" title="{{document.name}}">
+                                            {{document.name|ellipsis_short}}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </div>

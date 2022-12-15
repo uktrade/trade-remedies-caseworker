@@ -5,7 +5,7 @@
         <div class="grey-box">
             <div class="column-full">
                 <span class="label">Publication date</span>
-                {% include "cases/submissions/bundle_builder_edit_button.html" %}   
+                {% include "cases/submissions/bundle_builder_edit_button.html" %}
                 {% set 'not_time_set' submission.issued_at|_not %}
                 {% set 'no_chosen' object.response_window_yn|_notequals:'yes' %}
                 {% if submission.issued_at %}
@@ -20,9 +20,9 @@
             </div>
         </div>
     {% endif %}
-    <div class="edit-section"> 
+    <div class="edit-section">
         <div id="response-window-yn" class="column-full ">
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="form-label">Publication date
                     <span class="form-hint">
                         When do you want this submission to appear on the public file?
@@ -46,5 +46,5 @@
                 <input type="number" class="form-control" name="{{name_prefix}}time_window" id="time-window" value="{{object.time_window}}"/>
             </div>
         </div>
-    </div> 
-</div>       
+    </div>
+</div>

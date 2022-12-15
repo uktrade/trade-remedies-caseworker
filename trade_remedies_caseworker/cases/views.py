@@ -269,11 +269,7 @@ class CaseBaseView(
         confidential.sort(key=lambda cf: cf.get("name"))
         non_conf = document_conf_index.get("", [])
         doc_index = key_by(confidential, "id")
-        try:
-            non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
-        except TypeError:
-            # sentry bug
-            pass
+        non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
         return {
             "caseworker": submission_documents.get("caseworker", []),
             "respondent": submission_documents.get("respondent", []),

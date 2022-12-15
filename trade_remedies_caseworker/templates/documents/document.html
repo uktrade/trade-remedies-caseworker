@@ -2,18 +2,18 @@
 
 {% block main_content %}
 
-<form
-  action="/document/{% if document_id %}{{document_id}}/{% else %}create/{% endif %}"
-  method="POST" enctype="multipart/form-data" class="dd-form">
-{% csrf_token %}
-<label>Name</label>
-<input type="text" name="name" value="{{document.name}}"/>
-<BR>
-<label>File</label>
-<input type="file" name="file"/>
-<BR>
-<button type="submit">Submit</button>
+    <form
+        action="/document/{% if document_id %}{{document_id}}/{% else %}create/{% endif %}"
+        method="POST" enctype="multipart/form-data" class="dd-form">
+        {% csrf_token %}
+        <label>Name</label>
+        <input type="text" name="name" value="{{document.name}}"/>
+        <BR>
+        <label>File</label>
+        <input type="file" name="file"/>
+        <BR>
+        <button type="submit">Submit</button>
 
 
-</form>
+    </form>
 {% endblock %}

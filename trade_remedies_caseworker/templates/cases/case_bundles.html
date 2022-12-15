@@ -6,61 +6,61 @@
 {% load to_json %}
 
 {% block case_page_content %}
-{% if error %}
-    <span class="error-message">{{error}}</span>
-{% endif %}
+    {% if error %}
+        <span class="error-message">{{error}}</span>
+    {% endif %}
 
-<h3 class="heading-large">Case documents</h3>
+    <h3 class="heading-large">Case documents</h3>
 
-<!--<textarea>
+    <!--<textarea>
 {{out|to_json}}
 </textarea> -->
-<div>
-<a class="link right-of-tabs bold" href="/case/{{case.id}}/bundle/create/" >&#xFF0B;&nbsp;Add new</a>
-{% include "widgets/tabs.html" with q=tabs %}
-</div>
+    <div>
+        <a class="link right-of-tabs bold" href="/case/{{case.id}}/bundle/create/" >&#xFF0B;&nbsp;Add new</a>
+        {% include "widgets/tabs.html" with q=tabs %}
+    </div>
 
-<table class="filelist sortable" data-attach="TableSort">
-<thead>
-  <tr>
-    {% table_heading 'Submission type' 'bundle.submission_type_id' sort tabs.value dir %}
-    {% table_heading 'Version' 'bundle.version' sort tabs.value dir %}
-    {% if status == 'live' %}
-        {% table_heading 'Finalised' 'bundle.finalised_at' sort tabs.value dir %}
-        {% table_heading 'Previous versions' 'bundle.versions' sort tabs.value dir %}
-    {% else %}
-        {% table_heading 'Created' 'bundle.created_at' sort tabs.value dir %}
-    {% endif %}
-  </tr>
-</thead>
-<tbody>
+    <table class="filelist sortable" data-attach="TableSort">
+        <thead>
+            <tr>
+                {% table_heading 'Submission type' 'bundle.submission_type_id' sort tabs.value dir %}
+                {% table_heading 'Version' 'bundle.version' sort tabs.value dir %}
+                {% if status == 'live' %}
+                    {% table_heading 'Finalised' 'bundle.finalised_at' sort tabs.value dir %}
+                    {% table_heading 'Previous versions' 'bundle.versions' sort tabs.value dir %}
+                {% else %}
+                    {% table_heading 'Created' 'bundle.created_at' sort tabs.value dir %}
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
 
-{% for bundle in bundles %}
-    <tr>
-        <td class="nobreak">
-            <a class="link" href="/case/{{case.id}}/bundle/{{bundle.id}}/">{{bundle.submission_type.name}}</a>
-        </td>
-            <td class="nobreak">
-                {{ bundle.version }}
-            </td>
-            {% if status == 'live' %}       
-                <td class="nobreak" sortVal="{% format_date bundle.finalised_at '%Y-%m-%dT%H:%M:%S' %}">
-                    {{ bundle.finalised_at|format_date:'%d %b %Y at %H:%M' }} by {{ bundle.finalised_by.name }}
-                </td>
-                <td>
-                    {% for version in bundle.versions %}
-                        <a class="link" href="/case/{{case.id}}/bundle/{{version.id}}/">{{version.version}}</a>{% if not forloop.last %},&nbsp;{% endif %}
-                    {% endfor %}                
-                </td>
-            {% else %}
-                <td class="nobreak" sortVal="{% format_date bundle.created_at '%Y-%m-%dT%H:%M:%S' %}">
-                    {{ bundle.created_at|format_date:'%d %b %Y at %H:%M' }} by {{ bundle.created_by.name }}
-                </td>              
-            {% endif %}
-    </tr>
-{% endfor %}
-</tbody>
-</table>
+            {% for bundle in bundles %}
+                <tr>
+                    <td class="nobreak">
+                        <a class="link" href="/case/{{case.id}}/bundle/{{bundle.id}}/">{{bundle.submission_type.name}}</a>
+                    </td>
+                    <td class="nobreak">
+                        {{ bundle.version }}
+                    </td>
+                    {% if status == 'live' %}
+                        <td class="nobreak" sortVal="{% format_date bundle.finalised_at '%Y-%m-%dT%H:%M:%S' %}">
+                            {{ bundle.finalised_at|format_date:'%d %b %Y at %H:%M' }} by {{ bundle.finalised_by.name }}
+                        </td>
+                        <td>
+                            {% for version in bundle.versions %}
+                                <a class="link" href="/case/{{case.id}}/bundle/{{version.id}}/">{{version.version}}</a>{% if not forloop.last %},&nbsp;{% endif %}
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td class="nobreak" sortVal="{% format_date bundle.created_at '%Y-%m-%dT%H:%M:%S' %}">
+                            {{ bundle.created_at|format_date:'%d %b %Y at %H:%M' }} by {{ bundle.created_by.name }}
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 
 
