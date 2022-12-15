@@ -46,6 +46,7 @@ back_button
 Invite
 to:</p
 f'/case/{self.kwargs["case_id"]}/
+dashboard</a>
 A2
 24 Nov 2022
 verbose_rating_name
