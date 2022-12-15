@@ -196,10 +196,15 @@ class OrganisationVerificationVerifyLetterOfAuthority(
 
     def update_authorised_contact(self, contact_id):
         """Updates the authorised_contact of the inviting OrgCaseRole object"""
-        org_case_role = self.client.organisation_case_roles(organisation_id=self.invitation.organisation.id, case_id=self.invitation.case.id)[0]
-        org_case_role.update({
-            "auth_contact": contact_id
-        }, fields=["auth_contact",])
+        org_case_role = self.client.organisation_case_roles(
+            organisation_id=self.invitation.organisation.id, case_id=self.invitation.case.id
+        )[0]
+        org_case_role.update(
+            {"auth_contact": contact_id},
+            fields=[
+                "auth_contact",
+            ],
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
