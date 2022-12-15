@@ -18,7 +18,6 @@ from core.constants import (
     CASE_ROLE_AWAITING_APPROVAL,
     CASE_ROLE_PREPARING,
     CASE_ROLE_REJECTED,
-    SECURITY_GROUP_ORGANISATION_OWNER,
 )
 from core.utils import (
     collect_request_fields,
