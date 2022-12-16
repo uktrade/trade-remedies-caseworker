@@ -58,8 +58,8 @@
                         {% endif %}
                         {% if create_new_contact %}
                             {# we know the caseworker wants to create a new contact #}
-                            {% include 'v2/component_macros/text_input.html' with value=invitation.submission.primary_contact.name label="Name" id="name" name="name" type="text" width="20" %}
-                            {% include 'v2/component_macros/text_input.html' with value=invitation.submission.primary_contact.email label="Email address" id="email" name="email" type="email" width="20" %}
+                            {% include 'v2/component_macros/text_input.html' with value=invitation.authorised_signatory.name label="Name" id="name" name="name" type="text" width="20" %}
+                            {% include 'v2/component_macros/text_input.html' with value=invitation.authorised_signatory.email label="Email address" id="email" name="email" type="email" width="20" %}
                         {% else %}
                             <div class="govuk-radios" data-module="govuk-radios">
                                 {% for inviting_contact in invitation.organisation.contacts %}
@@ -68,7 +68,7 @@
                                             id="reginterest-auth-choose-contact-{{ forloop.counter }}"
                                             name="authorised_signatory" type="radio"
                                             value="{{ inviting_contact.id }}"
-                                            {% if invitation.submission.primary_contact.id == inviting_contact.id %}checked{% endif %}
+                                            {% if invitation.authorised_signatory.id == inviting_contact.id %}checked{% endif %}
                                         >
                                         <label class="govuk-label govuk-radios__label"
                                             for="reginterest-auth-choose-contact-{{ forloop.counter }}">

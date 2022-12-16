@@ -24,6 +24,15 @@
     {% if contact.loa %}
         <i class="icon icon-quillscroll pull-right"></i>
     {% endif %}
+
+    {% if not contact.loa and contact.id in contact_to_invitation %}
+        {% with invitation=contact_to_invitation|get_item:contact.id %}
+            {% if contact.id == invitation.authorised_signatory.id %}
+                <i class="icon icon-quillscroll pull-right"></i>
+            {% endif %}
+        {% endwith %}
+    {% endif %}
+
     {% if icon_class %}
         <i class="icon {{ icon_class }} pull-left margin-right-5px"></i>
     {% endif %}
@@ -54,10 +63,11 @@
         {% if not hide_controls %}
             {% if contact.id in contact_to_invitation %}
                 {# an invitation has been sent to this contact #}
-                {% with invitations=contact_to_invitation|get_item:contact.id %}
-                    {% if invitations.0.submission.status.received %}
+                {% with invitation=contact_to_invitation|get_item:contact.id %}
+                    {% if invitation.accepted_at and not invitation.approved_at and not invitation.rejected_at %}
                         {# this invitation has been accepted and is ready for review by caseworkers #}
-                        <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invitations.0.id %}">Review invite</a>
+                        <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invitation.id %}">Review
+                            invite</a>
                     {% endif %}
                 {% endwith %}
             {% endif %}

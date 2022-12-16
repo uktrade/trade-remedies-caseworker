@@ -2,7 +2,6 @@ import itertools
 import json
 import logging
 import re
-from collections import defaultdict
 
 import v2_api_client.client
 from django.conf import settings
@@ -1790,15 +1789,25 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             v2_client = TRSAPIClient(token=self.request.user.token)
             all_case_invitations = v2_client.invitations(
                 case_id=case_id,
-                #  we only want to show invitations they have not already been approved or declined
+                #  we only want to show invitations that have been accepted and
+                #  not already been approved or declined
                 approved_at__isnull=True,
                 rejected_at__isnull=True,
-                fields=["contact", "submission"],
+                organisation_id=organisation_id,
+                accepted_at__isnull=False,
+                fields=[
+                    "id",
+                    "approved_at",
+                    "rejected_at",
+                    "accepted_at",
+                    "contact",
+                    "authorised_signatory",
+                ],
             )
-            contact_to_invitation = defaultdict(list)
+            contact_to_invitation = {}
             for invitation in all_case_invitations:
                 if invitation.contact:
-                    contact_to_invitation[invitation.contact.id].append(invitation)
+                    contact_to_invitation[invitation.contact.id] = invitation
 
             contacts = client.get_organisation_contacts(org_id, case_id)
             for contact in contacts:
