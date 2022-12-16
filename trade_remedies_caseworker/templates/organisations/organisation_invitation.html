@@ -174,7 +174,7 @@
                         $('#selected_company').text(`
                             ${company_data.name}
                             ${company_data.companies_house_id ? ("(" + company_data.companies_house_id + ")") : ""}
-                            ${company_data.address}
+                            ${company_data.address.replace(", " + company_data.post_code, "") + ","}
                             ${company_data.post_code}
                         `)
                         return true

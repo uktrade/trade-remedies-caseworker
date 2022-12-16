@@ -170,7 +170,7 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
     def form_valid(self, form):
         # Create new organisation
         organisation = self.client.organisations(
-            {"name": form.cleaned_data["organisation_name"]}, fields=["id"]
+            {"name": form.cleaned_data["organisation_name"], "draft": True}, fields=["id"]
         )
         self.kwargs["organisation_id"] = organisation.id
 
