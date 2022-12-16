@@ -36,14 +36,14 @@
                     <strong>{{ last_rejection.rejected_by.name }}</strong><br>
                 {% endif %}
             {% endif %}
-            `        </div>
+        </div>
         <div class="address-card">
             <div class="address-container">
                 <h3 class="govuk-heading-m"><a href="/organisations/{{ invited_organisation.id }}"
-                    class="govuk-link--no-visited-state">{{ invited_organisation.name }}</a>
+                                               class="govuk-link--no-visited-state">{{ invited_organisation.name }}</a>
                     <p class="right-aligned-link govuk-heading-s">
                         <a href="{% url 'organisations:v2_edit_organisation' organisation_id=invited_organisation.id %}?redirect={{ request.path }}"
-                            class="govuk-link--no-visited-state">Edit</a>
+                           class="govuk-link--no-visited-state">Edit</a>
                     </p>
                 </h3>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-1">
@@ -81,11 +81,11 @@
                         <dd class="govuk-summary-list__value">{{ invited_organisation.companies_house_id|default_if_none:"" }}
                             {% if invited_organisation.does_name_match_companies_house %}
                                 <img
-                                    src="{% static 'v2/assets/images/checkmark.png' %}"
-                                    class="verified-tick"
-                                    alt="Valid Companies House registration number"
-                                    title="Valid Companies House registration number"
-                                    width="20px">
+                                        src="{% static 'v2/assets/images/checkmark.png' %}"
+                                        class="verified-tick"
+                                        alt="Valid Companies House registration number"
+                                        title="Valid Companies House registration number"
+                                        width="20px">
                                 <span class="govuk-body-s">Valid</span>
                             {% endif %}
                         </dd>
@@ -93,7 +93,8 @@
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Web address:</dt>
                         <dd class="govuk-summary-list__value">
-                            <a{% if invited_organisation.organisation_website %} href="{{ invited_organisation.a_tag_website_url }}"{% endif %}
+                            <a{% if invited_organisation.organisation_website %}
+                                href="{{ invited_organisation.a_tag_website_url }}"{% endif %}
                                 target="_blank">{{ invited_organisation.organisation_website|default_if_none:"" }}</a>
                         </dd>
                     </div>
@@ -124,15 +125,15 @@
                                     {% for org_case_role in invited_approved_organisation_case_roles %}
                                         <li>
                                             <a href=""
-                                                class="govuk-link--no-visited-state">{{ org_case_role.case.reference }}
+                                               class="govuk-link--no-visited-state">{{ org_case_role.case.reference }}
                                                 - {{ org_case_role.case.name }}</a>
                                             ({{ org_case_role.role_name }})
                                             {% if org_case_role.validated_at %}
                                                 <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
-                                                    class="verified-check"
-                                                    alt="Verified on case"
-                                                    title="Verified on case"
-                                                    width="32px">
+                                                     class="verified-check"
+                                                     alt="Verified on case"
+                                                     title="Verified on case"
+                                                     width="32px">
                                                 <span class="govuk-body-s">{{ org_case_role.validated_at|date:'d M y' }}</span>
                                             {% endif %}
                                         </li>
@@ -162,12 +163,12 @@
                                         {% if representation.validated %}
                                             <li>
                                                 <a href="{% url 'cases:view_case' case_id=representation.case.id %}"
-                                                    class="govuk-link--no-visited-state">{{ representation.case.reference }}
+                                                   class="govuk-link--no-visited-state">{{ representation.case.reference }}
                                                     - {{ representation.case.name }}</a>
                                                 ({{ representation.role }})
                                                 <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
-                                                    class="verified-check" alt="Verified on case"
-                                                    title="Verified on case" width="32px">
+                                                     class="verified-check" alt="Verified on case"
+                                                     title="Verified on case" width="32px">
                                                 <span class="govuk-body-s">{{ representation.validated_at|date:'d M y' }}</span>
                                             </li>
                                         {% endif %}
@@ -191,12 +192,12 @@
                                     {% for rejection in rejected_cases %}
                                         <li>
                                             <a href="{% url 'cases:view_case' case_id=rejection.case.id %}"
-                                                class="govuk-link--no-visited-state">{{ rejection.case.reference }}
+                                               class="govuk-link--no-visited-state">{{ rejection.case.reference }}
                                                 - {{ rejection.case.name }}</a>
                                             <img src="{% static 'v2/assets/images/red-x.png' %}"
-                                                class="x-cross"
-                                                alt="Rejected from case"
-                                                title="Rejected from case" width="32px">
+                                                 class="x-cross"
+                                                 alt="Rejected from case"
+                                                 title="Rejected from case" width="32px">
                                             <span class="govuk-body-s">{{ rejection.date_rejected|date:'d M y' }}</span>
                                         </li>
                                     {% endfor %}
@@ -217,8 +218,8 @@
                                 <ul class="govuk-list">
                                     {% for organisation_user in invited_organisation.organisationuser_set %}
                                         <li><a href="/users/cusomter/{{ organisation_user.user.id }}"
-                                            data-url="/users/cusomter/{{ organisation_user.user.id }}/" }=""
-                                            class="govuk-link--no-visited-state modal-form">{{ organisation_user.user.name }}</a>
+                                               data-url="/users/cusomter/{{ organisation_user.user.id }}/" }=""
+                                               class="govuk-link--no-visited-state modal-form">{{ organisation_user.user.name }}</a>
                                             -
                                             {{ organisation_user.user.email }}
                                         </li>

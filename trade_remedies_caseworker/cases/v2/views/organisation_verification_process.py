@@ -147,7 +147,7 @@ class OrganisationVerificationVerifyRepresentative(
         return context
 
     def form_valid(self, form):
-        if form.cleaned_data["been_able_to_verify_representative"] == "yes":
+        if form.cleaned_data["been_able_to_verify_representative"] == "True":
             self.client.submissions(self.invitation.submission.id).update(
                 {
                     "deficiency_notice_params": json.dumps(
