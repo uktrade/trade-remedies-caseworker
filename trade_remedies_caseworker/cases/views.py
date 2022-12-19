@@ -1808,7 +1808,9 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             contact_to_invitation = {}
             for invitation in all_case_invitations:
                 if invitation.authorised_signatory:
-                    authorised_contact_to_invitation[invitation.authorised_signatory.id] = invitation
+                    authorised_contact_to_invitation[
+                        invitation.authorised_signatory.id
+                    ] = invitation
                 if invitation.contact:
                     contact_to_invitation[invitation.contact.id] = invitation
 
