@@ -283,12 +283,17 @@ class OrganisationVerificationExplainUnverifiedRepresentativeView(
 
 class OrganisationVerificationConfirmView(BaseOrganisationVerificationView):
     template_name = "v2/organisation_verification/confirm.html"
-    invitation_fields = ["contact", "submission", "organisation_name", "created_by"]
+    invitation_fields = [
+        "contact",
+        "submission",
+        "organisation_name",
+        "created_by",
+        "authorised_signatory",
+    ]
 
     def post(self, request, *args, **kwargs):
         # the caseworker is approving this invite
         self.invitation.process_representative_invitation(approved=True)
-        # self.client.submissions(self.invitation.submission.id).update_submission_status("review_ok")
         return redirect(
             reverse(
                 "verify_organisation_verify_approved", kwargs={"invitation_id": self.invitation.id}
