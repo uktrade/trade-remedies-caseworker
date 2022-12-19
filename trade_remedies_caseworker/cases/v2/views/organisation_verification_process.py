@@ -245,7 +245,7 @@ class OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact(
             contact.change_organisation(self.invitation.organisation_id)
 
         # assigning them to the case
-        contact.add_to_case(case_id=self.invitation.case.id, primary=True)
+        contact.add_to_case(case_id=self.invitation.case.id, primary=False)
 
         self.invitation.update({"authorised_signatory": contact.id})
 

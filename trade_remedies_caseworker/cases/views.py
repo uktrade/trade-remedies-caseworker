@@ -1804,8 +1804,11 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     "authorised_signatory",
                 ],
             )
+            authorised_contact_to_invitation = {}
             contact_to_invitation = {}
             for invitation in all_case_invitations:
+                if invitation.authorised_signatory:
+                    authorised_contact_to_invitation[invitation.authorised_signatory.id] = invitation
                 if invitation.contact:
                     contact_to_invitation[invitation.contact.id] = invitation
 
@@ -1835,6 +1838,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 "third_party_contacts": third_party_contacts,
                 "case_role_id": request.GET.get("caserole"),
                 "contact_to_invitation": contact_to_invitation,
+                "authorised_contact_to_invitation": authorised_contact_to_invitation,
             }
         elif item == "submissions":
             result["submissions"] = idx_submissions.get(org_id, [])

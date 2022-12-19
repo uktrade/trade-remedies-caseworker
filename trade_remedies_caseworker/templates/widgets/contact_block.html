@@ -25,14 +25,6 @@
         <i class="icon icon-quillscroll pull-right"></i>
     {% endif %}
 
-    {% if not contact.loa and contact.id in contact_to_invitation %}
-        {% with invitation=contact_to_invitation|get_item:contact.id %}
-            {% if contact.id == invitation.authorised_signatory.id %}
-                <i class="icon icon-quillscroll pull-right"></i>
-            {% endif %}
-        {% endwith %}
-    {% endif %}
-
     {% if icon_class %}
         <i class="icon {{ icon_class }} pull-left margin-right-5px"></i>
     {% endif %}
@@ -40,6 +32,15 @@
     <div class="bold margin-bottom-1">
         {{ contact.name }}
     </div>
+
+    {% if not contact.loa and contact.id in authorised_contact_to_invitation %}
+        {% with invitation=authorised_contact_to_invitation|get_item:contact.id %}
+            {% if contact.id == invitation.authorised_signatory.id %}
+                <i class="icon icon-quillscroll pull-right"></i>
+            {% endif %}
+        {% endwith %}
+    {% endif %}
+
     <div>
         {% if contact.organisation.id != organisation.id %}
             <div>{{ contact.organisation.name }}</div>
