@@ -113,7 +113,7 @@
                     $.ajax
                     ({
                         type: "GET",
-                        url: `{% url 'organisationnamesearch' %}?term=${query}`,
+                        url: `{% url 'organisationnamesearch' %}?term=${query}&case_id={{case_id}}`,
                         success: function (data) {
                             if (data) {
                                 // remove nulls and convert back to JS object
