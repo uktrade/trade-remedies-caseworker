@@ -107,8 +107,8 @@
         {% endfor %}
     </div>
 
-    {% if invites %}
-        {% include "cases/sent_invites.html" with invites=invites %}
+    {% if caseworker_invitations %}
+        {% include "cases/sent_invites.html" with caseworker_invitations=caseworker_invitations %}
     {% endif %}
 
 {% endblock %}
