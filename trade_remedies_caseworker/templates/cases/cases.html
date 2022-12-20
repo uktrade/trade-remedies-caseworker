@@ -47,7 +47,7 @@
                     {% if user.is_admin %}
                         {% get_feature_flag "ORGANISATION_ADMIN" as FEATURE_ORGANISATION_ADMIN %}
                         <li><a href="/users/">Manage users</a></li>
-                        <li><a href="/settings/feedback/">View customer feedback</a></li>
+                        <li><a href="{% url 'view_all_feedback' %}">View customer feedback</a></li>
                     {% endif %}
                     <li><a href="/document/bundles/">Manage application templates</a></li>
                     {% if user.is_admin %}

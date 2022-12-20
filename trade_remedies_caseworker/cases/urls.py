@@ -9,7 +9,7 @@ urlpatterns = [
     path("notice/<uuid:notice_id>/", case_views.NoticeView.as_view(), name="notice"),
     path("create/", case_views.CaseFormView.as_view(), name="cases"),
     path("<uuid:case_id>/edit/", case_views.CaseFormView.as_view(), name="cases"),
-    path("<uuid:case_id>/", case_views.CaseView.as_view(), name="cases"),
+    path("<uuid:case_id>/", case_views.CaseView.as_view(), name="view_case"),
     path("<uuid:case_id>/admin/", case_views.CaseAdminView.as_view(), name="case_admin"),
     path(
         "<uuid:case_id>/milestones/",

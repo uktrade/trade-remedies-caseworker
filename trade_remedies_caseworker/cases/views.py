@@ -2,64 +2,68 @@ import itertools
 import json
 import logging
 import re
-from django.views.generic import TemplateView
-from django.http import HttpResponse
-from django.views import View
+from collections import defaultdict
+
+import v2_api_client.client
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
-from core.base import GroupRequiredMixin
-from core.utils import (
-    deep_index_items_by,
-    deep_index_items_by_exists,
-    get,
-    key_by,
-    index_users_by_group,
-    compact_list,
-    submission_contact,
-    public_login_url,
-    parse_notify_template,
-    parse_api_datetime,
-    pluck,
-    to_json,
-    from_json,
-    deep_update,
-    internal_redirect,
-    is_date,
-    notify_footer,
-    notify_contact_email,
-)
 from django_countries import countries
-from django.conf import settings
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from v2_api_client.client import TRSAPIClient
+
 from cases.submissions import SUBMISSION_TYPE_HELPERS, get_submission_deadline
 from cases.utils import decorate_orgs
+from core.base import GroupRequiredMixin
 from core.constants import (
     ALL_REGION_ALLOWED_TYPE_IDS,
+    CASE_ROLE_APPLICANT,
+    CASE_ROLE_AWAITING_APPROVAL,
+    CASE_ROLE_PREPARING,
+    CASE_ROLE_REJECTED,
+    DIRECTION_TRA_TO_PUBLIC,
+    SECURITY_GROUPS_TRA,
+    SECURITY_GROUPS_TRA_ADMINS,
+    SECURITY_GROUPS_TRA_TOP_ADMINS,
+    SECURITY_GROUP_ORGANISATION_OWNER,
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUP_TRA_HEAD_OF_INVESTIGATION,
     SECURITY_GROUP_TRA_LEAD_INVESTIGATOR,
-    SECURITY_GROUPS_TRA,
-    SECURITY_GROUP_TRA_ADMINISTRATOR,
-    SECURITY_GROUPS_TRA_ADMINS,
-    SECURITY_GROUP_ORGANISATION_OWNER,
-    SECURITY_GROUPS_TRA_TOP_ADMINS,
-    SUBMISSION_TYPE_QUESTIONNAIRE,
-    SUBMISSION_TYPE_APPLICATION,
-    SUBMISSION_NOTICE_TYPE_INVITE,
     SUBMISSION_NOTICE_TYPE_DEFICIENCY,
+    SUBMISSION_NOTICE_TYPE_INVITE,
+    SUBMISSION_TYPE_APPLICATION,
+    SUBMISSION_TYPE_QUESTIONNAIRE,
     SUBMISSION_TYPE_THIRD_PARTY,
-    CASE_ROLE_AWAITING_APPROVAL,
-    CASE_ROLE_REJECTED,
-    CASE_ROLE_APPLICANT,
-    CASE_ROLE_PREPARING,
-    DIRECTION_TRA_TO_PUBLIC,
 )
-
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trade_remedies_client.exceptions import APIException
+from core.utils import (
+    compact_list,
+    deep_index_items_by,
+    deep_index_items_by_exists,
+    deep_update,
+    from_json,
+    get,
+    index_users_by_group,
+    internal_redirect,
+    is_date,
+    key_by,
+    notify_contact_email,
+    notify_footer,
+    parse_api_datetime,
+    parse_notify_template,
+    pluck,
+    public_login_url,
+    submission_contact,
+    to_json,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -269,7 +273,11 @@ class CaseBaseView(
         confidential.sort(key=lambda cf: cf.get("name"))
         non_conf = document_conf_index.get("", [])
         doc_index = key_by(confidential, "id")
-        non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
+        try:
+            non_conf.sort(key=lambda nc: get(get(doc_index, str(nc.get("parent_id"))), "name"))
+        except TypeError:
+            # sentry bug
+            pass
         return {
             "caseworker": submission_documents.get("caseworker", []),
             "respondent": submission_documents.get("respondent", []),
@@ -435,7 +443,11 @@ class PartiesView(CaseBaseView):
             if submission := invite.get("submission"):
                 if submission.get("name") == "Invite 3rd party":
                     # It's a 3rd party invite, so use the organisation of the contact of the invite
-                    if invite["contact"]:
+                    if (
+                        invite.get("contact")
+                        and invite.get("organisation")
+                        and invite["contact"]["organisation"].get("id")
+                    ):
                         org_id = invite["contact"]["organisation"]["id"]
                     else:
                         continue
@@ -453,7 +465,23 @@ class PartiesView(CaseBaseView):
                 _base["add_link"] = "Invite party to case"
             parties.append(_base)
 
+        v2_client = v2_api_client.client.TRSAPIClient(token=self.request.user.token, timeout=30)
+        caseworker_invitations = v2_client.invitations(
+            invitation_type=3,
+            case_id=self.case_id,
+            fields=[
+                "created_at",
+                "created_by",
+                "organisation",
+                "contact",
+            ],
+        )
+        caseworker_invitations = sorted(
+            caseworker_invitations, key=lambda x: x.created_at, reverse=True
+        )
+
         return {
+            "caseworker_invitations": caseworker_invitations,
             "party_types": parties,
             "invites": case_invites,
             "accepted_orgs": list(accepted),
@@ -941,12 +969,19 @@ class SubmissionView(CaseBaseView):
                     )
                 return_data.update(
                     {
-                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/?alert={btn_value}"  # noqa: E301, E501
+                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/"
+                        f"?alert={btn_value}"
+                        # noqa: E301, E501
                     }
                 )
 
-            if btn_value == "sufficient":
-                # Set the submission to sufficient
+            if (
+                btn_value
+                == "sufficient"
+                # and not submission["type"]["id"] == SUBMISSION_TYPE_THIRD_PARTY
+            ):
+                # Set the submission to sufficient, but only if it is not a 3rd Party Invite as
+                # that is handled elsewhere now
                 result = self._client.set_submission_state(case_id, submission_id, btn_value)
                 return_data.update({"alert": "Submission approved"})
                 submission_type = submission["type"]
@@ -1752,6 +1787,19 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         org_id = str(organisation_id)
         third_party_contacts = []
         if item == "contacts":
+            v2_client = TRSAPIClient(token=self.request.user.token)
+            all_case_invitations = v2_client.invitations(
+                case_id=case_id,
+                #  we only want to show invitations they have not already been approved or declined
+                approved_at__isnull=True,
+                rejected_at__isnull=True,
+                fields=["contact", "submission"],
+            )
+            contact_to_invitation = defaultdict(list)
+            for invitation in all_case_invitations:
+                if invitation.contact:
+                    contact_to_invitation[invitation.contact.id].append(invitation)
+
             contacts = client.get_organisation_contacts(org_id, case_id)
             for contact in contacts:
                 case = get(contact, "cases/" + str(case_id)) or {}
@@ -1777,6 +1825,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 "invites": deep_index_items_by(all_case_invites, "contact/id"),
                 "third_party_contacts": third_party_contacts,
                 "case_role_id": request.GET.get("caserole"),
+                "contact_to_invitation": contact_to_invitation,
             }
         elif item == "submissions":
             result["submissions"] = idx_submissions.get(org_id, [])
@@ -1819,13 +1868,21 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     # Not a third party submission
                     continue
                 inviting_organisation = full_submission[0]["organisation"]["id"]
-                if inviting_organisation == organisation_id:
-                    submission_sufficient = full_submission[0]["status"]["sufficient"]
-                    invite["contact"]["is_third_party"] = True
-                    invite["contact"]["submission_id"] = submission_id
-                    invite["contact"]["submission_sufficient"] = submission_sufficient
-                    invite["contact"]["invited"] = invite["email_sent"]
-                    third_party_contacts.append(invite["contact"])
+
+                # we don't want invitations which have been sent but not accepted, or those that
+                # have been rejected
+                if (
+                    invite["accepted_at"]
+                    and not invite["rejected_by"]
+                    and not invite["approved_by"]
+                ):
+                    if inviting_organisation == organisation_id:
+                        submission_sufficient = full_submission[0]["status"]["sufficient"]
+                        invite["contact"]["is_third_party"] = True
+                        invite["contact"]["submission_id"] = submission_id
+                        invite["contact"]["submission_sufficient"] = submission_sufficient
+                        invite["contact"]["invited"] = invite["email_sent"]
+                        third_party_contacts.append(invite["contact"])
         return third_party_contacts
 
 

@@ -20,16 +20,15 @@
         <tbody class="govuk-table__body">
 
             <tbody>
-                {% for key, invite in invites.items %}
+                {% for invitation in caseworker_invitations %}
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">{% format_date invite.0.created_at '%d %b %Y %H:%M:%S' %}</td>
-                        <td class="govuk-table__cell">{{ invite.0.created_by.name }}</td>
-                        <td class="govuk-table__cell">{{ invite.0.organisation.name }}</td>
-                        <td class="govuk-table__cell">{{ invite.0.contact.name }}</td>
-                        <td class="govuk-table__cell">{{ invite.0.contact.email }}</td>
+                        <td class="govuk-table__cell">{{ invitation.created_at|date:'d M y \a\t h:i A' }}</td>
+                        <td class="govuk-table__cell">{{ invitation.created_by.name }}</td>
+                        <td class="govuk-table__cell">{{ invitation.organisation.name }}</td>
+                        <td class="govuk-table__cell">{{ invitation.contact.name }}</td>
+                        <td class="govuk-table__cell">{{ invitation.contact.email }}</td>
                     </tr>
                 {% endfor %}
-
             </tbody>
         </table>
     </div>

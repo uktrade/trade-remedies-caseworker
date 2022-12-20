@@ -11,13 +11,12 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import json
-import sys
 import os
+import sys
+
 import environ
-
-from django_log_formatter_ecs import ECSFormatter
-
 import sentry_sdk
+from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # We use django-environ but do not read a `.env` file. Locally we feed
@@ -132,7 +131,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -142,7 +140,6 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -359,3 +356,10 @@ ENVIRONMENT_LOGGING = {
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 GOOGLE_ANALYTICS_TAG_MANAGER_ID = env("GOOGLE_ANALYTICS_TAG_MANAGER_ID", default="")
+
+FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+
+COUNTRIES_FIRST = ["GB"]
+COUNTRIES_FIRST_BREAK = "------"
+
+GDS_DATETIME_STRING = "%d %b %Y at %-I:%M%p"

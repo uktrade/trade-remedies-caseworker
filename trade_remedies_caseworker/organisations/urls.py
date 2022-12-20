@@ -1,6 +1,5 @@
 from django.urls import path
-
-from organisations.v2.views import caseworker_invite
+from organisations.v2.views import edit_organisation, caseworker_invite
 from organisations.views import (
     ContactDeleteView,
     ContactFormView,
@@ -23,7 +22,7 @@ from organisations.views import (
 app_name = "organisations"
 urlpatterns = [
     path("", OrganisationsView.as_view(), name="organisations"),
-    path("<uuid:organisation_id>/", OrganisationView.as_view(), name="edit_organisation"),
+    path("<uuid:organisation_id>/", OrganisationView.as_view(), name="v1_view_organisation"),
     path(
         "case/<uuid:case_id>/create/<str:organisation_type>/",
         OrganisationFormView.as_view(),
@@ -111,6 +110,43 @@ urlpatterns = [
     ),
     path("dedupe/", OrganisationDedupeView.as_view(), name="dedupe"),
     path("match/", OrganisationMatchView.as_view(), name="match"),
+]
+
+# caseworker invite URLS
+urlpatterns += [
+    path(
+        "case/<uuid:case_id>/invite/invite-party/",
+        caseworker_invite.OrganisationInviteView.as_view(),
+        name="invite-party",
+    ),
+    path(
+        "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-contacts-choice",
+        caseworker_invite.OrganisationInviteContactsView.as_view(),
+        name="invite-party-contacts-choice",
+    ),
+    path(
+        "case/<uuid:case_id>/invite/invite-party-contact-new",
+        caseworker_invite.OrganisationInviteContactNewView.as_view(),
+        name="invite-party-contact-new",
+    ),
+    path(
+        "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-check",
+        caseworker_invite.OrganisationInviteReviewView.as_view(),
+        name="invite-party-check",
+    ),
+    path(
+        "case/<uuid:case_id>/invite/invite-party-complete",
+        caseworker_invite.OrganisationInviteCompleteView.as_view(),
+        name="invite-party-complete",
+    ),
+]
+
+urlpatterns += [
+    path(
+        "v2/edit/<uuid:organisation_id>/",
+        edit_organisation.EditOrganisationView.as_view(),
+        name="v2_edit_organisation",
+    ),
 ]
 
 # caseworker invite URLS

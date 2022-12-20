@@ -203,7 +203,7 @@ define(["modules/helpers", "modules/popUps", "modules/Events"], function (
     verifyContactOrganisation: function () {
       this.openPage(
         _.template(
-          "/case/<%=submission.case.id%>/organisation/<%=organisation.id%>/verify_organisation/?org_id=<%=submission.contact.user.organisation.organisation.id%>"
+          "/case/<%=submission.case.id%>/organisation/<%=organisation.id%>/verify_organisation/?org_id=<%=submission.contact.organisation.id%>"
         )
       );
     },

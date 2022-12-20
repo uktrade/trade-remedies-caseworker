@@ -30,8 +30,9 @@ botocore==1.20.112
     # via
     #   boto3
     #   s3transfer
-certifi==2021.10.8
+certifi==2022.12.7
     # via
+    #   -r requirements.in/base.in
     #   requests
     #   sentry-sdk
 cfgv==3.3.1
@@ -57,7 +58,7 @@ decorator==5.1.1
     #   traitlets
 distlib==0.3.4
     # via virtualenv
-django==3.2.15
+django==3.2.16
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -111,10 +112,14 @@ django-storages==1.11.1
     #   django-chunk-upload-handlers
 django-timezone-field==4.2.3
     # via -r requirements.in/base.in
+djhtml==1.5.2
+    # via -r requirements.in/dev.in
 dotwiz==0.4.0
     # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
+et-xmlfile==1.1.0
+    # via openpyxl
 execnet==1.9.0
     # via pytest-xdist
 filelock==3.6.0
@@ -143,8 +148,6 @@ jmespath==0.10.0
     # via
     #   boto3
     #   botocore
-joblib==1.1.0
-    # via scikit-learn
 kiwisolver==1.4.0
     # via matplotlib
 kubi-ecs-logger==0.1.0
@@ -166,10 +169,9 @@ mypy-extensions==0.4.3
 nodeenv==1.6.0
     # via pre-commit
 numpy==1.22.3
-    # via
-    #   matplotlib
-    #   scikit-learn
-    #   scipy
+    # via matplotlib
+openpyxl==3.0.10
+    # via -r requirements.in/base.in
 packaging==21.3
     # via
     #   matplotlib
@@ -190,7 +192,7 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pillow==9.0.1
+pillow==9.3.0
     # via matplotlib
 pip-tools==6.5.1
     # via -r requirements.in/dev.in
@@ -248,6 +250,7 @@ python-dateutil==2.8.2
     # via
     #   botocore
     #   matplotlib
+    #   v2-api-client
 pytz==2021.3
     # via
     #   -r requirements.in/base.in
@@ -268,10 +271,6 @@ requests==2.25.1
     #   v2-api-client
 s3transfer==0.4.2
     # via boto3
-scikit-learn==1.0.2
-    # via sklearn
-scipy==1.8.0
-    # via scikit-learn
 selenium==3.141.0
     # via -r requirements.in/dev.in
 sentry-sdk==0.13.1
@@ -284,16 +283,12 @@ six==1.16.0
     #   python-dateutil
     #   traitlets
     #   virtualenv
-sklearn==0.0
-    # via -r requirements.in/dev.in
 soupsieve==2.3.1
     # via beautifulsoup4
 sqlparse==0.4.2
     # via django
 tenacity==8.0.1
     # via api-client
-threadpoolctl==3.1.0
-    # via scikit-learn
 toml==0.10.2
     # via
     #   pre-commit
@@ -320,7 +315,7 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit

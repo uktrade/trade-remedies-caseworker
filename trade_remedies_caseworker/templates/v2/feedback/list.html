@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load format_date %}
+
+{% block heading %}
+    Feedback
+{% endblock %}
+
+{% block main_content %}
+    <div class="grid-row">
+        <div class="colum-full-nav">
+            <a href="/">Back to dashboard</a>
+            <a class="button no-debounce" style="float:right;" href="{% url 'export_feedback_objects' %}" role="button" download>Export</a>
+            <table class="table system-parameters">
+                <thead>
+                    <tr>
+                        <th>Date submitted</th>
+                        <th>Rating</th>
+                        <th>Journey</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feedback in feedbacks %}
+                        <tr>
+                            <td>
+                                {{ feedback.created_at|date:'d M Y - H:i' }}
+                            </td>
+                            <td>
+                                {{ feedback.verbose_rating_name }}
+                            </td>
+                            <td>
+                                {{ feedback.journey }}
+                            </td>
+                            <td>
+                                <a href="{% url 'view_single_feedback' feedback_id=feedback.id %}">View</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock main_content %}
