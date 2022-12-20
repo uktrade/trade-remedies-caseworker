@@ -22,7 +22,7 @@
                             sufficient before you can proceed with this step.</p>
                         <p class="govuk-warning-text__text-p govuk-!-margin-0">
                             <a class="govuk-button" data-module="govuk-button"
-                                href="/case/{{ invitation.case.id }}/submission/{{ invitation.submission.id }}/">
+                               href="/case/{{ invitation.case.id }}/submission/{{ invitation.submission.id }}/">
                                 Review submission
                             </a>
                         </p>
@@ -32,7 +32,7 @@
         {% endif %}
         <div class="govuk-inset-text govuk-inset-text__reginterest">
             <p><a href="{{ uploaded_loa_document.document.file }}"
-                class="govuk-link--no-visited-state" target="_blank">
+                  class="govuk-link--no-visited-state" target="_blank">
                 {% if uploaded_loa_document.document.extension == "pdf" or uploaded_loa_document.document.extension == "png" %}
                     View the Letter of Authority{% else %}Download the Letter of Authority
                 {% endif %}</a></p>
@@ -65,13 +65,13 @@
                                 {% for inviting_contact in invitation.organisation.contacts %}
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input"
-                                            id="reginterest-auth-choose-contact-{{ forloop.counter }}"
-                                            name="authorised_signatory" type="radio"
-                                            value="{{ inviting_contact.id }}"
-                                            {% if invitation.authorised_signatory.id == inviting_contact.id %}checked{% endif %}
+                                               id="reginterest-auth-choose-contact-{{ forloop.counter }}"
+                                               name="authorised_signatory" type="radio"
+                                               value="{{ inviting_contact.id }}"
+                                               {% if invitation.authorised_signatory.id == inviting_contact.id %}checked{% endif %}
                                         >
                                         <label class="govuk-label govuk-radios__label"
-                                            for="reginterest-auth-choose-contact-{{ forloop.counter }}">
+                                               for="reginterest-auth-choose-contact-{{ forloop.counter }}">
                                             {{ inviting_contact.name }} - {{ inviting_contact.email }}
                                         </label>
                                     </div>
@@ -79,10 +79,10 @@
                                 <div class="govuk-radios__divider">or</div>
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="reginterest-auth-choose-contact-3"
-                                        name="authorised_signatory" type="radio" value="new_contact"
+                                           name="authorised_signatory" type="radio" value="new_contact"
                                     >
                                     <label class="govuk-label govuk-radios__label"
-                                        for="reginterest-auth-choose-contact-3">
+                                           for="reginterest-auth-choose-contact-3">
                                         Add new contact
                                     </label>
                                 </div>
@@ -93,28 +93,34 @@
             {% endwith %}
             <div class="govuk-button-group">
                 <button class="govuk-button" data-module="govuk-button"
-                    {% if not uploaded_loa_document.sufficient %}disabled{% endif %}>
+                        {% if not uploaded_loa_document.sufficient %}disabled{% endif %}>
                     Continue
                 </button>
                 <a class="govuk-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">
-                    Cancel
+                    Back
                 </a>
             </div>
         </form>
     </div>
     <div class="govuk-grid-column-one-third">
-        <h2 class="govuk-heading-s ">Submission status:</h2>
-        <p class="govuk-body">
-
-            {% if uploaded_loa_document.sufficient %}
-                Sufficient
-            {% else %}
-                {% if uploaded_loa_document.deficient %}
-                    Deficient
-                {% elif not ploaded_loa_document.sufficient and not  uploaded_loa_document.deficient %}
-                    Not reviewed
-                {% endif %}
-            {% endif %}
-        </p>
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">Submission status</h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <strong class="bold">Letter of Authority:</strong><br>
+                        {% if uploaded_loa_document.sufficient %}
+                            Sufficient
+                        {% else %}
+                            {% if uploaded_loa_document.deficient %}
+                                Deficient
+                            {% elif not ploaded_loa_document.sufficient and not  uploaded_loa_document.deficient %}
+                                Not reviewed
+                            {% endif %}
+                        {% endif %}
+                    </li>
+                </ul>
+            </nav>
+        </aside>
     </div>
 {% endblock row_content %}
