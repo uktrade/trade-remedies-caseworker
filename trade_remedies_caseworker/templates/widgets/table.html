@@ -1,27 +1,27 @@
 <table>
-	{% if q.caption %}
-	<caption class="heading-medium">{{ q.caption }}</caption>
-	{% endif %}
-	<thead><tr>
-		{% for heading in q.headings %}
-				<th>{{ heading.title }}</th>
-		{% endfor %}
-	</tr></thead>
-	<tbody>
-		{% for row in q.body %}
-		<tr>
-			{% for field in row %}
-				<td>
-				{% if field.text %}
-					{% if field.link %}<a href="{{ field.link }}">{% endif %}
-					{{ field.text }}
-					{% if field.link %}</a>{% endif %}
-				{% else %}
-					{{ field }}
-				{% endif %}
-				</td>
-			{% endfor %}
-		</tr>
-		{% endfor %}
-	</tbody>
+    {% if q.caption %}
+        <caption class="heading-medium">{{ q.caption }}</caption>
+    {% endif %}
+    <thead><tr>
+        {% for heading in q.headings %}
+            <th>{{ heading.title }}</th>
+        {% endfor %}
+    </tr></thead>
+    <tbody>
+        {% for row in q.body %}
+            <tr>
+                {% for field in row %}
+                    <td>
+                        {% if field.text %}
+                            {% if field.link %}<a href="{{ field.link }}">{% endif %}
+                            {{ field.text }}
+                            {% if field.link %}</a>{% endif %}
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>

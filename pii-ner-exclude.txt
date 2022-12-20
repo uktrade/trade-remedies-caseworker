@@ -1,3 +1,11 @@
+height="30" width="36">
+7.7-.2
+BETA
+Privacy
+aria-hidden="true
+height="17
+width="41
+8.7 39.7 21.8l42.7-27.2A97.63
 form_errors.company_search_container
 confirmOnBlur
 false

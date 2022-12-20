@@ -5,10 +5,10 @@
 
 {% block case_page_content %}
 
-<h2 class="heading-medium">Draft submissions</h2>
+    <h2 class="heading-medium">Draft submissions</h2>
 
-<div id="submissions-page" data-attach="Tabset">		
-	{% set 'columns' 'created type name created_by status'|split %}
-	{% include "cases/submission_table_flex.html" with submissions=submission_groups.draft participant=participant columns=columns %}
-</div>
+    <div id="submissions-page" data-attach="Tabset">
+        {% set 'columns' 'created type name created_by status'|split %}
+        {% include "cases/submission_table_flex.html" with submissions=submission_groups.draft participant=participant columns=columns %}
+    </div>
 {% endblock %}

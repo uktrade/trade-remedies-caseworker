@@ -4,22 +4,22 @@ pass function_name, state and label
 {% endcomment %}
 
 {% if state != 'not-applicable' %}
-<li class="task-list-item edit-item">
-    {% if disabled %}
-        <span>{{label}}</span>
-    {% elif state == 'not-applicable' %}
-        <span class="strikethrough">{{label}}</span>
-    {% else %}
-        <a data-function="{{function_name}}" href="javascript:void(0)" class="link">{{label}}</a>
-    {% endif %}
-    <div class="pull-right state-container" >
-        {% if state == 'complete' %}
-            <strong class="task-completed">Completed</strong>
-        {% elif state == 'in-progress' %}
-            <strong class="task-completed progress">In progress</strong>
+    <li class="task-list-item edit-item">
+        {% if disabled %}
+            <span>{{label}}</span>
         {% elif state == 'not-applicable' %}
-            <strong class="pull-right">N/A</strong>
+            <span class="strikethrough">{{label}}</span>
+        {% else %}
+            <a data-function="{{function_name}}" href="javascript:void(0)" class="link">{{label}}</a>
         {% endif %}
-    </div>
-</li>
+        <div class="pull-right state-container" >
+            {% if state == 'complete' %}
+                <strong class="task-completed">Completed</strong>
+            {% elif state == 'in-progress' %}
+                <strong class="task-completed progress">In progress</strong>
+            {% elif state == 'not-applicable' %}
+                <strong class="pull-right">N/A</strong>
+            {% endif %}
+        </div>
+    </li>
 {% endif %}

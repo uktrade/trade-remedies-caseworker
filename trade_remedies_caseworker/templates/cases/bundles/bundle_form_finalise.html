@@ -26,9 +26,9 @@
                 class="link edit"
                 onClick="document.location.replace('/documents/bundle/{{bundle.id}}/?edit=documents')">Edit</button>
             <ul class="document-list">
-            {% for document in bundle.documents %}
-                <li>{% document_link document with_link=False with_confidential_mark=True %}</li>
-            {% endfor %}
+                {% for document in bundle.documents %}
+                    <li>{% document_link document with_link=False with_confidential_mark=True %}</li>
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -38,15 +38,15 @@
     <div class="form-group">
         <h2 class="heading-medium">Review and finalise bundle</h2>
         <span class="form-hint">
-                Once finalised this bundle will be available for future applicants
+            Once finalised this bundle will be available for future applicants
         </span>
-            <div class="multiple-choice submit-widget">
+        <div class="multiple-choice submit-widget">
 
-                <input class="pull-left" id="finalise" name="finalise" type="checkbox" value="1">
-                <label class="form-label">
-                    I am happy to proceed with finalising this bundle
-                </label>
-            </div>
+            <input class="pull-left" id="finalise" name="finalise" type="checkbox" value="1">
+            <label class="form-label">
+                I am happy to proceed with finalising this bundle
+            </label>
+        </div>
     </div>
 
 {% endblock %}

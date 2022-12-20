@@ -1,35 +1,35 @@
 {% load format_date %}
 
 {% comment %}
-{% endcomment %} 
+{% endcomment %}
 
 <div>
     <h2 class="heading-medium party-type-name">Sent invites</h2>
 
     <table class="govuk-table">
         <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Date/time</th>
-            <th scope="col" class="govuk-table__header">Caseworker</th>
-            <th scope="col" class="govuk-table__header">Organisation</th>
-            <th scope="col" class="govuk-table__header">Name</th>
-            <th scope="col" class="govuk-table__header">Email</th>
-        </tr>
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Date/time</th>
+                <th scope="col" class="govuk-table__header">Caseworker</th>
+                <th scope="col" class="govuk-table__header">Organisation</th>
+                <th scope="col" class="govuk-table__header">Name</th>
+                <th scope="col" class="govuk-table__header">Email</th>
+            </tr>
         </thead>
 
         <tbody class="govuk-table__body">
 
-        <tbody>
-            {% for key, invite in invites.items %}
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">{% format_date invite.0.created_at '%d %b %Y %H:%M:%S' %}</td>
-                    <td class="govuk-table__cell">{{ invite.0.created_by.name }}</td>
-                    <td class="govuk-table__cell">{{ invite.0.organisation.name }}</td>
-                    <td class="govuk-table__cell">{{ invite.0.contact.name }}</td>
-                    <td class="govuk-table__cell">{{ invite.0.contact.email }}</td>
-                </tr>
-            {% endfor %}
+            <tbody>
+                {% for key, invite in invites.items %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">{% format_date invite.0.created_at '%d %b %Y %H:%M:%S' %}</td>
+                        <td class="govuk-table__cell">{{ invite.0.created_by.name }}</td>
+                        <td class="govuk-table__cell">{{ invite.0.organisation.name }}</td>
+                        <td class="govuk-table__cell">{{ invite.0.contact.name }}</td>
+                        <td class="govuk-table__cell">{{ invite.0.contact.email }}</td>
+                    </tr>
+                {% endfor %}
 
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>

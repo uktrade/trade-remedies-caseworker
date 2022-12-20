@@ -2,23 +2,23 @@
  ********  Contact details block
 {% endcomment %}
 {% load to_json %}
-  	<div class="column-one-third">
-      <strong class="bold">Name</strong>
-    </div>
-    <div class="column-two-thirds">
-      {{contact.name}}
-    </div>
-    <div class="column-one-third">
-      <strong class="bold">Email</strong>
-    </div>
-    <div class="column-two-thirds">
-      {{contact.email}}
-    </div>
+<div class="column-one-third">
+    <strong class="bold">Name</strong>
+</div>
+<div class="column-two-thirds">
+    {{contact.name}}
+</div>
+<div class="column-one-third">
+    <strong class="bold">Email</strong>
+</div>
+<div class="column-two-thirds">
+    {{contact.email}}
+</div>
 
-    <div class="column-one-third">
-      <strong class="bold">Address</strong>
-    </div>
-    <div class="column-two-thirds">
-      {{contact.address|linebreaksbr}}<br/>
-      {{contact.country.name|default_if_none:''}}
-    </div>
+<div class="column-one-third">
+    <strong class="bold">Address</strong>
+</div>
+<div class="column-two-thirds">
+    {{contact.address|linebreaksbr}}<br/>
+    {{contact.country.name|default_if_none:''}}
+</div>

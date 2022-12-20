@@ -1,29 +1,29 @@
 {% load format_date %}
 <div class="section {% if populated %}populated{% endif %}">
     {% if populated %}
-     <div class="grey-box">
-        <div class="column-full">
-            <span class="label">Reviewed and finalised</span>
-            <span class="value">{{bundle.finalised_by.name}}, {{ bundle.finalised_at|format_date:"{S} %b %Y at %H:%M" }}</span>
+        <div class="grey-box">
+            <div class="column-full">
+                <span class="label">Reviewed and finalised</span>
+                <span class="value">{{bundle.finalised_by.name}}, {{ bundle.finalised_at|format_date:"{S} %b %Y at %H:%M" }}</span>
+            </div>
         </div>
-    </div>
 
     {% endif %}
     <div id="name-description" class="edit-section">
         <div class="form-group">
             <label class="form-label" for="issue_confirm">
                 {% if submission.type.key == 'public' %}
-                Review and publish
+                    Review and publish
                 {% else %}
-                Review and finalise {{submission_group_name}}
+                    Review and finalise {{submission_group_name}}
                 {% endif %}
             </label>
-                {% if user.permissions.publish_public %}
-                    <div class="multiple-choice">
-                        <input id="issue_confirm" type="checkbox" name="issue-confirm" value="issue_confirm" data-handler="enableButton" data-selector="button[value={% if submission.type.key == 'public' %}publish{% else %}send{% endif %}]">
-                        <label for="issue_confirm">I am happy to proceed with finalising this {{submission_group_name}}</label>
-                    </div>
-                {% endif %}
+            {% if user.permissions.publish_public %}
+                <div class="multiple-choice">
+                    <input id="issue_confirm" type="checkbox" name="issue-confirm" value="issue_confirm" data-handler="enableButton" data-selector="button[value={% if submission.type.key == 'public' %}publish{% else %}send{% endif %}]">
+                    <label for="issue_confirm">I am happy to proceed with finalising this {{submission_group_name}}</label>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

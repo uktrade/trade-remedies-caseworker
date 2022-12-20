@@ -16,7 +16,7 @@
                     <select class="form-control auto-width" id="submissionType" name="submission_type_id">
                         {% for submission_type in submission_types %}
                             {% if submission_type.key in 'adhoc,interest,invite,assign' %}
-                            {#  This is a bodgy little filter.  I use the ids to exclude as they are less likely to change than names.
+                                {#  This is a bodgy little filter.  I use the ids to exclude as they are less likely to change than names.
                                 We should probably have a flag on the sub type #}
                                 {% if submission_type.id|_find:'24,26,18'|_not %}
                                     <option value="{{submission_type.id}}" {% if obj.submission_type.id == submission_type.id %}selected{% endif %}>{{submission_type.name}}</option>
