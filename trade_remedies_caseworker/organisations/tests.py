@@ -38,16 +38,6 @@ class TestOrganisationInviteForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"organisation_address": [{"message": "This field is required.", '
-            '"code": "required"}], '
-            '"organisation_post_code": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"companies_house_id": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"organisation_id": [{"message": "This field is required.",'
-            ' "code": "required"}], '
             '"company_search_container": [{"message": "organisation_not_selected",'
             ' "code": ""}]}',
         )
@@ -57,16 +47,6 @@ class TestOrganisationInviteForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"organisation_address": [{"message": "This field is required.", '
-            '"code": "required"}], '
-            '"organisation_post_code": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"companies_house_id": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"organisation_id": [{"message": "This field is required.",'
-            ' "code": "required"}], '
             '"company_search_container": [{"message": "organisation_not_searched",'
             ' "code": ""}]}',
         )
