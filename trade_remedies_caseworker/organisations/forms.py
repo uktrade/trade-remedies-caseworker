@@ -28,7 +28,7 @@ class OrganisationInviteForm(ValidationForm):
         else:
             self.cleaned_data["organisation_address"] = (
                 self.cleaned_data["organisation_address"]
-                .removesuffix(self.cleaned_data["organisation_post_code"])
+                .removesuffix(self.cleaned_data.get("organisation_post_code", ""))
                 .rstrip(", ")
             )
 
