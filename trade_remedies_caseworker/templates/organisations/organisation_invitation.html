@@ -101,10 +101,10 @@
             placeholder: "Search",
             id: 'my-autocomplete',
             autoselect: true,
-            minLength: 1,
+            minLength: 3,
             confirmOnBlur: false,
             source: function (query, populateResults) {
-                if (query.trim().length < 2) {
+                if (query.trim().length < 3) {
                     populateResults([])
                     clearCompany()
                 } else {
