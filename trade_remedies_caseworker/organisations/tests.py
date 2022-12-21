@@ -41,7 +41,7 @@ class TestOrganisationInviteForm(TestCase):
     def test_organisations_not_searched(self):
         form = OrganisationInviteForm(data={})
         self.assertFalse(form.is_valid())
-        assert "organisation_not_selected" in form.errors["company_search_container"]
+        assert "organisation_not_searched" in form.errors["company_search_container"]
 
 
 class TestOrganisationInviteContactForm(TestCase):
