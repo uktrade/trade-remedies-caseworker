@@ -2,69 +2,69 @@
 {% load format_date %}
 
 {% block case_page_content %}
-<h1 class="heading-large">Case milestones</h1>
-<div class="margin-top-1">
-  {% if milestone %}
-    <a href="/case/{{case_id}}/audit?milestone=false">Show all events</a>
-  {% else %}
-    <a href="/case/{{case_id}}/audit?milestone=true">Show milestone events only</a>
-  {% endif %}
-  <a class="link margin-left-1" href="/case/{{case.id}}/audit/export/">Generate full audit log</a>
-</div>
-<table>
-  <thead>
-    <tr>
-      <th>Date/time</th>
-      <th>Event</th>
-      <th>User</th>
-      <th>Milestone</th>
-    </tr>
-  </thead>
-  <tbody>
+    <h1 class="heading-large">Case milestones</h1>
+    <div class="margin-top-1">
+        {% if milestone %}
+            <a href="/case/{{case_id}}/audit?milestone=false">Show all events</a>
+        {% else %}
+            <a href="/case/{{case_id}}/audit?milestone=true">Show milestone events only</a>
+        {% endif %}
+        <a class="link margin-left-1" href="/case/{{case.id}}/audit/export/">Generate full audit log</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Date/time</th>
+                <th>Event</th>
+                <th>User</th>
+                <th>Milestone</th>
+            </tr>
+        </thead>
+        <tbody>
 
-  {% for event in events %}
-	<tr>
-		<td>{% format_date event.created_at %}</td>
-		<td>
-      {% if event.data.message %}
-        {{event.data.message}}
-      {% else %}
-        {{event.type}}
-        {% if event.content_type %}
-          {{event.content_type}}
-        {% elif event.type == 'NOTIFY' and event.data.to_email %}
-          to {{event.data.to_email}}
+            {% for event in events %}
+                <tr>
+                    <td>{% format_date event.created_at %}</td>
+                    <td>
+                        {% if event.data.message %}
+                            {{event.data.message}}
+                        {% else %}
+                            {{event.type}}
+                            {% if event.content_type %}
+                                {{event.content_type}}
+                            {% elif event.type == 'NOTIFY' and event.data.to_email %}
+                                to {{event.data.to_email}}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>{{event.created_by.user}}</td>
+                    <td>{% ifequal event.milestone "True" %}<div class="icon icon-tick"></div>{% endifequal %}</td>
+                </tr>
+                {% if event.data and event.milestone != 'True' %}
+                    <tr>
+                        <td></td>
+                        <td colspan="3" class="font-xsmall">
+                            {{event.humanised|linebreaksbr}}
+                            {% if event.data.content %}
+                                <em>{{event.data.content.subject}}</em><br/>
+                                {{event.data.content.body}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align: right;">
+        {% if prev_url %}
+            <a href="{{ prev_url }}">Previous</a> --
+        {% else %}
+            Previous --
         {% endif %}
-      {% endif %}
-    </td>
-		<td>{{event.created_by.user}}</td>
-    <td>{% ifequal event.milestone "True" %}<div class="icon icon-tick"></div>{% endifequal %}</td>
-    </tr>
-    {% if event.data and event.milestone != 'True' %}
-    <tr>
-      <td></td>
-      <td colspan="3" class="font-xsmall">
-        {{event.humanised|linebreaksbr}}
-        {% if event.data.content %}
-          <em>{{event.data.content.subject}}</em><br/>
-          {{event.data.content.body}}
+        {% if next_url %}
+            <a href="{{ next_url }}">Next</a>
+        {% else %}
+            Next
         {% endif %}
-      </td>
-    </tr>
-    {% endif %}
-  {% endfor %}
-  </tbody>
-</table>
-<div style="text-align: right;">
-{% if prev_url %}
-  <a href="{{ prev_url }}">Previous</a> --
-{% else %}
-  Previous --
-{% endif %}
-{% if next_url %}
-   <a href="{{ next_url }}">Next</a>
-{% else %}
-    Next
-{% endif %}
-</div>
+    </div>
 {% endblock %}

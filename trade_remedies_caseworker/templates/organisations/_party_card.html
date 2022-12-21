@@ -3,121 +3,121 @@
 {% load pluralize %}
 <div class="party-card-inner" data-party-id="{{party.id}}">
 
-     <div class="margin-bottom-1 name-row" data-field="name"  data-value="{{party.name|default:''}}">
-      <button type="button" class="link modal-form pull-right" data-url="/organisation/{{party.id}}/edit/" data-event-update="party-updated">Edit<span class="visually-hidden"> party</span></button>
-      <a class="link" href="/case/{{case_id}}/organisation/{{party.id}}/">
-      <span class="hidden label">Name</span>
-      {{party.name}}</a>
+    <div class="margin-bottom-1 name-row" data-field="name"  data-value="{{party.name|default:''}}">
+        <button type="button" class="link modal-form pull-right" data-url="/organisation/{{party.id}}/edit/" data-event-update="party-updated">Edit<span class="visually-hidden"> party</span></button>
+        <a class="link" href="/case/{{case_id}}/organisation/{{party.id}}/">
+            <span class="hidden label">Name</span>
+            {{party.name}}</a>
     </div>
     {% set 'addresslines' party.address|splitlines %}
     <div class="row" data-field="address" data-value="{{party.address|default:''|linebreaksbr}}">
-      <div class="cell">
-        <strong class="bold label">Address</strong>
-      </div>
-      <div class="cell auto-expand">
-        {{addresslines.0|default:'-'}}
-      </div>
+        <div class="cell">
+            <strong class="bold label">Address</strong>
+        </div>
+        <div class="cell auto-expand">
+            {{addresslines.0|default:'-'}}
+        </div>
     </div>
     <div class="row">
-      <div class="cell">
-        <strong class="bold">&nbsp;</strong>
-      </div>
-      <div class="cell auto-expand">
-        {{addresslines.1|default:''}}
-      </div>
+        <div class="cell">
+            <strong class="bold">&nbsp;</strong>
+        </div>
+        <div class="cell auto-expand">
+            {{addresslines.1|default:''}}
+        </div>
     </div>
     <div class="row">
-      <div class="cell">
-        <strong class="bold">&nbsp;</strong>
-      </div>
-      <div class="cell auto-expand">
-        {{addresslines.2|default:''}}
-      </div>
+        <div class="cell">
+            <strong class="bold">&nbsp;</strong>
+        </div>
+        <div class="cell auto-expand">
+            {{addresslines.2|default:''}}
+        </div>
     </div>
     <div class="row" data-field="country" data-value="{{party.country.name}}">
-      <div class="c3 cell">
-        <strong class="bold label">Country</strong>
-      </div>
-      <div class="c23 cell">
-        {{ party.country.name|default_if_none:'' }}
-      </div>
+        <div class="c3 cell">
+            <strong class="bold label">Country</strong>
+        </div>
+        <div class="c23 cell">
+            {{ party.country.name|default_if_none:'' }}
+        </div>
     </div>
     {% include "organisations/_party_card_field.html" with label='Reg No.' party=party field='companies_house_id' %}
     {% include "organisations/_party_card_field.html" with label='EORI' party=party field='eori_number' %}
     {% include "organisations/_party_card_field.html" with label='VAT No.' party=party field='vat_number' %}
     <div class="row" data-field="organisation_website" data-value="{{party.organisation_website|default:''}}">
-      <div class="c3 cell">
-        <strong class="bold label">Web domain</strong>
-      </div>
-      <div class="c23 cell">
-        {% if party.organisation_website %}
-          <a href="{{party.organisation_website}}" target="_blank">{{party.organisation_website}}</a>
-        {% else %}
-          -
-        {% endif %}
-      </div>
+        <div class="c3 cell">
+            <strong class="bold label">Web domain</strong>
+        </div>
+        <div class="c23 cell">
+            {% if party.organisation_website %}
+                <a href="{{party.organisation_website}}" target="_blank">{{party.organisation_website}}</a>
+            {% else %}
+                -
+            {% endif %}
+        </div>
     </div>
     {% include "organisations/_party_card_field.html" with label='D-U-N-S No.' party=party field='duns_number' %}
     <div class="row">
-      <div class="c3 cell">
-        <strong class="bold" title="The party has been accepted into these cases">Participations</strong>
-      </div>
-      <div class="c23 cell">
-        {% if party.collated_cases|length %}
-          <a href="javascript:void(0)" class="js-pop-up link" >{{party.collated_cases|length}} case{% if party.collated_cases|length > 1 %}s{% endif %} </a>
-          {% if party.verified_cases %}<i class="icon icon-green-tick correct absolute margin-left-1" title="{{party.verified_cases|length}} verifications"></i>{% endif %}
-          {% include "organisations/_representations_popup.html" with title='Case participation' party=party cases=party.collated_cases mode="participation_list" %}
-        {% else %}
-        -
-        {% endif %}
-
-      </div>
-    </div>
-    <div class="row">
-      <div class="c3 cell">
-        <strong class="bold" title="The party's users have represented businesses in these cases">Representations</strong>
-      </div>
-      <div class="c23 cell">
-        {% if party.indirect_cases|length %}
-          <a href="javascript:void(0)" class="js-pop-up link">{{party.collated_indirect_cases|length}} case{% if party.collated_indirect_cases|length > 1 %}s{% endif %}</a>
-          {% if party.verified_usercases %}<i class="icon icon-green-tick correct absolute margin-left-1" title="{{party.verified_usercases|length}} verified"></i>{% endif %}
-          {% include "organisations/_representations_popup.html" with party=party cases=party.collated_indirect_cases mode="representation_list" %}
-        {% else %}
-        -
-        {% endif %}
-      </div>
-    </div>
-    <div class="row">
-      {% set 'users' party.users %}
-      <div class="c3 cell">
-        <strong class="bold">Users</strong>
-      </div>
-      <div class="c23 cell">
-        {% if not party.users %}
-          No users
-        {% else %}
-          <a href="javascript:void(0)" class="js-pop-up link box-floats">
-            {% if party.users|length < 5 %}
-              {% for user in party.users %}
-                <i class="icon icon-user pull-left" title="{{user.name}} ({{user.email}})"></i>
-              {% endfor %}
+        <div class="c3 cell">
+            <strong class="bold" title="The party has been accepted into these cases">Participations</strong>
+        </div>
+        <div class="c23 cell">
+            {% if party.collated_cases|length %}
+                <a href="javascript:void(0)" class="js-pop-up link" >{{party.collated_cases|length}} case{% if party.collated_cases|length > 1 %}s{% endif %} </a>
+                {% if party.verified_cases %}<i class="icon icon-green-tick correct absolute margin-left-1" title="{{party.verified_cases|length}} verifications"></i>{% endif %}
+                {% include "organisations/_representations_popup.html" with title='Case participation' party=party cases=party.collated_cases mode="participation_list" %}
             {% else %}
-              <i class="icon icon-user pull-left"></i> x {{party.users|length}}
+                -
             {% endif %}
-          </a>
-          <div class="hidden js-pop-up-title">Users of {{party.name}}</div>
-          <div class="hidden js-pop-up-content">
-            <table>
-              {% for user in party.users %}
-                <tr>
-                  <td><i class="icon icon-user"></i>&nbsp;{{user.name}}&nbsp;({{user.email}})</td>
-                </tr>
-              {% endfor %}
-            </table>
-          </div>
-        {% endif %}
-      </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="c3 cell">
+            <strong class="bold" title="The party's users have represented businesses in these cases">Representations</strong>
+        </div>
+        <div class="c23 cell">
+            {% if party.indirect_cases|length %}
+                <a href="javascript:void(0)" class="js-pop-up link">{{party.collated_indirect_cases|length}} case{% if party.collated_indirect_cases|length > 1 %}s{% endif %}</a>
+                {% if party.verified_usercases %}<i class="icon icon-green-tick correct absolute margin-left-1" title="{{party.verified_usercases|length}} verified"></i>{% endif %}
+                {% include "organisations/_representations_popup.html" with party=party cases=party.collated_indirect_cases mode="representation_list" %}
+            {% else %}
+                -
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        {% set 'users' party.users %}
+        <div class="c3 cell">
+            <strong class="bold">Users</strong>
+        </div>
+        <div class="c23 cell">
+            {% if not party.users %}
+                No users
+            {% else %}
+                <a href="javascript:void(0)" class="js-pop-up link box-floats">
+                    {% if party.users|length < 5 %}
+                        {% for user in party.users %}
+                            <i class="icon icon-user pull-left" title="{{user.name}} ({{user.email}})"></i>
+                        {% endfor %}
+                    {% else %}
+                        <i class="icon icon-user pull-left"></i> x {{party.users|length}}
+                    {% endif %}
+                </a>
+                <div class="hidden js-pop-up-title">Users of {{party.name}}</div>
+                <div class="hidden js-pop-up-content">
+                    <table>
+                        {% for user in party.users %}
+                            <tr>
+                                <td><i class="icon icon-user"></i>&nbsp;{{user.name}}&nbsp;({{user.email}})</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endif %}
+        </div>
     </div>
     <textarea class="hidden json-data">{{party.json_data|to_json}}</textarea>
 
-  </div>
+</div>

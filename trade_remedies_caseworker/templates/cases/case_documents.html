@@ -2,47 +2,47 @@
 {% load get_item %}
 
 {% block case_page_content %}
-{% if error %}
-    <span class="error-message">{{error}}</span>
-{% endif %}
-<form
-    action="/case/{{case_id}}/documents/?__prefix={{case_id}}"
-    method="POST"
-    enctype="multipart/form-data"
-    data-redirect="/case/{{case_id}}/documents/">
-    {% csrf_token %}
-    <input type="hidden" name="file_context" value="{{case_id}}"/>
-    <h2 class="heading-large">Setup Default Submission Documents</h2>
-    <div class="margin-bottom-1">
-        Set up the documents available by default for specific submission types in this case.
-        <br/>
-        For example, the documents available for download when a body performs a registration of interest
-        in a case.
-    </div>
-    <h2 class="heading-medium">Existing documents</h2>
-    <UL>
-    {% for document in documents %}
-        <LI>
-            {{ document.type.name }}: {{ document.document.name }}
-            <a href="">Remove</a>
-        </LI>
-    {% endfor %}
-    </UL>
-    <h2 class="heading-medium">Add a document</h2>
-    <input type="file" name="files"/>
-    <h2 class="heading-medium">Document Type</h2>
+    {% if error %}
+        <span class="error-message">{{error}}</span>
+    {% endif %}
+    <form
+        action="/case/{{case_id}}/documents/?__prefix={{case_id}}"
+        method="POST"
+        enctype="multipart/form-data"
+        data-redirect="/case/{{case_id}}/documents/">
+        {% csrf_token %}
+        <input type="hidden" name="file_context" value="{{case_id}}"/>
+        <h2 class="heading-large">Setup Default Submission Documents</h2>
+        <div class="margin-bottom-1">
+            Set up the documents available by default for specific submission types in this case.
+            <br/>
+            For example, the documents available for download when a body performs a registration of interest
+            in a case.
+        </div>
+        <h2 class="heading-medium">Existing documents</h2>
+        <UL>
+            {% for document in documents %}
+                <LI>
+                    {{ document.type.name }}: {{ document.document.name }}
+                    <a href="">Remove</a>
+                </LI>
+            {% endfor %}
+        </UL>
+        <h2 class="heading-medium">Add a document</h2>
+        <input type="file" name="files"/>
+        <h2 class="heading-medium">Document Type</h2>
 
-    <select name="document_type_id" id="document_type_id" class="form-control">
-        {% for doc_type in document_types %}
-            <option value="{{doc_type.id}}"
-                {% if doc_type.id == document_type_id or document_types|length == 1 %}selected{% endif %}>
+        <select name="document_type_id" id="document_type_id" class="form-control">
+            {% for doc_type in document_types %}
+                <option value="{{doc_type.id}}"
+                    {% if doc_type.id == document_type_id or document_types|length == 1 %}selected{% endif %}>
                     {{doc_type.name}}
-            </option>
-        {% endfor %}
-    </select>
+                </option>
+            {% endfor %}
+        </select>
 
-    <div class="form-group">
-        <button class="button button-blue margin-top-1" type="submit" name="notify" value="save">Save</button>
-    </div>
-</form>
+        <div class="form-group">
+            <button class="button button-blue margin-top-1" type="submit" name="notify" value="save">Save</button>
+        </div>
+    </form>
 {% endblock %}

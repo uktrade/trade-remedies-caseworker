@@ -2,51 +2,51 @@
 {% load organisation_initialism %}
 <div class="column-full" >
 
-  {% include "./submission_details.html" %}
+    {% include "./submission_details.html" %}
 
-  {% if user.permissions.send_deficiency_notice %}
-    {% if not submission.deficiency_sent_at and not submission.status.sufficient %}
-    <a href="/case/{{case.id}}/submission/{{submission.id}}/approval/">
-      <button class="button button-blue">Approve or deny this submission</button>
-    </a>
+    {% if user.permissions.send_deficiency_notice %}
+        {% if not submission.deficiency_sent_at and not submission.status.sufficient %}
+            <a href="/case/{{case.id}}/submission/{{submission.id}}/approval/">
+                <button class="button button-blue">Approve or deny this submission</button>
+            </a>
+        {% endif %}
     {% endif %}
-  {% endif %}
 
 
-  {% if documents.deficiency %}
-    <h3 class="heading-small">Deficiency documents</h3>
-    {% include 'widgets/document_detail_list.html' with documents=documents.deficiency %}
-  {% endif %}
-  {% if documents.caseworker %}
-    <h3 class="heading-small">{% organisation_initialism %} documents</h3>
-    {% include 'widgets/document_detail_list.html' with documents=documents.caseworker %}
-  {% endif %}
-  <h3 class="heading-small">Confidential documents</h3>
-  {% include 'widgets/document_detail_list.html' with documents=documents.confidential %}
-  <h3 class="heading-small">Documents for the public file</h3>
-  {% include 'widgets/document_detail_list.html' with documents=documents.nonconfidential %}
+    {% if documents.deficiency %}
+        <h3 class="heading-small">Deficiency documents</h3>
+        {% include 'widgets/document_detail_list.html' with documents=documents.deficiency %}
+    {% endif %}
+    {% if documents.caseworker %}
+        <h3 class="heading-small">{% organisation_initialism %} documents</h3>
+        {% include 'widgets/document_detail_list.html' with documents=documents.caseworker %}
+    {% endif %}
+    <h3 class="heading-small">Confidential documents</h3>
+    {% include 'widgets/document_detail_list.html' with documents=documents.confidential %}
+    <h3 class="heading-small">Documents for the public file</h3>
+    {% include 'widgets/document_detail_list.html' with documents=documents.nonconfidential %}
 
-  {% if user.permissions.publish_public %}
-    <div class="margin-top-1">
-        <form action="/case/{{case.id}}/submission/{{submission.id}}/status/" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="issue" value="{% if submission.issued_at %}un-issue{% else %}issue{% endif %}" >
-          <button type="submit" class="button button-blue" data-handler="clickConfirm"
-            data-title="{% if submission.issued_at %}Un-publish{% else %}Publish{% endif %}"
-            data-message="{% if submission.issued_at %}Are you sure you want to remove this submission from the public file?{% else %}Are you sure you want to publish this submission to the public file?{% endif %}" >
-            {% if submission.issued_at %}
-              Remove from the public file
-            {% else %}
-              Issue to the public file
-            {% endif %}
-          </button>
-        </form>
-    </div>
-  {% endif %}
+    {% if user.permissions.publish_public %}
+        <div class="margin-top-1">
+            <form action="/case/{{case.id}}/submission/{{submission.id}}/status/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="issue" value="{% if submission.issued_at %}un-issue{% else %}issue{% endif %}" >
+                <button type="submit" class="button button-blue" data-handler="clickConfirm"
+                    data-title="{% if submission.issued_at %}Un-publish{% else %}Publish{% endif %}"
+                    data-message="{% if submission.issued_at %}Are you sure you want to remove this submission from the public file?{% else %}Are you sure you want to publish this submission to the public file?{% endif %}" >
+                    {% if submission.issued_at %}
+                        Remove from the public file
+                    {% else %}
+                        Issue to the public file
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    {% endif %}
 
-  <p>&nbsp;</p>
-  {% if note_virus %}
-    {% include 'cases/submissions/virus_warnings.html' %}
-  {% endif %}
-  {% include 'widgets/notesWidget.html' with notes=notes contentType='cases.submission' modelId=submission.id %}
+    <p>&nbsp;</p>
+    {% if note_virus %}
+        {% include 'cases/submissions/virus_warnings.html' %}
+    {% endif %}
+    {% include 'widgets/notesWidget.html' with notes=notes contentType='cases.submission' modelId=submission.id %}
 </div>

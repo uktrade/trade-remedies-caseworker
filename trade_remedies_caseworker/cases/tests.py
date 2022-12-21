@@ -45,28 +45,28 @@ class TestAuditView:
         result = audit_view.add_page_data()
         assert result["milestone"]
         assert result["events"] == audit_data
-        assert result["next_url"] == f"/cases/{case.id}/audit?milestone=true&start=20"
+        assert result["next_url"] == f"/case/{case.id}/audit?milestone=true&start=20"
         assert result["prev_url"] is None
 
     def test_add_page_data_params(self, audit_view, case):
         audit_view.request.GET = {"milestone": "false", "limit": 50}
         result = audit_view.add_page_data()
         assert not result["milestone"]
-        assert result["next_url"] == f"/cases/{case.id}/audit?milestone=false&start=50"
+        assert result["next_url"] == f"/case/{case.id}/audit?milestone=false&start=50"
 
     def test_add_page_data_middle_page(self, audit_view, case):
         audit_view.start = 40
         audit_view.request.GET = {}
         result = audit_view.add_page_data()
-        assert result["next_url"] == f"/cases/{case.id}/audit?milestone=true&start=60"
-        assert result["prev_url"] == f"/cases/{case.id}/audit?milestone=true&start=20"
+        assert result["next_url"] == f"/case/{case.id}/audit?milestone=true&start=60"
+        assert result["prev_url"] == f"/case/{case.id}/audit?milestone=true&start=20"
 
     def test_add_page_data_middle_page_skewed(self, audit_view, case):
         audit_view.start = 25
         audit_view.request.GET = {"limit": 50}
         result = audit_view.add_page_data()
-        assert result["next_url"] == f"/cases/{case.id}/audit?milestone=true&start=75"
-        assert result["prev_url"] == f"/cases/{case.id}/audit?milestone=true&start=0"
+        assert result["next_url"] == f"/case/{case.id}/audit?milestone=true&start=75"
+        assert result["prev_url"] == f"/case/{case.id}/audit?milestone=true&start=0"
 
     def test_add_page_data_one_page(self, audit_view, case):
         audit_view.start = 50
@@ -79,7 +79,7 @@ class TestAuditView:
         audit_view.start = 75
         audit_view.request.GET = {"limit": 20}
         result = audit_view.add_page_data()
-        assert result["next_url"] == f"/cases/{case.id}/audit?milestone=true&start=95"
+        assert result["next_url"] == f"/case/{case.id}/audit?milestone=true&start=95"
         assert audit_view.start == 95
         # Last page with just 5 items
         audit_view._client = MagicMock()
@@ -87,7 +87,7 @@ class TestAuditView:
         # Simulate clicking 'next'
         result = audit_view.add_page_data()
         assert result["next_url"] is None
-        assert result["prev_url"] == f"/cases/{case.id}/audit?milestone=true&start=75"
+        assert result["prev_url"] == f"/case/{case.id}/audit?milestone=true&start=75"
 
     def test_add_page_data_client_call(self, audit_view, case):
         audit_view.request.GET = {}

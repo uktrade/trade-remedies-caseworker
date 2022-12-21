@@ -1,52 +1,52 @@
 {% load format_date %}
 <!-- Allows investigators to search for existing files within a case, or upload new ones -->
 <div
-	class="file-browser"
-	data-list-url="{% if case_id %}/case/{{case_id}}/files/browse/{% else %}/documents/{% endif %}{% if browse_limiter %}?limit={{browse_limiter}}{% endif %}"
-	{% if not case_id %}
-	data-content_type="application/json"
-	{% endif %}
-	data-submission_document_type="{{submission_document_type}}"
-	{% if document_confidential_lock %}
-	data-document_confidential_lock="{{document_confidential_lock}}"
-	{% endif %}
+    class="file-browser"
+    data-list-url="{% if case_id %}/case/{{case_id}}/files/browse/{% else %}/documents/{% endif %}{% if browse_limiter %}?limit={{browse_limiter}}{% endif %}"
+    {% if not case_id %}
+        data-content_type="application/json"
+    {% endif %}
+    data-submission_document_type="{{submission_document_type}}"
+    {% if document_confidential_lock %}
+        data-document_confidential_lock="{{document_confidential_lock}}"
+    {% endif %}
 >
-		<ul class="tabset">
+    <ul class="tabset">
 
-			<li class="tab selected">
-				<a href="javascript:void(0)" data-tab="tab-upload">Upload new files</a>
-			</li>
-			<li class="tab">
-				<a href="javascript:void(0)" data-tab="tab-search">Search existing files</a>
-			</li>
-		</ul>
-		<div class="tab-box">
-			<div class="inner tab-search hidden stretch">
-				<!-- <input type="text"/ placeholder="Start to type&hellip;"> -->
-				<div class="form-group type-text" >
-           			<input class="form-control" id="file-typeahead" type="text" placeholder="Start to type&hellip;" data-mode="company" name="file" autocomplete="off">
-		        </div>
-		        <div class="browser-results"></div>
-			</div>
-			<div class="inner tab-upload type-fileupload stretch">
-		    {% if locked %}
-		        This request is currently locked for updates while it is under review
-		    {% else %}
-		        <div class="upload-target stretch">
-		            <div class="center-text">
-		                Drag and drop your files here
-		                <br>
-		                or
-		            </div>
-		            <button type="button" class="btn-file-upload button" disabled="disabled">Select a file</button>
-		        </div>
-		    {% endif %}
-		   </div>
-		</div>
+        <li class="tab selected">
+            <a href="javascript:void(0)" data-tab="tab-upload">Upload new files</a>
+        </li>
+        <li class="tab">
+            <a href="javascript:void(0)" data-tab="tab-search">Search existing files</a>
+        </li>
+    </ul>
+    <div class="tab-box">
+        <div class="inner tab-search hidden stretch">
+            <!-- <input type="text"/ placeholder="Start to type&hellip;"> -->
+            <div class="form-group type-text" >
+                <input class="form-control" id="file-typeahead" type="text" placeholder="Start to type&hellip;" data-mode="company" name="file" autocomplete="off">
+            </div>
+            <div class="browser-results"></div>
+        </div>
+        <div class="inner tab-upload type-fileupload stretch">
+            {% if locked %}
+                This request is currently locked for updates while it is under review
+            {% else %}
+                <div class="upload-target stretch">
+                    <div class="center-text">
+                        Drag and drop your files here
+                        <br>
+                        or
+                    </div>
+                    <button type="button" class="btn-file-upload button" disabled="disabled">Select a file</button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
-	<h2 class="heading-medium">{{file_list_heading|default:'Files in your bundle'}}</h2>
-	<div class="margin-bottom-1">
-		{% include './document_detail_list.html' with documents=documents force_delete_option=True %}
-	</div>
-	<input type="file" name="files2" class="test-file hidden" disabled="disabled" multiple="multiple">
+    <h2 class="heading-medium">{{file_list_heading|default:'Files in your bundle'}}</h2>
+    <div class="margin-bottom-1">
+        {% include './document_detail_list.html' with documents=documents force_delete_option=True %}
+    </div>
+    <input type="file" name="files2" class="test-file hidden" disabled="disabled" multiple="multiple">
 </div>

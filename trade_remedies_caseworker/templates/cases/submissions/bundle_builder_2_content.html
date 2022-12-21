@@ -12,14 +12,14 @@
             <div class="grey-box">
                 <div class="column-full">
                     <span class="label">Documents in your {{ submission_group_name|default:'information request'}}</span>
-                    {% include "cases/submissions/bundle_builder_edit_button.html" %}   
+                    {% include "cases/submissions/bundle_builder_edit_button.html" %}
 
                     <ul class="document-list">
-                    {% for document in documents %}
-                        <li>                    
-                            <span class="filename">{% document_link document False%}</span>                            </span>
-                        </li>
-                    {% endfor %}
+                        {% for document in documents %}
+                            <li>
+                                <span class="filename">{% document_link document False%}</span>                            </span>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -33,12 +33,12 @@
                     <a class="link pull-left clear margin-top-1" href="{{submission.url}}" target="_blank">Open in new window <i class="icon icon-link text-align"></i></a>
                 </div>
             </div>
-        {% endif %}        
+        {% endif %}
     {% endif %}
     <div id="name-description" class="edit-section">
         {% if not populated %} {# we don't need to show the selector in edit mode #}
             <div id="url-type" class="column-full">
-                <div class="form-group edit-item">    
+                <div class="form-group edit-item">
                     <label class="form-label">Type of content in your {{ submission_group_name|default:'information request'}}</label>
                     <div class="multiple-choice">
                         <input id="url-type-1" type="radio" name="url_type" value="documents" {% if submission.documents|length %} checked="checked" {% endif %}>

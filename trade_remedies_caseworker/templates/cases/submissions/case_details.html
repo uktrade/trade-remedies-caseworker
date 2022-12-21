@@ -1,24 +1,24 @@
 <div class="box-floats">
     <div class="pull-left margin-right-1">
-      <h3 class="heading-small">Applicant</h3>
-      {{case.applicant.name}}
+        <h3 class="heading-small">Applicant</h3>
+        {{case.applicant.name}}
 
-      <h3 class="heading-small">Source of Exports</h3>
-      {% for source in case.sources %}
-        {{source.country}}{% if not forloop.last %}, {% endif %}
-      {% endfor %}
+        <h3 class="heading-small">Source of Exports</h3>
+        {% for source in case.sources %}
+            {{source.country}}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
     </div>
     <div class="pull-left margin-left-1">
-      <h3 class="heading-small">Product</h3>
-      {{case.product.name}}
-      <h3 class="heading-small">Product sector</h3>
-      {{case.product.sector.name}}
-      <h3 class="heading-small">HS Codes</h3>
-      {% for code in case.product.hs_codes %}
-        {{code.code}}{% if not forloop.last %}, {% endif %}
-      {% endfor %}<br/>
-      {% if case.product.description %}
-        {{case.product.description|linebreaksbr}}
-      {% endif %}
+        <h3 class="heading-small">Product</h3>
+        {{case.product.name}}
+        <h3 class="heading-small">Product sector</h3>
+        {{case.product.sector.name}}
+        <h3 class="heading-small">HS Codes</h3>
+        {% for code in case.product.hs_codes %}
+            {{code.code}}{% if not forloop.last %}, {% endif %}
+        {% endfor %}<br/>
+        {% if case.product.description %}
+            {{case.product.description|linebreaksbr}}
+        {% endif %}
     </div>
 </div>

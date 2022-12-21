@@ -24,17 +24,17 @@
             This organisation will not be part of the case.
         {% endif %}
     </div>
-        <div class="form-group">
-            <label class="form-label" for="contact_id">Which contact do you want to receive this notification?</label>
-            <select name="contact_id" id="contact_id" class="form-control" data-substitute="full_name">
-                {% for contact in contacts %}
-                    {% if not contact_id and contact.primary %}
-                        {% set 'contact_id' contact.id %}
-                    {% endif %}
-                    <option value="{{contact.id}}" data-text-value="{{contact.name}}" {% if contact_id == contact.id %} selected="selected"{% endif %}>{{contact.name}} &lt;{{contact.email}}&gt; {% if contact.primary %}(Primary){% endif %}</option>
-                {% endfor %}
-            </select>
-        </div>
+    <div class="form-group">
+        <label class="form-label" for="contact_id">Which contact do you want to receive this notification?</label>
+        <select name="contact_id" id="contact_id" class="form-control" data-substitute="full_name">
+            {% for contact in contacts %}
+                {% if not contact_id and contact.primary %}
+                    {% set 'contact_id' contact.id %}
+                {% endif %}
+                <option value="{{contact.id}}" data-text-value="{{contact.name}}" {% if contact_id == contact.id %} selected="selected"{% endif %}>{{contact.name}} &lt;{{contact.email}}&gt; {% if contact.primary %}(Primary){% endif %}</option>
+            {% endfor %}
+        </select>
+    </div>
 
     {% for field_name in notification_template.personalisation %}
         {% if field_name in editable_fields %}

@@ -6,9 +6,9 @@
                 <span class="label">{{label|default:'Deficiency documents'}}</span>
                 {% include "cases/submissions/bundle_builder_edit_button.html" %}
                 <ul class="document-list">
-                {% for document in documents %}
-                    <li>{% document_link document False %}</li>
-                {% endfor %}
+                    {% for document in documents %}
+                        <li>{% document_link document False %}</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
