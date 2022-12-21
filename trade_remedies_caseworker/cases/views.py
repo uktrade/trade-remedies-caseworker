@@ -2184,7 +2184,7 @@ class AuditView(CaseBaseView):
         audit_data = self._client.get_audit(
             case_id=self.case_id, start=self.start, limit=limit, milestone=milestone
         )
-        url = reverse("case_audit", kwargs={"case_id": self.case_id})
+        url = reverse("cases:case_audit", kwargs={"case_id": self.case_id})
         prev_url = next_url = None
         prev_page = max(0, self.start - limit)
         milestone_flag = f"milestone={milestone}".lower()
