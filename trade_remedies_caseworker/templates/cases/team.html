@@ -2,49 +2,49 @@
 {% load get_item %}
 
 {% block case_page_content %}
-<div class="user-list-container">
-    <h1 class="heading-large">Assign team members</h1>
-    {% if inactive_user_count %}
-        <div class="row">
-            <div class="multiple-choice">
-                <input type="checkbox" name="show_all_users" id="show_all_users" data-handler="toggleActiveUsers" />
-                <label for="show_all_users">Show all users</label>
+    <div class="user-list-container">
+        <h1 class="heading-large">Assign team members</h1>
+        {% if inactive_user_count %}
+            <div class="row">
+                <div class="multiple-choice">
+                    <input type="checkbox" name="show_all_users" id="show_all_users" data-handler="toggleActiveUsers" />
+                    <label for="show_all_users">Show all users</label>
+                </div>
             </div>
-        </div>
-    {% endif %}
-    <form action="/case/{{case.id}}/team/" method="post">
-        {% csrf_token %}
-        <div class="row">
-        <div class="column two-thirds">
-        {% for group in groups %}
-            {% if grouped_users|get_item:group|length > 0 %}
-                <h2 class="heading-medium">{{group}}s</h2>
-                <ul>
-                    {% for user in grouped_users|get_item:group %}
-                    <li class="user-active__{{ user.active }}">
-                        <div class="multiple-choice">
-                            {% if group in singleton_groups %}
-                                <input type="radio" id="user-{{user.id}}" name="user_id" value="{{user.id}}" {% if user.id in team %}checked{% endif %}/>
-                            {% else %}
-                                <input type="checkbox" id="user-{{user.id}}" name="user_id" value="{{user.id}}" {% if user.id in team %}checked{% endif %}/>
-                            {% endif %}
-                            <label for="user-{{user.id}}" {% if not user.active %}style="text-decoration: line-through;"{% endif %}>
-                                {{user.name}} &lt;{{user.email}}&gt;
-                            </label>
-                        </div>
-                    </li>
+        {% endif %}
+        <form action="/case/{{case.id}}/team/" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="column two-thirds">
+                    {% for group in groups %}
+                        {% if grouped_users|get_item:group|length > 0 %}
+                            <h2 class="heading-medium">{{group}}s</h2>
+                            <ul>
+                                {% for user in grouped_users|get_item:group %}
+                                    <li class="user-active__{{ user.active }}">
+                                        <div class="multiple-choice">
+                                            {% if group in singleton_groups %}
+                                                <input type="radio" id="user-{{user.id}}" name="user_id" value="{{user.id}}" {% if user.id in team %}checked{% endif %}/>
+                                            {% else %}
+                                                <input type="checkbox" id="user-{{user.id}}" name="user_id" value="{{user.id}}" {% if user.id in team %}checked{% endif %}/>
+                                            {% endif %}
+                                            <label for="user-{{user.id}}" {% if not user.active %}style="text-decoration: line-through;"{% endif %}>
+                                                {{user.name}} &lt;{{user.email}}&gt;
+                                            </label>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <div style="clear:both;"></div>
+                        {% endif %}
                     {% endfor %}
-                </ul>
-                <div style="clear:both;"></div>
-            {% endif %}
-        {% endfor %}
-        </div>
+                </div>
 
-        <div class="column two-thirds">
-            <p>&nbsp;</p>
-            <button type="submit" class="form-control button button-blue">Update</button>
-        </div>
-        </div>
-    </form>
-</div>
+                <div class="column two-thirds">
+                    <p>&nbsp;</p>
+                    <button type="submit" class="form-control button button-blue">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
 {% endblock %}

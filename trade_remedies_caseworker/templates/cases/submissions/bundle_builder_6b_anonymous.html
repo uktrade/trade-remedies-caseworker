@@ -5,7 +5,7 @@
         <div class="grey-box">
             <div class="column-full">
                 <span class="label">Publish anonymously</span>
-                {% include "cases/submissions/bundle_builder_edit_button.html" %}   
+                {% include "cases/submissions/bundle_builder_edit_button.html" %}
                 {% if object.issue_anonymously == 'yes' %}
                     <span class="value">The business name will be withheld</span>
                 {% elif object.issue_anonymously == 'no' %}
@@ -14,9 +14,9 @@
             </div>
         </div>
     {% endif %}
-    <div class="edit-section"> 
+    <div class="edit-section">
         <div id="response-window-yn" class="column-full ">
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="form-label">Anonymous publication
                     <span class="form-hint">
                         Should this submission be published anonymously?
@@ -32,5 +32,5 @@
                 </div>
             </div>
         </div>
-    </div> 
-</div>       
+    </div>
+</div>

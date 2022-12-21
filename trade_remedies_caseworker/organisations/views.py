@@ -1,30 +1,32 @@
 import json
 import logging
 import urllib.parse
-from django.views.generic import TemplateView
-from django.views import View
-from django.shortcuts import render, redirect
-from django.utils.http import urlencode
-from django.http import HttpResponse
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.utils.http import urlencode
+from django.views import View
+from django.views.generic import TemplateView
 from django_countries import countries
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+
 from core.base import FeatureFlagMixin
 from core.constants import (
-    CASE_ROLE_AWAITING_APPROVAL,
-    CASE_ROLE_REJECTED,
     CASE_ROLE_APPLICANT,
+    CASE_ROLE_AWAITING_APPROVAL,
     CASE_ROLE_PREPARING,
+    CASE_ROLE_REJECTED,
 )
 from core.utils import (
     collect_request_fields,
+    deep_index_items_by,
+    deep_index_items_by_exists,
+    get,
     parse_notify_template,
     public_login_url,
-    deep_index_items_by_exists,
-    deep_index_items_by,
-    get,
 )
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trade_remedies_client.exceptions import APIException
 
 contact_fields = [
     "contact_name",
@@ -353,7 +355,6 @@ class ContactPrimaryView(BaseOrganisationTemplateView):
         response = self._client.set_case_primary_contact(contact_id, organisation_id, case_id)
         name = response.get("name", "")
         return HttpResponse(json.dumps(response))
-        return self.return_redirect(f'Primary contact set to "{name}"')
 
 
 class ToggleUserAdmin(BaseOrganisationTemplateView):

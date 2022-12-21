@@ -4,32 +4,32 @@
 {% block heading %}Notices{% endblock %}
 {% block main_content %}
 
-<a href="/cases/notice/">Create</a>
+    <a href="/cases/notice/">Create</a>
 
-<table class="cases sortable" data-attach="TableSort">
-    <thead>
-      <tr>
-        <th class="type">Reference</th>
-        <th class="case_name">Name</th>
-        <th class="type">Original case type</th>
-        <th class="case_name"> Associated transitional review</th>
-        <th class="due">Published at</th>
-        <th class="due">Terminated at</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for notice in notices %}
-    <tr>
-        <td>{{notice.reference}}</td>
-        <td>{{notice.name}}</td>
-        <td>{{notice.case_type.name}}</td>
-        <td>{{notice.review_case.name}}</td>
-        <td nowrap>{{notice.published_at|default_if_none:'N/A'}}</td>
-        <td nowrap>{{notice.terminated_at|default_if_none:'N/A'}}</td nowrap>
-        <td><a href="/cases/notice/{{notice.id}}/">Edit</a></td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <table class="cases sortable" data-attach="TableSort">
+        <thead>
+            <tr>
+                <th class="type">Reference</th>
+                <th class="case_name">Name</th>
+                <th class="type">Original case type</th>
+                <th class="case_name"> Associated transitional review</th>
+                <th class="due">Published at</th>
+                <th class="due">Terminated at</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notice in notices %}
+                <tr>
+                    <td>{{notice.reference}}</td>
+                    <td>{{notice.name}}</td>
+                    <td>{{notice.case_type.name}}</td>
+                    <td>{{notice.review_case.name}}</td>
+                    <td nowrap>{{notice.published_at|default_if_none:'N/A'}}</td>
+                    <td nowrap>{{notice.terminated_at|default_if_none:'N/A'}}</td nowrap>
+                    <td><a href="/cases/notice/{{notice.id}}/">Edit</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -1,23 +1,23 @@
 <h3 class="heading-medium">{{ name }}</h3>
 <table class="compact-table">
-  <thead>
-    <tr>
-      <th scope="col">Party</th>
-      <th scope="col">Submission type</th>
-      <th scope="col">Sent</th>
-      <th scope="col">Received</th>
-      <th scope="col">Due</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for submission in list %}
-      <tr>
-        <td><a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/" title="{{submission.name}}">{{submission.organisation.name}}</a></td>
-        <td>{{submission.type.name}}</td>
-        <td>{{ submission.sent_at|format_date:'%d %b %Y' }}</td>
-        <td>{{ submission.received_at|format_date:'%d %b %Y'}}</td>
-        <td>{{ submission.due_at|format_date:'%d %b %Y' }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th scope="col">Party</th>
+            <th scope="col">Submission type</th>
+            <th scope="col">Sent</th>
+            <th scope="col">Received</th>
+            <th scope="col">Due</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for submission in list %}
+            <tr>
+                <td><a class="link" href="/case/{{case.id}}/submission/{{submission.id}}/" title="{{submission.name}}">{{submission.organisation.name}}</a></td>
+                <td>{{submission.type.name}}</td>
+                <td>{{ submission.sent_at|format_date:'%d %b %Y' }}</td>
+                <td>{{ submission.received_at|format_date:'%d %b %Y'}}</td>
+                <td>{{ submission.due_at|format_date:'%d %b %Y' }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>

@@ -1,12 +1,12 @@
 <div class="column-one-half">
     {% if not is_email_read_only %}
-    <input data-key="id" name="contact_id" type="hidden" value="">
-    <div class="form-group edit-item type-text " data-attach="Typeahead" data-validate=".+->You must provide an email address||^(?:[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+){0,1}$->This email address is not valid">
-        <label class="form-label" for="field-20">
-            Email
-        </label>
-        <input class="form-control" type="text" placeholder="Type email&hellip;" data-mode="contactEmail" value="{{contact.email}}" name="contact_email" data-key="email" autocomplete="off">
-    </div>
+        <input data-key="id" name="contact_id" type="hidden" value="">
+        <div class="form-group edit-item type-text " data-attach="Typeahead" data-validate=".+->You must provide an email address||^(?:[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+){0,1}$->This email address is not valid">
+            <label class="form-label" for="field-20">
+                Email
+            </label>
+            <input class="form-control" type="text" placeholder="Type email&hellip;" data-mode="contactEmail" value="{{contact.email}}" name="contact_email" data-key="email" autocomplete="off">
+        </div>
     {% endif %}
     <div class="form-group edit-item type-text" data-validate=".+->You must provide a name for the contact">
         <label class="form-label" for="field-10">

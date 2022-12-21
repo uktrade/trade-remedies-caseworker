@@ -1,18 +1,18 @@
 {% load format_date %}
 
 <div class="audit-block expand-section">
-	<ol>
-		{% for event in audit %}
-			<li class="row">
-				<span class="cell date">{%format_date event.created_at '%d %b %Y'%}</span>
-				<span class="cell">
-					{% if event.data.message %}
-						{{event.data.message}}
-					{% else %}
-						{{event.type}} {{event.content_type}}
-					{% endif %}
-				</span>
-			</li>
-		{% endfor %}
-	</ol>
+    <ol>
+        {% for event in audit %}
+            <li class="row">
+                <span class="cell date">{%format_date event.created_at '%d %b %Y'%}</span>
+                <span class="cell">
+                    {% if event.data.message %}
+                        {{event.data.message}}
+                    {% else %}
+                        {{event.type}} {{event.content_type}}
+                    {% endif %}
+                </span>
+            </li>
+        {% endfor %}
+    </ol>
 </div>

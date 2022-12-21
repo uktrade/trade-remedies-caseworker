@@ -29,11 +29,11 @@
                     onClick="document.location.replace('/documents/bundle/{{bundle.id}}/?edit=documents')">Edit</button>
             {% endif %}
             <ul class="document-list">
-            {% for document in bundle.documents %}
-                <li>
-                    {% document_link document True True %}
-                </li>
-            {% endfor %}
+                {% for document in bundle.documents %}
+                    <li>
+                        {% document_link document True True %}
+                    </li>
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -41,10 +41,10 @@
 
 {% block bundle_finalise %}
 
-        <div class="form-group">
-            <div class="multiple-choice submit-widget">
-                This bundle is live
-            </div>
+    <div class="form-group">
+        <div class="multiple-choice submit-widget">
+            This bundle is live
         </div>
+    </div>
 
 {% endblock %}

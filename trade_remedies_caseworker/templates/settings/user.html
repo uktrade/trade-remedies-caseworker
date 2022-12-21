@@ -3,16 +3,16 @@
 {% load set %}
 
 {% block heading %}
-<div class="column-full">
-    <h2 class="heading-medium margin-left-1">{% if edit_user.id %}Update{% else %}Create{% endif %} User</h2>
-</div>
+    <div class="column-full">
+        <h2 class="heading-medium margin-left-1">{% if edit_user.id %}Update{% else %}Create{% endif %} User</h2>
+    </div>
 {% endblock %}
 
 {% block main_content %}
     <form action="{{ form_action }}"
-          method="post"
-          class="compact-form"
-          style="min-width:900px;">
+        method="post"
+        class="compact-form"
+        style="min-width:900px;">
         {% csrf_token %}
         <div class="column-two-thirds">
             <div class="column-one-half">
@@ -27,63 +27,63 @@
                 {% text_element id='password' label=password_label errors=errors value=edit_user.password password=True autocomplete='new-password' readonly=read_only %}
                 {% text_element id='password_confirm' label='Confirm password' errors=errors value=edit_user.password_confirm password=True  readonly=read_only %}
                 {% if not edit_user.tra %}
-	                <label for="organisation" class="form-label">Organisation</label>
+                    <label for="organisation" class="form-label">Organisation</label>
                     {% if edit_user.organisations %}
-	                    <a href="/organisation/{{edit_user.organisations.0.id}}/" >{{edit_user.organisations.0.name}}</a>
+                        <a href="/organisation/{{edit_user.organisations.0.id}}/" >{{edit_user.organisations.0.name}}</a>
                     {% else %}
                         Not set
                     {% endif %}
-	            {% endif %}
+                {% endif %}
             </div>
             <div class="column-one-half">
-            	{% if edit_user.tra %}
+                {% if edit_user.tra %}
                     {% if 'job_title_id' in errors %}
                         {% set 'job_title_error' True %}
                     {% endif %}
-	                <div class="form-group type-text {% if job_title_error %}form-group-error{% endif %}">
+                    <div class="form-group type-text {% if job_title_error %}form-group-error{% endif %}">
                         {% if job_title_error %}
                             <span class="error-message">Job Title required</span>
                         {% endif %}
-	                    <label for="job_title_id" class="form-label">Job Title </label>
-	                    <select name="job_title_id"
-                                class="form-control"
-                                id="job_title_id"
-                                {% if read_only %} disabled {% endif %}>
-	                        <option value="">Select Job Title</option>
-	                        {% for title in job_titles %}
-	                            <option
-	                                value="{{ title.id }}"
-	                                {% if title.id == edit_user.job_title.id %}selected{% endif %}>{{ title.name }}</option>
-	                        {% endfor %}
-	                    </select>
-	                </div>
-	            {% else %}
-	                <div class="form-group type-text {% if errors.country %}form-group-error{% endif %}">
-	                    <label for="country" class="form-label">Country</label>
+                        <label for="job_title_id" class="form-label">Job Title </label>
+                        <select name="job_title_id"
+                            class="form-control"
+                            id="job_title_id"
+                            {% if read_only %} disabled {% endif %}>
+                            <option value="">Select Job Title</option>
+                            {% for title in job_titles %}
+                                <option
+                                    value="{{ title.id }}"
+                                    {% if title.id == edit_user.job_title.id %}selected{% endif %}>{{ title.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% else %}
+                    <div class="form-group type-text {% if errors.country %}form-group-error{% endif %}">
+                        <label for="country" class="form-label">Country</label>
                         {% if errors.country %}
                             <span class="error-message">Country required</span>
                         {% endif %}
-	                    <select name="country" class="form-control" id="country">
-	                        <option value="">Select Country</option>
-	                        {% for country in countries %}
-	                            <option
-	                                value="{{ country.0 }}"
-	                                {% if country.0 == edit_user.country_code %}selected{% endif %}>{{ country.1 }}</option>
-	                        {% endfor %}
-	                    </select>
-	                </div>
-	                <div class="form-group type-text {% if 'timezone' in errors %}form-group-error{% endif %}">
-	                    <label for="timezone" class="form-label">Time Zone </label>
-	                    <select name="timezone" class="form-control" id="timezone">
-	                        <option value="">Select Time Zone</option>
-	                            {% for timezone in timezones %}
-	                                <option
-	                                    value="{{timezone}}"
-	                                    {% if timezone == edit_user.timezone %}selected{% endif %}>{{timezone}}</option>
-	                            {% endfor %}
-	                    </select>
-	                </div>
-	            {% endif %}
+                        <select name="country" class="form-control" id="country">
+                            <option value="">Select Country</option>
+                            {% for country in countries %}
+                                <option
+                                    value="{{ country.0 }}"
+                                    {% if country.0 == edit_user.country_code %}selected{% endif %}>{{ country.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group type-text {% if 'timezone' in errors %}form-group-error{% endif %}">
+                        <label for="timezone" class="form-label">Time Zone </label>
+                        <select name="timezone" class="form-control" id="timezone">
+                            <option value="">Select Time Zone</option>
+                            {% for timezone in timezones %}
+                                <option
+                                    value="{{timezone}}"
+                                    {% if timezone == edit_user.timezone %}selected{% endif %}>{{timezone}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
                 {% if tra_admin_role in user.groups or editing_customer %}
                     <div class="form-group inline {% if 'active' in errors %}form-group-error{% endif %}">
                         <label for="active" class="form-label">User active</label>
@@ -95,17 +95,17 @@
                                 value="yes"
                                 {% if not edit_user.id or edit_user.active %}checked{% endif %}
                             />
-                        <label for="active_yes" class="form-label">Active</label>
+                            <label for="active_yes" class="form-label">Active</label>
                         </div>
                         <div class="multiple-choice small">
-                                <input
+                            <input
                                 type="radio"
                                 id="active_no"
                                 name="active"
                                 value="no"
                                 {% if edit_user.id and not edit_user.active %}checked{% endif %}
                             />
-                                <label for="active_no" class="form-label">Inactive</label>
+                            <label for="active_no" class="form-label">Inactive</label>
                         </div>
                     </div>
                     {% if not edit_user.tra %}
@@ -152,8 +152,8 @@
                         </fieldset>
                     </div>
                 {% endif %}
-                </div>
             </div>
+        </div>
         <div class="column-one-third">
             <h3 class="heading-small">User's active cases</h3>
             {% if cases|length %}
@@ -167,20 +167,20 @@
                 </table>
             {% else %}
                 {% if not edit_user.tra and edit_user.id %}
-	                <p>This user has no active cases and therefore can be deleted.</p>
-	                <button type="button" data-handler="clickConfirm" 
-						data-message="Are you sure you want to delete this user?" 
-						data-title="Delete user" 
-						data-url="\users\{{edit_user.id}}\delete\" class="button button-grey compact" name="btn_val" value="delete"
-					>Delete user</button>
+                    <p>This user has no active cases and therefore can be deleted.</p>
+                    <button type="button" data-handler="clickConfirm"
+                        data-message="Are you sure you want to delete this user?"
+                        data-title="Delete user"
+                        data-url="\users\{{edit_user.id}}\delete\" class="button button-grey compact" name="btn_val" value="delete"
+                    >Delete user</button>
                 {% else %}
                     <p>No active cases</p>
-            	{% endif %}
+                {% endif %}
             {% endif %}
         </div>
         <div class="column-full">
             <button class="button button-blue"
-                    value="save" {% if read_only %}disabled{% endif %}>Save</button>
+                value="save" {% if read_only %}disabled{% endif %}>Save</button>
             <button type="button" class="button pull-right button-grey dlg-close">Cancel</button>
         </div>
     </form>

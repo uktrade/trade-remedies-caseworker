@@ -2,56 +2,56 @@
 {% load text_element %}
 <form action="">
 
-<div class="grid-row">
-	<div class="column-full">
-		<div>
-			<div>Select the letter of authority document for this party</div>
-			<select class="form-control" name="deficiency_notice_params_LOA_document" data-attach="showSelectedBlock">
-				<option value="" disabled {% if not submission.deficiency_notice_params.LOA_document%}selected{% endif %}>Please select ...</option>
-				{% for document in documents.loa %}
-					<option value="{{document.id}}" {% if submission.deficiency_notice_params.LOA_document == document.id%}selected{% endif %}
-						data-downloadlink="/document/{{document.id}}/download/">
-		              {{document.name}}
-		            </option>
-				{% endfor %}
-			</select>
-			<a class="button button-blue margin-left-1 download-link" disabled href="">download</a>
-		</div>
-		<div class="margin-top-1" data-attach="ContactPopulate" style="max-width:700px">
-			<p class="margin-bottom-1">Enter the details of the authorising contact (signatory) for <span class="bold">{{submission.organisation.name}}</span> as per the letter of authority.
-			These details are needed to invite this party to reviews of existing measures and/or new cases in the future</p>
-			{% if auth_contacts %}
-				<textarea id="auth-contacts" class="hidden">{{auth_contacts|to_json}}</textarea>
-				<div class="form-group">
-					<label class="form-label" for="contact_selector">Select existing contact or create a new one</label>
-					<select id="contact-selector" class="form-control" name="LOA_contact_id">
-						<option value="">Create new contact</option>
-						{% for auth_contact in auth_contacts %}
-							<option value="{{auth_contact.id}}" {% if LOA.id == auth_contact.id %}selected{% endif %}
-							>{{auth_contact.name}}&nbsp;({{auth_contact.email}})</option>
-						{% endfor %}
-					</select>
-				</div>
-			{% endif %}
-			{% set 'org_name' organisation.name %}
-			{% if submission.deficiency_notice_params.LOA_org_name %}
-				{% set 'org_name' submission.deficiency_notice_params.LOA_org_name %}
-			{% endif %}
-			<div id="contact-form">
-				{% text_element id='name' label='Name' errors=errors value=LOA.name autocomplete='new-password' %}
-				{% text_element id='org_name' label='Organisation name' errors=errors value=organisation.name autocomplete='new-password' readonly=True %}
-				{% text_element id='email' label='Email address' errors=errors value=LOA.email autocomplete='new-password' %}
-				{% text_element id='phone' label='Phone' errors=errors value=LOA.phone autocomplete='new-password' %}
-				{% text_element id='address' label='Address' errors=errors value=LOA.address textarea=True autocomplete='new-password' %}
-			</div>
-	    </div>
-	</div>
-</div>
-<div class="button-group form-group margin-top-1">
-    <span class="issue-button-group pull-left">
-        <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Save</button>
-    </span>
-    <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
-</div>
+    <div class="grid-row">
+        <div class="column-full">
+            <div>
+                <div>Select the letter of authority document for this party</div>
+                <select class="form-control" name="deficiency_notice_params_LOA_document" data-attach="showSelectedBlock">
+                    <option value="" disabled {% if not submission.deficiency_notice_params.LOA_document%}selected{% endif %}>Please select ...</option>
+                    {% for document in documents.loa %}
+                        <option value="{{document.id}}" {% if submission.deficiency_notice_params.LOA_document == document.id%}selected{% endif %}
+                            data-downloadlink="/document/{{document.id}}/download/">
+                            {{document.name}}
+                        </option>
+                    {% endfor %}
+                </select>
+                <a class="button button-blue margin-left-1 download-link" disabled href="">download</a>
+            </div>
+            <div class="margin-top-1" data-attach="ContactPopulate" style="max-width:700px">
+                <p class="margin-bottom-1">Enter the details of the authorising contact (signatory) for <span class="bold">{{submission.organisation.name}}</span> as per the letter of authority.
+                    These details are needed to invite this party to reviews of existing measures and/or new cases in the future</p>
+                {% if auth_contacts %}
+                    <textarea id="auth-contacts" class="hidden">{{auth_contacts|to_json}}</textarea>
+                    <div class="form-group">
+                        <label class="form-label" for="contact_selector">Select existing contact or create a new one</label>
+                        <select id="contact-selector" class="form-control" name="LOA_contact_id">
+                            <option value="">Create new contact</option>
+                            {% for auth_contact in auth_contacts %}
+                                <option value="{{auth_contact.id}}" {% if LOA.id == auth_contact.id %}selected{% endif %}
+                                >{{auth_contact.name}}&nbsp;({{auth_contact.email}})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% set 'org_name' organisation.name %}
+                {% if submission.deficiency_notice_params.LOA_org_name %}
+                    {% set 'org_name' submission.deficiency_notice_params.LOA_org_name %}
+                {% endif %}
+                <div id="contact-form">
+                    {% text_element id='name' label='Name' errors=errors value=LOA.name autocomplete='new-password' %}
+                    {% text_element id='org_name' label='Organisation name' errors=errors value=organisation.name autocomplete='new-password' readonly=True %}
+                    {% text_element id='email' label='Email address' errors=errors value=LOA.email autocomplete='new-password' %}
+                    {% text_element id='phone' label='Phone' errors=errors value=LOA.phone autocomplete='new-password' %}
+                    {% text_element id='address' label='Address' errors=errors value=LOA.address textarea=True autocomplete='new-password' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-group form-group margin-top-1">
+        <span class="issue-button-group pull-left">
+            <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Save</button>
+        </span>
+        <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
+    </div>
 </form>
 

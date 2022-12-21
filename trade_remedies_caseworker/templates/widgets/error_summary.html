@@ -6,9 +6,9 @@
                     {{ message|default:'Please correct the following errors' }}
                 </h2>
                 {% if hint %}
-                <p>
-                    {{ hint }}
-                </p>
+                    <p>
+                        {{ hint }}
+                    </p>
                 {% endif %}
                 <ul class="error-summary-list">
                     {% for key, value in errors.items %}

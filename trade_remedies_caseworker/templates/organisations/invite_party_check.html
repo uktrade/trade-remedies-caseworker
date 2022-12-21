@@ -1,0 +1,98 @@
+{% extends "v2/govuk/base_with_form.html" %}
+
+{% block page_title %}Check and submit{% endblock page_title %}
+
+{% block form_content %}
+
+    <div class="govuk-form-group">
+
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--xl" for="search-reg-org">
+                Review your answers
+            </label>
+        </h1>
+
+        <h2 class="govuk-heading-m">Your invite</h2>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Case
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{case.reference}} - {{ case.name }}
+                </dd>
+            </div>
+        </dl>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Organisation
+                </dt>
+                <dd class="govuk-summary-list__value">
+
+                    {{ organisation.name }}
+
+                </dd>
+                <dd class="govuk-summary-list__actions">
+
+                    {% if new_contact %}
+                        <a href="{% url 'organisations:invite-party-contact-new' case_id=case_id %}" class="govuk-link--no-visited-state">
+                    {% else %}
+                        <a href="{% url 'organisations:invite-party' case_id=case_id %}" class="govuk-link--no-visited-state">
+                    {% endif %}
+                    Change
+                    <span class="govuk-visually-hidden"> organisation</span>
+                </a>
+
+            </dd>
+        </div>
+    </dl>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Contact
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <ul class="govuk-list">
+
+                    {% for contact in selected_contacts %}
+
+                        <li>
+
+                            {{ contact.name }} - {{ contact.email }}
+
+                        </li>
+
+                    {% endfor %}
+
+
+                </ul>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+
+                {% if new_contact %}
+                    <a href="{% url 'organisations:invite-party-contact-new' case_id=case_id %}" class="govuk-link--no-visited-state">
+                {% else %}
+                    <a href="invite-party-contacts-choice" class="govuk-link--no-visited-state">
+                {% endif %}
+
+                Change
+                <span class="govuk-visually-hidden"> contact</span>
+            </a>
+
+        </dd>
+
+    </div>
+
+    </dl>
+
+
+    </div>
+
+    <h2 class="govuk-heading-m">Now send your invite</h2>
+    <p>Submitting this information will send email invites.</p>
+
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and send invite" back_button_text="Back" %}
+
+{% endblock form_content %}
