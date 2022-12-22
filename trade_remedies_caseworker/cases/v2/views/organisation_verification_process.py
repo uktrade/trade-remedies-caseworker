@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from v2_api_client.shared.utlils import get_uploaded_loa_document
@@ -21,6 +22,9 @@ class BaseOrganisationVerificationView(BaseCaseWorkerTemplateView):
         self.invitation = self.client.invitations(
             kwargs["invitation_id"], fields=self.invitation_fields
         )
+        if not self.invitation.invitation_type == 2:
+            # this is not a rep invite, raise 404
+            raise Http404()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

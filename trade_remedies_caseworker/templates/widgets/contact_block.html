@@ -65,7 +65,7 @@
             {% if contact.id in contact_to_invitation %}
                 {# an invitation has been sent to this contact #}
                 {% with invitation=contact_to_invitation|get_item:contact.id %}
-                    {% if invitation.accepted_at and not invitation.approved_at and not invitation.rejected_at %}
+                    {% if invitation.invitation_type == 2 and invitation.accepted_at and not invitation.approved_at and not invitation.rejected_at %}
                         {# this invitation has been accepted and is ready for review by caseworkers #}
                         <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invitation.id %}">Review
                             invite</a>
