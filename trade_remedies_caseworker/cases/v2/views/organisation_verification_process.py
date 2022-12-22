@@ -19,9 +19,14 @@ class BaseOrganisationVerificationView(BaseCaseWorkerTemplateView):
     invitation_fields = []
 
     def dispatch(self, request, *args, **kwargs):
-        self.invitation = self.client.invitations(
-            kwargs["invitation_id"], fields=self.invitation_fields
-        )
+        if self.invitation_fields == "__all__":
+            self.invitation = self.client.invitations(kwargs["invitation_id"])
+        else:
+            if "invitation_type" not in self.invitation_fields:
+                self.invitation_fields.append("invitation_type")
+            self.invitation = self.client.invitations(
+                kwargs["invitation_id"], fields=self.invitation_fields
+            )
         if not self.invitation.invitation_type == 2:
             # this is not a rep invite, raise 404
             raise Http404()
@@ -35,6 +40,7 @@ class BaseOrganisationVerificationView(BaseCaseWorkerTemplateView):
 
 class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, TaskListView):
     template_name = "v2/organisation_verification/tasklist.html"
+    invitation_fields = "__all__"
 
     def get_task_list(self):
         steps = [

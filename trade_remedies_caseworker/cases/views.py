@@ -1802,6 +1802,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     "accepted_at",
                     "contact",
                     "authorised_signatory",
+                    "invitation_type",
                 ],
             )
             authorised_contact_to_invitation = {}
