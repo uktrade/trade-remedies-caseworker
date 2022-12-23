@@ -1,6 +1,6 @@
 {% load confidential %}
 
-  <div class="column-two-thirds">
+<div class="column-two-thirds">
     <h3 class="heading-medium">{{submission.name|default:submission.type.name}}</h3>
     <h4 class="heading-small">Status: {{submission.status.name|default:'N/A'}}</h4>
     <!-- {% include '../submission_status.html' with submission=submission status_context=status_context %} -->
@@ -12,4 +12,4 @@
     <h3 class="heading-medium">Documents for the public file</h3>
     {% include 'widgets/document_list.html' with documents=documents.nonconfidential %}
     {% include 'widgets/notesWidget.html' with notes=notes contentType='cases.submission' modelId=submission.id %}
-  </div>
+</div>

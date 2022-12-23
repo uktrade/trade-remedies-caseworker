@@ -56,6 +56,14 @@ class CompaniesHouseSearch(TemplateView, LoginRequiredMixin, TradeRemediesAPICli
         return HttpResponse(json.dumps(results), content_type="application/json")
 
 
+class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("term")
+        results = self.client.organisations.get_organisations_by_company_name(query)
+        organisations = {"organisations": [each.data_dict for each in results]}
+        return HttpResponse(json.dumps(organisations), content_type="application/json")
+
+
 class SystemParameterSettings(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
@@ -68,10 +76,7 @@ class SystemParameterSettings(
         return render(
             request,
             "settings/system_parameters.html",
-            {
-                "body_classes": "full-width",
-                "system_parameters": system_parameters,
-            },
+            {"body_classes": "full-width", "system_parameters": system_parameters},
         )
 
     def post(self, request, *args, **kwargs):

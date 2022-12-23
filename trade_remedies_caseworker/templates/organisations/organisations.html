@@ -3,64 +3,64 @@
 
 {% block heading %}Organisations{% endblock %}
 {% block main_content %}
-{% include "widgets/tabs.html" with q=tabs %}
+    {% include "widgets/tabs.html" with q=tabs %}
 
-<script>
-  function searchForOrganisation() 
-  {
-    var organisation_filter; // value used to filter by
-    var organisation_table_rows; // array of rows extracted from the table 
-    var organisation_item; // organisation item 
+    <script>
+        function searchForOrganisation()
+        {
+            var organisation_filter; // value used to filter by
+            var organisation_table_rows; // array of rows extracted from the table
+            var organisation_item; // organisation item
 
-    organisation_filter = document.getElementById("organisationSearchInput").value.toUpperCase();
-    organisation_table_rows = document.getElementById("organisationTable").getElementsByTagName("tr");
-    for ( var i = 0; i < organisation_table_rows.length; i++) 
-    {
-      organisation_item = organisation_table_rows[i].getElementsByTagName("td")[0];
-      if (organisation_item) 
-      {
-        if (organisation_item.textContent.toUpperCase().indexOf(organisation_filter) != -1) 
-        {
-          organisation_table_rows[i].style.display = "";  // not "block" - preserve table structure
-        } 
-        else 
-        {
-          organisation_table_rows[i].style.display = "none";
+            organisation_filter = document.getElementById("organisationSearchInput").value.toUpperCase();
+            organisation_table_rows = document.getElementById("organisationTable").getElementsByTagName("tr");
+            for ( var i = 0; i < organisation_table_rows.length; i++)
+            {
+                organisation_item = organisation_table_rows[i].getElementsByTagName("td")[0];
+                if (organisation_item)
+                {
+                    if (organisation_item.textContent.toUpperCase().indexOf(organisation_filter) != -1)
+                    {
+                        organisation_table_rows[i].style.display = "";  // not "block" - preserve table structure
+                    }
+                    else
+                    {
+                        organisation_table_rows[i].style.display = "none";
+                    }
+                }
+                else
+                {
+                    organisation_table_rows[i].style.display = "";   // see above
+                }
+            }
         }
-      }
-      else
-      {
-        organisation_table_rows[i].style.display = "";   // see above
-      }
-    }
-  }
-</script>
+    </script>
 
-<input type="text" id="organisationSearchInput" onkeyup="searchForOrganisation()" placeholder="Search for names.." title="Search" style="margin-bottom:10px;" >
+    <input type="text" id="organisationSearchInput" onkeyup="searchForOrganisation()" placeholder="Search for names.." title="Search" style="margin-bottom:10px;" >
 
-<table class="sortable" data-attach="TableSort" id="organisationTable">
-  <thead>
-    <tr>
-      <th class="sort-active asc">Organisation name</th>
-      <th>Registration No.</th>
-      <th>Country</th>
-      <th>Cases</th>
-      <th>Users</th>
-      <th>Created</th>
-    </tr>
-  </thead>
-  <tbody>
+    <table class="sortable" data-attach="TableSort" id="organisationTable">
+        <thead>
+            <tr>
+                <th class="sort-active asc">Organisation name</th>
+                <th>Registration No.</th>
+                <th>Country</th>
+                <th>Cases</th>
+                <th>Users</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
 
-  {% for organisation in organisations %}
-      <tr>
-          <td sortval="{{organisation.name|lower}}"><a class="link" href="/organisations/{{organisation.id}}/">{{organisation.name}}</a></td>
-          <td>{{organisation.companies_house_id|default:'-'}}</td>
-          <td>{{organisation.country.name}}</td>
-          <td>{{organisation.case_count}}</td>
-          <td>{{organisation.user_count}}</td>
-          <td sortval="{{organisation.created_at}}">{{organisation.created_at|format_date}}</td>
-      </tr>
-  {% endfor %}
-  </tbody>
-</table>
+            {% for organisation in organisations %}
+                <tr>
+                    <td sortval="{{organisation.name|lower}}"><a class="link" href="/organisations/{{organisation.id}}/">{{organisation.name}}</a></td>
+                    <td>{{organisation.companies_house_id|default:'-'}}</td>
+                    <td>{{organisation.country.name}}</td>
+                    <td>{{organisation.case_count}}</td>
+                    <td>{{organisation.user_count}}</td>
+                    <td sortval="{{organisation.created_at}}">{{organisation.created_at|format_date}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

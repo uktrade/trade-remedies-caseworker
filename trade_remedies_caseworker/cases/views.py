@@ -2,64 +2,68 @@ import itertools
 import json
 import logging
 import re
-from django.views.generic import TemplateView
-from django.http import HttpResponse
-from django.views import View
+from collections import defaultdict
+
+import v2_api_client.client
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
-from core.base import GroupRequiredMixin
-from core.utils import (
-    deep_index_items_by,
-    deep_index_items_by_exists,
-    get,
-    key_by,
-    index_users_by_group,
-    compact_list,
-    submission_contact,
-    public_login_url,
-    parse_notify_template,
-    parse_api_datetime,
-    pluck,
-    to_json,
-    from_json,
-    deep_update,
-    internal_redirect,
-    is_date,
-    notify_footer,
-    notify_contact_email,
-)
 from django_countries import countries
-from django.conf import settings
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from v2_api_client.client import TRSAPIClient
+
 from cases.submissions import SUBMISSION_TYPE_HELPERS, get_submission_deadline
 from cases.utils import decorate_orgs
+from core.base import GroupRequiredMixin
 from core.constants import (
     ALL_REGION_ALLOWED_TYPE_IDS,
+    CASE_ROLE_APPLICANT,
+    CASE_ROLE_AWAITING_APPROVAL,
+    CASE_ROLE_PREPARING,
+    CASE_ROLE_REJECTED,
+    DIRECTION_TRA_TO_PUBLIC,
+    SECURITY_GROUPS_TRA,
+    SECURITY_GROUPS_TRA_ADMINS,
+    SECURITY_GROUPS_TRA_TOP_ADMINS,
+    SECURITY_GROUP_ORGANISATION_OWNER,
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
     SECURITY_GROUP_TRA_HEAD_OF_INVESTIGATION,
     SECURITY_GROUP_TRA_LEAD_INVESTIGATOR,
-    SECURITY_GROUPS_TRA,
-    SECURITY_GROUP_TRA_ADMINISTRATOR,
-    SECURITY_GROUPS_TRA_ADMINS,
-    SECURITY_GROUP_ORGANISATION_OWNER,
-    SECURITY_GROUPS_TRA_TOP_ADMINS,
-    SUBMISSION_TYPE_QUESTIONNAIRE,
-    SUBMISSION_TYPE_APPLICATION,
-    SUBMISSION_NOTICE_TYPE_INVITE,
     SUBMISSION_NOTICE_TYPE_DEFICIENCY,
+    SUBMISSION_NOTICE_TYPE_INVITE,
+    SUBMISSION_TYPE_APPLICATION,
+    SUBMISSION_TYPE_QUESTIONNAIRE,
     SUBMISSION_TYPE_THIRD_PARTY,
-    CASE_ROLE_AWAITING_APPROVAL,
-    CASE_ROLE_REJECTED,
-    CASE_ROLE_APPLICANT,
-    CASE_ROLE_PREPARING,
-    DIRECTION_TRA_TO_PUBLIC,
 )
-
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trade_remedies_client.exceptions import APIException
+from core.utils import (
+    compact_list,
+    deep_index_items_by,
+    deep_index_items_by_exists,
+    deep_update,
+    from_json,
+    get,
+    index_users_by_group,
+    internal_redirect,
+    is_date,
+    key_by,
+    notify_contact_email,
+    notify_footer,
+    parse_api_datetime,
+    parse_notify_template,
+    pluck,
+    public_login_url,
+    submission_contact,
+    to_json,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -458,10 +462,26 @@ class PartiesView(CaseBaseView):
             _base["key"] = role["key"]
             _base["name"] = role["plural"]
             if role["allow_cw_create"]:
-                _base["add_link"] = f"Add {role['name']}"
+                _base["add_link"] = "Invite party to case"
             parties.append(_base)
 
+        v2_client = v2_api_client.client.TRSAPIClient(token=self.request.user.token, timeout=30)
+        caseworker_invitations = v2_client.invitations(
+            invitation_type=3,
+            case_id=self.case_id,
+            fields=[
+                "created_at",
+                "created_by",
+                "organisation",
+                "contact",
+            ],
+        )
+        caseworker_invitations = sorted(
+            caseworker_invitations, key=lambda x: x.created_at, reverse=True
+        )
+
         return {
+            "caseworker_invitations": caseworker_invitations,
             "party_types": parties,
             "invites": case_invites,
             "accepted_orgs": list(accepted),
@@ -949,7 +969,9 @@ class SubmissionView(CaseBaseView):
                     )
                 return_data.update(
                     {
-                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/?alert={btn_value}"  # noqa: E301, E501
+                        "redirect_url": f"/case/{case_id}/submission/{submission['id']}/"
+                        f"?alert={btn_value}"
+                        # noqa: E301, E501
                     }
                 )
 
@@ -1760,6 +1782,20 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         org_id = str(organisation_id)
         third_party_contacts = []
         if item == "contacts":
+            v2_client = TRSAPIClient(token=self.request.user.token)
+            all_case_invitations = v2_client.invitations(
+                case_id=case_id,
+                organisation_id=organisation_id,
+                #  we only want to show invitations they have not already been approved or declined
+                approved_at__isnull=True,
+                rejected_at__isnull=True,
+                fields=["contact", "submission"],
+            )
+            contact_to_invitation = defaultdict(list)
+            for invitation in all_case_invitations:
+                if invitation.contact:
+                    contact_to_invitation[invitation.contact.id].append(invitation)
+
             contacts = client.get_organisation_contacts(org_id, case_id)
             for contact in contacts:
                 case = get(contact, "cases/" + str(case_id)) or {}
@@ -1768,7 +1804,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             if org_id in idx_submissions:
                 org_submission_idx = deep_index_items_by(idx_submissions[org_id], "id")
                 third_party_contacts = self.get_third_party_contacts(
-                    org_id, org_submission_idx, all_case_invites
+                    org_id, org_submission_idx, all_case_invites, request.user
                 )
             # `contacts` may also contain on-boarded third-party contacts that
             # have a user, so we need to prune these out.
@@ -1785,6 +1821,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 "invites": deep_index_items_by(all_case_invites, "contact/id"),
                 "third_party_contacts": third_party_contacts,
                 "case_role_id": request.GET.get("caserole"),
+                "contact_to_invitation": contact_to_invitation,
             }
         elif item == "submissions":
             result["submissions"] = idx_submissions.get(org_id, [])
@@ -1803,7 +1840,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         return HttpResponse(json.dumps({"result": result}), content_type="application/json")
 
     @staticmethod
-    def get_third_party_contacts(organisation_id, submissions, invites):
+    def get_third_party_contacts(organisation_id, submissions, invites, user):
         """Get third party contacts.
 
         Given an organisation, its submissions and all invitations for a case,
@@ -1813,6 +1850,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         :param (str) organisation_id: Organisation ID.
         :param (dict) submissions: The organisation's submissions keyed on id.
         :param (list) invites: All invites for a case.
+        :param (User) user: The user requesting this information.
         :returns (list): Contacts arising from 3rd party invite submissions.
         """
         third_party_contacts = []
@@ -1827,13 +1865,21 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                     # Not a third party submission
                     continue
                 inviting_organisation = full_submission[0]["organisation"]["id"]
-                if inviting_organisation == organisation_id:
-                    submission_sufficient = full_submission[0]["status"]["sufficient"]
-                    invite["contact"]["is_third_party"] = True
-                    invite["contact"]["submission_id"] = submission_id
-                    invite["contact"]["submission_sufficient"] = submission_sufficient
-                    invite["contact"]["invited"] = invite["email_sent"]
-                    third_party_contacts.append(invite["contact"])
+
+                # we don't want invitations which have been sent but not accepted, or those that
+                # have been rejected
+                if "FEATURE_FLAG_INVITE_JOURNEY" not in user.groups or (
+                    invite["accepted_at"]
+                    and not invite["rejected_by"]
+                    and not invite["approved_by"]
+                ):
+                    if inviting_organisation == organisation_id:
+                        submission_sufficient = full_submission[0]["status"]["sufficient"]
+                        invite["contact"]["is_third_party"] = True
+                        invite["contact"]["submission_id"] = submission_id
+                        invite["contact"]["submission_sufficient"] = submission_sufficient
+                        invite["contact"]["invited"] = invite["email_sent"]
+                        third_party_contacts.append(invite["contact"])
         return third_party_contacts
 
 
@@ -2140,7 +2186,7 @@ class AuditView(CaseBaseView):
         audit_data = self._client.get_audit(
             case_id=self.case_id, start=self.start, limit=limit, milestone=milestone
         )
-        url = reverse("case_audit", kwargs={"case_id": self.case_id})
+        url = reverse("cases:case_audit", kwargs={"case_id": self.case_id})
         prev_url = next_url = None
         prev_page = max(0, self.start - limit)
         milestone_flag = f"milestone={milestone}".lower()

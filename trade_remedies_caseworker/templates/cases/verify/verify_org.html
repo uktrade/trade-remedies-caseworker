@@ -3,61 +3,61 @@
 {% set 'param_name' 'org_verify' %}
 {% set 'value' json_data.org_verify %}
 {% if representing %}
-	{% set 'param_name' 'contact_org_verify' %}
-	{% set 'value' json_data.contact_org_verify %}
+    {% set 'param_name' 'contact_org_verify' %}
+    {% set 'value' json_data.contact_org_verify %}
 {% endif %}
 
-    <div class="grid-row">
-        <div class="column-full">
-            {% if contact_org %}
-                <div class="info narrow">
-                    {% include "cases/verify/bullet_list.html" with organisation=contact_org %}
+<div class="grid-row">
+    <div class="column-full">
+        {% if contact_org %}
+            <div class="info narrow">
+                {% include "cases/verify/bullet_list.html" with organisation=contact_org %}
+            </div>
+        {% else %}
+            <div class="info narrow">
+                {% include "cases/verify/bullet_list.html" with organisation=organisation %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+<form>
+    <div class="edit-section">
+        <div class="grid-row">
+            <div class="column-full">
+                <div class="margin-top-1">
+                    <h3 class="heading-medium">{% if representing %}Representing organisation applying for access{% else %}Organisation applying for access{% endif %}</h3>
+                    <div class="party-card">
+                        {% include 'organisations/_party_card.html' with party=organisation case_id=case_id %}
+                    </div>
                 </div>
-            {% else %}
-                <div class="info narrow">
-                    {% include "cases/verify/bullet_list.html" with organisation=organisation %}
+                <div class="column-full">
+                    <div class="multiple-choice submit-widget">
+                        <input class="pull-left" name="deficiency_notice_params_{{param_name}}" type="radio" value="accepted" {% if value == "accepted" %}checked{% endif %}>
+                        <label class="form-label">
+                            {{organisation.name}} is not being validated at this time
+                        </label>
+                    </div>
+                    <div class="multiple-choice submit-widget">
+                        <input class="pull-left" name="deficiency_notice_params_{{param_name}}" type="radio" value="verified" {% if value == "verified" %}checked{% endif %}>
+                        <label class="form-label">
+                            {{organisation.name}} is known to be valid
+                        </label>
+                    </div>
+                    <div class="multiple-choice submit-widget">
+                        <input class="pull-left" name="deficiency_notice_params_{{param_name}}" type="radio" value="rejected" {% if value == "rejected" %}checked{% endif %}>
+                        <label class="form-label">
+                            {{organisation.name}} is known to be fraudulent
+                        </label>
+                    </div>
                 </div>
-            {% endif %}
+            </div>
         </div>
     </div>
-<form>
-	<div class="edit-section">
-		<div class="grid-row">
-			<div class="column-full">
-				<div class="margin-top-1">
-					<h3 class="heading-medium">{% if representing %}Representing organisation applying for access{% else %}Organisation applying for access{% endif %}</h3>
-					<div class="party-card">
-						{% include 'organisations/_party_card.html' with party=organisation case_id=case_id %}
-					</div>
-				</div>
-				<div class="column-full">
-					<div class="multiple-choice submit-widget">
-						<input class="pull-left" name="deficiency_notice_params_{{param_name}}" type="radio" value="accepted" {% if value == "accepted" %}checked{% endif %}>
-						<label class="form-label">
-							{{organisation.name}} is not being validated at this time
-						</label>
-					</div>
-					<div class="multiple-choice submit-widget">
-						<input class="pull-left" name="deficiency_notice_params_{{param_name}}" type="radio" value="verified" {% if value == "verified" %}checked{% endif %}>
-						<label class="form-label">
-							{{organisation.name}} is known to be valid
-						</label>
-					</div>
-					<div class="multiple-choice submit-widget">
-						<input class="pull-left" name="deficiency_notice_params_{{param_name}}" type="radio" value="rejected" {% if value == "rejected" %}checked{% endif %}>
-						<label class="form-label">
-							{{organisation.name}} is known to be fraudulent
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="button-group form-group margin-top-1">
-	    <span class="issue-button-group pull-left">
-	        <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Save</button>
-	    </span>
-	    <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
-	</div>
+    <div class="button-group form-group margin-top-1">
+        <span class="issue-button-group pull-left">
+            <button class="button button-blue pull-left" type="submit" name="btn-value" value="send" >Save</button>
+        </span>
+        <button type="button" class="button button-grey pull-right dlg-close" title="Exit without saving" >Exit</button>
+    </div>
 </form>
 

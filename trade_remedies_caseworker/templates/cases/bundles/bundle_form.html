@@ -15,44 +15,44 @@
             data-redirect="/document/bundle/{{bundle.id}}/"
         {% endif %}
     >
-    {% csrf_token %}
-    {% set 'initialize' 0 %}
-    {% include 'cases/submissions/virus_warnings.html' %}
-    {% include 'cases/submissions/upload_warning.html' %}
+        {% csrf_token %}
+        {% set 'initialize' 0 %}
+        {% include 'cases/submissions/virus_warnings.html' %}
+        {% include 'cases/submissions/upload_warning.html' %}
 
-    <div class="bundle-builder section populated">
-        {% block bundle_type %}
-        {% endblock %}
+        <div class="bundle-builder section populated">
+            {% block bundle_type %}
+            {% endblock %}
 
-        {% block bundle_documents %}
-        {% endblock %}
+            {% block bundle_documents %}
+            {% endblock %}
 
-        {% block bundle_finalise %}
-        {% endblock %}
+            {% block bundle_finalise %}
+            {% endblock %}
 
-        <div class="form-group edit-button-group">
+            <div class="form-group edit-button-group">
 
-            {% if bundle.status != 'LIVE' %}
-                <button class="button button-blue margin-top-1" type="submit" name="save" value="save">Save and continue</button>
+                {% if bundle.status != 'LIVE' %}
+                    <button class="button button-blue margin-top-1" type="submit" name="save" value="save">Save and continue</button>
 
-                {% if bundle.status == 'DRAFT' and edit != 'type' %}
-                <div style="float: right;">
-                    <button type="submit" class="button button-red margin-top-1"
-                        name="delete"
-                        value="delete"
-                        data-handler="clickConfirm"
-                        data-title="Confirm delete"
-                        data-message="Are you sure you want to delete this bundle?<br>This action cannot be undone.">
-                        Delete bundle
-                    </button>
-                </div>
+                    {% if bundle.status == 'DRAFT' and edit != 'type' %}
+                        <div style="float: right;">
+                            <button type="submit" class="button button-red margin-top-1"
+                                name="delete"
+                                value="delete"
+                                data-handler="clickConfirm"
+                                data-title="Confirm delete"
+                                data-message="Are you sure you want to delete this bundle?<br>This action cannot be undone.">
+                                Delete bundle
+                            </button>
+                        </div>
+                    {% endif %}
+
                 {% endif %}
-
-            {% endif %}
-            <p><br/>
-            <a href="/document/bundles/">Back</a>
-            </p>
+                <p><br/>
+                    <a href="/document/bundles/">Back</a>
+                </p>
+            </div>
         </div>
-    </div>
     </form>
 {% endblock %}

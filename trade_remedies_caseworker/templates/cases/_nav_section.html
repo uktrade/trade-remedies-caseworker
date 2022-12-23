@@ -1,19 +1,19 @@
 {% load format_date %}
 
 {% block case_page_content %}
-	{% if navSection.id %}
-	    <h2 class="heading-large">
-			<div class="in-place-edit" data-attach="EditInPlace2" data-id="{{navSection.id}}" data-model="section" data-name="name">
-				{{navSection.name}}
-			</div>
-	    </h2>
-	    <p class="in-place-edit nav-section-content" data-attach="EditInPlace2" data-id="{{navSection.id}}" data-model="section" data-name="content" data-multiline="true">
-	        {{navSection.content|linebreaksbr}}
-	    </p>
-	    {% include "widgets/notesWidget.html" with modelId=navSection.id contentType="content.content" %}
+    {% if navSection.id %}
+        <h2 class="heading-large">
+            <div class="in-place-edit" data-attach="EditInPlace2" data-id="{{navSection.id}}" data-model="section" data-name="name">
+                {{navSection.name}}
+            </div>
+        </h2>
+        <p class="in-place-edit nav-section-content" data-attach="EditInPlace2" data-id="{{navSection.id}}" data-model="section" data-name="content" data-multiline="true">
+            {{navSection.content|linebreaksbr}}
+        </p>
+        {% include "widgets/notesWidget.html" with modelId=navSection.id contentType="content.content" %}
     {% else %}
-		<h2 class="heading-medium text-grey">
-			No section selected
-		</h2>
+        <h2 class="heading-medium text-grey">
+            No section selected
+        </h2>
     {% endif %}
 {% endblock %}

@@ -21,7 +21,7 @@ botocore==1.20.112
     #   -r requirements.in/../requirements/base.txt
     #   boto3
     #   s3transfer
-certifi==2021.5.30
+certifi==2022.12.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
@@ -95,7 +95,7 @@ et-xmlfile==1.1.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   openpyxl
-gevent==21.1.2
+gevent==21.12.0
     # via -r requirements.in/prod.in
 greenlet==1.1.1
     # via gevent
@@ -173,7 +173,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/../requirements/base.txt
 waitress==2.1.2
     # via -r requirements.in/../requirements/base.txt
