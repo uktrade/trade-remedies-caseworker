@@ -1789,12 +1789,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             v2_client = TRSAPIClient(token=self.request.user.token)
             all_case_invitations = v2_client.invitations(
                 case_id=case_id,
-                #  we only want to show invitations that have been accepted and
-                #  not already been approved or declined
-                approved_at__isnull=True,
-                rejected_at__isnull=True,
                 organisation_id=organisation_id,
-                accepted_at__isnull=False,
                 fields=[
                     "id",
                     "approved_at",
