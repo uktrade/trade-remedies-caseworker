@@ -112,13 +112,6 @@ class OrganisationVerificationVerifyRepresentative(
         context = super().get_context_data(**kwargs)
         invited_organisation = self.client.organisations(
             self.invitation.contact.organisation,
-            fields=[
-                "name",
-                "rejected_cases",
-                "representative_cases",
-                "user_cases",
-                "case_contacts",
-            ],
         )
         context["invited_organisation"] = invited_organisation
         context["inviter_organisation"] = self.client.organisations(self.invitation.organisation.id)
