@@ -106,7 +106,7 @@ class OrganisationVerificationVerifyRepresentative(
 ):
     template_name = "v2/organisation_verification/verify_representative.html"
     form_class = BeenAbleToVerifyRepresentativeForm
-    invitation_fields = ["contact", "organisation", "name", "email", "submission"]
+    invitation_fields = ["contact", "organisation", "name", "email", "submission", "case"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -133,41 +133,30 @@ class OrganisationVerificationVerifyRepresentative(
             not in [CASE_ROLE_AWAITING_APPROVAL, CASE_ROLE_REJECTED, CASE_ROLE_PREPARING]
         ]
         context["invited_approved_organisation_case_roles"] = approved_roles
-        context["number_of_approved_cases"] = len(approved_roles)
-        context["last_approval"] = (
-            sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
-        )
         context["approved_representative_cases"] = [
             each for each in invited_organisation.representative_cases if each.validated
         ]
 
         # removing rejections from this case
-        rejected_cases = [
-            each
-            for each in invited_organisation.rejected_cases
-            if each.invitation_id != self.invitation.id
-        ]
+        rejected_cases = [each for each in invited_organisation.rejected_cases]
         context["rejected_cases"] = rejected_cases
-
         context["last_rejection"] = (
-            sorted(rejected_cases, key=lambda x: x.date_rejected)[0]
-            if invited_organisation.rejected_cases
-            else None
+            sorted(rejected_cases, key=lambda x: x.date_rejected)[0] if rejected_cases else None
         )
 
-        seen_org_case_combos = []
-        no_duplicate_user_cases = []
-        for user_case in invited_organisation.user_cases:
-            if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
-                no_duplicate_user_cases.append(user_case)
-                seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
-
-        context["user_cases"] = no_duplicate_user_cases
-        context["cases_acting_as_rep"] = [
-            each
-            for each in invited_organisation.case_contacts
-            if each.organisation != invited_organisation.id
+        context["rejected_representative_cases"] = [
+            each for each in rejected_cases if each.type == "representative"
         ]
+        context["rejected_interested_party_cases"] = [
+            each for each in rejected_cases if each.type == "interested_party"
+        ]
+
+        context["number_of_approved_cases"] = len(
+            approved_roles + context["approved_representative_cases"]
+        )
+        context["last_approval"] = (
+            sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
+        )
 
         return context
 
@@ -287,6 +276,7 @@ class OrganisationVerificationExplainUnverifiedRepresentativeView(
 ):
     template_name = "v2/organisation_verification/explain_unverified_representative.html"
     form_class = ExplainUnverifiedRepresentativeForm
+    invitation_fields = ["submission"]
 
     def form_valid(self, form):
         self.client.submissions(self.invitation.submission.id).update(
