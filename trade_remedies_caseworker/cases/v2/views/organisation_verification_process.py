@@ -13,6 +13,7 @@ from cases.v2.forms import (
     ExplainUnverifiedRepresentativeForm,
 )
 from config.base_views import BaseCaseWorkerTemplateView, FormInvalidMixin, TaskListView
+from core.constants import CASE_ROLE_AWAITING_APPROVAL, CASE_ROLE_PREPARING, CASE_ROLE_REJECTED
 
 
 class BaseOrganisationVerificationView(BaseCaseWorkerTemplateView):
@@ -109,15 +110,29 @@ class OrganisationVerificationVerifyRepresentative(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invited_organisation = self.client.organisations(self.invitation.contact.organisation)
+        invited_organisation = self.client.organisations(
+            self.invitation.contact.organisation,
+            fields=[
+                "name",
+                "rejected_cases",
+                "representative_cases",
+                "user_cases",
+                "case_contacts",
+            ],
+        )
         context["invited_organisation"] = invited_organisation
         context["inviter_organisation"] = self.client.organisations(self.invitation.organisation.id)
 
         organisation_case_roles = self.client.organisation_case_roles(
             organisation_id=self.invitation.contact.organisation
         )
-        approved_roles = [each for each in organisation_case_roles if each.validated_at]
-        context["invited_approved_organisation_case_roles"] = organisation_case_roles
+        approved_roles = [
+            each
+            for each in organisation_case_roles
+            if each.case_role_key
+            not in [CASE_ROLE_AWAITING_APPROVAL, CASE_ROLE_REJECTED, CASE_ROLE_PREPARING]
+        ]
+        context["invited_approved_organisation_case_roles"] = approved_roles
         context["number_of_approved_cases"] = len(approved_roles)
         context["last_approval"] = (
             sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None

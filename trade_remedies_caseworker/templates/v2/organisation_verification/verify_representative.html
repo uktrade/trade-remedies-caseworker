@@ -124,7 +124,7 @@
                                 <ul class="govuk-list">
                                     {% for org_case_role in invited_approved_organisation_case_roles %}
                                         <li>
-                                            <a href=""
+                                            <a href="{% url 'cases:view_case' case_id=org_case_role.case.id %}"
                                                 class="govuk-link--no-visited-state">{{ org_case_role.case.reference }}
                                                 - {{ org_case_role.case.name }}</a>
                                             ({{ org_case_role.role_name }})
