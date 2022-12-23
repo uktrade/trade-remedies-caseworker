@@ -1785,6 +1785,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             v2_client = TRSAPIClient(token=self.request.user.token)
             all_case_invitations = v2_client.invitations(
                 case_id=case_id,
+                organisation_id=organisation_id,
                 #  we only want to show invitations they have not already been approved or declined
                 approved_at__isnull=True,
                 rejected_at__isnull=True,
@@ -1803,7 +1804,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             if org_id in idx_submissions:
                 org_submission_idx = deep_index_items_by(idx_submissions[org_id], "id")
                 third_party_contacts = self.get_third_party_contacts(
-                    org_id, org_submission_idx, all_case_invites
+                    org_id, org_submission_idx, all_case_invites, request.user
                 )
             # `contacts` may also contain on-boarded third-party contacts that
             # have a user, so we need to prune these out.
@@ -1839,7 +1840,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         return HttpResponse(json.dumps({"result": result}), content_type="application/json")
 
     @staticmethod
-    def get_third_party_contacts(organisation_id, submissions, invites):
+    def get_third_party_contacts(organisation_id, submissions, invites, user):
         """Get third party contacts.
 
         Given an organisation, its submissions and all invitations for a case,
@@ -1849,6 +1850,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         :param (str) organisation_id: Organisation ID.
         :param (dict) submissions: The organisation's submissions keyed on id.
         :param (list) invites: All invites for a case.
+        :param (User) user: The user requesting this information.
         :returns (list): Contacts arising from 3rd party invite submissions.
         """
         third_party_contacts = []
@@ -1866,7 +1868,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
 
                 # we don't want invitations which have been sent but not accepted, or those that
                 # have been rejected
-                if (
+                if "FEATURE_FLAG_INVITE_JOURNEY" not in user.groups or (
                     invite["accepted_at"]
                     and not invite["rejected_by"]
                     and not invite["approved_by"]
