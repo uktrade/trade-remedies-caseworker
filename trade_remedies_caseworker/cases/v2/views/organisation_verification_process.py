@@ -324,7 +324,13 @@ class OrganisationVerificationApprovedView(BaseOrganisationVerificationView):
 
 class OrganisationVerificationConfirmDeclinedView(BaseOrganisationVerificationView):
     template_name = "v2/organisation_verification/confirm.html"
-    invitation_fields = ["contact", "submission", "organisation_name", "created_by", "authorised_signatory"]
+    invitation_fields = [
+        "contact",
+        "submission",
+        "organisation_name",
+        "created_by",
+        "authorised_signatory",
+    ]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
