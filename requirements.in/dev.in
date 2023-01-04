@@ -17,6 +17,7 @@ pytest-pythonpath
 pytest-xdist
 selenium==3.141.0
 traitlets==4.3.3
+wheel>=0.38.1
 
 # ipython dep - for CVE-2021-27291
 pygments==2.8.1
