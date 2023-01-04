@@ -10,29 +10,44 @@
 
 {% block form_content %}
     <div class="govuk-form-group">
+
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
                 Invite sent
             </h1>
         </div>
+
         <p>We have sent the invite to:</p>
+
+
         <ul class="govuk-list">
+
             {% for contact in selected_contacts %}
+
                 <li>
+
                     {{ contact.name }} - {{ contact.email }}
+
                 </li>
+
             {% endfor %}
+
+
         </ul>
+
+
         <p>The invite will ask them to register interest in the case.</p>
         <p>You will be alerted when they have completed their registration of interest.</p>
+
     </div>
+
     <div class="govuk-button-group">
         <button class="govuk-button" data-module="govuk-button">
             Back to case
         </button>
-        <a class="govuk-link govuk-link--no-visited-state"
-            href="{% url 'organisations:invite-party' case_id=case_id %}?case_role_key={{ case_role_key }}">
+        <a class="govuk-link" govuk-link--no-visited-state href="{% url 'organisations:invite-party' case_id=case_id %}" >
             Invite another party
         </a>
     </div>
+
 {% endblock form_content %}

@@ -9,8 +9,8 @@ class BeenAbleToVerifyRepresentativeForm(ValidationForm):
             "required": "verify_invite_no_option_selected",
         },
         choices=(
-            ("True", True),
-            ("False", False),
+            ("yes", True),
+            ("no", False),
         ),
     )
 

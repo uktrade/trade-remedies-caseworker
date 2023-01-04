@@ -36,12 +36,40 @@ class TestOrganisationInviteForm(TestCase):
     def test_organisations_searched_but_not_selected(self):
         form = OrganisationInviteForm(data={"input-autocomplete": "TEST"})
         self.assertFalse(form.is_valid())
-        assert "organisation_not_selected" in form.errors["company_search_container"]
+        self.assertEqual(
+            form.errors.as_json(),
+            '{"organisation_name": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"organisation_address": [{"message": "This field is required.", '
+            '"code": "required"}], '
+            '"organisation_post_code": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"companies_house_id": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"organisation_id": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"company_search_container": [{"message": "organisation_not_selected",'
+            ' "code": ""}]}',
+        )
 
     def test_organisations_not_searched(self):
         form = OrganisationInviteForm(data={})
         self.assertFalse(form.is_valid())
-        assert "organisation_not_searched" in form.errors["company_search_container"]
+        self.assertEqual(
+            form.errors.as_json(),
+            '{"organisation_name": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"organisation_address": [{"message": "This field is required.", '
+            '"code": "required"}], '
+            '"organisation_post_code": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"companies_house_id": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"organisation_id": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"company_search_container": [{"message": "organisation_not_searched",'
+            ' "code": ""}]}',
+        )
 
 
 class TestOrganisationInviteContactForm(TestCase):
