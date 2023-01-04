@@ -101,17 +101,17 @@
             placeholder: "Search",
             id: 'my-autocomplete',
             autoselect: true,
-            minLength: 1,
+            minLength: 3,
             confirmOnBlur: false,
             source: function (query, populateResults) {
-                if (query.trim().length < 2) {
+                if (query.trim().length < 3) {
                     populateResults([])
                     clearCompany()
                 } else {
                     $.ajax
                     ({
                         type: "GET",
-                        url: `{% url 'organisationnamesearch' %}?term=${query}`,
+                        url: `{% url 'organisationnamesearch' %}?term=${query}&case_id={{case_id}}`,
                         success: function (data) {
                             if (data) {
                                 // remove nulls and convert back to JS object
