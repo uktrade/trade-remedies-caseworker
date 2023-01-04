@@ -2,7 +2,6 @@ import itertools
 import json
 import logging
 import re
-from collections import defaultdict
 
 import v2_api_client.client
 from django.conf import settings
@@ -1786,15 +1785,25 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             all_case_invitations = v2_client.invitations(
                 case_id=case_id,
                 organisation_id=organisation_id,
-                #  we only want to show invitations they have not already been approved or declined
-                approved_at__isnull=True,
-                rejected_at__isnull=True,
-                fields=["contact", "submission"],
+                fields=[
+                    "id",
+                    "approved_at",
+                    "rejected_at",
+                    "accepted_at",
+                    "contact",
+                    "authorised_signatory",
+                    "invitation_type",
+                ],
             )
-            contact_to_invitation = defaultdict(list)
+            authorised_contact_to_invitation = {}
+            contact_to_invitation = {}
             for invitation in all_case_invitations:
+                if invitation.authorised_signatory:
+                    authorised_contact_to_invitation[
+                        invitation.authorised_signatory.id
+                    ] = invitation
                 if invitation.contact:
-                    contact_to_invitation[invitation.contact.id].append(invitation)
+                    contact_to_invitation[invitation.contact.id] = invitation
 
             contacts = client.get_organisation_contacts(org_id, case_id)
             for contact in contacts:
@@ -1822,6 +1831,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 "third_party_contacts": third_party_contacts,
                 "case_role_id": request.GET.get("caserole"),
                 "contact_to_invitation": contact_to_invitation,
+                "authorised_contact_to_invitation": authorised_contact_to_invitation,
             }
         elif item == "submissions":
             result["submissions"] = idx_submissions.get(org_id, [])

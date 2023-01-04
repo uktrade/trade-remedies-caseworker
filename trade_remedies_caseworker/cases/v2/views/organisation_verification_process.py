@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from v2_api_client.shared.utlils import get_uploaded_loa_document
@@ -12,15 +13,24 @@ from cases.v2.forms import (
     ExplainUnverifiedRepresentativeForm,
 )
 from config.base_views import BaseCaseWorkerTemplateView, FormInvalidMixin, TaskListView
+from core.constants import CASE_ROLE_AWAITING_APPROVAL, CASE_ROLE_PREPARING, CASE_ROLE_REJECTED
 
 
 class BaseOrganisationVerificationView(BaseCaseWorkerTemplateView):
     invitation_fields = []
 
     def dispatch(self, request, *args, **kwargs):
-        self.invitation = self.client.invitations(
-            kwargs["invitation_id"], fields=self.invitation_fields
-        )
+        if self.invitation_fields == "__all__":
+            self.invitation = self.client.invitations(kwargs["invitation_id"])
+        else:
+            if "invitation_type" not in self.invitation_fields:
+                self.invitation_fields.append("invitation_type")
+            self.invitation = self.client.invitations(
+                kwargs["invitation_id"], fields=self.invitation_fields
+            )
+        if not self.invitation.invitation_type == 2:
+            # this is not a rep invite, raise 404
+            raise Http404()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -31,6 +41,7 @@ class BaseOrganisationVerificationView(BaseCaseWorkerTemplateView):
 
 class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, TaskListView):
     template_name = "v2/organisation_verification/tasklist.html"
+    invitation_fields = "__all__"
 
     def get_task_list(self):
         steps = [
@@ -57,7 +68,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                         ),
                         "link_text": "Letter of Authority",
                         "status": "Complete"
-                        if self.invitation.submission.primary_contact
+                        if self.invitation.authorised_signatory
                         else "Not Started",
                         "ready_to_do": True,
                     },
@@ -95,59 +106,55 @@ class OrganisationVerificationVerifyRepresentative(
 ):
     template_name = "v2/organisation_verification/verify_representative.html"
     form_class = BeenAbleToVerifyRepresentativeForm
-    invitation_fields = ["contact", "organisation", "name", "email", "submission"]
+    invitation_fields = ["contact", "organisation", "name", "email", "submission", "case"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invited_organisation = self.client.organisations(self.invitation.contact.organisation)
+        invited_organisation = self.client.organisations(
+            self.invitation.contact.organisation,
+        )
         context["invited_organisation"] = invited_organisation
         context["inviter_organisation"] = self.client.organisations(self.invitation.organisation.id)
 
         organisation_case_roles = self.client.organisation_case_roles(
             organisation_id=self.invitation.contact.organisation
         )
-        approved_roles = [each for each in organisation_case_roles if each.validated_at]
-        context["invited_approved_organisation_case_roles"] = organisation_case_roles
-        context["number_of_approved_cases"] = len(approved_roles)
-        context["last_approval"] = (
-            sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
-        )
+        approved_roles = [
+            each
+            for each in organisation_case_roles
+            if each.case_role_key
+            not in [CASE_ROLE_AWAITING_APPROVAL, CASE_ROLE_REJECTED, CASE_ROLE_PREPARING]
+        ]
+        context["invited_approved_organisation_case_roles"] = approved_roles
         context["approved_representative_cases"] = [
             each for each in invited_organisation.representative_cases if each.validated
         ]
 
         # removing rejections from this case
-        rejected_cases = [
-            each
-            for each in invited_organisation.rejected_cases
-            if each.invitation_id != self.invitation.id
-        ]
+        rejected_cases = [each for each in invited_organisation.rejected_cases]
         context["rejected_cases"] = rejected_cases
-
         context["last_rejection"] = (
-            sorted(rejected_cases, key=lambda x: x.date_rejected)[0]
-            if invited_organisation.rejected_cases
-            else None
+            sorted(rejected_cases, key=lambda x: x.date_rejected)[0] if rejected_cases else None
         )
 
-        seen_org_case_combos = []
-        no_duplicate_user_cases = []
-        for user_case in invited_organisation.user_cases:
-            if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
-                no_duplicate_user_cases.append(user_case)
-                seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
-
-        context["user_cases"] = no_duplicate_user_cases
-        context["cases_acting_as_rep"] = [
-            each
-            for each in invited_organisation.case_contacts
-            if each.organisation != invited_organisation.id
+        context["rejected_representative_cases"] = [
+            each for each in rejected_cases if each.type == "representative"
         ]
+        context["rejected_interested_party_cases"] = [
+            each for each in rejected_cases if each.type == "interested_party"
+        ]
+
+        context["number_of_approved_cases"] = len(
+            approved_roles + context["approved_representative_cases"]
+        )
+        context["last_approval"] = (
+            sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
+        )
 
         return context
 
     def form_valid(self, form):
-        if form.cleaned_data["been_able_to_verify_representative"] == "yes":
+        if form.cleaned_data["been_able_to_verify_representative"] == "True":
             self.client.submissions(self.invitation.submission.id).update(
                 {
                     "deficiency_notice_params": json.dumps(
@@ -192,19 +199,7 @@ class OrganisationVerificationVerifyLetterOfAuthority(
 ):
     template_name = "v2/organisation_verification/verify_letter_of_authority.html"
     form_class = AuthorisedSignatoryForm
-    invitation_fields = ["submission", "created_by", "organisation", "case"]
-
-    def update_authorised_contact(self, contact_id):
-        """Updates the authorised_contact of the inviting OrgCaseRole object"""
-        org_case_role = self.client.organisation_case_roles(
-            organisation_id=self.invitation.organisation.id, case_id=self.invitation.case.id
-        )[0]
-        org_case_role.update(
-            {"auth_contact": contact_id},
-            fields=[
-                "auth_contact",
-            ],
-        )
+    invitation_fields = ["submission", "created_by", "organisation", "case", "authorised_signatory"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -221,7 +216,9 @@ class OrganisationVerificationVerifyLetterOfAuthority(
                 )
             )
         else:
-            self.update_authorised_contact(form.cleaned_data["authorised_signatory"])
+            self.invitation.update(
+                {"authorised_signatory": form.cleaned_data["authorised_signatory"]}
+            )
 
             return redirect(
                 reverse(
@@ -255,9 +252,9 @@ class OrganisationVerificationVerifyLetterOfAuthorityCreateNewContact(
             contact.change_organisation(self.invitation.organisation_id)
 
         # assigning them to the case
-        contact.add_to_case(case_id=self.invitation.case.id, primary=True)
+        contact.add_to_case(case_id=self.invitation.case.id, primary=False)
 
-        self.update_authorised_contact(contact.id)
+        self.invitation.update({"authorised_signatory": contact.id})
 
         return redirect(
             reverse(
@@ -272,6 +269,7 @@ class OrganisationVerificationExplainUnverifiedRepresentativeView(
 ):
     template_name = "v2/organisation_verification/explain_unverified_representative.html"
     form_class = ExplainUnverifiedRepresentativeForm
+    invitation_fields = ["submission"]
 
     def form_valid(self, form):
         self.client.submissions(self.invitation.submission.id).update(
@@ -293,12 +291,17 @@ class OrganisationVerificationExplainUnverifiedRepresentativeView(
 
 class OrganisationVerificationConfirmView(BaseOrganisationVerificationView):
     template_name = "v2/organisation_verification/confirm.html"
-    invitation_fields = ["contact", "submission", "organisation_name", "created_by"]
+    invitation_fields = [
+        "contact",
+        "submission",
+        "organisation_name",
+        "created_by",
+        "authorised_signatory",
+    ]
 
     def post(self, request, *args, **kwargs):
         # the caseworker is approving this invite
         self.invitation.process_representative_invitation(approved=True)
-        # self.client.submissions(self.invitation.submission.id).update_submission_status("review_ok")
         return redirect(
             reverse(
                 "verify_organisation_verify_approved", kwargs={"invitation_id": self.invitation.id}
@@ -321,7 +324,13 @@ class OrganisationVerificationApprovedView(BaseOrganisationVerificationView):
 
 class OrganisationVerificationConfirmDeclinedView(BaseOrganisationVerificationView):
     template_name = "v2/organisation_verification/confirm.html"
-    invitation_fields = ["contact", "submission", "organisation_name", "created_by"]
+    invitation_fields = [
+        "contact",
+        "submission",
+        "organisation_name",
+        "created_by",
+        "authorised_signatory",
+    ]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
