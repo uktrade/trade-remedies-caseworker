@@ -3,11 +3,11 @@ from django import forms
 
 
 class OrganisationInviteForm(ValidationForm):
-    organisation_name = forms.CharField(required=False)
-    organisation_address = forms.CharField(required=False)
-    organisation_post_code = forms.CharField(required=False)
-    companies_house_id = forms.CharField(required=False)
-    organisation_id = forms.CharField(required=False)
+    organisation_name = forms.CharField()
+    organisation_address = forms.CharField()
+    organisation_post_code = forms.CharField()
+    companies_house_id = forms.CharField()
+    organisation_id = forms.CharField()
     # Need a field to match element id in the form html template to add error message
     company_search_container = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -28,7 +28,7 @@ class OrganisationInviteForm(ValidationForm):
         else:
             self.cleaned_data["organisation_address"] = (
                 self.cleaned_data["organisation_address"]
-                .removesuffix(self.cleaned_data.get("organisation_post_code", ""))
+                .removesuffix(self.cleaned_data["organisation_post_code"])
                 .rstrip(", ")
             )
 

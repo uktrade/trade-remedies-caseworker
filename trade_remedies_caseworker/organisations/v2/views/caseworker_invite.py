@@ -180,7 +180,6 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
                 "name": form.cleaned_data["contact_name"],
                 "email": form.cleaned_data["contact_email"],
                 "organisation": organisation.id,
-                "draft": True,
             }
         )
         self.request.session["selected_contacts"] = [
