@@ -52,7 +52,7 @@
 
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
-    <script type="application/javascript">
+    <script type="text/javascript">
         accessibleAutocomplete.enhanceSelectElement({
             autoselect: true,
             confirmOnBlur: false,
@@ -73,7 +73,7 @@
                             {% if org.companies_house_id is not None %}
                                 company["id"] = "({{ org.companies_house_id }})"
                             {% endif %}
-                            {% if org.address is not None %}company["address"] = "{{ org.address }},"{% endif %}  //PS-IGNORE
+                            {% if org.address is not None %}company["address"] = "{{ org.address|linebreaks|striptags }},"{% endif %}  //PS-IGNORE
                             {% if org.post_code is not None %}company["post_code"] = "{{ org.post_code }}"{% endif %}
 
                             $("#organisation-invite-form").submit(function () {
