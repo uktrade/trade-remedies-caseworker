@@ -1,6 +1,6 @@
 from django.urls import path
 
-from organisations.v2.views import edit_organisation, caseworker_invite
+from organisations.v2.views import caseworker_invite, edit_organisation
 from organisations.views import (
     ContactDeleteView,
     ContactFormView,
@@ -184,5 +184,14 @@ urlpatterns += [
         "case/<uuid:case_id>/invite/invite-party-complete",
         caseworker_invite.OrganisationInviteCompleteView.as_view(),
         name="invite-party-complete",
+    ),
+]
+
+# merge organisations URLS
+urlpatterns += [
+    path(
+        "merge_organisations/select_differences/<uuid:parent_organisation_id>/<uuid:duplicate_organisation_id>",
+        caseworker_invite.OrganisationInviteReviewView.as_view(),
+        name="merge_organisations_select_differences",
     ),
 ]
