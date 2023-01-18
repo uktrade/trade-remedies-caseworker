@@ -13,3 +13,7 @@ class EditOrganisationForm(ValidationForm):
     vat_number = forms.CharField(required=False)
     eori_number = forms.CharField(required=False)
     duns_number = forms.CharField(required=False)
+
+
+class ReviewMergeOrganisationForm(ValidationForm):
+    ...
