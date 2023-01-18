@@ -1,6 +1,6 @@
 from django.urls import path
 
-from organisations.v2.views import edit_organisation, caseworker_invite
+from organisations.v2.views import edit_organisation, caseworker_invite, review_merge_organisation
 from organisations.views import (
     ContactDeleteView,
     ContactFormView,
@@ -152,37 +152,8 @@ urlpatterns += [
 
 urlpatterns += [
     path(
-        "v2/edit/<uuid:organisation_id>/",
-        edit_organisation.EditOrganisationView.as_view(),
-        name="v2_edit_organisation",
-    ),
-]
-
-# caseworker invite URLS
-urlpatterns += [
-    path(
-        "case/<uuid:case_id>/invite/invite-party/",
-        caseworker_invite.OrganisationInviteView.as_view(),
-        name="invite-party",
-    ),
-    path(
-        "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-contacts-choice",
-        caseworker_invite.OrganisationInviteContactsView.as_view(),
-        name="invite-party-contacts-choice",
-    ),
-    path(
-        "case/<uuid:case_id>/invite/invite-party-contact-new",
-        caseworker_invite.OrganisationInviteContactNewView.as_view(),
-        name="invite-party-contact-new",
-    ),
-    path(
-        "case/<uuid:case_id>/invite/<uuid:organisation_id>/invite-party-check",
-        caseworker_invite.OrganisationInviteReviewView.as_view(),
-        name="invite-party-check",
-    ),
-    path(
-        "case/<uuid:case_id>/invite/invite-party-complete",
-        caseworker_invite.OrganisationInviteCompleteView.as_view(),
-        name="invite-party-complete",
+        "review_merge/<uuid:organisation_id>/invitation/<uuid:invitation_id>",
+        review_merge_organisation.ReviewMergeOrganisationView.as_view(),
+        name="review-merge-organisation",
     ),
 ]
