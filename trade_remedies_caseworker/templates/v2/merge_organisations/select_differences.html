@@ -1,0 +1,201 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Unverified party{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-full">
+        <span class="govuk-caption-xl">
+            Review matching organisations
+        </span>
+        <h1 class="govuk-heading-xl">
+            Select details to keep when the records are merged (2 of 2)
+        </h1>
+        <form method="post">
+            <table class="govuk-table merge">
+                <caption class="govuk-table__caption govuk-visually-hidden">
+                    A table to select which information should be kept during a merge.
+                </caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Field</th>
+                        <th scope="col" class="govuk-table__header">Selected organisation</th>
+                        <th scope="col" class="govuk-table__header">
+                            Matching organisation (2 of 2)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Name</th>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="name-rep" name="representative1" type="radio"
+                                        value="BlueSteel Partners" checked="">
+                                    <label class="govuk-label govuk-radios__label" for="name-rep">
+                                        BlueSteel Partners
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="name-dup3" name="representative1" type="radio"
+                                        value="Bluesteel">
+                                    <label class="govuk-label govuk-radios__label" for="name-dup3">
+                                        Bluesteel
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Address</th>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="address-dup" name="rep-address1" type="radio"
+                                        value="305 Fleet Street, London" checked="">
+                                    <label class="govuk-label govuk-radios__label" for="address-dup">
+                                        305 Fleet Street, London<br>
+                                        EC4Y 1JU<br>
+                                        United Kingdom
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="address-dup3" name="rep-address1" type="radio"
+                                        value="243 Cupboard Lane, Leeds">
+                                    <label class="govuk-label govuk-radios__label" for="address-dup3">
+                                        243 Cupboard Lane, Leeds<br>
+                                        345667<br>
+                                        China
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Reg number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="org-number-dup" name="rep-org-number1"
+                                        type="radio" value="765238953" checked="" disabled="">
+                                    <label class="govuk-label govuk-radios__label" for="org-number-dup">
+                                        765238953
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="org-number-dup3" name="rep-org-number1"
+                                        type="radio" value="765238953" disabled="">
+                                    <label class="govuk-label govuk-radios__label" for="org-number-dup3">
+                                        765238953
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Website</th>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+
+                                    <input class="govuk-radios__input" id="web-rep" name="rep-web1" type="radio"
+                                        value="www.BlueSteelPartners.com" checked="" disabled="">
+
+                                    <label class="govuk-label govuk-radios__label" for="web-rep">
+                                        www.BlueSteelPartners.com
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="web-dup1" name="rep-web1" type="radio"
+                                        value="bluesteelpartners.com" disabled="">
+                                    <label class="govuk-label govuk-radios__label" for="web-dup1">
+                                        bluesteelpartners.com
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">VAT number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+
+                                    <input class="govuk-radios__input" id="vat-dup" name="rep-vat1" type="radio"
+                                        value="223456789" checked="" disabled="">
+
+                                    <label class="govuk-label govuk-radios__label" for="vat-dup">
+                                        223456789
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="vat-dup3" name="rep-vat1" type="radio"
+                                        value="223456789" disabled="">
+                                    <label class="govuk-label govuk-radios__label" for="vat-dup3">
+                                        223456789
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">EORI number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="eori-rep" name="rep-eori1" type="radio"
+                                        value="GB205672212000">
+                                    <label class="govuk-label govuk-radios__label" for="eori-rep">
+                                        GB205672212000
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="eori-dup3" name="rep-eori1" type="radio"
+                                        value="GB205672212000" checked="">
+                                    <label class="govuk-label govuk-radios__label" for="eori-dup3">
+                                        GB205672212000
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">DUNS number</th>
+                        <td class="govuk-table__cell text-overflow"></td>
+                        <td class="govuk-table__cell text-overflow"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">
+                    Save and continue
+                </button>
+                <a class="govuk-link" govuk-link--no-visited-state="" href="javascript: history.back()">Back</a>
+            </div>
+        </form>
+    </div>
+{% endblock row_content %}
