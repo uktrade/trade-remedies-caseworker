@@ -8,15 +8,15 @@
         <h1 class="govuk-heading-xl">Representative invite</h1>
         <div class="address-card">
             <div class="address-container">
-              <div class="govuk-warning-text">
-                <p class="govuk-warning-text__text">
-                  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                  <strong>
-                    <span class="govuk-warning-text__assistive">Warning</span>
-                    The organisation in this representative invite matches other organisations in our records. 
-                  </strong>
-                </p>
-              </div>
+                <div class="govuk-warning-text">
+                    <p class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong>
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            The organisation in this representative invite matches other organisations in our records.
+                        </strong>
+                    </p>
+                </div>
             </div>
         </div>
         <h2 class="govuk-heading-m" id="subsection-title">Review matching organisations</h2>
@@ -25,38 +25,38 @@
         <table class="govuk-table sortable mobile-table-border" id="table-header">
             <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">A table listing all of the parties waiting to be verified</caption>
             <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th class="govuk-table__header">
-                  <span class="govuk-visually-hidden--desktop">Sort by: </span>Organisation
-                </th>
-                <th class="govuk-table__header">
-                  <span class="govuk-visually-hidden--desktop">Sort by: </span>Matching organisations
-                </th>
-                <th class="govuk-table__header">
-                  <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
-                </th>
-                <th class="govuk-table__header">
-                    <span class="govuk-visually-hidden--desktop">Action:</span>
-                </th>
-              </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Organisation
+                    </th>
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Matching organisations
+                    </th>
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                    </th>
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Action:</span>
+                    </th>
+                </tr>
             </thead>
             <tbody class="govuk-table__body">
-              <tr class="govuk-table__row no-border">
-                <td class="govuk-table__cell text-overflow">
-                  <span class="govuk-visually-hidden--desktop">Organisation: </span><a href="" class="govuk-link--no-visited-state">{{invitation.organisation.name}}</a>
-                </td>
-                <td class="govuk-table__cell text-overflow">
-                    <span class="govuk-visually-hidden--desktop">Matches: </span>{{invitation.organisation.potential_duplicate_organisations|length}}
-                </td>
-                <td class="govuk-table__cell text-overflow">
-                  <span class="govuk-visually-hidden--desktop">Status: </span>
-                  Not started
-                </td>
-                <td class="govuk-table__cell action">
-                  <a class="govuk-link govuk-link--no-visited-state" href="reginterest-merge-rep-review">Select</a><a><span class="govuk-visually-hidden">{{invitation.organisation.name}}</span>
-                </a></td>
-              </tr>
-          </tbody></table>
+                <tr class="govuk-table__row no-border">
+                    <td class="govuk-table__cell text-overflow">
+                        <span class="govuk-visually-hidden--desktop">Organisation: </span><a href="" class="govuk-link--no-visited-state">{{invitation.organisation.name}}</a>
+                    </td>
+                    <td class="govuk-table__cell text-overflow">
+                        <span class="govuk-visually-hidden--desktop">Matches: </span>{{invitation.organisation.potential_duplicate_organisations|length}}
+                    </td>
+                    <td class="govuk-table__cell text-overflow">
+                        <span class="govuk-visually-hidden--desktop">Status: </span>
+                        Not started
+                    </td>
+                    <td class="govuk-table__cell action">
+                        <a class="govuk-link govuk-link--no-visited-state" href="reginterest-merge-rep-review">Select</a><a><span class="govuk-visually-hidden">{{invitation.organisation.name}}</span>
+                        </a></td>
+                </tr>
+            </tbody></table>
     </div>
     <div class="govuk-grid-column-one-third">
         <aside class="app-related-items" role="complementary">
