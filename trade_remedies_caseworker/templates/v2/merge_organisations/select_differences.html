@@ -8,9 +8,10 @@
             Review matching organisations
         </span>
         <h1 class="govuk-heading-xl">
-            Select details to keep when the records are merged (2 of 2)
+            Select details to keep when the records are merged (X of X)
         </h1>
         <form method="post">
+            {% csrf_token %}
             <table class="govuk-table merge">
                 <caption class="govuk-table__caption govuk-visually-hidden">
                     A table to select which information should be kept during a merge.
@@ -20,7 +21,7 @@
                         <th scope="col" class="govuk-table__header">Field</th>
                         <th scope="col" class="govuk-table__header">Selected organisation</th>
                         <th scope="col" class="govuk-table__header">
-                            Matching organisation (2 of 2)
+                            Matching organisation (X of X)
                         </th>
                     </tr>
                 </thead>
@@ -30,10 +31,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="name-rep" name="representative1" type="radio"
-                                        value="BlueSteel Partners" checked="">
-                                    <label class="govuk-label govuk-radios__label" for="name-rep">
-                                        BlueSteel Partners
+                                    <input class="govuk-radios__input" id="parent_name" name="name" type="radio"
+                                        value="{{ parent_organisation.id }}" {% if "name" in duplicate_organisation_merge.parent_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="parent_name">
+                                        {{ parent_organisation.name }}
                                     </label>
                                 </div>
                             </div>
@@ -41,10 +42,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="name-dup3" name="representative1" type="radio"
-                                        value="Bluesteel">
-                                    <label class="govuk-label govuk-radios__label" for="name-dup3">
-                                        Bluesteel
+                                    <input class="govuk-radios__input" name="name" id="child_name" type="radio"
+                                        value="{{ child_organisation.id }}" {% if "name" in duplicate_organisation_merge.child_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="child_name">
+                                        {{ child_organisation.name }}
                                     </label>
                                 </div>
                             </div>
@@ -55,12 +56,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="address-dup" name="rep-address1" type="radio"
-                                        value="305 Fleet Street, London" checked="">
-                                    <label class="govuk-label govuk-radios__label" for="address-dup">
-                                        305 Fleet Street, London<br>
-                                        EC4Y 1JU<br>
-                                        United Kingdom
+                                    <input class="govuk-radios__input" name="address" id="parent_address" type="radio"
+                                        value="{{ parent_organisation.id }}" {% if "address" in duplicate_organisation_merge.parent_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="parent_address">
+                                        {{ parent_organisation.address }}
                                     </label>
                                 </div>
                             </div>
@@ -68,12 +67,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="address-dup3" name="rep-address1" type="radio"
-                                        value="243 Cupboard Lane, Leeds">
-                                    <label class="govuk-label govuk-radios__label" for="address-dup3">
-                                        243 Cupboard Lane, Leeds<br>
-                                        345667<br>
-                                        China
+                                    <input class="govuk-radios__input" name="address" id="child_address" type="radio"
+                                        value="{{ child_organisation.id }}" {% if "address" in duplicate_organisation_merge.child_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="child_address">
+                                        {{ child_organisation.address }}
                                     </label>
                                 </div>
                             </div>
@@ -84,10 +81,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="org-number-dup" name="rep-org-number1"
-                                        type="radio" value="765238953" checked="" disabled="">
-                                    <label class="govuk-label govuk-radios__label" for="org-number-dup">
-                                        765238953
+                                    <input class="govuk-radios__input" name="companies_house_id" id="parent_companies_house_id" type="radio"
+                                        value="{{ parent_organisation.id }}" {% if "companies_house_id" in duplicate_organisation_merge.parent_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="parent_companies_house_id">
+                                        {{ parent_organisation.companies_house_id }}
                                     </label>
                                 </div>
                             </div>
@@ -95,10 +92,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="org-number-dup3" name="rep-org-number1"
-                                        type="radio" value="765238953" disabled="">
-                                    <label class="govuk-label govuk-radios__label" for="org-number-dup3">
-                                        765238953
+                                    <input class="govuk-radios__input" name="companies_house_id" id="child_companies_house_id" type="radio"
+                                        value="{{ child_organisation.id }}" {% if "companies_house_id" in duplicate_organisation_merge.child_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="child_companies_house_id">
+                                        {{ child_organisation.companies_house_id }}
                                     </label>
                                 </div>
                             </div>
@@ -109,12 +106,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-
-                                    <input class="govuk-radios__input" id="web-rep" name="rep-web1" type="radio"
-                                        value="www.BlueSteelPartners.com" checked="" disabled="">
-
-                                    <label class="govuk-label govuk-radios__label" for="web-rep">
-                                        www.BlueSteelPartners.com
+                                    <input class="govuk-radios__input" name="organisation_website" type="radio" id="parent_organisation_website"
+                                        value="{{ parent_organisation.id }}" {% if "organisation_website" in duplicate_organisation_merge.parent_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="parent_organisation_website">
+                                        {{ parent_organisation.organisation_website }}
                                     </label>
                                 </div>
                             </div>
@@ -122,10 +117,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="web-dup1" name="rep-web1" type="radio"
-                                        value="bluesteelpartners.com" disabled="">
-                                    <label class="govuk-label govuk-radios__label" for="web-dup1">
-                                        bluesteelpartners.com
+                                    <input class="govuk-radios__input" name="organisation_website" id="child_organisation_website" type="radio"
+                                        value="{{ child_organisation.id }}" {% if "organisation_website" in duplicate_organisation_merge.child_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="child_organisation_website">
+                                        {{ child_organisation.organisation_website }}
                                     </label>
                                 </div>
                             </div>
@@ -136,12 +131,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-
-                                    <input class="govuk-radios__input" id="vat-dup" name="rep-vat1" type="radio"
-                                        value="223456789" checked="" disabled="">
-
-                                    <label class="govuk-label govuk-radios__label" for="vat-dup">
-                                        223456789
+                                    <input class="govuk-radios__input" name="vat_number" id="parent_vat_number" type="radio"
+                                        value="{{ parent_organisation.id }}" {% if "vat_number" in duplicate_organisation_merge.parent_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="parent_vat_number">
+                                        {{ parent_organisation.vat_number }}
                                     </label>
                                 </div>
                             </div>
@@ -149,10 +142,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="vat-dup3" name="rep-vat1" type="radio"
-                                        value="223456789" disabled="">
-                                    <label class="govuk-label govuk-radios__label" for="vat-dup3">
-                                        223456789
+                                    <input class="govuk-radios__input" name="vat_number" type="radio" id="child_vat_number"
+                                        value="{{ child_organisation.id }}" {% if "vat_number" in duplicate_organisation_merge.child_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="child_vat_number">
+                                        {{ child_organisation.vat_number }}
                                     </label>
                                 </div>
                             </div>
@@ -163,10 +156,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="eori-rep" name="rep-eori1" type="radio"
-                                        value="GB205672212000">
-                                    <label class="govuk-label govuk-radios__label" for="eori-rep">
-                                        GB205672212000
+                                    <input class="govuk-radios__input" name="eori_number" type="radio" id="parent_eori_number"
+                                        value="{{ parent_organisation.id }}" {% if "eori_number" in duplicate_organisation_merge.parent_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="parent_eori_number">
+                                        {{ parent_organisation.eori_number }}
                                     </label>
                                 </div>
                             </div>
@@ -174,10 +167,10 @@
                         <td class="govuk-table__cell text-overflow">
                             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="eori-dup3" name="rep-eori1" type="radio"
-                                        value="GB205672212000" checked="">
-                                    <label class="govuk-label govuk-radios__label" for="eori-dup3">
-                                        GB205672212000
+                                    <input class="govuk-radios__input" name="eori_number" type="radio" id="child_eori_number"
+                                        value="{{ child_organisation.id }}" {% if "eori_number" in duplicate_organisation_merge.child_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="child_eori_number">
+                                        {{ child_organisation.eori_number }}
                                     </label>
                                 </div>
                             </div>
@@ -185,9 +178,30 @@
                     </tr>
                     <tr class="govuk-table__row no-border">
                         <th scope="row" class="govuk-table__header">DUNS number</th>
-                        <td class="govuk-table__cell text-overflow"></td>
-                        <td class="govuk-table__cell text-overflow"></td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" name="duns_number" type="radio" id="parent_duns_number"
+                                        value="{{ parent_organisation.id }}" {% if "duns_number" in duplicate_organisation_merge.parent_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="parent_duns_number">
+                                        {{ parent_organisation.duns_number }}
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" name="duns_number" type="radio" id="child_duns_number"
+                                        value="{{ child_organisation.id }}" {% if "duns_number" in duplicate_organisation_merge.child_fields %}checked{% endif %}>
+                                    <label class="govuk-label govuk-radios__label" for="child_duns_number">
+                                        {{ child_organisation.duns_number }}
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
+
                 </tbody>
             </table>
             <div class="govuk-button-group">

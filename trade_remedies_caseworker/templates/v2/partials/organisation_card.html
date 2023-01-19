@@ -1,0 +1,232 @@
+{% load static %}
+
+<div class="address-card">
+    <div class="address-container">
+        <h3 class="govuk-heading-m"><a href="/organisations/{{ organisation.id }}"
+            class="govuk-link--no-visited-state">{{ organisation.name }}</a>
+            <p class="right-aligned-link govuk-heading-s">
+                <a href="{% url 'organisations:v2_edit_organisation' organisation_id=organisation.id %}?redirect={{ request.path }}"
+                    class="govuk-link--no-visited-state">Edit</a>
+            </p>
+        </h3>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-1">
+            {% if invitation %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Invite accepted by:</dt>
+                    <dd class="govuk-summary-list__value">{{ invitation.contact.name }}<br>
+                        {{ invitation.contact.email }}
+                    </dd>
+                </div>
+                {% if invitation.name and invitation.contact.name != invitation.name or invitation.email and invitation.contact.email != invitation.email %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Invite sent to:</dt>
+                        <dd class="govuk-summary-list__value">{{ invitation.name }}<br>
+                            {{ invitation.email }}
+                        </dd>
+                    </div>
+                {% endif %}
+            {% endif %}
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Address:</dt>
+                <dd class="govuk-summary-list__value">
+                    {{ organisation.address|default_if_none:"" }}
+                    {% if organisation.post_code %}
+                        <br>
+                        {{ organisation.post_code }}
+                    {% endif %}
+                    {% if organisation.country_name %}
+                        <br>
+                        {{ organisation.country_name }}
+                    {% endif %}
+                    <br>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Reg number:</dt>
+                <dd class="govuk-summary-list__value">{{ organisation.companies_house_id|default_if_none:"" }}
+                    {% if organisation.does_name_match_companies_house %}
+                        <img
+                            src="{% static 'v2/assets/images/checkmark.png' %}"
+                            class="verified-tick"
+                            alt="Valid Companies House registration number"
+                            title="Valid Companies House registration number"
+                            width="20px">
+                        <span class="govuk-body-s">Valid</span>
+                    {% endif %}
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Web address:</dt>
+                <dd class="govuk-summary-list__value">
+                    <a{% if organisation.organisation_website %}
+                        href="{{ organisation.a_tag_website_url }}"{% endif %}
+                        target="_blank">{{ organisation.organisation_website|default_if_none:"" }}</a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">VAT no:</dt>
+                <dd class="govuk-summary-list__value">{{ organisation.vat_number|default_if_none:"" }}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">EORI:</dt>
+                <dd class="govuk-summary-list__value">{{ organisation.eori_number|default_if_none:"" }}</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">D-U-N-S:</dt>
+                <dd class="govuk-summary-list__value">{{ organisation.duns_number|default_if_none:"" }}</dd>
+            </div>
+        </dl>
+        <br>
+        <div>
+            {% if approved_case_roles|length > 0 %}
+                <details class="case-details govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Cases acting as interested party: {{ approved_case_roles|length }}
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <ul class="govuk-list">
+                            {% for org_case_role in approved_case_roles %}
+                                <li>
+                                    <a href="{% url 'cases:view_case' case_id=org_case_role.case.id %}"
+                                        class="govuk-link--no-visited-state">{{ org_case_role.case.reference }}
+                                        - {{ org_case_role.case.name }}</a>
+                                    ({{ org_case_role.role_name }})
+                                    {% if org_case_role.validated_at %}
+                                        <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
+                                            class="verified-check"
+                                            alt="Verified on case"
+                                            title="Verified on case"
+                                            width="32px">
+                                        <span class="govuk-body-s">{{ org_case_role.validated_at|date:'d M y' }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </details>
+            {% else %}
+                <details class="case-details govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary black-text">
+                        Cases acting as interested party: 0
+                    </summary>
+                </details>
+            {% endif %}
+        </div>
+        {% if approved_representative_cases|length > 0 %}
+            <div>
+                <details class="case-details govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Cases acting as a representative: {{ approved_representative_cases|length }}
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <ul class="govuk-list">
+                            {% for representation in approved_representative_cases %}
+                                {% if representation.validated %}
+                                    <li>
+                                        <a href="{% url 'cases:view_case' case_id=representation.case.id %}"
+                                            class="govuk-link--no-visited-state">{{ representation.case.reference }}
+                                            - {{ representation.case.name }}</a>
+                                        ({{ representation.role }})
+                                        <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
+                                            class="verified-check" alt="Verified on case"
+                                            title="Verified on case" width="32px">
+                                        <span class="govuk-body-s">{{ representation.validated_at|date:'d M y' }}</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        {% endif %}
+        {% if rejected_representative_cases|length > 0 %}
+            <div>
+                <details class="case-details govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Cases rejected from as a representative: {{ rejected_representative_cases|length }}
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <ul class="govuk-list">
+                            {% for rejection in rejected_representative_cases %}
+                                <li>
+                                    <a href="{% url 'cases:view_case' case_id=rejection.case.id %}"
+                                        class="govuk-link--no-visited-state">{{ rejection.case.reference }}
+                                        - {{ rejection.case.name }}</a>
+                                    <img src="{% static 'v2/assets/images/red-x.png' %}"
+                                        class="x-cross"
+                                        alt="Rejected from case"
+                                        title="Rejected from case" width="32px">
+                                    <span class="govuk-body-s">{{ rejection.date_rejected|date:'d M y' }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        {% endif %}
+        {% if rejected_interested_party_cases|length > 0 %}
+            <div>
+
+                <details class="case-details govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Cases rejected from as an interested party: {{ rejected_interested_party_cases|length }}
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <ul class="govuk-list">
+                            {% for rejection in rejected_interested_party_cases %}
+                                <li>
+                                    <a href="{% url 'cases:view_case' case_id=rejection.case.id %}"
+                                        class="govuk-link--no-visited-state">{{ rejection.case.reference }}
+                                        - {{ rejection.case.name }}</a>
+                                    <img src="{% static 'v2/assets/images/red-x.png' %}"
+                                        class="x-cross"
+                                        alt="Rejected from case"
+                                        title="Rejected from case" width="32px">
+                                    <span class="govuk-body-s">{{ rejection.date_rejected|date:'d M y' }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        {% endif %}
+        <div>
+            {% if organisation_users|length > 0 %}
+                <details class="case-details govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Users: {{ organisation_users|length }}
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <ul class="govuk-list">
+                            {% for organisation_user in organisation_users %}
+                                <li><a href="/users/cusomter/{{ organisation_user.user.id }}"
+                                    data-url="/users/cusomter/{{ organisation_user.user.id }}/" }=""
+                                    class="govuk-link--no-visited-state modal-form">{{ organisation_user.user.name }}</a>
+                                    -
+                                    {{ organisation_user.user.email }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </details>
+            {% else %}
+                <details class="case-details govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary black-text">
+                        Users: 0
+                    </summary>
+                </details>
+            {% endif %}
+
+        </div>
+    </div>
+</div>

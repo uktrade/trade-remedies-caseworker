@@ -1,0 +1,74 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Review your answers{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">
+            Review matching organisations
+        </span>
+        <h1 class="govuk-heading-xl">
+            Review your answers
+        </h1>
+
+        <p>There is <strong>1 organisation</strong> to be merged with the selected organisation. </p>
+
+        <p>Our records will be updated with the following details:</p>
+        {% include "v2/partials/organisation_card.html" with organisation=draft_merged_org request=request approved_case_roles=draft_merged_org.approved_organisation_case_roles approved_representative_cases=draft_merged_org.approved_representative_cases rejected_representative_cases=draft_merged_org.rejected_representative_cases rejected_interested_party_cases=draft_merged_org.rejected_interested_party_cases organisation_users=draft_merged_org.users %}
+
+
+        <details class="case-details govuk-details" data-module="govuk-details" open="">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Organisations to be merged: {{ confirmed_duplicates|length }}
+                </span>
+            </summary>
+            {% for confirmed_duplicate in confirmed_duplicates %}
+                <div class="govuk-details__text">
+                    {% include "v2/partials/organisation_card.html" with organisation=confirmed_duplicate.child_organisation request=request approved_case_roles=confirmed_duplicate.child_organisation.approved_organisation_case_roles approved_representative_cases=confirmed_duplicate.child_organisation.approved_representative_cases rejected_representative_cases=confirmed_duplicate.child_organisation.rejected_representative_cases rejected_interested_party_cases=confirmed_duplicate.child_organisation.rejected_interested_party_cases organisation_users=confirmed_duplicate.child_organisation.organisationuser_set %}
+                </div>
+            {% endfor %}
+        </details>
+
+
+        <details class="case-details govuk-details" data-module="govuk-details" open="">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Organisations marked as not a duplicate: {{ confirmed_not_duplicates|length }}
+                </span>
+            </summary>
+            {% for not_duplicate_organisation in not_duplicate_organisations %}
+                <div class="govuk-details__text">
+                    {% include "v2/partials/organisation_card.html" with organisation=confirmed_duplicate.child_organisation request=request approved_case_roles=confirmed_duplicate.child_organisation.approved_organisation_case_roles approved_representative_cases=confirmed_duplicate.child_organisation.approved_representative_cases rejected_representative_cases=confirmed_duplicate.child_organisation.rejected_representative_cases rejected_interested_party_cases=confirmed_duplicate.child_organisation.rejected_interested_party_cases organisation_users=confirmed_duplicate.child_organisation.organisationuser_set %}
+
+                </div>
+            {% endfor %}
+        </details>
+
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                Merging organisations cannot be undone
+            </strong>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% include "v2/component_macros/checkbox.html" with heading="Please confirm the following" id="confirm" name="confirm" label="I have authority to complete this merge" %}
+            <div class="govuk-button-group">
+
+                <button class="govuk-button" data-module="govuk-button">
+                    Submit details
+                </button>
+
+                <a class="govuk-link govuk-link--no-visited-state" href="reginterest-merge-cancel">Cancel merge</a>
+            </div>
+        </form>
+
+    </div>
+{% endblock row_content %}

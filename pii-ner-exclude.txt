@@ -1,3 +1,5 @@
+duplicate_organisation_merge.child_fields
+for="parent_address
 height="30" width="36">
 invite_contact_no_name
 case</a>
