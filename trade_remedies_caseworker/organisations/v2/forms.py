@@ -27,3 +27,7 @@ class MergeOrganisationsSelectDifferencesForm(ValidationForm):
 
 class ReviewMergeForm(ValidationForm):
     confirm = forms.BooleanField(error_messages={"required": "confirm_not_selected"})
+
+
+class ReviewMergeOrganisationForm(ValidationForm):
+    ...

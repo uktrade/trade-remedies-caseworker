@@ -199,4 +199,9 @@ urlpatterns += [
         merge_organisations.ReviewMergeView.as_view(),
         name="merge_organisations_review",
     ),
+    path(
+        "review_merge/<uuid:organisation_id>/invitation/<uuid:invitation_id",
+        review_merge_organisation.ReviewMergeOrganisationView.as_view(),
+        name="review-merge-organisation",
+    ),
 ]

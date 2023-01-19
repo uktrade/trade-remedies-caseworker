@@ -19,8 +19,8 @@
                 <p>Review the invite to decide if {{ invites.0.contact.organisation.name }} can act as a representative
                     in this case.</p>
                 {% if invites.0.has_potential_duplicate_orgs %}
-                    <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
-                        invite new</a>
+                    <a class="button" href="{% url 'organisations:review-merge-organisation' organisation_id=submission.organisation.id invitation_id=invites.0.id %}">Review
+                        invite</a>
                 {% else %}
                     <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
                         invite</a>
