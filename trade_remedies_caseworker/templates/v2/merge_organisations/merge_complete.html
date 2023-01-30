@@ -1,0 +1,29 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Complete{% endblock page_title %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block row_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Matching organisations complete
+            </h1>
+        </div>
+        <p>The duplicate organisations have been merged.</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>Cases are now registered under one organisation</li>
+            <li>Users are now registered under one organisation</li>
+            <li>Lead investigators assigned to the matching cases have been notified</li>
+        </ul>
+        <div class="govuk-button-group">
+            <a class="govuk-button" data-module="govuk-button"
+                href="/case/{{ case_id }}/submission/{{ submission_id }}/">
+                Return to representative invite
+            </a>
+        </div>
+    </div>
+
+{% endblock row_content %}

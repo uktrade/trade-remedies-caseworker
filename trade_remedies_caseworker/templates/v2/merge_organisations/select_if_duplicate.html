@@ -1,0 +1,182 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Select if duplicate{% endblock page_title %}
+
+{% block main_content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">
+                Review matching organisations
+            </span>
+            <h1 class="govuk-heading-xl">
+                Select if duplicate ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
+                of {{ duplicate_organisation_merge.order_in_parent.1 }})
+            </h1>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <table class="govuk-table merge">
+                <caption class="govuk-table__caption">
+                    <span class="govuk-visually-hidden">A table showing the selected organisation and the matching organisation</span>
+                </caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Field</th>
+                        <th scope="col" class="govuk-table__header">Selected organisation</th>
+                        <th scope="col" class="govuk-table__header">
+                            Matching organisation ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
+                            of {{ duplicate_organisation_merge.order_in_parent.1 }})
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Name</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {{ draft_parent_organisation.name|default_if_none:"" }}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if "name" in identical_fields %}
+                                <mark>{{ child_organisation.name }}</mark>
+                            {% else %}
+                                {{ child_organisation.name|default_if_none:"" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Address</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {{ draft_parent_organisation.address|default_if_none:"" }}<br>
+                            {{ draft_parent_organisation.post_code|default_if_none:"" }}<br>
+                            {{ draft_parent_organisation.country_name|default_if_none:"" }}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if "address" in identical_fields %}
+                                <mark>{{ child_organisation.address }}</mark>
+                            {% else %}
+                                {{ child_organisation.address|default_if_none:"" }}
+                            {% endif %}
+                            <br>
+                            {% if "post_code" in identical_fields %}
+                                <mark>{{ child_organisation.post_code }}</mark>
+                            {% else %}
+                                {{ child_organisation.post_code|default_if_none:"" }}
+                            {% endif %}
+                            {% if "country" in identical_fields %}
+                                <mark>{{ child_organisation.country_name }}</mark>
+                            {% else %}
+                                {{ child_organisation.country_name|default_if_none:"" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Reg number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {{ draft_parent_organisation.companies_house_id|default_if_none:"" }}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if "companies_house_id" in identical_fields %}
+                                <mark>{{ child_organisation.companies_house_id }}</mark>
+                            {% else %}
+                                {{ child_organisation.companies_house_id|default_if_none:"" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Website</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {{ draft_parent_organisation.organisation_website|default_if_none:"" }}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if "organisation_website" in identical_fields %}
+                                <mark>{{ child_organisation.organisation_website }}</mark>
+                            {% else %}
+                                {{ child_organisation.organisation_website|default_if_none:"" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">VAT number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {{ draft_parent_organisation.vat_number|default_if_none:"" }}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if "vat_number" in identical_fields %}
+                                <mark>{{ child_organisation.vat_number }}</mark>
+                            {% else %}
+                                {{ child_organisation.vat_number|default_if_none:"" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">EORI number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {{ draft_parent_organisation.eori_number|default_if_none:"" }}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if "eori_number" in identical_fields %}
+                                <mark>{{ child_organisation.eori_number }}</mark>
+                            {% else %}
+                                {{ child_organisation.eori_number|default_if_none:"" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">DUNS number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {{ draft_parent_organisation.duns_number|default_if_none:"" }}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if "duns_number" in identical_fields %}
+                                <mark>{{ child_organisation.duns_number }}</mark>
+                            {% else %}
+                                {{ child_organisation.duns_number|default_if_none:"" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h1 class="govuk-fieldset__heading">
+                                Is the matching organisation a duplicate?
+                            </h1>
+                        </legend>
+                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                    name="is_matching_organisation_a_duplicate" type="radio" value="true"
+                                    id="option_1">
+                                <label class="govuk-label govuk-radios__label" for="option_1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                    name="is_matching_organisation_a_duplicate" id="option_2" type="radio"
+                                    value="false">
+                                <label class="govuk-label govuk-radios__label" for="option_2">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Save and continue
+                    </button>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}">
+                        Exit
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock main_content %}

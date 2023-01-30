@@ -43,6 +43,29 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
     template_name = "v2/organisation_verification/tasklist.html"
     invitation_fields = "__all__"
 
+    def dispatch(self, request, *args, **kwargs):
+        # we need to check if the invited organisation has potential duplicates
+        # if it does, we need to redirect to the potential duplicate's page
+        # if not, we can continue with the task list
+        response = super().dispatch(request, *args, **kwargs)
+
+        if (
+            self.client.submission_organisation_merge_records(
+                self.invitation.submission.id,
+                params={"organisation_id": self.invitation.contact.organisation},
+            ).organisation_merge_record.status
+            == "duplicates_found"
+        ):
+            return redirect(
+                reverse(
+                    "organisations:merge_organisations_review_potential_duplicates_landing",
+                    kwargs={
+                        "invitation_id": self.invitation.id,
+                    },
+                )
+            )
+        return response
+
     def get_task_list(self):
         steps = [
             {
@@ -114,6 +137,7 @@ class OrganisationVerificationVerifyRepresentative(
             self.invitation.contact.organisation,
         )
         context["invited_organisation"] = invited_organisation
+        context["invited_organisation_card"] = invited_organisation.organisation_card_data()
         context["inviter_organisation"] = self.client.organisations(self.invitation.organisation.id)
 
         organisation_case_roles = self.client.organisation_case_roles(

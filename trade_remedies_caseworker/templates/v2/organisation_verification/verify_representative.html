@@ -37,7 +37,7 @@
                 {% endif %}
             {% endif %}
         </div>
-        {% include "v2/partials/organisation_card.html" with organisation=invited_organisation request=request invitation=invitation approved_case_roles=invited_approved_organisation_case_roles approved_representative_cases=approved_representative_cases rejected_representative_cases=rejected_representative_cases rejected_interested_party_cases=rejected_interested_party_cases  organisation_users=invited_organisation.organisationuser_set %}
+        {% include "v2/partials/organisation_card.html" with organisation=invited_organisation_card request=request %}
         <form method="post">
             {% csrf_token %}
             {% include "v2/component_macros/two_radio_buttons.html" with value=invitation.submission.deficiency_notice_params.contact_org_verify label="Have you been able to verify the representative?" h1_heading=True label_size="m" name="been_able_to_verify_representative" id_one="been_able_to_verify_representative_1" id_two="been_able_to_verify_representative_2" label_one="Yes, I have been able to verify the representative" label_two="No, I have not been able to verify the representative" value_one=True value_two=False %}

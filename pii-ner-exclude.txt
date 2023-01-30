@@ -1,3 +1,17 @@
+merge_organisations_select_differences_looper
+aria-label="Page
+4.2926 4.293h-12.986v2h12.896l-4.1855
+Complete{%
+merged.</p
+for="option_2
+Exit
+ABC
+FormView
+Cancel merge{%
+SubmissionOrganisationMergeRecord
+phantom_organisation_serializer
+DuplicateOrganisationMerge
+DB
 duplicate_organisation_merge.child_fields
 for="parent_address
 height="30" width="36">

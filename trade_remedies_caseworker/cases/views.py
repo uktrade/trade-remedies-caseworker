@@ -474,6 +474,7 @@ class PartiesView(CaseBaseView):
                 "organisation",
                 "contact",
             ],
+            slim=True,
         )
         caseworker_invitations = sorted(
             caseworker_invitations, key=lambda x: x.created_at, reverse=True

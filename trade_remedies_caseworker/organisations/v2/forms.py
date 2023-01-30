@@ -29,5 +29,13 @@ class ReviewMergeForm(ValidationForm):
     confirm = forms.BooleanField(error_messages={"required": "confirm_not_selected"})
 
 
-class ReviewMergeOrganisationForm(ValidationForm):
+class SelectIfDuplicatesForm(ValidationForm):
+    is_matching_organisation_a_duplicate = forms.NullBooleanField()
+
+
+class ConfirmNotDuplicateForm(ValidationForm):
+    ...
+
+
+class CancelMergeForm(ValidationForm):
     ...

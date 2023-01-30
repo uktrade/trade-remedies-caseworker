@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 
 from organisations.v2.views import caseworker_invite, edit_organisation, merge_organisations
 from organisations.views import (
@@ -190,18 +191,53 @@ urlpatterns += [
 # merge organisations URLS
 urlpatterns += [
     path(
-        "merge_organisations/select_differences/<uuid:duplicate_organisation_merge_id>/",
+        "merge_organisations/review_potential_duplicates_landing/<uuid:invitation_id>/",
+        merge_organisations.ReviewMergeOrganisationView.as_view(),
+        name="merge_organisations_review_potential_duplicates_landing",
+    ),
+    path(
+        "merge_organisations/review_matching_organisations/"
+        "<uuid:submission_organisation_merge_record_id>/",
+        merge_organisations.ReviewMatchingOrganisationsView.as_view(),
+        name="merge_organisations_review_matching_organisations",
+    ),
+    path(
+        "merge_organisations/select_differences_looper/"
+        "<uuid:submission_organisation_merge_record_id>/",
+        merge_organisations.SelectDifferencesLooperView.as_view(),
+        name="merge_organisations_select_differences_looper",
+    ),
+    path(
+        "merge_organisations/select_if_duplicate/<uuid:submission_organisation_merge_record_id>/"
+        "<uuid:duplicate_organisation_merge_id>/",
+        merge_organisations.SelectIfDuplicateView.as_view(),
+        name="merge_organisations_select_if_duplicate",
+    ),
+    path(
+        "merge_organisations/confirm_not_duplicate/<uuid:submission_organisation_merge_record_id>/"
+        "<uuid:duplicate_organisation_merge_id>/",
+        merge_organisations.ConfirmNotDuplicateView.as_view(),
+        name="merge_organisations_confirm_not_duplicate",
+    ),
+    path(
+        "merge_organisations/select_differences/<uuid:submission_organisation_merge_record_id>/"
+        "<uuid:duplicate_organisation_merge_id>/",
         merge_organisations.SelectDifferencesView.as_view(),
         name="merge_organisations_select_differences",
     ),
     path(
-        "merge_organisations/review_merge/<uuid:organisation_merge_record_id>/",
+        "merge_organisations/review_merge/<uuid:submission_organisation_merge_record_id>/",
         merge_organisations.ReviewMergeView.as_view(),
         name="merge_organisations_review",
     ),
     path(
-        "review_merge/<uuid:organisation_id>/invitation/<uuid:invitation_id",
-        review_merge_organisation.ReviewMergeOrganisationView.as_view(),
-        name="review-merge-organisation",
+        "merge_organisations/cancel_merge/<uuid:submission_organisation_merge_record_id>/",
+        merge_organisations.CancelMergeView.as_view(),
+        name="cancel_organisation_merge",
+    ),
+    path(
+        "merge_organisations/merge_complete/<uuid:case_id>/<uuid:submission_id>/",
+        TemplateView.as_view(template_name="v2/merge_organisations/merge_complete.html"),
+        name="merge_organisations_merge_complete",
     ),
 ]
