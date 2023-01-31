@@ -4,6 +4,7 @@ import json
 import os
 
 import openpyxl
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -12,12 +13,13 @@ from django.views.generic import TemplateView, View
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
+from config.base_views import BaseCaseWorkerTemplateView
 from config.settings.base import GDS_DATETIME_STRING
 from core.base import GroupRequiredMixin
 from core.constants import (
     SECURITY_GROUPS_TRA,
     SECURITY_GROUPS_TRA_ADMINS,
-    SECURITY_GROUP_TRA_ADMINISTRATOR,
+    SECURITY_GROUP_SUPER_USER, SECURITY_GROUP_TRA_ADMINISTRATOR,
 )
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
@@ -269,3 +271,33 @@ class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClient
             GDS_DATETIME_STRING
         ).replace(' ', '_').replace(':', '-')}.xlsx"""
         return response
+
+
+class AdminDebugToolsView(BaseCaseWorkerTemplateView):
+    groups_required = (SECURITY_GROUP_SUPER_USER,)
+    template_name = "v2/admin_debug_tools/landing.html"
+
+
+class AdminDebugToolsCreateNewOrganisationView(BaseCaseWorkerTemplateView):
+    groups_required = (SECURITY_GROUP_SUPER_USER,)
+    template_name = "v2/admin_debug_tools/create_new_organisation.html"
+
+    def post(self, request, *args, **kwargs):
+        self.client.organisations(request.POST)
+        messages.success(request, 'Organisation created')
+        return redirect(reverse("admin_debug_tools_landing"))
+
+
+class AdminDebugToolsCreateNewContactView(BaseCaseWorkerTemplateView):
+    groups_required = (SECURITY_GROUP_SUPER_USER,)
+    template_name = "v2/admin_debug_tools/create_new_contact.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["organisations"] = self.client.organisations(fields=["name", "id"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.client.users(request.POST)
+        messages.success(request, 'User created')
+        return redirect(reverse("admin_debug_tools_landing"))

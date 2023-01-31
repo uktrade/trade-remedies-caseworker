@@ -1,17 +1,11 @@
+from django.conf import settings
 from django.urls import path
 
 from cases.views import SubmissionCreateView
-from core.views import (
-    EditUserGroup,
-    ExportFeedbackView,
-    FeedbackFormExportView,
-    FeedbackFormsView,
-    FeedbackListView,
-    SingleFeedbackView,
-    SystemParameterSettings,
-    ViewFeatureFlags,
-    ViewOneFeatureFlag,
-)
+from core.views import (AdminDebugToolsCreateNewOrganisationView, AdminDebugToolsView,
+                        EditUserGroup, ExportFeedbackView, FeedbackFormExportView,
+                        FeedbackFormsView, FeedbackListView, SingleFeedbackView,
+                        SystemParameterSettings, ViewFeatureFlags, ViewOneFeatureFlag, AdminDebugToolsCreateNewContactView)
 
 urlpatterns = [
     path("bundles/create/", SubmissionCreateView.as_view(), name="create_submission"),
@@ -50,3 +44,18 @@ urlpatterns = [
         name="export_feedback_objects",
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("admin_debug_tools/", AdminDebugToolsView.as_view(), name="admin_debug_tools_landing"),
+        path(
+            "admin_debug_tools/create_new_organisation",
+            AdminDebugToolsCreateNewOrganisationView.as_view(),
+            name="admin_debug_tools_create_new_organisation"
+        ),
+        path(
+            "admin_debug_tools/create_new_contact",
+            AdminDebugToolsCreateNewContactView.as_view(),
+            name="admin_debug_tools_create_new_contact"
+        ),
+    ]

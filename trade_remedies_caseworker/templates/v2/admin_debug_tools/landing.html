@@ -1,0 +1,23 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Admin debug tools{% endblock page_title %}
+
+{% block row_content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            What would you like to do?
+        </h1>
+        <ul>
+            <li><a href="{% url 'admin_debug_tools_create_new_organisation' %}">Create a new organisation</a></li>
+            <li><a href="{% url 'admin_debug_tools_create_new_contact' %}">Create a new contact</a></li>
+        </ul>
+    </div>
+{% endblock row_content %}
