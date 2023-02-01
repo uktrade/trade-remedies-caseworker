@@ -97,34 +97,3 @@
         </aside>
     </div>
 {% endblock row_content %}
-
-{% block scripts %}
-    {% load static %}
-    <script type="text/javascript" src="{% static 'javascripts/vendor/require.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/vendor/underscore-min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
-
-
-    <script type="text/javascript">
-        window.dit = window.dit || {};
-        window.dit.environment = "{{ ENV_NAME }}";
-        window.dit.jsBase = "{% static 'javascripts' %}";
-        window.dit.csrfToken = "{{ csrf_token }}";
-        window.dit.csrfToken_input = '{% csrf_token %}';
-        {% if submission %}
-            window.dit.submission_id = '{{submission.id}}';
-        {% endif %}
-        {% if user %}
-            window.dit.user_id = '{{user.id}}';
-        {% endif %}
-        {% if organisation %}
-            window.dit.organisation_id = '{{organisation.id}}';
-        {% endif %}
-        window.dit.user = {
-            id: '{{ user.id }}',
-            name: '{{ user.name }}',
-            is_admin: {% if user.is_admin %}true{% else %}false{% endif %},
-            hoi: {% if user.is_top_admin %}true{% else %}false{% endif %},
-        };
-    </script>
-{% endblock scripts %}

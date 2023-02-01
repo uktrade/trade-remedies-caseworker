@@ -192,7 +192,7 @@ urlpatterns += [
 urlpatterns += [
     path(
         "merge_organisations/review_potential_duplicates_landing/<uuid:invitation_id>/",
-        merge_organisations.ReviewMergeOrganisationView.as_view(),
+        merge_organisations.ReviewPotentialDuplicatesLanding.as_view(),
         name="merge_organisations_review_potential_duplicates_landing",
     ),
     path(
