@@ -10548,11 +10548,13 @@ progress {
 }
 
 .verified-check {
-    margin: 0px 0px -10px 10px;
+    margin: 0px 4px -7px 10px;
+    max-height: 25px;
 }
 
 .unverified-check {
-    margin: 0px 0px -10px 10px;
+    margin: 0px 4px -7px 10px;
+    max-height: 25px;
 }
 
 .pending-clock {

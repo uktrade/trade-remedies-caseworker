@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="address-card">
+<div class="address-card {% if address_card_classes %}{{ address_card_classes }}{% endif %}">
     <div class="address-container">
         <h3 class="govuk-heading-m">
             <a {% if not hide_links %} href="/organisations/{{ organisation.id }}"{% endif %}
@@ -142,8 +142,8 @@
                                     {% if org_case_role.validated_at %}
                                         <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
                                             class="verified-check"
-                                            alt="Verified on case"
-                                            title="Verified on case"
+                                            alt="Approved on to case"
+                                            title="Approved on to case"
                                             width="32px">
                                         <span class="govuk-body-s">{{ org_case_role.validated_at|date:'d M y' }}</span>
                                     {% endif %}
@@ -178,8 +178,8 @@
                                             - {{ representation.case.name }}</a>
                                         ({{ representation.role }})
                                         <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
-                                            class="verified-check" alt="Verified on case"
-                                            title="Verified on case" width="32px">
+                                            class="verified-check" alt="Approved on to case"
+                                            title="Approved on to case" width="28px">
                                         <span class="govuk-body-s">{{ representation.validated_at|date:'d M y' }}</span>
                                     </li>
                                 {% endif %}
@@ -207,7 +207,7 @@
                                     <img src="{% static 'v2/assets/images/red-x.png' %}"
                                         class="x-cross"
                                         alt="Rejected from case"
-                                        title="Rejected from case" width="32px">
+                                        title="Rejected from case" width="28px">
                                     <span class="govuk-body-s">{{ rejection.date_rejected|date:'d M y' }}</span>
                                 </li>
                             {% endfor %}
