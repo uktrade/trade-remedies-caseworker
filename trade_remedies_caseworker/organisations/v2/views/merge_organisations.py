@@ -12,7 +12,7 @@ from organisations.v2.forms import (
 )
 
 
-class ReviewMergeOrganisationView(BaseCaseWorkerTemplateView):
+class ReviewPotentialDuplicatesLanding(BaseCaseWorkerTemplateView):
     template_name = "v2/merge_organisations/review_merge_organisation.html"
 
     def get_success_url(self):
@@ -107,6 +107,7 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
             None,
         )
 
+        somr = submission_organisation_merge_record
         if pending_duplicate_review:
             # there's still a pending duplicate to review, redirect to that
             # first we make sure the status of the SubmissionOrganisationMergeRecord is
@@ -118,7 +119,7 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
                     "organisations:merge_organisations_select_if_duplicate",
                     kwargs={
                         "duplicate_organisation_merge_id": pending_duplicate_review.id,
-                        "submission_organisation_merge_record_id": submission_organisation_merge_record.id,
+                        "submission_organisation_merge_record_id": somr.id,
                     },
                 )
             )
@@ -127,9 +128,7 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
         return redirect(
             reverse(
                 "organisations:merge_organisations_review",
-                kwargs={
-                    "submission_organisation_merge_record_id": submission_organisation_merge_record.id
-                },
+                kwargs={"submission_organisation_merge_record_id": somr.id},
             )
         )
 
@@ -365,11 +364,10 @@ class CancelMergeView(BaseCaseWorkerTemplateView, FormInvalidMixin):
             )
 
         submission_organisation_merge_record.update({"status": "not_started"})
+        somr = submission_organisation_merge_record
         return redirect(
             reverse(
                 "organisations:merge_organisations_review_matching_organisations",
-                kwargs={
-                    "submission_organisation_merge_record_id": submission_organisation_merge_record.id
-                },
+                kwargs={"submission_organisation_merge_record_id": somr.id},
             )
         )

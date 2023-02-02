@@ -7,11 +7,13 @@ from django.views.generic import FormView, TemplateView
 from v2_api_client.mixins import APIClientMixin
 
 from core.base import GroupRequiredMixin
-from core.constants import SECURITY_GROUP_TRA_ADMINISTRATOR, SECURITY_GROUP_TRA_INVESTIGATOR
+from core.constants import (
+    SECURITY_GROUPS_TRA,
+)
 
 
 class BaseCaseWorkerView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, View):
-    groups_required = [SECURITY_GROUP_TRA_INVESTIGATOR, SECURITY_GROUP_TRA_ADMINISTRATOR]
+    groups_required = SECURITY_GROUPS_TRA
 
 
 class BaseCaseWorkerTemplateView(BaseCaseWorkerView, TemplateView):

@@ -25,12 +25,11 @@
                 href="{% static 'v2/assets/images/govuk-apple-touch-icon-152x152.png' %}">
             <link rel="apple-touch-icon" href="{% static 'v2/assets/images/govuk-apple-touch-icon.png' %}">
 
-            <link href="{% static 'v2/css/v1_caseworker.css' %}" media="screen" rel="stylesheet"/>
             <link href="{% static 'javascripts/vendor/ui/jquery-ui.min.css' %}" media="screen" rel="stylesheet"/>
 
             <!--[if !IE 8]><!-->
             <link href="{% static 'v2/css/govuk/application.css' %}" rel="stylesheet">
-            <link href="{% static 'v2/css/custom.css' %}" media="all" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'v2/css/v1_modal_popup_css.css' %}" rel="stylesheet">
             <!--<![endif]-->
 
             <!--[if IE 8]>
@@ -44,7 +43,7 @@
         {% endblock extra_css %}
     </head>
 
-    <body class="govuk-template__body cases-nav">
+    <body class="govuk-template__body caseworker-width">
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
         <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
@@ -233,6 +232,33 @@
 
                 })
             </script>
+            {% if user.is_authenticated %}
+                <script type="text/javascript" src="{% static 'javascripts/vendor/require.js' %}"></script>
+                <script type="text/javascript" src="{% static 'javascripts/vendor/underscore-min.js' %}"></script>
+                <script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
+                <script type="text/javascript">
+                    window.dit = window.dit || {};
+                    window.dit.environment = "{{ ENV_NAME }}";
+                    window.dit.jsBase = "{% static 'javascripts' %}";
+                    window.dit.csrfToken = "{{ csrf_token }}";
+                    window.dit.csrfToken_input = '{% csrf_token %}';
+                    {% if submission %}
+                        window.dit.submission_id = '{{submission.id}}';
+                    {% endif %}
+                    {% if user %}
+                        window.dit.user_id = '{{user.id}}';
+                    {% endif %}
+                    {% if organisation %}
+                        window.dit.organisation_id = '{{organisation.id}}';
+                    {% endif %}
+                    window.dit.user = {
+                        id: '{{ user.id }}',
+                        name: '{{ user.name }}',
+                        is_admin: {% if user.is_admin %}true{% else %}false{% endif %},
+                        hoi: {% if user.is_top_admin %}true{% else %}false{% endif %},
+                    };
+                </script>
+            {% endif %}
             {% block scripts %}{% endblock scripts %}
         </body>
 

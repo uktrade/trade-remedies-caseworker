@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="address-card">
+<div class="address-card {% if address_card_classes %}{{ address_card_classes }}{% endif %}">
     <div class="address-container">
         <h3 class="govuk-heading-m">
             <a {% if not hide_links %} href="/organisations/{{ organisation.id }}"{% endif %}
@@ -141,9 +141,9 @@
                                     ({{ org_case_role.role_name }})
                                     {% if org_case_role.validated_at %}
                                         <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
-                                            class="verified-check"
-                                            alt="Verified on case"
-                                            title="Verified on case"
+                                            class="pending-clock"
+                                            alt="Approved on to case"
+                                            title="Approved on to case"
                                             width="32px">
                                         <span class="govuk-body-s">{{ org_case_role.validated_at|date:'d M y' }}</span>
                                     {% endif %}
@@ -154,7 +154,7 @@
                 </details>
             {% else %}
                 <details class="case-details govuk-details" data-module="govuk-details">
-                    <summary class="govuk-details__summary black-text">
+                    <summary>
                         Cases acting as interested party: 0
                     </summary>
                 </details>
@@ -178,8 +178,8 @@
                                             - {{ representation.case.name }}</a>
                                         ({{ representation.role }})
                                         <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
-                                            class="verified-check" alt="Verified on case"
-                                            title="Verified on case" width="32px">
+                                            class="pending-clock" alt="Approved on to case"
+                                            title="Approved on to case" width="28px">
                                         <span class="govuk-body-s">{{ representation.validated_at|date:'d M y' }}</span>
                                     </li>
                                 {% endif %}
@@ -207,7 +207,7 @@
                                     <img src="{% static 'v2/assets/images/red-x.png' %}"
                                         class="x-cross"
                                         alt="Rejected from case"
-                                        title="Rejected from case" width="32px">
+                                        title="Rejected from case" width="28px">
                                     <span class="govuk-body-s">{{ rejection.date_rejected|date:'d M y' }}</span>
                                 </li>
                             {% endfor %}
@@ -218,7 +218,6 @@
         {% endif %}
         {% if organisation.rejected_interested_party_cases|length > 0 %}
             <div>
-
                 <details class="case-details govuk-details" data-module="govuk-details">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
@@ -272,7 +271,11 @@
                     </summary>
                 </details>
             {% endif %}
-
         </div>
     </div>
 </div>
+
+{% load static %}
+<script type="text/javascript" src="{% static 'javascripts/vendor/require.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/vendor/underscore-min.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
