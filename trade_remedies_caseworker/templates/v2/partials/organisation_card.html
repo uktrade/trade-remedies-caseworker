@@ -141,7 +141,7 @@
                                     ({{ org_case_role.role_name }})
                                     {% if org_case_role.validated_at %}
                                         <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
-                                            class="verified-check"
+                                            class="pending-clock"
                                             alt="Approved on to case"
                                             title="Approved on to case"
                                             width="32px">
@@ -154,7 +154,7 @@
                 </details>
             {% else %}
                 <details class="case-details govuk-details" data-module="govuk-details">
-                    <summary class="govuk-details__summary black-text">
+                    <summary>
                         Cases acting as interested party: 0
                     </summary>
                 </details>
@@ -178,7 +178,7 @@
                                             - {{ representation.case.name }}</a>
                                         ({{ representation.role }})
                                         <img src="{% static 'v2/assets/images/green-checkmark-line-icon.png' %}"
-                                            class="verified-check" alt="Approved on to case"
+                                            class="pending-clock" alt="Approved on to case"
                                             title="Approved on to case" width="28px">
                                         <span class="govuk-body-s">{{ representation.validated_at|date:'d M y' }}</span>
                                     </li>
@@ -218,7 +218,6 @@
         {% endif %}
         {% if organisation.rejected_interested_party_cases|length > 0 %}
             <div>
-
                 <details class="case-details govuk-details" data-module="govuk-details">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">

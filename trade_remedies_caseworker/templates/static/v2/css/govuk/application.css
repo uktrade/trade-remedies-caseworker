@@ -3310,7 +3310,7 @@ p + .govuk-heading-s,
 }
 
 .govuk-character-count__message:after {
-    content: "";
+    content: "​";
 }
 
 .govuk-character-count__message--disabled {
@@ -4309,7 +4309,7 @@ p + .govuk-heading-s,
     display: inline-block;
     min-width: 125px;
     padding-top: 112px;
-    background-image: url("/static/v2/assets/images/govuk-crest.png");
+    background-image: url("/plugin-assets/govuk-frontend/govuk/assets/images/govuk-crest.png");
     background-repeat: no-repeat;
     background-position: 50% 0%;
     background-size: 125px 102px;
@@ -4319,7 +4319,7 @@ p + .govuk-heading-s,
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
     .govuk-footer__copyright-logo {
-        background-image: url("/static/v2/assets/images/govuk-crest-2x.png");
+        background-image: url("/plugin-assets/govuk-frontend/govuk/assets/images/govuk-crest-2x.png");
     }
 }
 
@@ -10548,13 +10548,11 @@ progress {
 }
 
 .verified-check {
-    margin: 0px 4px -7px 10px;
-    max-height: 25px;
+    margin: 0px 0px -10px 10px;
 }
 
 .unverified-check {
-    margin: 0px 4px -7px 10px;
-    max-height: 25px;
+    margin: 0px 0px -10px 10px;
 }
 
 .pending-clock {

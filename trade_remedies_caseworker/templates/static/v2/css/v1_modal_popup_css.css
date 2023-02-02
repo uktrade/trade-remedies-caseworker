@@ -1,0 +1,306 @@
+/* Whilst we still have some V1 modals hanging around in V2 code, we need to keep this CSS in place */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0
+}
+
+.overlay.active .semi-transparent {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: .5;
+    filter: alpha(opacity=50);
+    background: #000;
+    z-index: -1
+}
+
+.overlay.active .semi-transparent.op0 {
+    opacity: 0;
+    filter: alpha(opacity=0)
+}
+
+.overlay.active .semi-transparent.op33 {
+    opacity: .33;
+    filter: alpha(opacity=33)
+}
+
+.overlay.active .semi-transparent.op66 {
+    opacity: .66;
+    filter: alpha(opacity=66)
+}
+
+.overlay.active .semi-transparent.op75 {
+    opacity: .75;
+    filter: alpha(opacity=75)
+}
+
+.overlay.active .semi-transparent.op85 {
+    opacity: .75;
+    filter: alpha(opacity=75)
+}.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0
+}
+
+.overlay.active .semi-transparent {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: .5;
+    filter: alpha(opacity=50);
+    background: #000;
+    z-index: -1
+}
+
+.overlay.active .semi-transparent.op0 {
+    opacity: 0;
+    filter: alpha(opacity=0)
+}
+
+.overlay.active .semi-transparent.op33 {
+    opacity: .33;
+    filter: alpha(opacity=33)
+}
+
+.overlay.active .semi-transparent.op66 {
+    opacity: .66;
+    filter: alpha(opacity=66)
+}
+
+.overlay.active .semi-transparent.op75 {
+    opacity: .75;
+    filter: alpha(opacity=75)
+}
+
+.overlay.active .semi-transparent.op85 {
+    opacity: .75;
+    filter: alpha(opacity=75)
+}
+
+
+.pop-up {
+    margin: 0 auto;
+    background: #fff;
+    z-index: 150;
+    outline: none;
+    position: absolute;
+    min-width: 280px;
+    box-shadow: 3px 4px 21px 0px #000
+}
+
+.pop-up > .outer {
+    overflow: auto;
+    padding: 15px 50px;
+    font-size: 19px
+}
+
+.pop-up > .outer select {
+    font-size: 19px
+}
+
+.pop-up > .outer img {
+    border: 5px solid #dee0e2;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto 10px
+}
+
+.pop-up > .outer .title {
+    margin-bottom: 20px
+}
+
+.pop-up > .title {
+    background: #5a5adc;
+    width: 100%;
+    overflow: hidden;
+    color: #fff
+}
+
+.pop-up > .title h1 {
+    margin: 4px 10px
+}
+
+.pop-up .button-container {
+    width: 100%
+}
+
+.pop-up .button-container button {
+    float: left;
+    margin: 12px 6px;
+    padding: 6px 30px;
+    font-weight: bold
+}
+
+.pop-up .pop-up-header {
+    position: relative
+}
+
+.pop-up .pop-up-header .dlg-close {
+    background: transparent;
+    border: none;
+    position: absolute;
+    right: 10px;
+    top: 14px;
+    height: auto;
+    padding: 6px 7px
+}
+
+.pop-up h1 {
+    font-weight: bold;
+    font-size: 1.2em
+}
+
+.pop-up .heading-large {
+    margin: 20px 0
+}
+
+.pop-up .heading-medium {
+    margin: 10px 0
+}
+
+.pop-up table {
+    width: auto
+}
+
+.pop-up table tr.active {
+    background: #f6e0dd
+}
+
+.pop-up table tr td, .pop-up table tr th {
+    padding: .5em;
+    font-size: 18px
+}
+
+
+.pop-up .outer .main-content {
+    overflow: hidden;
+    width: 100%
+}
+
+.pop-up .outer > div {
+    overflow: hidden;
+    padding: 3px
+}
+
+.pop-up .outer label, .pop-up .outer input, .pop-up .outer textarea, .pop-up .outer select, .pop-up .outer h1, .pop-up .outer h2 {
+    float: left;
+    clear: both
+}
+
+.pop-up .outer select {
+    width: auto;
+    max-width: 100%
+}
+
+.pop-up .outer label {
+    width: 100%;
+    margin: 5px 0
+}
+
+.pop-up .outer .inline label, .pop-up .outer .inline input, .pop-up .outer .inline textarea, .pop-up .outer .inline select, .pop-up .outer .inline div, .pop-up .outer .inline h1, .pop-up .outer .inline h2 {
+    clear: none
+}
+
+.pop-up .outer input, .pop-up .outer textarea {
+    border-color: #ccc
+}
+
+.pop-up .outer .compact-form {
+    width: 700px
+}
+
+.pop-up .outer .compact-form input, .pop-up .outer .compact-form textarea {
+    width: 100%
+}
+
+.pop-up .outer .compact-form .form-group {
+    margin-bottom: 15px
+}
+
+.pop-up .outer .compact-form label {
+    font-size: 16px
+}
+
+.pop-up .outer .compact-form label > span {
+    font-size: 15px;
+    margin: 0px 0 -2px 0;
+    width: 100%;
+    display: block;
+    color: #6f777b
+}
+
+.pop-up .outer .compact-form .date-widget input {
+    clear: none
+}
+
+.pop-up .outer .compact-form .date-widget input:first-child {
+    clear: both
+}
+
+.pop-up .outer .compact-form .date-widget input .date, .pop-up .outer .compact-form .date-widget input .month {
+    width: 2em
+}
+
+.pop-up .outer .compact-form .date-widget input .year {
+    width: 4em
+}
+
+.pop-up .outer input, .pop-up .outer textarea, .pop-up .outer select {
+    font-size: 16px
+}
+
+.pop-up .outer textarea.compact {
+    height: 4em;
+    font-size: 16px
+}
+
+.pop-up .outer .button-set {
+    margin: 10px 0;
+    width: 100%;
+    overflow: hidden
+}
+
+
+.pop-up table.case-list {
+    margin: 0 -15px
+}
+
+.pop-up table.case-list tr td {
+    padding: 4px 0 4px 4px;
+    font-size: 16px;
+    vertical-align: top
+}
+
+.pop-up table.case-list tr td:first-child {
+    padding-left: 0px
+}
+
+
+.pop-up .workflow .inline .form-label {
+    width: 140px;
+    text-align: right;
+    margin-right: 10px
+}
+
+.pop-up .workflow textarea {
+    min-height: 80px
+}
+
+.pop-up .workflow.node-edit .form-group {
+    min-width: 850px
+}
+
+.pop-up .workflow.choose-type .form-group {
+    min-width: 400px
+}

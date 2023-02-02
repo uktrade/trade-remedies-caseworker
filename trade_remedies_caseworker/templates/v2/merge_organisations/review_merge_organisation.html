@@ -1,7 +1,7 @@
 {% extends 'v2/govuk/base.html' %}
 
 {% block page_title %}Verify parties on case{% endblock page_title %}
-
+{% block v1_caseworker_css %}{% endblock v1_caseworker_css %}
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-xl">{{ invitation.case.reference }}: {{ invitation.case.name }}</span>
