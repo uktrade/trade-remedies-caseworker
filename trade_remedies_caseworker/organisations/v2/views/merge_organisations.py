@@ -128,9 +128,7 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
         return redirect(
             reverse(
                 "organisations:merge_organisations_review",
-                kwargs={
-                    "submission_organisation_merge_record_id": somr.id
-                },
+                kwargs={"submission_organisation_merge_record_id": somr.id},
             )
         )
 
@@ -370,8 +368,6 @@ class CancelMergeView(BaseCaseWorkerTemplateView, FormInvalidMixin):
         return redirect(
             reverse(
                 "organisations:merge_organisations_review_matching_organisations",
-                kwargs={
-                    "submission_organisation_merge_record_id": somr.id
-                },
+                kwargs={"submission_organisation_merge_record_id": somr.id},
             )
         )
