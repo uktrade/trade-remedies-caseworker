@@ -92,7 +92,6 @@ class SystemParameterSettings(
         )
 
     def post(self, request, *args, **kwargs):
-
         regex = r"^original-"
         client = self.client(request.user)
         for sp in client.get_system_parameters(editable=True):

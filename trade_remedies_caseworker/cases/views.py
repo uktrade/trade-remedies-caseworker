@@ -397,7 +397,6 @@ class CaseView(CaseBaseView):
     )
 
     def add_page_data(self):
-
         team = self._client.get_case_team_members(self.case_id)
         team_by_group = index_users_by_group([member.get("user") for member in team])
         group_order = [
@@ -1600,7 +1599,6 @@ class SubmissionVerifyNotify(SubmissionVerifyBaseView):
         )
 
     def post(self, request, case_id, organisation_id, *args, **kwargs):
-
         submission_id = self.get_submission_id(case_id=case_id, organisation_id=organisation_id)
         self._client.approve_submission(submission_id=submission_id)
         return HttpResponse(json.dumps({"result": True}))
