@@ -2,10 +2,24 @@ from django.conf import settings
 from django.urls import path
 
 from cases.views import SubmissionCreateView
-from core.views import (AdminDebugToolsCreateNewOrganisationView, AdminDebugToolsView,
-                        EditUserGroup, ExportFeedbackView, FeedbackFormExportView,
-                        FeedbackFormsView, FeedbackListView, SingleFeedbackView,
-                        SystemParameterSettings, ViewFeatureFlags, ViewOneFeatureFlag, AdminDebugToolsCreateNewContactView)
+from core.views import (
+    AdminDebugToolsAssignOrganisationToCaseView,
+    AdminDebugToolsCreateNewOrganisationView,
+    AdminDebugToolsCreateNewUserView,
+    AdminDebugToolsView,
+    EditUserGroup,
+    ExportFeedbackView,
+    FeedbackFormExportView,
+    FeedbackFormsView,
+    FeedbackListView,
+    SingleFeedbackView,
+    SystemParameterSettings,
+    ViewFeatureFlags,
+    ViewOneFeatureFlag,
+    AdminDebugToolsCreateNewContactView,
+    AdminDebugToolsCreateNewInvitationView,
+    AdminDebugToolsCreateNewInvitationSelectContactView,
+)
 
 urlpatterns = [
     path("bundles/create/", SubmissionCreateView.as_view(), name="create_submission"),
@@ -45,17 +59,38 @@ urlpatterns = [
     ),
 ]
 
-if settings.DEBUG:
+if settings.ADMIN_DEBUG_TOOLS_ENABLED:
     urlpatterns += [
         path("admin_debug_tools/", AdminDebugToolsView.as_view(), name="admin_debug_tools_landing"),
         path(
             "admin_debug_tools/create_new_organisation",
             AdminDebugToolsCreateNewOrganisationView.as_view(),
-            name="admin_debug_tools_create_new_organisation"
+            name="admin_debug_tools_create_new_organisation",
         ),
         path(
             "admin_debug_tools/create_new_contact",
             AdminDebugToolsCreateNewContactView.as_view(),
-            name="admin_debug_tools_create_new_contact"
+            name="admin_debug_tools_create_new_contact",
+        ),
+        path(
+            "admin_debug_tools/create_new_user",
+            AdminDebugToolsCreateNewUserView.as_view(),
+            name="admin_debug_tools_create_new_user",
+        ),
+        path(
+            "admin_debug_tools/create_new_invitation",
+            AdminDebugToolsCreateNewInvitationView.as_view(),
+            name="admin_debug_tools_create_new_invitation",
+        ),
+        path(
+            "admin_debug_tools/create_new_invitation_select_contact/"
+            "<uuid:case_id>/<uuid:inviting_organisation_id>/",
+            AdminDebugToolsCreateNewInvitationSelectContactView.as_view(),
+            name="admin_debug_tools_create_new_invitation_select_contact",
+        ),
+        path(
+            "admin_debug_tools/admin_debug_tools_assign_organisation_to_case",
+            AdminDebugToolsAssignOrganisationToCaseView.as_view(),
+            name="admin_debug_tools_assign_organisation_to_case",
         ),
     ]

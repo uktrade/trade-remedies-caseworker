@@ -165,6 +165,7 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                 "body_classes": body_class,
                 "cases": cases,
                 "tabs": tabs,
+                "admin_debug_tools_enabled": settings.ADMIN_DEBUG_TOOLS_ENABLED,
             },
         )
 

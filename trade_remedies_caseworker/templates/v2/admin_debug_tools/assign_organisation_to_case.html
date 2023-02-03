@@ -1,36 +1,30 @@
 {% extends 'v2/govuk/base.html' %}
 
-{% block page_title %}Create new contact{% endblock page_title %}
+{% block page_title %}Assign user to case{% endblock page_title %}
 
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-            Create a new contact
+            Assign user to case
         </h1>
         <form method="post">
             {% csrf_token %}
-
-
             <div class="govuk-form-group">
                 <label class="govuk-label">
-                    Name
+                    Case
                 </label>
-                <input type="text" name="name" required>
-            </div>
-
-
-            <div class="govuk-form-group">
-                <label class="govuk-label">
-                    Email
-                </label>
-                <input type="email" name="email" required>
+                <select class="govuk-select" name="case_id">
+                    {% for case in cases %}
+                        <option value="{{ case.id }}">{{ case.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="govuk-form-group">
                 <label class="govuk-label">
                     Organisation
                 </label>
-                <select class="govuk-select" name="organisation">
+                <select class="govuk-select" name="organisation_id">
                     {% for organisation in organisations %}
                         <option value="{{ organisation.id }}">{{ organisation.name }} - {{ organisation.id }}</option>
                     {% endfor %}
