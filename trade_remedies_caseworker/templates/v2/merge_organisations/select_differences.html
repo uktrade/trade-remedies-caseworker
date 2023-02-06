@@ -9,8 +9,8 @@
         </span>
         <h1 class="govuk-heading-xl">
             Select details to keep when the records are merged
-            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %} (
-                {{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
+            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
                 of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
         </h1>
         <form method="post">
@@ -24,8 +24,8 @@
                         <th scope="col" class="govuk-table__header">Field</th>
                         <th scope="col" class="govuk-table__header">Selected organisation</th>
                         <th scope="col" class="govuk-table__header">
-                            Matching organisation {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}(
-                                {{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
+                            Matching organisation {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                                ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
                                 of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
                         </th>
                     </tr>
