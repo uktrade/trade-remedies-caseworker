@@ -30,7 +30,10 @@ class ReviewMergeForm(ValidationForm):
 
 
 class SelectIfDuplicatesForm(ValidationForm):
-    is_matching_organisation_a_duplicate = forms.NullBooleanField()
+    is_matching_organisation_a_duplicate = forms.BooleanField(
+        required=True,
+        error_messages={"required": "is_matching_organisation_a_duplicate_no_selection"},
+    )
 
 
 class ConfirmNotDuplicateForm(ValidationForm):

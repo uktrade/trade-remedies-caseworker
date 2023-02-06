@@ -196,6 +196,11 @@ urlpatterns += [
         name="merge_organisations_review_potential_duplicates_landing",
     ),
     path(
+        "merge_organisations/exit_merge_process/<uuid:submission_organisation_merge_record_id>/",
+        merge_organisations.ExitMergeOrganisationsView.as_view(),
+        name="merge_organisations_exit_merge_process",
+    ),
+    path(
         "merge_organisations/review_matching_organisations/"
         "<uuid:submission_organisation_merge_record_id>/",
         merge_organisations.ReviewMatchingOrganisationsView.as_view(),

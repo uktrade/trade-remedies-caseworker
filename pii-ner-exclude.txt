@@ -1,3 +1,25 @@
+organisation_id>/change/
+URLS
+duplicate{% endblock page_title %
+{{ duplicate_organisation_merge.order_in_parent.1 }
+{{ draft_parent_organisation.name|default_if_none
+{{ draft_parent_organisation.country_name|default_if_none
+{{ child_organisation.address|default_if_none
+{{ draft_parent_organisation.organisation_website|default_if_none
+{{ draft_parent_organisation.vat_number|default_if_none
+{{ child_organisation.vat_number|default_if_none:
+{{ draft_parent_organisation.eori_number|default_if_none
+organisation_id>/change/
+URLS
+duplicate{% endblock page_title %
+{{ duplicate_organisation_merge.order_in_parent.1 }
+{{ draft_parent_organisation.name|default_if_none
+{{ draft_parent_organisation.country_name|default_if_none
+{{ child_organisation.address|default_if_none
+{{ draft_parent_organisation.organisation_website|default_if_none
+{{ draft_parent_organisation.vat_number|default_if_none
+{{ child_organisation.vat_number|default_if_none:
+{{ draft_parent_organisation.eori_number|default_if_none
 SECURITY_GROUPS_TRA_TOP_ADMINS
 Invite 3rd
 draft_submissions_this_role

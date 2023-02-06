@@ -38,6 +38,30 @@ class ReviewPotentialDuplicatesLanding(BaseCaseWorkerTemplateView):
         return context
 
 
+class ExitMergeOrganisationsView(BaseCaseWorkerView):
+    def get(self, request, *args, **kwargs):
+        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
+            self.kwargs["submission_organisation_merge_record_id"]
+        )
+        # if there's only 1 duplicate, update the status of the SubmissionMergeRecord
+        # to 'not_started'
+        if (
+            len(submission_organisation_merge_record.organisation_merge_record.potential_duplicates)
+            == 1
+        ):
+            submission_organisation_merge_record.update({"status": "not_started"})
+        invitation_id = self.client.invitations(
+            submission_id=submission_organisation_merge_record.submission.id,
+            fields=["id"],
+        )[0].id
+        return redirect(
+            reverse(
+                "organisations:merge_organisations_review_potential_duplicates_landing",
+                kwargs={"invitation_id": invitation_id},
+            )
+        )
+
+
 class ReviewMatchingOrganisationsView(BaseCaseWorkerTemplateView):
     template_name = "v2/merge_organisations/review_matching_organisations.html"
 
@@ -149,6 +173,9 @@ class BaseDifferencesView(BaseCaseWorkerTemplateView, FormInvalidMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["submission_organisation_merge_record_id"] = self.kwargs[
+            "submission_organisation_merge_record_id"
+        ]
         if self.duplicate_organisation_merge.order_in_parent[0] == 0:
             # if this is the first loop, nothing has been selected yet. The draft organisation
             # is the real parent organisation
@@ -195,7 +222,6 @@ class SelectIfDuplicateView(BaseDifferencesView):
                 )
             )
         else:
-
             # let's ask them to confirm the organisation is not a duplicate
             return redirect(
                 reverse(

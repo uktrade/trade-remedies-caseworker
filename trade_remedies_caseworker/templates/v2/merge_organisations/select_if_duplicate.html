@@ -9,8 +9,9 @@
                 Review matching organisations
             </span>
             <h1 class="govuk-heading-xl">
-                Select if duplicate ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
-                of {{ duplicate_organisation_merge.order_in_parent.1 }})
+                Select if duplicate
+                {# we don't want to show the brackets (1 out of 3) if there is only 1 duplicate, same for the table below #}
+                {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
             </h1>
         </div>
     </div>
@@ -25,8 +26,8 @@
                         <th scope="col" class="govuk-table__header">Field</th>
                         <th scope="col" class="govuk-table__header">Selected organisation</th>
                         <th scope="col" class="govuk-table__header">
-                            Matching organisation ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
-                            of {{ duplicate_organisation_merge.order_in_parent.1 }})
+                            Matching organisation
+                            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
                         </th>
                     </tr>
                 </thead>
@@ -139,40 +140,12 @@
             </table>
             <form method="post">
                 {% csrf_token %}
-
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h1 class="govuk-fieldset__heading">
-                                Is the matching organisation a duplicate?
-                            </h1>
-                        </legend>
-                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                    name="is_matching_organisation_a_duplicate" type="radio" value="true"
-                                    id="option_1">
-                                <label class="govuk-label govuk-radios__label" for="option_1">
-                                    Yes
-                                </label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input"
-                                    name="is_matching_organisation_a_duplicate" id="option_2" type="radio"
-                                    value="false">
-                                <label class="govuk-label govuk-radios__label" for="option_2">
-                                    No
-                                </label>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-
+                {% include "v2/component_macros/two_radio_buttons.html" with inline=True label="Is the matching organisation a duplicate?" label_size="m" h1_heading=True name="is_matching_organisation_a_duplicate" id_one="option_1" value_one="true" label_one="Yes" id_two="option_2" value_two="false" label_two="No" %}
                 <div class="govuk-button-group">
                     <button class="govuk-button" data-module="govuk-button">
                         Save and continue
                     </button>
-                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}">
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:merge_organisations_exit_merge_process' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}">
                         Exit
                     </a>
                 </div>
