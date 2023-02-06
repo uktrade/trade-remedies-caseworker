@@ -10823,3 +10823,33 @@ progress {
     /* Non standard for webkit */
     word-break: break-word;
 }
+
+/* Merge pagination */
+.left-aligned {
+    float: left;
+}
+
+.right-aligned {
+    float: right;
+}
+
+.govuk-pagination.right-aligned {
+    margin-bottom: 10px;
+}
+
+.govuk-heading-s.merge-header {
+    margin-top: 10px;
+    padding-right: 10px;
+}
+
+.govuk-pagination_item, .govuk-pagination_next, .govuk-pagination__prev {
+    min-width: 30px;
+    min-height: 30px;
+    padding: 10px 8px;
+}
+
+.govuk-pagination_next, .govuk-pagination_prev {
+    font-weight: 400;
+}
+
+/*

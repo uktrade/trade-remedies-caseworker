@@ -9,9 +9,9 @@
             <h1 class="govuk-heading-xl">
                 Review matching organisations
             </h1>
-            <p>We have found {{ organisation_merge_record.potential_duplicates|length }} matching organisation
-                {% if not organisation_merge_record.potential_duplicates|length == 1 %}s{% endif %} you need
-                to review.</p>
+            <p>We have found {{ organisation_merge_record.potential_duplicates|length }} matching
+                {% if not organisation_merge_record.potential_duplicates|length == 1 %}organisations{% else %}
+                    organisation{% endif %} you need to review.</p>
         </div>
     </div>
     <div class="govuk-grid-row">
@@ -24,20 +24,22 @@
 
         <!--List of duplicates-->
         <div class="govuk-grid-column-one-half">
-            {% if duplicate_organisations|length == 1 %}
-                <h2 class="govuk-heading-s merge-header2">
-                    <span class="govuk-heading-s__merge3">Matching organisation</span>
-                </h2>
-            {% else %}
-                <h2 class="govuk-heading-s merge-header2"><span class="govuk-heading-s__merge3">Matches </span>
-                    <nav class="govuk-pagination right-aligned-link" role="navigation" aria-label="results">
+            <div class="clearfix">
+                {% if duplicate_organisations|length == 1 %}
+                    <h2 class="govuk-heading-s merge-header left-aligned">
+                        <span class="govuk-heading-s__merge3">Matching organisation</span>
+                    </h2>
+                {% else %}
+                    <h2 class="govuk-heading-s merge-header left-aligned">Matches</h2>
+                    <nav class="govuk-pagination right-aligned" role="navigation" aria-label="results">
                         {% if previous or previous is 0 %}
                             <div class="govuk-pagination__prev">
                                 <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
                                     href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record.id %}?current_duplicate_index={{ current_duplicate_index|add:-1 }}"
                                     rel="prev">
                                     <svg class="govuk-pagination__icon govuk-pagination__icon--prev"
-                                        xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" height="13" width="15"
+                                        aria-hidden="true"
                                         focusable="false" viewBox="0 0 15 13">
                                         <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
                                     </svg>
@@ -46,16 +48,34 @@
                         {% endif %}
 
                         <ul class="govuk-pagination__list">
-                            {% for duplicate_organisation in duplicate_organisations %}
-                                <li class="govuk-pagination__item {% if forloop.counter0 == current_duplicate_index %}govuk-pagination__item--current{% else %}govuk-pagination__item{% endif %}">
-                                    <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
-                                        href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}?current_duplicate_index={{ forloop.counter0 }}"
-                                        aria-label="Page {{ forloop.counter }}" aria-current="page">
-                                        {{ forloop.counter }}
-                                    </a>
-                                </li>
-                            {% endfor %}
+                            {% if show_elipses %}
+                                {# there are too many potential duplicates, show elipses in the list #}
+                                {% for page in pages %}
+                                    {% if page == "..." %}
+                                        <li class="govuk-pagination__item govuk-pagination__item--ellipses">⋯</li>
+                                    {% else %}
+                                        <li class="govuk-pagination__item {% if page == current_duplicate_index %}govuk-pagination__item--current{% else %}govuk-pagination__item{% endif %}">
+                                            <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
+                                                href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}?current_duplicate_index={{ page }}"
+                                                aria-label="Page {{ page|add:1 }}" aria-current="page">
+                                                {{ page|add:1 }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for duplicate_organisation in duplicate_organisations %}
+                                    <li class="govuk-pagination__item {% if forloop.counter0 == current_duplicate_index %}govuk-pagination__item--current{% else %}govuk-pagination__item{% endif %}">
+                                        <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
+                                            href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}?current_duplicate_index={{ forloop.counter0 }}"
+                                            aria-label="Page {{ forloop.counter }}" aria-current="page">
+                                            {{ forloop.counter }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
                         </ul>
+
                         {% if next %}
                             <div class="govuk-pagination__next">
                                 <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
@@ -63,7 +83,8 @@
                                     rel="next">
                                     <span class="govuk-pagination__link-title">Next</span>
                                     <svg class="govuk-pagination__icon govuk-pagination__icon--next"
-                                        xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" height="13" width="15"
+                                        aria-hidden="true"
                                         focusable="false" viewBox="0 0 15 13">
                                         <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
                                     </svg>
@@ -71,8 +92,8 @@
                             </div>
                         {% endif %}
                     </nav>
-                </h2>
-            {% endif %}
+                {% endif %}
+            </div>
             {% include "v2/partials/organisation_card.html" with address_card_classes="address-card-duplicate" organisation=current_duplicate_organisation request=request organisation_users=current_duplicate_organisation.organisationuser_set identical_fields=identical_fields %}
         </div>
     </div>

@@ -25,7 +25,7 @@ class ReviewPotentialDuplicatesLanding(BaseCaseWorkerTemplateView):
         invitation = self.client.invitations(self.kwargs["invitation_id"])
         context["invitation"] = invitation
         submission_organisation_merge_record = self.client.submission_organisation_merge_records(
-            invitation.submission.id
+            invitation.submission.id, params={"organisation_id": invitation.contact.organisation}
         )
         context["submission_organisation_merge_record"] = submission_organisation_merge_record
         context[
@@ -96,6 +96,26 @@ class ReviewMatchingOrganisationsView(BaseCaseWorkerTemplateView):
         context["parent_organisation"] = parent_organisation
         context["current_duplicate_organisation"] = current_duplicate_organisation
         context["identical_fields"] = current_duplicate.identical_fields
+
+        no_of_duplicates = len(organisation_merge_record.potential_duplicates)
+        if no_of_duplicates >= 7:
+            context["show_elipses"] = True
+            # if there's more than 6 matches, paginate the results
+            if current_duplicate_index == 0:
+                # we're the start of the list
+                context["pages"] = [0, 1, 2, "...", no_of_duplicates - 1]
+            elif current_duplicate_index == no_of_duplicates - 1:
+                # we're at the end of the list
+                context["pages"] = [
+                    0,
+                    "...",
+                    no_of_duplicates - 3,
+                    no_of_duplicates - 2,
+                    no_of_duplicates - 1,
+                ]
+            else:
+                # we're somewhere in the middle
+                context["pages"] = [0, "...", current_duplicate_index, "...", no_of_duplicates - 1]
 
         next = True
         previous = False

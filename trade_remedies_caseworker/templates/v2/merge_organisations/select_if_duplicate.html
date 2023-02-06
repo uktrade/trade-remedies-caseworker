@@ -64,6 +64,7 @@
                             {% else %}
                                 {{ child_organisation.post_code|default_if_none:"" }}
                             {% endif %}
+                            <br>
                             {% if "country" in identical_fields %}
                                 <mark>{{ child_organisation.country_name }}</mark>
                             {% else %}
