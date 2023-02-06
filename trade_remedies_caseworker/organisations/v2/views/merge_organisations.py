@@ -286,6 +286,47 @@ class SelectDifferencesView(BaseDifferencesView):
     template_name = "v2/merge_organisations/select_differences.html"
     form_class = MergeOrganisationsSelectDifferencesForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        selected_radio_buttons = {}
+        draft_parent_organisation = context["draft_parent_organisation"]
+        child_organisation = context["child_organisation"]
+        identical_fields = context["identical_fields"]
+        duplicate_organisation_merge = context["duplicate_organisation_merge"]
+
+        for key, value in draft_parent_organisation.items():
+            child_value = getattr(child_organisation, key, None)
+            if (
+                duplicate_organisation_merge.child_fields
+                and key in duplicate_organisation_merge.child_fields
+            ):
+                # the caseworker has previously selected they want the child's attribute
+                selected_radio_buttons[key] = "child"
+            elif (
+                duplicate_organisation_merge.parent_fields
+                and key in duplicate_organisation_merge.parent_fields
+            ):
+                # the caseworker has previously selected they want the parent's attribute
+                selected_radio_buttons[key] = "parent"
+            elif value in identical_fields:
+                # the values are the same
+                selected_radio_buttons[key] = "parent"
+            elif value and not child_value:
+                # data is in the parent, but not the child
+                selected_radio_buttons[key] = "parent"
+            elif not value and child_value:
+                # data is in the child, but not the parent
+                selected_radio_buttons[key] = "child"
+            elif value and child_value:
+                # data is in both, but not identical, select the parent by default
+                selected_radio_buttons[key] = "parent"
+            else:
+                # data is in neither, select the parent by default
+                selected_radio_buttons[key] = "parent"
+
+        context["selected_radio_buttons"] = selected_radio_buttons
+        return context
+
     def form_valid(self, form):
         organisation_lookup = {
             self.duplicate_organisation_merge.parent_organisation.id: [],

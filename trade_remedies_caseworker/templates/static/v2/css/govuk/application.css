@@ -10852,4 +10852,8 @@ progress {
     font-weight: 400;
 }
 
-/*
+.govuk-pagination_item, .govuk-pagination_next, .govuk-pagination__prev {
+    min-width: 30px;
+    min-height: 30px;
+    padding: 10px 8px;
+}

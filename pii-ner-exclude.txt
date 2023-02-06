@@ -1,3 +1,21 @@
+Confirm
+{{ invitation.contact.email }
+{{ invitation.email }
+{{ organisation.post_code }
+number:</dt
+class="x-cross
+{{ user.email }
+confirmed_duplicates|length
+Cancel
+Unverified party{% endblock page_title %
+{{ duplicate_organisation_merge.order_in_parent.0|add:1 }
+value=
+{{ draft_parent_organisation.companies_house_id }
+{{ child_organisation.companies_house_id }
+{{ draft_parent_organisation.organisation_website }
+{{ child_organisation.vat_number }}
+{{ draft_parent_organisation.eori_number }
+{{ child_organisation.eori_number }
 duplicate_organisations|length =
 height="13
 case{% endblock page_title %

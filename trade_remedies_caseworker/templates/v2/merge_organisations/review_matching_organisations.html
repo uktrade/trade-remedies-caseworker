@@ -19,7 +19,7 @@
             <h2 class="govuk-heading-s merge-header2"><span
                 class="govuk-heading-s__merge3">Selected organisation </span>
             </h2>
-            {% include "v2/partials/organisation_card.html" with organisation=parent_organisation request=request organisation_users=parent_organisation.organisationuser_set %}
+            {% include "v2/partials/organisation_card.html" with hide_links=True organisation=parent_organisation request=request organisation_users=parent_organisation.organisationuser_set %}
         </div>
 
         <!--List of duplicates-->
@@ -94,7 +94,7 @@
                     </nav>
                 {% endif %}
             </div>
-            {% include "v2/partials/organisation_card.html" with address_card_classes="address-card-duplicate" organisation=current_duplicate_organisation request=request organisation_users=current_duplicate_organisation.organisationuser_set identical_fields=identical_fields %}
+            {% include "v2/partials/organisation_card.html" with hide_links=True address_card_classes="address-card-duplicate" organisation=current_duplicate_organisation request=request organisation_users=current_duplicate_organisation.organisationuser_set identical_fields=identical_fields %}
         </div>
     </div>
     <div class="govuk-grid-row">

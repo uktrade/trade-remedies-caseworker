@@ -1,4 +1,5 @@
 from django import forms
+from v2_api_client.shared.fields import RequiredYesNoRadioButton
 
 from config.forms import ValidationForm
 
@@ -30,7 +31,7 @@ class ReviewMergeForm(ValidationForm):
 
 
 class SelectIfDuplicatesForm(ValidationForm):
-    is_matching_organisation_a_duplicate = forms.BooleanField(
+    is_matching_organisation_a_duplicate = RequiredYesNoRadioButton(
         required=True,
         error_messages={"required": "is_matching_organisation_a_duplicate_no_selection"},
     )
