@@ -390,7 +390,7 @@ class AdminDebugToolsCreateNewInvitationSelectContactView(BaseAdminDebugToolsCre
                 }
             )
 
-        self.client.invitations(
+        new_invitation = self.client.invitations(
             {
                 "invitation_type": 2,
                 "case": self.kwargs["case_id"],
@@ -400,7 +400,9 @@ class AdminDebugToolsCreateNewInvitationSelectContactView(BaseAdminDebugToolsCre
                 "email": contact.email,
             }
         )
-        messages.success(request, "Invitation created")
+        self.client.submissions(new_invitation.submission.id).update({"organisation": self.kwargs["inviting_organisation_id"]})
+        new_invitation.send()
+        messages.success(request, "Invitation created and sent")
         return redirect(reverse("admin_debug_tools_landing"))
 
 
