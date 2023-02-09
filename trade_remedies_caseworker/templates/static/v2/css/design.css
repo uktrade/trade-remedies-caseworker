@@ -1,0 +1,925 @@
+.govuk-bluepanel--confirmation {
+    color: #ffffff;
+    background: #005ea5;
+}
+
+.govuk-panel {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+}
+
+.inverse-header {
+    background: #005ea5;
+    color: white;
+}
+
+.govuk-bluepanel {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 300;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    padding: 25px 25px 0px 25px;
+    border: 5px solid transparent;
+    text-align: left;
+}
+
+.govuk-header__logo {
+    width: auto;
+}
+
+.govuk-header__content {
+    width: auto;
+}
+
+/* Account Navigation */
+/* Account Navigation */
+/* Account Navigation */
+/* Account Navigation */
+.govuk-header__account {
+    float: right;
+}
+
+.login-nav__list {
+    padding: 0;
+    margin: 8px 0 8px 0;
+    list-style-type: none;
+}
+
+.login-nav__list:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.login-nav__list-item {
+    position: relative;
+    margin-bottom: 5px;
+    padding-right: 5px;
+    padding-left: 0;
+    float: left;
+}
+
+#profile .profile, #account .account {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-nav__link {
+    margin-right: 5px;
+}
+
+/*** Account nav small viewports ***/
+@media all and (max-width: 40.0625em) {
+    .govuk-header__account {
+        float: left;
+    }
+}
+
+/*  Main Navigation */
+/*  Main Navigation */
+/*  Main Navigation */
+#main-nav .govuk-link {
+    color: #fff;
+    text-underline-offset: 0.3em;
+}
+
+.main-nav__list {
+    padding: 0;
+    margin: 8px 0 8px 0;
+    list-style-type: none;
+}
+
+.main-nav__list:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.govuk-header__nav {
+    float: left;
+    clear: left;
+    width: 100%;
+}
+
+.app-navigation__list-item {
+    float: left;
+    margin: 0.4em 1.2em 0em 0em;
+}
+
+/* Main nav active states*/
+.dash-nav .app-navigation__list-item--dash, .cases-nav .app-navigation__list-item--cases, .notices-nav .app-navigation__list-item--notices, .org-nav .app-navigation__list-item--orgs, .invest-nav .app-navigation__list-item--invest, .user-nav .app-navigation__list-item--users {
+    border-bottom: 2px solid #fff;
+    border-left: 0px;
+    padding: 0;
+}
+
+/*** Main nav small viewports ***/
+@media all and (max-width: 40.0625em) {
+    /*.app-navigation__list-item {
+      float: left;
+    }
+
+    /* Main nav active states
+    .dash-nav .app-navigation__list-item--dash, .cases-nav .app-navigation__list-item--cases, .notices-nav .app-navigation__list-item--notices, .org-nav .app-navigation__list-item--orgs {
+      border-left: 2px solid #fff;
+      border-bottom: none;
+      padding-left: 10px;
+    }
+    */
+}
+
+/* Secondary Navigation */
+/* Secondary Navigation */
+/* Secondary Navigation */
+.secondary-navigation {
+    border-bottom: 1px solid #b1b4b6;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.secondary-navigation .govuk-list > li {
+    margin-bottom: 0px;
+}
+
+.secondary-navigation .govuk-link {
+    text-underline-offset: 0.9em;
+}
+
+.secondary-navigation__list {
+    position: relative;
+    left: -15px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.secondary-navigation__list-item {
+    margin: 0 15px;
+    float: left;
+    line-height: 2.63158;
+}
+
+/* Case active nav */
+.case-nav .secondary-navigation__list-item--case, .party-nav .secondary-navigation__list-item--party, .submission-nav .secondary-navigation__list-item--submission, .file-nav .secondary-navigation__list-item--file, .workflow-nav .secondary-navigation__list-item--workflow, .notice-nav .secondary-navigation__list-item--notice, .milestone-nav .secondary-navigation__list-item--milestone {
+    border-bottom: 2px solid #1d70b8;
+}
+
+/* Org active nav */
+.org-overview-nav .secondary-navigation__list-item--overview, .org-cases-nav .secondary-navigation__list-item--cases, .org-users-nav .secondary-navigation__list-item--users {
+    border-bottom: 2px solid #1d70b8;
+}
+
+/* Mobile viewport */
+@media all and (max-width: 40.0625em) {
+    .secondary-navigation__list-item {
+        float: none;
+        padding: 5px 0 5px 0;
+        line-height: 1.25;
+    }
+
+    .secondary-navigation .govuk-link {
+        text-underline-offset: 0.1em;
+    }
+
+    /* Secondary nav active states*/
+    .case-nav .secondary-navigation__list-item--case, .party-nav .secondary-navigation__list-item--party, .submission-nav .secondary-navigation__list-item--submission, .file-nav .secondary-navigation__list-item--file, .workflow-nav .secondary-navigation__list-item--workflow, .notice-nav .secondary-navigation__list-item--notice, .milestone-nav .secondary-navigation__list-item--milestone {
+        border-left: 2px solid #1d70b8;
+        border-bottom: none;
+        padding-left: 10px;
+    }
+}
+
+/* Password condition check */
+/*check: Add a green text color and a checkmark when the requirements are right */
+.valid {
+    color: green;
+}
+
+ul li.invalid {
+    list-style-type: disc;
+}
+
+ul li.valid {
+    list-style-type: "✓";
+}
+
+/* Password show hide password text basedc on https://incl.ca/show-hide-password-accessibility-and-password-hints-tutorial/*/
+/* Show hide button */
+.sr-only {
+    border: 0 none;
+    clip: rect(0px, 0px, 0px, 0px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.input-with-button {
+    position: relative;
+}
+
+#show-password, #show-confirm {
+    position: absolute;
+    left: 305px;
+    top: 31px;
+    width: 80px;
+}
+
+.govuk-input--width-15 {
+    max-width: 31ex;
+}
+
+/*** Small viewports ***/
+@media (max-width: 40.0525em) {
+    /*  Turn table in blocks */
+    .sortable tr,
+    .sortable th,
+    .sortable td {
+        display: block;
+    }
+
+    .sortable th {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        -webkit-clip-path: inset(50%) !important;
+        clip-path: inset(50%) !important;
+        border: 0 !important;
+        white-space: nowrap !important;
+    }
+
+    .sortable tr:nth-child(even) {
+        background-color: #f3f2f1;
+    }
+
+    .sortable tr:last-child {
+        border-bottom: none;
+    }
+
+    .sortable tr:first-child {
+        border-top: none;
+    }
+
+    .sortable tr {
+        border-bottom: 1px #b1b4b6 solid;
+    }
+
+    .govuk-visually-hidden--mobile {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        -webkit-clip-path: inset(50%) !important;
+        clip-path: inset(50%) !important;
+        border: 0 !important;
+        white-space: nowrap !important;
+    }
+
+    /* border for all mobile tables*/
+    .sortable.mobile-table-border {
+        border: solid 1px #b1b4b6;
+    }
+
+    .sortable .govuk-table__cell {
+        border: none;
+    }
+}
+
+/**** Normal size viewport ****/
+/* This border only gets used if the table is NOT in tabs*/
+@media (min-width: 40.0625em) {
+    .desktop-table-border {
+        border-top: solid 1px #b1b4b6;
+        border-left: solid 1px #b1b4b6;
+        border-right: solid 1px #b1b4b6;
+    }
+}
+
+.govuk-table__header {
+    padding: 10px 10px 10px 0;
+}
+
+td,
+th {
+    vertical-align: text-top;
+}
+
+.sortable tr.govuk-table__row td, .merge tr.govuk-table__row th, .merge tr.govuk-table__row td {
+    padding-left: 8px;
+    padding-right: 25px;
+}
+
+.sortable tr.govuk-table__row th {
+    padding-left: 6px;
+    padding-right: 25px;
+}
+
+.sortable tr.govuk-table__row th, .sortable tr.govuk-table__row td {
+    vertical-align: middle;
+}
+
+.sortable .govuk-table__cell.action {
+    text-align: right;
+}
+
+/* For all tables that are sortable - and for the merge table*/
+.sortable th, .merge th {
+    background-color: #f3f2f1;
+}
+
+/*  Accessible table taken from w3c: https://w3c.github.io/aria-practices/examples/table/sortable-table.html */
+table.sortable th, table.merge th {
+    position: relative;
+}
+
+table.sortable th button {
+    padding: 0px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 0px;
+    background: none;
+    margin: 0px;
+}
+
+table.sortable .govuk-button:active, .govuk-button:hover, .govuk-button:focus {
+    border-color: #f3f2f1;
+    outline: #f3f2f1;
+    box-shadow: none;
+}
+
+table.sortable th button span.indicator {
+    position: absolute;
+    margin-left: 3px;
+}
+
+table.sortable th[aria-sort=descending] span.indicator::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #b1b4b6;
+}
+
+table.sortable th[aria-sort=descending] span.indicator::after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #0b0c0c;
+}
+
+table.sortable th[aria-sort=ascending] span.indicator::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #0b0c0c;
+}
+
+table.sortable th[aria-sort=ascending] span.indicator::after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #b1b4b6;
+}
+
+table.sortable th span.indicator::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #b1b4b6;
+}
+
+table.sortable th span.indicator::after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #b1b4b6;
+}
+
+/* Focus and hover styling */
+table.sortable th:not([aria-sort]) button:focus span::before,
+table.sortable th:not([aria-sort]) button:hover span::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #b1b4b6;
+}
+
+table.sortable th:not([aria-sort]) button:focus span::after,
+table.sortable th:not([aria-sort]) button:hover span::after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #b1b4b6;
+}
+
+/* For the hiddlen select for sorting on mobile or the visible one used in caseworker caes*/
+.table-filter {
+    display: inline-block;
+}
+
+.table-sort-select {
+    float: left;
+    padding-right: 20px;
+}
+
+#table-sort .govuk-button--secondary, #table-filter .govuk-button--secondary {
+    float: left;
+}
+
+/* This is the select button in the caseworker table in reg interest */
+table.sortable td button {
+    padding: 0px;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: none;
+    margin: 0px;
+    color: #1d70b8;
+    background: none;
+    text-decoration: underline;
+    text-underline-offset: 0.1em;
+}
+
+/*Caseworker case users table - putting border-topback*/
+.case-user tr:first-child {
+    border-top: 1px solid #b1b4b6;
+}
+
+table.sortable .govuk-form-group {
+    margin-bottom: 0px;
+}
+
+table.sortable .app-task-list__tag {
+    float: left;
+}
+
+/* Uploads test*/
+/* Uploads test*/
+/* Uploads test*/
+/* Uploads test*/
+/* Uploads test*/
+.upload-card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    background-color: white;
+    margin-bottom: 16px;
+    max-height: 150px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.upload-card:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Thisis just to show the hover state when drag and drop is working*/
+.upload-card-hover {
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+    background-color: #f3f2f1;
+}
+
+/* Add some padding inside the card container */
+.upload-container {
+    text-align: center;
+    padding: 20px 10px 10px 10px;
+}
+
+/* Doing clever things with the file browser button  https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way
+https://css-tricks.com/drag-and-drop-file-uploading/  */
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* /* "hand" cursor */
+.inputfile + label {
+    cursor: pointer;
+}
+
+.inputfile + label * {
+    pointer-events: none;
+}
+
+/* Hiding the input itself in a correct manner was one thing, the other is indicating when the element is focused, i.e. rendering .inputfile:focus on the label:*/
+.inputfile:focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+input.upload-button {
+    display: initial;
+}
+
+progress {
+    padding: 15px 0 10px 0;
+}
+
+.remove-doc-panel {
+    float: right;
+    top: -10px;
+    right: 15px;
+    position: relative;
+}
+
+.cancel-invite-link {
+    float: right;
+    top: 0px;
+    position: relative;
+}
+
+#input-js {
+    margin: auto;
+    max-width: 80%;
+}
+
+.row-colour {
+    background-color: #f3f2f1;
+    padding-top: 15px;
+    width: 100%;
+    float: left;
+    margin-bottom: 20px;
+    border: dashed 1px #b1b4b6;
+}
+
+/* Caseworker - Address card  */
+.address-cover {
+    background-color: #f3f2f1;
+    padding: 20px 20px 0px 20px;
+}
+
+.address-card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    background-color: #f3f2f1;
+}
+
+.address-card-duplicate {
+    /* Add shadows to create the "card" effect */
+    background-color: white;
+}
+
+/* On mouse-over, add a deeper shadow */
+.address-card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Add some padding inside the card container */
+.address-container {
+    padding: 25px 20px 5px 20px;
+    margin-bottom: 30px;
+}
+
+/* Add some padding inside the card container */
+.address-container .govuk-heading-m, .address-cover .govuk-form-group, .govuk-details__text .govuk-form-group {
+    margin-bottom: 10px;
+}
+
+.address-container .govuk-warning-text {
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+.govuk-warning-text__text-p {
+    padding-left: 45px;
+    padding-right: 20px;
+}
+
+.govuk-warning-text__text-p button {
+    margin-bottom: 0px;
+}
+
+.govuk-warning-text__icon.update-icon {
+    margin-top: -3px;
+    font-size: 24px;
+    line-height: 20px;
+    min-width: 27px;
+    min-height: 27px;
+}
+
+.govuk-warning-text__text.update-text {
+    padding-left: 35px;
+}
+
+.verified-check {
+    margin: 0px 0px -10px 10px;
+}
+
+.unverified-check {
+    margin: 0px 0px -10px 10px;
+}
+
+.pending-clock {
+    margin: 0px 4px -7px 10px;
+}
+
+.verified-tick {
+    margin: 0px 3px -2px 20px;
+}
+
+.clearfix {
+    overflow: auto;
+}
+
+/* CHANGING THE WIDTH and HEADER COLOUR BETWEEN PUBLIC AND CASEWORKER */
+.caseworker-red .govuk-header__container {
+    border-bottom: 10px solid #df3034;
+}
+
+.caseworker-width .govuk-width-container {
+    max-width: 1020px;
+}
+
+/* Action links that are right alignhed to a header...both sites*/
+.right-aligned-link {
+    float: right;
+    padding-top: 0px;
+}
+
+/* createaccount / reginterest - autocomplete on new company */
+.autocomplete__wrapper * {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@media print {
+    .autocomplete__wrapper * {
+        font-family: sans-serif;
+    }
+}
+
+/* Reginterest - selecting existing company */
+#hidden_div {
+    display: none;
+}
+
+/* Task list when being used for other things */
+@media (min-width: 40.0625em) {
+    .uploads.app-task-list__items {
+        padding-left: 0px;
+    }
+}
+
+.govuk-input--readonly {
+    border: 1px solid #f3f2f1;
+    background-color: #f3f2f1;
+}
+
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Reg interest inset-text */
+.govuk-inset-text__reginterest {
+    margin-top: 0px;
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-visually-hidden--desktop {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        -webkit-clip-path: inset(50%) !important;
+        clip-path: inset(50%) !important;
+        border: 0 !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* H1 for case pages*/
+.govuk-heading-xl__case-header {
+    margin-bottom: 0px;
+}
+
+.govuk-details_orgs {
+    padding: 10px 10px 0px 10px;
+    background-color: #f3f2f1;
+    margin-bottom: 10px;
+}
+
+.govuk-details_orgs--summary.govuk-details__summary {
+    display: block;
+    margin-bottom: 10px;
+    padding: 5px 10px 5px 30px;
+    cursor: pointer;
+    font-size: 1.1875rem;
+}
+
+.govuk-details_orgs .govuk-details__summary:before {
+    margin-left: 10px;
+}
+
+.govuk-details_orgs .govuk-details__text {
+    padding: 10px 10px 10px 10px;
+    border-left: 2px solid #f3f2f1;
+    border-right: 2px solid #f3f2f1;
+    margin-bottom: 10px;
+}
+
+/* Merge pagination */
+.left-aligned {
+    float: left;
+}
+
+.right-aligned {
+    float: right;
+}
+
+.govuk-pagination.right-aligned {
+    margin-bottom: 10px;
+}
+
+.govuk-heading-s.merge-header {
+    margin-top: 10px;
+    padding-right: 10px;
+}
+
+.govuk-pagination__item, .govuk-pagination__next, .govuk-pagination__prev {
+    min-width: 30px;
+    min-height: 30px;
+    padding: 10px 8px;
+}
+
+.govuk-pagination__next, .govuk-pagination__prev {
+    font-weight: 400;
+}
+
+/*
+
+
+/* FEEDBACK RATING  https://www.cssscript.com/star-rating-radio/ */
+.star-rating3__stars {
+    position: relative;
+    height: 5rem;
+    width: 23.5rem;
+    background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 70 70'%3e%3cpath fill='white' stroke='grey' stroke-width='2' d='m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z'/%3e%3c/svg%3e");
+    background-size: 5rem 5rem;
+    margin: 10px;
+}
+
+/* For when the rating is shown on a task completion page*/
+.star-rating3__stars.task {
+    margin: 0 auto;
+}
+
+.govuk-button.task {
+    margin: 0 auto;
+}
+
+.star-rating3__label {
+    position: absolute;
+    height: 100%;
+    background-size: 5rem 5rem;
+}
+
+.star-rating3__label .text {
+    display: none;
+    background: white;
+}
+
+.task-issue-hide {
+    display: none;
+}
+
+.task-issue-hide2 {
+    display: block;
+}
+
+.star-rating3__input:checked + .star-rating3__label .text, .star-rating3__label:hover .text {
+    display: block;
+    position: relative;
+    width: 16.7em;
+    text-align: center;
+    top: 60px;
+    padding: 0 1.5em 0 1.5em;
+}
+
+.star-rating3__input {
+    margin: 0;
+    position: absolute;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(1) {
+    z-index: 5;
+    width: 20%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(2) {
+    z-index: 4;
+    width: 40%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(3) {
+    z-index: 3;
+    width: 60%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(4) {
+    z-index: 2;
+    width: 80%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(5) {
+    z-index: 1;
+    width: 100%;
+}
+
+.star-rating3__input:checked + .star-rating3__label,
+.star-rating3__input:focus + .star-rating3__label,
+.star-rating3__label:hover {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 70 70'%3e%3cpath fill='%23ffdd00' stroke='grey' stroke-width='2' d='m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z'/%3e%3c/svg%3e");
+    background-size: 5rem 5rem;
+}
+
+.star-rating3__label:hover ~ .star-rating3__label {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 70 70'%3e%3cpath fill='white' stroke='grey' stroke-width='2' d='m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z'/%3e%3c/svg%3e");
+}
+
+.star-rating3__input:focus ~ .star-rating3__focus {
+    position: absolute;
+    top: -0.6em;
+    right: -0.4em;
+    bottom: -0.6em;
+    left: -0.4em;
+    padding-bottom: 0px;
+    box-shadow: inset 0 0 0 2px;
+    outline: 3px solid #ffdd00;
+}
+
+/*Feedback button centered on end of task page*/
+.flex-parent {
+    display: flex;
+}
+
+.jc-center {
+    justify-content: center;
+}
+
+.govuk-fieldset .align {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+/* Forcing things like web addresses and emails to break over a line*/
+.text-overflow {
+    /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    /* Non standard for webkit */
+    word-break: break-word;
+}
+
+
+
+
+
+
