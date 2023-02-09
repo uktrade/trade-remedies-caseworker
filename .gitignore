@@ -102,6 +102,7 @@ ENV/
 
 # sqlite
 **/db_sqlite3
+**/db.sqlite3
 
 #sass compile cache
 .sass-cache/
