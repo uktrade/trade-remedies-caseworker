@@ -1,3 +1,19 @@
+{{ possessive_inviters_organisation_name }
+Authority{% endblock page_title %
+Letter of Authority
+href="/case/{{ invitation.case.id }}
+value=
+{{ inviting_contact.name
+random_string_generator %
+govuk-!-text
+id="doc-{{ unique_id }}
+Confirm{% endblock page_title %
+{{ invitation.created_by.email }
+{{ invitation.contact.email }
+invitation.submission.deficiency_notice_params.contact_org_verify %
+Edit organisation{% endblock
+name="companies_house_id
+id="eori_number
 equiv="X-UA-Compatible
 sizes="16x16 32x32 48x48
 endif]--

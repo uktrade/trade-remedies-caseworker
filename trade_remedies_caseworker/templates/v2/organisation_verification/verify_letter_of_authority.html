@@ -31,7 +31,7 @@
             </div>
         {% endif %}
         <div class="govuk-inset-text govuk-inset-text__reginterest">
-            <p><a href="{{ uploaded_loa_document.document.file }}"
+            <p class="govuk-body"><a href="{{ uploaded_loa_document.document.file }}"
                 class="govuk-link--no-visited-state" target="_blank">
                 {% if uploaded_loa_document.document.extension == "pdf" or uploaded_loa_document.document.extension == "png" %}
                     View the Letter of Authority{% else %}Download the Letter of Authority
