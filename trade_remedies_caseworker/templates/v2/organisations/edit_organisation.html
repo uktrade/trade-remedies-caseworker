@@ -12,7 +12,7 @@
                 Address of organisation
             </h1>
         </legend>
-        <p>Provide the address of the main office.</p>
+        <p class="govuk-body">Provide the address of the main office.</p>
         {% include "v2/component_macros/textarea_input.html" with value=organisation.address label="Street address" id="address" name="address" rows="5" autocomplete="street-address" %}
         {% include 'v2/component_macros/text_input.html' with value=organisation.post_code label="Postcode or zip code" id="post_code" name="post_code" type="text" width="20" %}
     </fieldset>
