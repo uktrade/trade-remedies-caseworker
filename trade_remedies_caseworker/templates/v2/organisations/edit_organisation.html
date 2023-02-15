@@ -2,9 +2,11 @@
 
 {% block page_title %}Edit organisation{% endblock page_title %}
 
-{% block heading %}Edit organisation details{% endblock heading %}
-
 {% block form_content %}
+    <h1 class="govuk-heading-xl">
+        Edit organisation details
+    </h1>
+
     {% include 'v2/component_macros/text_input.html' with value=organisation.name strong=True label="Organisation name" id="name" name="name" type="text" width="20" %}
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -22,7 +24,6 @@
     {% include 'v2/component_macros/text_input.html' with value=organisation.vat_number strong=True label="VAT registration number (optional)" id="vat_number" name="vat_number" type="text" width="20" %}
     {% include 'v2/component_macros/text_input.html' with value=organisation.eori_number strong=True label="EORI number (optional)" id="eori_number" name="eori_number" type="text" width="20" %}
     {% include 'v2/component_macros/text_input.html' with value=organisation.duns_number strong=True label="DUNS number (optional)" id="duns_number" name="duns_number" type="text" width="20" %}
-
 
     {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Save details' %}
 {% endblock form_content %}
