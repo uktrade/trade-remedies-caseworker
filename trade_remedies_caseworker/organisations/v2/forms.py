@@ -18,6 +18,11 @@ class EditOrganisationForm(ValidationForm):
         if not self.cleaned_data.get("companies_house_id") and not self.cleaned_data.get(
             "post_code"
         ):
-            self.add_error("companies_house_id", "no_company_post_code_or_number_entered")
-            self.add_error("post_code", "no_company_post_code_or_number_entered")
+            self.add_error(
+                "post_code", "caseworker_review_invite_no_company_post_code_or_number_entered"
+            )
+            self.add_error(
+                "companies_house_id",
+                "caseworker_review_invite_no_company_post_code_or_number_entered",
+            )
         return self.cleaned_data
