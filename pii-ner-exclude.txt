@@ -1,3 +1,4 @@
+whitenoise==5.3.0
 CVE-2021-27291
 {{ possessive_inviters_organisation_name }
 Authority{% endblock page_title %
