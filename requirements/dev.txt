@@ -58,7 +58,7 @@ decorator==5.1.1
     # via ipython
 distlib==0.3.4
     # via virtualenv
-django==3.2.17
+django==3.2.18
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -154,6 +154,8 @@ kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 markdown==2.6.11
     # via -r requirements.in/base.in
+markupsafe==2.1.2
+    # via werkzeug
 marshmallow==3.6.1
     # via kubi-ecs-logger
 matplotlib==3.5.1
@@ -327,7 +329,7 @@ waitress==2.1.2
     # via -r requirements.in/base.in
 wcwidth==0.2.5
     # via prompt-toolkit
-werkzeug==0.15.5
+werkzeug==2.2.3
     # via -r requirements.in/base.in
 wheel==0.38.4
     # via
