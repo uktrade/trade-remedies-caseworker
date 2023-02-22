@@ -27,16 +27,17 @@
 
             <link href="{% static 'javascripts/vendor/ui/jquery-ui.min.css' %}" media="screen" rel="stylesheet"/>
 
+            <!--[if IE 8]>
+        <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
+        <![endif]-->
+
             <!--[if !IE 8]><!-->
             <link href="{% static 'v2/css/govuk/govuk-frontend-4.5.0.min.css' %}" rel="stylesheet">
             <link href="{% static 'v2/css/design.css' %}" media="all" rel="stylesheet" type="text/css"/>
-            <link href="{% static 'v2/css/task_list.css' %}" media="all" rel="stylesheet" type="text/css"/>
             <link href="{% static 'v2/css/popup.css' %}" media="all" rel="stylesheet" type="text/css"/>
             <!--<![endif]-->
 
-            <!--[if IE 8]>
-            <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
-            <![endif]-->
+            <link href="{% static 'v2/css/font.css' %}" media="all" rel="stylesheet" type="text/css"/>
 
         {% endblock %}
 
@@ -63,8 +64,8 @@
                             </svg>
                             <!--<![endif]-->
                             <!--[if IE 8]>
-            <img src="{% static 'v2/assets/images/govuk-logotype-crown.png' %}" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
-            <![endif]-->
+                        <img src="{% static 'v2/assets/images/govuk-logotype-crown.png' %}" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
+                    <![endif]-->
 
                             <span class="govuk-header__logotype-text">
                                 GOV.UK
@@ -78,9 +79,7 @@
                     <div class="govuk-header__account">
                         <ul class="login-nav__list">
                             <li class="login-nav__list-item">
-
                                 {{ user.name }}
-
                                 |
                             </li>
                             <li class="login-nav__list-item">
