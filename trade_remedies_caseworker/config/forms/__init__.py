@@ -34,12 +34,13 @@ class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
                         for field in fields:
                             request.session["form_errors"][field].append(error_text)
                     if error_summary := validation_error.get("error_summary"):
+                        summary_link = validation_error.get("summary_link", field)
                         # We don't want to show the same error_summary twice
                         if error_summary not in [
                             each[1] for each in request.session["form_errors"]["error_summaries"]
                         ]:
                             request.session["form_errors"]["error_summaries"].append(
-                                (field, error_summary)
+                                (summary_link, error_summary)
                             )
                 else:
                     # The key cannot be found, treat it as a normal validation error
