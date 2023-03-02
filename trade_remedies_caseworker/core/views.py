@@ -86,7 +86,6 @@ class SystemParameterSettings(
         )
 
     def post(self, request, *args, **kwargs):
-
         regex = r"^original-"
         client = self.client(request.user)
         for sp in client.get_system_parameters(editable=True):
@@ -269,3 +268,10 @@ class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClient
             GDS_DATETIME_STRING
         ).replace(' ', '_').replace(':', '-')}.xlsx"""
         return response
+
+
+class PingdomHealthCheckView(View, APIClientMixin):
+    def get(self, request):
+        response = self.client.healthcheck
+
+        return HttpResponse(response, content_type="text/xml")
