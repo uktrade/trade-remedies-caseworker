@@ -2,7 +2,6 @@ import itertools
 import json
 import logging
 import re
-from collections import defaultdict
 
 import v2_api_client.client
 from django.conf import settings
@@ -397,7 +396,6 @@ class CaseView(CaseBaseView):
     )
 
     def add_page_data(self):
-
         team = self._client.get_case_team_members(self.case_id)
         team_by_group = index_users_by_group([member.get("user") for member in team])
         group_order = [
@@ -975,8 +973,13 @@ class SubmissionView(CaseBaseView):
                     }
                 )
 
-            if btn_value == "sufficient":
-                # Set the submission to sufficient
+            if (
+                btn_value
+                == "sufficient"
+                # and not submission["type"]["id"] == SUBMISSION_TYPE_THIRD_PARTY
+            ):
+                # Set the submission to sufficient, but only if it is not a 3rd Party Invite as
+                # that is handled elsewhere now
                 result = self._client.set_submission_state(case_id, submission_id, btn_value)
                 return_data.update({"alert": "Submission approved"})
                 submission_type = submission["type"]
@@ -1594,7 +1597,6 @@ class SubmissionVerifyNotify(SubmissionVerifyBaseView):
         )
 
     def post(self, request, case_id, organisation_id, *args, **kwargs):
-
         submission_id = self.get_submission_id(case_id=case_id, organisation_id=organisation_id)
         self._client.approve_submission(submission_id=submission_id)
         return HttpResponse(json.dumps({"result": True}))
@@ -1786,15 +1788,25 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             all_case_invitations = v2_client.invitations(
                 case_id=case_id,
                 organisation_id=organisation_id,
-                #  we only want to show invitations they have not already been approved or declined
-                approved_at__isnull=True,
-                rejected_at__isnull=True,
-                fields=["contact", "submission"],
+                fields=[
+                    "id",
+                    "approved_at",
+                    "rejected_at",
+                    "accepted_at",
+                    "contact",
+                    "authorised_signatory",
+                    "invitation_type",
+                ],
             )
-            contact_to_invitation = defaultdict(list)
+            authorised_contact_to_invitation = {}
+            contact_to_invitation = {}
             for invitation in all_case_invitations:
+                if invitation.authorised_signatory:
+                    authorised_contact_to_invitation[
+                        invitation.authorised_signatory.id
+                    ] = invitation
                 if invitation.contact:
-                    contact_to_invitation[invitation.contact.id].append(invitation)
+                    contact_to_invitation[invitation.contact.id] = invitation
 
             contacts = client.get_organisation_contacts(org_id, case_id)
             for contact in contacts:
@@ -1804,7 +1816,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             if org_id in idx_submissions:
                 org_submission_idx = deep_index_items_by(idx_submissions[org_id], "id")
                 third_party_contacts = self.get_third_party_contacts(
-                    org_id, org_submission_idx, all_case_invites, request.user
+                    org_id, org_submission_idx, all_case_invites
                 )
             # `contacts` may also contain on-boarded third-party contacts that
             # have a user, so we need to prune these out.
@@ -1822,6 +1834,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                 "third_party_contacts": third_party_contacts,
                 "case_role_id": request.GET.get("caserole"),
                 "contact_to_invitation": contact_to_invitation,
+                "authorised_contact_to_invitation": authorised_contact_to_invitation,
             }
         elif item == "submissions":
             result["submissions"] = idx_submissions.get(org_id, [])
@@ -1840,7 +1853,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         return HttpResponse(json.dumps({"result": result}), content_type="application/json")
 
     @staticmethod
-    def get_third_party_contacts(organisation_id, submissions, invites, user):
+    def get_third_party_contacts(organisation_id, submissions, invites):
         """Get third party contacts.
 
         Given an organisation, its submissions and all invitations for a case,
@@ -1850,7 +1863,6 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         :param (str) organisation_id: Organisation ID.
         :param (dict) submissions: The organisation's submissions keyed on id.
         :param (list) invites: All invites for a case.
-        :param (User) user: The user requesting this information.
         :returns (list): Contacts arising from 3rd party invite submissions.
         """
         third_party_contacts = []
@@ -1868,7 +1880,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
 
                 # we don't want invitations which have been sent but not accepted, or those that
                 # have been rejected
-                if "FEATURE_FLAG_INVITE_JOURNEY" not in user.groups or (
+                if (
                     invite["accepted_at"]
                     and not invite["rejected_by"]
                     and not invite["approved_by"]

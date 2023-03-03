@@ -118,14 +118,9 @@
                 {% endfor %}
             {% endwith %}
             {% if party_type.add_link %}
-                {% if 'FEATURE_FLAG_CASEWORKER_INVITE' in user.groups %}
-                    <a class="link pull-right bold"
-                        href="{% url 'organisations:invite-party' case_id=case.id %}?case_role_key={{ party_type.key }}">Invite
-                        party to case</a>
-                {% else %}
-                    <button class="link modal-form pull-right bold"
-                        data-url="/organisations/case/{{ case.id }}/create/{{ party_type.key }}/">{{ party_type.add_link }}</button>
-                {% endif %}
+                <a class="link pull-right bold"
+                    href="{% url 'organisations:invite-party' case_id=case.id %}?case_role_key={{ party_type.key }}">Invite
+                    party to case</a>
             {% endif %}
         {% endfor %}
     </div>

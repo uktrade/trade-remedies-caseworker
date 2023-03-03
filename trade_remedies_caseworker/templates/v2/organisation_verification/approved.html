@@ -11,10 +11,10 @@
                 Representative invite approved
             </h1>
         </div>
-        <p><strong>{{ invitation.case.reference }} - {{ invitation.case.name }}</strong>.</p>
-        <p>You have approved {{ possessive_inviters_organisation_name }} representative invite for {{ invitation.contact.organisation_name }}
+        <p class="govuk-body"><strong>{{ invitation.case.reference }} - {{ invitation.case.name }}</strong>.</p>
+        <p class="govuk-body">You have approved {{ possessive_inviters_organisation_name }} representative invite for {{ invitation.contact.organisation_name }}
         </p>
-        <p>Both parties will be notified of your decision.</p>
+        <p class="govuk-body">Both parties will be notified of your decision.</p>
         <a href="{% url 'cases:view_case' case_id=invitation.case.id %}" role="button" draggable="false" class="govuk-button"
             data-module="govuk-button">
             Back to case

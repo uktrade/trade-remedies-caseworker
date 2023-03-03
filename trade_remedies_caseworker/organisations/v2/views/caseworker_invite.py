@@ -67,6 +67,7 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["case_id"] = self.kwargs["case_id"]
+        context["organisations"] = self.client.organisations
         return context
 
     def get_next_url(self, form=None):
@@ -180,6 +181,7 @@ class OrganisationInviteContactNewView(BaseOrganisationInviteView):
                 "name": form.cleaned_data["contact_name"],
                 "email": form.cleaned_data["contact_email"],
                 "organisation": organisation.id,
+                "draft": True,
             }
         )
         self.request.session["selected_contacts"] = [
