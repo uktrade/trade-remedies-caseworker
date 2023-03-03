@@ -6,6 +6,7 @@ from core.views import (
     AdminDebugToolsAssignOrganisationToCaseView,
     AdminDebugToolsCreateNewOrganisationView,
     AdminDebugToolsCreateNewUserView,
+    AdminDebugToolsTestDuplicateFinding,
     AdminDebugToolsView,
     EditUserGroup,
     ExportFeedbackView,
@@ -92,5 +93,10 @@ if settings.ADMIN_DEBUG_TOOLS_ENABLED:
             "admin_debug_tools/admin_debug_tools_assign_organisation_to_case",
             AdminDebugToolsAssignOrganisationToCaseView.as_view(),
             name="admin_debug_tools_assign_organisation_to_case",
+        ),
+        path(
+            "admin_debug_tools/admin_debug_tools_check_duplicate_search",
+            AdminDebugToolsTestDuplicateFinding.as_view(),
+            name="admin_debug_tools_check_duplicate_search",
         ),
     ]

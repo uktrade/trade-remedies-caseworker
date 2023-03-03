@@ -436,6 +436,28 @@ class AdminDebugToolsAssignOrganisationToCaseView(BaseAdminDebugToolsCreateUpdat
         return redirect(reverse("admin_debug_tools_landing"))
 
 
+class AdminDebugToolsTestDuplicateFinding(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/test_duplicate_finding.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        merge_record = self.client.organisation_merge_records(
+            request.POST["organisation"],
+            params={"fresh": "yes"},
+        )
+        return HttpResponse(
+            render(
+                request,
+                "v2/admin_debug_tools/show_duplicate_results.html",
+                {"potential_duplicates": merge_record.potential_duplicates},
+            )
+        )
+
+
 class PingdomHealthCheckView(View, APIClientMixin):
     def get(self, request):
         response = self.client.healthcheck()
