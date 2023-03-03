@@ -16,6 +16,10 @@ value=
 {{ child_organisation.vat_number }}
 {{ draft_parent_organisation.eori_number }
 {{ child_organisation.eori_number }
+
+Create new organisation{% endblock
+name="companies_house_id
+DUNS
 duplicate_organisations|length =
 height="13
 case{% endblock page_title %
