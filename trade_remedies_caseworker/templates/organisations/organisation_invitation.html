@@ -11,26 +11,13 @@
 {% endblock %}
 
 {% block form_content %}
-    {% with form_errors.company_search_container as error %}
+    {% with form_errors.organisation_id as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
             <h1 class="govuk-label-wrapper">
                 <label class="govuk-label govuk-label--xl" for="search-reg-org">
                     Which organisation do you want to invite?
                 </label>
             </h1>
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-                data-module="govuk-error-summary" id="companies-house-error" style="display:none;">
-                <h2 class="govuk-error-summary__title" id="error-summary-title">
-                    There is a problem
-                </h2>
-                <div class="govuk-error-summary__body">
-                    <ul class="govuk-list govuk-error-summary__list">
-                        <li>
-                            The organisation search is currently not working. Try again shortly.
-                        </li>
-                    </ul>
-                </div>
-            </div>
             <div id="sort-hint" class="govuk-hint">
                 Enter an organisation name or registration number.
             </div>
@@ -41,148 +28,72 @@
                     {% endfor %}
                 </p>
             {% endif %}
-            <div id="company_search_container"></div>
+            <select class="govuk-select" name="search-reg-org" id="company_search_container">
+                <option value=""></option>
+
+                {% for org in organisations %}
+                    <option value={{ org.id }}>{{ org.name }}{% if org.companies_house_id %} ({{ org.companies_house_id }}){% endif %}</option>
+                {% endfor %}
+            </select>
         </div>
     {% endwith %}
 
     <div style="display:none;" id="selected_company_wrapper">
         <div class="govuk-inset-text" id="selected_company"></div>
     </div>
-    <p><a href="{% url 'organisations:invite-party-contact-new' case_id=case_id %}" class="govuk-link govuk-link--no-visited-state clearfix">
+    <p><a href="{% url 'organisations:invite-party-contact-new' case_id=case_id %}"
+        class="govuk-link govuk-link--no-visited-state clearfix">
         Invite new organisation</a>
     </p>
     {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Continue" %}
 {% endblock form_content %}
-
 
 <!-- Function accessibleAutocomplete below is from https://alphagov.github.io/accessible-autocomplete/ -->
 
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
     <script type="text/javascript">
-        function clearCompany() {
-            $("#organisation-invite-form").submit(function () {
-                $("<input />").attr("type", "hidden")
-                    .attr("name", "organisation_name")
-                    .attr("value", null)
-                    .appendTo($(this));
-                $("<input />").attr("type", "hidden")
-                    .attr("name", "organisation_address")
-                    .attr("value", null)
-                    .appendTo($(this));
-                $("<input />").attr("type", "hidden")
-                    .attr("name", "organisation_post_code")
-                    .attr("value", null)
-                    .appendTo($(this));
-                $("<input />").attr("type", "hidden")
-                    .attr("name", "companies_house_id")
-                    .attr("value", null)
-                    .appendTo($(this));
-                $("<input />").attr("type", "hidden")
-                    .attr("name", "organisation_id")
-                    .attr("value", null)
-                    .appendTo($(this));
-            });
-            $('#selected_company_wrapper').hide();
-            $('#selected_company').text('')
-        }
-
-        // Clear company data when whole search text is selected and
-        // removed (using 'delete' or 'backspace')
-        $(document).on("keyup", '[name="input-autocomplete"]', function () {
-            if ($(this).val().trim().length === 0) {
-                clearCompany()
-            }
-        })
-
-        var proposed_names = {}
-        accessibleAutocomplete({
-            element: document.querySelector('#company_search_container'),
-            placeholder: "Search",
-            id: 'my-autocomplete',
+        accessibleAutocomplete.enhanceSelectElement({
             autoselect: true,
-            minLength: 3,
             confirmOnBlur: false,
-            source: function (query, populateResults) {
-                if (query.trim().length < 3) {
-                    populateResults([])
-                    clearCompany()
-                } else {
-                    $.ajax
-                    ({
-                        type: "GET",
-                        url: `{% url 'organisationnamesearch' %}?term=${query}&case_id={{case_id}}`,
-                        success: function (data) {
-                            if (data) {
-                                // remove nulls and convert back to JS object
-                                data = JSON.parse(JSON.stringify(data, function (key, value) {
-                                    return (value === null) ? "" : value;
-                                }));
-
-                                let names = data["organisations"].map(result =>
-                                    `${result.name} ${result.companies_house_id != "" ? ("(" + result.companies_house_id + ")") : ""}`)
-
-                                proposed_names = Object.fromEntries(data["organisations"].map(result =>
-                                    [`${result.name} ${result.companies_house_id != "" ? ("(" + result.companies_house_id + ")") : ""}`, result]));
-
-                                populateResults(names)
-                                if (names.length == 0) {
-                                    clearCompany()
-                                }
-                            }
-
-                        },
-                        error: function () {
-
-                        }
-                    })
-                        .fail(function () {
-                        $('#companies-house-error').show()
-                    })
-                }
-            },
+            minLength: 3,
+            name: "input-autocomplete",
+            placeholder: "Search",
+            selectElement: document.querySelector('#company_search_container'),
             onConfirm: function (confirmed_name) {
                 if (typeof (confirmed_name) != "undefined") {
-                    if (confirmed_name in proposed_names) {
-                        let company_data = proposed_names[confirmed_name]
-                        $("#organisation-invite-form").submit(function () {
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_name")
-                                .attr("value", company_data.name)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_address")
-                                .attr("value", company_data.address)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_post_code")
-                                .attr("value", company_data.post_code)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "companies_house_id")
-                                .attr("value", company_data.companies_house_id)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_id")
-                                .attr("value", company_data.id)
-                                .appendTo($(this));
-                        });
-                        $('#selected_company_wrapper').show();
-                        // selected text shown below search box
-                        $('#selected_company').text(`
-                            ${company_data.name}
-                            ${company_data.companies_house_id ? ("(" + company_data.companies_house_id + ")") : ""}
-                            ${company_data.address.replace(", " + company_data.post_code, "") + ","}
-                            ${company_data.post_code}
-                        `)
-                        return true
-                    }
-                    $('#selected_company_wrapper').hide();
-                    $('#selected_company').text('')
+                    const selected_company_wrapper = $('#selected_company_wrapper');
+                    const selected_company = $('#selected_company');
+
+                    {% for org in organisations %}
+                        if (confirmed_name.replace(/\s\(.+?\)/, "").trim() === "{{ org.name }}") {
+                            let company = { name: "", id: "", address: "", post_code: "" }
+
+                            {% if org.name is not None %}company["name"] = "{{ org.name }}"{% endif %}
+                            {% if org.companies_house_id is not None %}
+                                company["id"] = "({{ org.companies_house_id }})"
+                            {% endif %}
+                            {% if org.address is not None %}company["address"] = "{{ org.address|linebreaks|striptags }},"{% endif %}  //PS-IGNORE
+                            {% if org.post_code is not None %}company["post_code"] = "{{ org.post_code }}"{% endif %}
+
+                            $("#organisation-invite-form").submit(function () {
+                                $("<input />").attr("type", "hidden")
+                                    .attr("name", "organisation_id")
+                                    .attr("value", "{{ org.id }}")
+                                    .appendTo($(this));
+                            });
+
+                            selected_company_wrapper.show();
+                            selected_company.text(`${company.name} ${company.id} ${company.address} ${company.post_code}`);
+
+                            return true
+                        }
+                    {% endfor %}
+
+                    selected_company_wrapper.hide();
+                    selected_company.text('')
                 }
             }
         })
-
     </script>
-
 {% endblock %}

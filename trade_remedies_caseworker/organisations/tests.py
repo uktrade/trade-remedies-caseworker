@@ -23,12 +23,7 @@ class TestOrganisationInviteForm(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(
             {
-                "organisation_name": "TEST COMPANY",
-                "organisation_address": "1 TEST ROAD, LONDON, UNITED KINGDOM",
-                "organisation_post_code": "NNN NNN",
-                "companies_house_id": "000000",
                 "organisation_id": "aor4nd0m-idoo-foro-test-purp05e5oooo",
-                "company_search_container": "",
             },
             form.cleaned_data,
         )
@@ -36,12 +31,12 @@ class TestOrganisationInviteForm(TestCase):
     def test_organisations_searched_but_not_selected(self):
         form = OrganisationInviteForm(data={"input-autocomplete": "TEST"})
         self.assertFalse(form.is_valid())
-        assert "organisation_not_selected" in form.errors["company_search_container"]
+        assert "organisation_not_selected" in form.errors["organisation_id"]
 
     def test_organisations_not_searched(self):
-        form = OrganisationInviteForm(data={})
+        form = OrganisationInviteForm(data={"input-autocomplete": ""})
         self.assertFalse(form.is_valid())
-        assert "organisation_not_searched" in form.errors["company_search_container"]
+        assert "organisation_not_searched" in form.errors["organisation_id"]
 
 
 class TestOrganisationInviteContactForm(TestCase):

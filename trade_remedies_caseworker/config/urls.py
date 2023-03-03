@@ -28,6 +28,7 @@ from password import views as password_views
 urlpatterns = [
     path("", CasesView.as_view(), name="cases"),
     path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
+    path("healthcheck/", core_views.PingdomHealthCheckView.as_view(), name="pingdom_healthcheck"),
     path("accounts/login/", login_views.LoginView.as_view(), name="login"),
     path("accounts/logout/", login_views.logout_view, name="logout"),
     path("system/", core_views.SystemView.as_view(), name="system"),
