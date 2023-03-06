@@ -1,3 +1,9 @@
+parts/
+Installer
+htmlcov/
+.cache
+celery
+NER
 organisation</a></li
 contact</a></li
 Test Organisation
