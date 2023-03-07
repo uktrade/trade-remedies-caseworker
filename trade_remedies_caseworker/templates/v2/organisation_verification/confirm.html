@@ -40,8 +40,8 @@
                     LOA signatory
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    {{ invitation.submission.primary_contact.name }} <br>
-                    {{ invitation.submission.primary_contact.email }}
+                    {{ invitation.authorised_signatory.name }} <br>
+                    {{ invitation.authorised_signatory.email }}
 
                 </dd>
                 <dd class="govuk-summary-list__actions">
@@ -116,7 +116,7 @@
         <form method="post">
             {% csrf_token %}
             {% if declined %}
-                <p>By rejecting this representative invite, the following will apply:</p>
+                <p class="govuk-body">By rejecting this representative invite, the following will apply:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>The case notes will be only available to other caseworkers</li>
                     <li>The representative will not be allowed to act on behalf of the interested party</li>
@@ -124,7 +124,7 @@
                 </ul>
                 {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Reject invite' back_button_text="Back" %}
             {% else %}
-                <p>If you approve this invite, all parties will be notified of your decision.</p>
+                <p class="govuk-body">If you approve this invite, all parties will be notified of your decision.</p>
                 <div class="govuk-button-group">
                     <button class="govuk-button" data-module="govuk-button">
                         Approve invite

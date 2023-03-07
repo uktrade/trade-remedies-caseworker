@@ -3,35 +3,28 @@ from django import forms
 
 
 class OrganisationInviteForm(ValidationForm):
-    organisation_name = forms.CharField()
-    organisation_address = forms.CharField()
-    organisation_post_code = forms.CharField()
-    companies_house_id = forms.CharField()
-    organisation_id = forms.CharField()
     # Need a field to match element id in the form html template to add error message
-    company_search_container = forms.CharField(widget=forms.HiddenInput(), required=False)
+    organisation_id = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def clean(self):
-        # The user has entered something in the autocomplete box but not selected an option
-        if (
-            self.data.get("input-autocomplete")
-            and not self.cleaned_data.get("organisation_name")
-            and not self.cleaned_data.get("organisation_address")
-            and not self.cleaned_data.get("organisation_post_code")
-            and not self.cleaned_data.get("companies_house_id")
-            and not self.cleaned_data.get("organisation_id")
-        ):
-            self.add_error("company_search_container", "organisation_not_selected")
-        # Nothing has been entered by the user
-        elif not self.data.get("input-autocomplete"):
-            self.add_error("company_search_container", "organisation_not_searched")
-        else:
-            self.cleaned_data["organisation_address"] = (
-                self.cleaned_data["organisation_address"]
-                .removesuffix(self.cleaned_data["organisation_post_code"])
-                .rstrip(", ")
-            )
+        # The user has selected an organisation (i.e. when JS is not working or disabled)
+        if self.data.get("search-reg-org"):
+            self.cleaned_data["organisation_id"] = self.data.get("search-reg-org")
 
+            return self.cleaned_data
+
+        # The user has entered something in the autocomplete box and/or not selected an option
+        if self.data.get("input-autocomplete") and not self.cleaned_data.get("organisation_id"):
+            self.add_error("organisation_id", "organisation_not_selected")
+        # Nothing has been selected
+        elif not self.data.get("search-reg-org") and not self.cleaned_data.get("organisation_id"):
+            if "input-autocomplete" in self.data:
+                # Nothing has been entered by the user
+                self.add_error("organisation_id", "organisation_not_searched")
+            else:
+                # Nothing has been selected by the user (i.e. when JS is not working or disabled)
+                self.add_error("organisation_id", "organisation_not_selected")
+        else:
             return self.cleaned_data
 
 

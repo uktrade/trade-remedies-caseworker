@@ -3,7 +3,7 @@
 {% with form_errors|get_item:id as error %}
     <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}
         {% if form_group_classes %}{{ form_group_classes }}{% endif %}">
-        <label class="govuk-label {% if strong %}govuk-label--s{% endif %}" for="{{ id }}">
+        <label id="{{ id }}-label" class="govuk-label {% if strong %}govuk-label--s{% endif %}" for="{{ id }}">
             {{ label }}
         </label>
         {% if hint %}

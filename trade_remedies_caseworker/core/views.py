@@ -59,8 +59,14 @@ class CompaniesHouseSearch(TemplateView, LoginRequiredMixin, TradeRemediesAPICli
 class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
     def get(self, request, *args, **kwargs):
         query = request.GET.get("term")
-        results = self.client.organisations.get_organisations_by_company_name(query)
-        organisations = {"organisations": [each.data_dict for each in results]}
+        case_id = request.GET.get("case_id")
+        results = self.client.organisations.get_organisations_by_company_name(
+            query, case_id=case_id
+        )
+        # organisations = {"organisations": [each.data_dict for each in results]}
+        organisations = {
+            "organisations": [each.data_dict for each in results if each.case_count > 0]
+        }
         return HttpResponse(json.dumps(organisations), content_type="application/json")
 
 
@@ -80,7 +86,6 @@ class SystemParameterSettings(
         )
 
     def post(self, request, *args, **kwargs):
-
         regex = r"^original-"
         client = self.client(request.user)
         for sp in client.get_system_parameters(editable=True):
@@ -262,4 +267,18 @@ class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClient
         ] = f"""attachment; filename=trs_feedback_export_{datetime.datetime.now().strftime(
             GDS_DATETIME_STRING
         ).replace(' ', '_').replace(':', '-')}.xlsx"""
+        return response
+
+
+class PingdomHealthCheckView(View, APIClientMixin):
+    def get(self, request):
+        response = self.client.healthcheck()
+
+        if "OK" in response:
+            response = HttpResponse(response, content_type="text/xml", status=200)
+        else:
+            response = HttpResponse(response, content_type="text/xml", status=503)
+
+        response["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
         return response

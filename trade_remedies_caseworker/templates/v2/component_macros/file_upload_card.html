@@ -35,7 +35,7 @@
             <p class="govuk-error-message " style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span> <span class="file_error_message"></span>
             </p>
-            <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
+            <p class="govuk-body"><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
                 <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}"
                     name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
                 <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
@@ -66,7 +66,7 @@
         </div>
         <div class="uploaded_file file_upload_indicator" {% if not document_exists %}style="display:none;"{% endif %}>
             <p class="file_name">{% if document_exists %}{{ document.truncated_name }}{% endif %}</p>
-            <p><a href="" class="govuk-link govuk-link--no-visited-state delete_document_link"
+            <p class="govuk-body"><a href="" class="govuk-link govuk-link--no-visited-state delete_document_link"
                 data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">Remove
                 <span class="govuk-visually-hidden">file</span></a></p>
         </div>
