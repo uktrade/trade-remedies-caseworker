@@ -148,7 +148,14 @@ class OrganisationVerificationVerifyRepresentative(
             approved_roles + context["approved_representative_cases"]
         )
         context["last_approval"] = (
-            sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
+            sorted(
+                approved_roles,
+                key=lambda x: x.validated_at.replace(tzinfo=None)
+                if x.validated_at
+                else datetime.datetime(day=1, month=1, year=1900),
+            )[0]
+            if approved_roles
+            else None
         )
 
         return context
