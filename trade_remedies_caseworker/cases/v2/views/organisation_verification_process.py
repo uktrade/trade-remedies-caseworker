@@ -48,13 +48,13 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
         # if it does, we need to redirect to the potential duplicate's page
         # if not, we can continue with the task list
         response = super().dispatch(request, *args, **kwargs)
-
+        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
+            self.invitation.submission.id,
+            params={"organisation_id": self.invitation.contact.organisation},
+        )
         if (
-            self.client.submission_organisation_merge_records(
-                self.invitation.submission.id,
-                params={"organisation_id": self.invitation.contact.organisation},
-            ).organisation_merge_record.status
-            == "duplicates_found"
+            submission_organisation_merge_record.status != "complete"
+            and submission_organisation_merge_record.status == "duplicates_found"
         ):
             return redirect(
                 reverse(

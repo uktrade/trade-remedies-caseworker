@@ -423,6 +423,7 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
         self.client.organisation_merge_records(
             self.organisation_merge_record.id
         ).merge_organisations()
+        self.submission_organisation_merge_record.update({"status": "complete"})
         return redirect(
             reverse(
                 "organisations:merge_organisations_merge_complete",
