@@ -2,22 +2,22 @@
 
 <div class="address-card {% if address_card_classes %}{{ address_card_classes }}{% endif %}">
     <div class="address-container">
-        {% if hide_links %}
-            <p class="govuk-heading-m">
-        {% else %}
+        {% if show_organisation_link or not hide_edit_button %}
             <a href="/organisations/{{ organisation.id }}" class="govuk-heading-m govuk-link--no-visited-state">
+        {% else %}
+            <p class="govuk-heading-m">
         {% endif %}
         {% if identical_fields and "name" in identical_fields %}
             <mark>{{ organisation.name }}</mark>
         {% else %}
             {{ organisation.name }}
         {% endif %}
-        {% if hide_links %}
+        {% if hide_edit_button %}
             </p>
         {% else %}
             </a>
         {% endif %}
-        {% if not hide_links %}
+        {% if not hide_edit_button %}
             <p class="right-aligned-link govuk-heading-s">
                 <a href="{% url 'organisations:v2_edit_organisation' organisation_id=organisation.id %}?redirect={{ request.path }}"
                     class="govuk-link--no-visited-state">Edit</a>

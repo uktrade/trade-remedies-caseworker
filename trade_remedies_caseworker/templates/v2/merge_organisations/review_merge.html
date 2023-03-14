@@ -14,7 +14,7 @@
         <p>There {% if confirmed_duplicates|length != 1 %}are{% else %}is{% endif %} <strong>{{ confirmed_duplicates|length }} organisation{% if confirmed_duplicates|length == 0 or confirmed_duplicates|length >= 2 %}s{% endif %}</strong> to be merged with the selected organisation. </p>
 
         <p>Our records will be updated with the following details:</p>
-        {% include "v2/partials/organisation_card.html" with organisation=draft_merged_org request=request hide_links=True %}
+        {% include "v2/partials/organisation_card.html" with organisation=draft_merged_org request=request hide_edit_button=True %}
 
 
         <details class="case-details govuk-details" data-module="govuk-details">
@@ -25,7 +25,7 @@
             </summary>
             {% for confirmed_duplicate in confirmed_duplicates %}
                 <div class="govuk-details__text">
-                    {% include "v2/partials/organisation_card.html" with hide_links=True organisation=confirmed_duplicate request=request %}
+                    {% include "v2/partials/organisation_card.html" with hide_edit_button=True organisation=confirmed_duplicate request=request %}
                 </div>
             {% endfor %}
         </details>
@@ -39,7 +39,7 @@
             </summary>
             {% for not_duplicate_organisation in confirmed_not_duplicates %}
                 <div class="govuk-details__text">
-                    {% include "v2/partials/organisation_card.html" with hide_links=True organisation=not_duplicate_organisation request=request %}
+                    {% include "v2/partials/organisation_card.html" with hide_edit_button=True organisation=not_duplicate_organisation request=request %}
                 </div>
             {% endfor %}
         </details>

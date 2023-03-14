@@ -1,3 +1,5 @@
+Registration Number - {{ potential_duplicate.child_organisation.companies_house_id
+hide_edit_button
 ABC
 FormView
 get_success_url

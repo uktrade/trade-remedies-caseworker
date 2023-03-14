@@ -54,7 +54,8 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
         )
         if (
             submission_organisation_merge_record.status != "complete"
-            and submission_organisation_merge_record.status == "duplicates_found"
+            and submission_organisation_merge_record.organisation_merge_record.status
+            == "duplicates_found"
         ):
             return redirect(
                 reverse(
