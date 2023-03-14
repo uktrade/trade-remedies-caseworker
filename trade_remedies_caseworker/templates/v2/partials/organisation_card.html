@@ -12,10 +12,10 @@
         {% else %}
             {{ organisation.name }}
         {% endif %}
-        {% if hide_edit_button %}
-            </p>
-        {% else %}
+        {% if not hide_edit_button or show_organisation_link %}
             </a>
+        {% else %}
+            </p>
         {% endif %}
         {% if not hide_edit_button %}
             <p class="right-aligned-link govuk-heading-s">

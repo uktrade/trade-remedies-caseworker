@@ -449,11 +449,15 @@ class AdminDebugToolsTestDuplicateFinding(BaseAdminDebugToolsCreateUpdateView):
             request.POST["organisation"],
             params={"fresh": "yes"},
         )
+        parent_organisation = self.client.organisations(request.POST["organisation"], slim=True)
         return HttpResponse(
             render(
                 request,
                 "v2/admin_debug_tools/show_duplicate_results.html",
-                {"potential_duplicates": merge_record.potential_duplicates},
+                {
+                    "potential_duplicates": merge_record.potential_duplicates,
+                    "parent_organisation": parent_organisation,
+                },
             )
         )
 

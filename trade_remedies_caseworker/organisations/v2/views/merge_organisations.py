@@ -67,7 +67,9 @@ class ReviewMatchingOrganisationsView(BaseCaseWorkerTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
+        submission_organisation_merge_record = self.call_client(
+            timeout=30
+        ).submission_organisation_merge_records(
             self.kwargs["submission_organisation_merge_record_id"]
         )
         organisation_merge_record = submission_organisation_merge_record.organisation_merge_record

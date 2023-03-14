@@ -5,8 +5,21 @@
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-            Potential duplicates:
+            Potential duplicates - {{ potential_duplicates|length }}
         </h1>
+        <p>Your org:</p>
+        <ul>
+            <li>ID - {{ parent_organisation.id }}</li>
+            <li>Name - {{ parent_organisation.name }}</li>
+            <li>Address - {{ parent_organisation.address }}</li>
+            <li>Post code - {{ parent_organisation.post_code }}</li>
+            <li>Registration Number - {{ parent_organisation.companies_house_id }}</li>
+            <li>Website - {{ parent_organisation.organisation_website }}</li>
+            <li>VAT number - {{ parent_organisation.vat_number }}</li>
+            <li>EORI number - {{ parent_organisation.eori_number }}</li>
+            <li>DUNS number - {{ parent_organisation.duns_number }}</li>
+        </ul>
+        <br><br><p>------------------------------</p>
         {% for potential_duplicate in potential_duplicates %}
             <ul>
                 <li>ID - {{ potential_duplicate.child_organisation.id }}</li>
