@@ -126,7 +126,7 @@
                         href="{% url 'organisations:merge_organisations_select_differences_looper' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}"{% endif %}>
                     Continue review
                 </a>
-                <a class="govuk-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
+                <a class="govuk-link govuk-link--no-visited-state" href="{% if "invitation_id" in request.session %}{% url 'organisations:merge_organisations_review_potential_duplicates_landing' invitation_id=request.session.invitation_id %}{% else %}javascript: window.history.go(-1){% endif %}">Back</a>
             </div>
         </div>
     </div>

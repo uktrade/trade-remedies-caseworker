@@ -15,11 +15,6 @@ from organisations.v2.forms import (
 class ReviewPotentialDuplicatesLanding(BaseCaseWorkerTemplateView):
     template_name = "v2/merge_organisations/review_merge_organisation.html"
 
-    def get_success_url(self):
-        return self.request.GET.get(
-            "redirect", self.request.META.get("HTTP_REFERER", reverse("cases"))
-        )
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         invitation = self.client.invitations(self.kwargs["invitation_id"])
@@ -34,6 +29,9 @@ class ReviewPotentialDuplicatesLanding(BaseCaseWorkerTemplateView):
 
         invited_organisation = self.client.organisations(invitation.contact.organisation)
         context["invited_organisation"] = invited_organisation
+
+        self.request.session["invitation_id"] = self.kwargs["invitation_id"]
+        self.request.session.modified = True
 
         return context
 
