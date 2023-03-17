@@ -1,3 +1,4 @@
+submission_organisation_merge_record = self.client.submission_organisation_merge_records
 Registration Number - {{ parent_organisation.companies_house_id }
 Registration Number - {{ potential_duplicate.child_organisation.companies_house_id
 hide_edit_button

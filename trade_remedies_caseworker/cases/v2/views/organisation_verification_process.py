@@ -48,7 +48,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
         # if it does, we need to redirect to the potential duplicate's page
         # if not, we can continue with the task list
         response = super().dispatch(request, *args, **kwargs)
-        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
+        """submission_organisation_merge_record = self.client.submission_organisation_merge_records(
             self.invitation.submission.id,
             params={"organisation_id": self.invitation.contact.organisation},
         )
@@ -64,7 +64,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                         "invitation_id": self.invitation.id,
                     },
                 )
-            )
+            )"""
         return response
 
     def get_task_list(self):
@@ -137,8 +137,9 @@ class OrganisationVerificationVerifyRepresentative(
         invited_organisation = self.client.organisations(
             self.invitation.contact.organisation,
         )
+        invited_organisation_card = invited_organisation.organisation_card_data()
         context["invited_organisation"] = invited_organisation
-        context["invited_organisation_card"] = invited_organisation.organisation_card_data()
+        context["invited_organisation_card"] = invited_organisation_card
         context["inviter_organisation"] = self.client.organisations(self.invitation.organisation.id)
 
         organisation_case_roles = self.client.organisation_case_roles(
@@ -152,11 +153,11 @@ class OrganisationVerificationVerifyRepresentative(
         ]
         context["invited_approved_organisation_case_roles"] = approved_roles
         context["approved_representative_cases"] = [
-            each for each in invited_organisation.representative_cases if each.validated
+            each for each in invited_organisation_card["representative_cases"] if each.validated
         ]
 
         # removing rejections from this case
-        rejected_cases = [each for each in invited_organisation.rejected_cases]
+        rejected_cases = [each for each in invited_organisation_card["rejected_cases"]]
         context["rejected_cases"] = rejected_cases
         context["last_rejection"] = (
             sorted(rejected_cases, key=lambda x: x.date_rejected)[0] if rejected_cases else None
