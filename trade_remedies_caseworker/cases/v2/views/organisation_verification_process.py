@@ -48,7 +48,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
         # if it does, we need to redirect to the potential duplicate's page
         # if not, we can continue with the task list
         response = super().dispatch(request, *args, **kwargs)
-        """submission_organisation_merge_record = self.client.submission_organisation_merge_records(
+        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
             self.invitation.submission.id,
             params={"organisation_id": self.invitation.contact.organisation},
         )
@@ -64,7 +64,7 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                         "invitation_id": self.invitation.id,
                     },
                 )
-            )"""
+            )
         return response
 
     def get_task_list(self):
