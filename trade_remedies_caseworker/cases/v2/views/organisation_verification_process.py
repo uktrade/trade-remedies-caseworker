@@ -153,28 +153,28 @@ class OrganisationVerificationVerifyRepresentative(
         ]
         context["invited_approved_organisation_case_roles"] = approved_roles
         context["approved_representative_cases"] = [
-            each for each in invited_organisation_card["representative_cases"] if each.validated
+            each for each in invited_organisation_card["representative_cases"] if each["validated"]
         ]
 
         # removing rejections from this case
         rejected_cases = [each for each in invited_organisation_card["rejected_cases"]]
         context["rejected_cases"] = rejected_cases
         context["last_rejection"] = (
-            sorted(rejected_cases, key=lambda x: x.date_rejected)[0] if rejected_cases else None
+            sorted(rejected_cases, key=lambda x: x["date_rejected"])[0] if rejected_cases else None
         )
 
         context["rejected_representative_cases"] = [
-            each for each in rejected_cases if each.type == "representative"
+            each for each in rejected_cases if each["type"] == "representative"
         ]
         context["rejected_interested_party_cases"] = [
-            each for each in rejected_cases if each.type == "interested_party"
+            each for each in rejected_cases if each["type"] == "interested_party"
         ]
 
         context["number_of_approved_cases"] = len(
             approved_roles + context["approved_representative_cases"]
         )
         context["last_approval"] = (
-            sorted(approved_roles, key=lambda x: x.validated_at)[0] if approved_roles else None
+            sorted(approved_roles, key=lambda x: x["validated_at"])[0] if approved_roles else None
         )
 
         return context
