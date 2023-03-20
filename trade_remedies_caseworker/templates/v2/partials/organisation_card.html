@@ -152,7 +152,7 @@
                                         class="pending-clock"
                                         alt="Approved on to case"
                                         title="Approved on to case"
-                                        width="32px">
+                                        width="28px">
                                     <span class="govuk-body-s">{{ org_case_role.validated_at|date:'d M y' }}</span>
                                 {% endif %}
                             </li>
@@ -242,7 +242,7 @@
                                 <img src="{% static 'v2/assets/images/red-x.png' %}"
                                     class="x-cross"
                                     alt="Rejected from case"
-                                    title="Rejected from case" width="32px">
+                                    title="Rejected from case" width="28px">
                                 <span class="govuk-body-s">{{ rejection.date_rejected|date:'d M y' }}</span>
                             </li>
                         {% endfor %}

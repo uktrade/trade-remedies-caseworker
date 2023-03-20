@@ -16,8 +16,7 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
-            <h2 class="govuk-heading-s merge-header2"><span
-                class="govuk-heading-s__merge3">Selected organisation </span>
+            <h2 class="govuk-heading-s merge-header">Selected organisation
             </h2>
             {% include "v2/partials/organisation_card.html" with show_organisation_link=True hide_edit_button=True organisation=parent_organisation request=request organisation_users=parent_organisation.organisationuser_set %}
         </div>
@@ -26,8 +25,8 @@
         <div class="govuk-grid-column-one-half">
             <div class="clearfix">
                 {% if duplicate_organisations|length == 1 %}
-                    <h2 class="govuk-heading-s merge-header left-aligned">
-                        <span class="govuk-heading-s__merge3">Matching organisation</span>
+                    <h2 class="govuk-heading-s merge-header">
+                        <span class="">Matching organisation</span>
                     </h2>
                 {% else %}
                     <h2 class="govuk-heading-s merge-header left-aligned">Matches</h2>
@@ -126,7 +125,9 @@
                         href="{% url 'organisations:merge_organisations_select_differences_looper' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}"{% endif %}>
                     Continue review
                 </a>
-                <a class="govuk-link govuk-link--no-visited-state" href="{% if "invitation_id" in request.session %}{% url 'organisations:merge_organisations_review_potential_duplicates_landing' invitation_id=request.session.invitation_id %}{% else %}javascript: window.history.go(-1){% endif %}">Back</a>
+                <a class="govuk-link govuk-link--no-visited-state" href="
+
+                    {% if "invitation_id" in request.session %}{% url 'organisations:merge_organisations_review_potential_duplicates_landing' invitation_id=request.session.invitation_id %}{% else %}javascript: window.history.go(-1){% endif %}">Back</a>
             </div>
         </div>
     </div>

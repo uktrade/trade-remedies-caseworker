@@ -1,0 +1,10 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Test Organisation Card{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Organisation Card</h1>
+        {% include "v2/partials/organisation_card.html" with request=request organisation=organisation_card %}
+    </div>
+{% endblock row_content %}

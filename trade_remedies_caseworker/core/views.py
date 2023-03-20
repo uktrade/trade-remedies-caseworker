@@ -437,7 +437,7 @@ class AdminDebugToolsAssignOrganisationToCaseView(BaseAdminDebugToolsCreateUpdat
 
 
 class AdminDebugToolsTestDuplicateFinding(BaseAdminDebugToolsCreateUpdateView):
-    template_name = "v2/admin_debug_tools/test_duplicate_finding.html"
+    template_name = "v2/admin_debug_tools/select_an_organisation.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -457,6 +457,29 @@ class AdminDebugToolsTestDuplicateFinding(BaseAdminDebugToolsCreateUpdateView):
                 {
                     "potential_duplicates": merge_record.potential_duplicates,
                     "parent_organisation": parent_organisation,
+                },
+            )
+        )
+
+
+class AdminDebugToolsTestOrganisationCard(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/select_an_organisation.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        organisation_card_data = self.client.organisations(
+            request.POST["organisation"]
+        ).organisation_card_data()
+        return HttpResponse(
+            render(
+                request,
+                "v2/admin_debug_tools/test_organisation_card.html",
+                {
+                    "organisation_card": organisation_card_data,
                 },
             )
         )

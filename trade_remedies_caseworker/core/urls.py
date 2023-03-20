@@ -7,6 +7,7 @@ from core.views import (
     AdminDebugToolsCreateNewOrganisationView,
     AdminDebugToolsCreateNewUserView,
     AdminDebugToolsTestDuplicateFinding,
+    AdminDebugToolsTestOrganisationCard,
     AdminDebugToolsView,
     EditUserGroup,
     ExportFeedbackView,
@@ -98,5 +99,10 @@ if settings.ADMIN_DEBUG_TOOLS_ENABLED:
             "admin_debug_tools/admin_debug_tools_check_duplicate_search",
             AdminDebugToolsTestDuplicateFinding.as_view(),
             name="admin_debug_tools_check_duplicate_search",
+        ),
+        path(
+            "admin_debug_tools/admin_debug_tools_check_organisation_card",
+            AdminDebugToolsTestOrganisationCard.as_view(),
+            name="admin_debug_tools_check_organisation_card",
         ),
     ]
