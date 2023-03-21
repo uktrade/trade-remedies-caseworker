@@ -17,9 +17,20 @@ class ReviewPotentialDuplicatesLanding(BaseCaseWorkerTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invitation = self.client.invitations(self.kwargs["invitation_id"])
+        client = self.call_client(timeout=35)
+        invitation = client.invitations(
+            self.kwargs["invitation_id"],
+            fields=[
+                "contact",
+                "submission",
+                "created_by",
+                "organisation",
+                "organisation_name",
+                "case",
+            ],
+        )
         context["invitation"] = invitation
-        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
+        submission_organisation_merge_record = client.submission_organisation_merge_records(
             invitation.submission.id, params={"organisation_id": invitation.contact.organisation}
         )
         context["submission_organisation_merge_record"] = submission_organisation_merge_record
@@ -27,7 +38,9 @@ class ReviewPotentialDuplicatesLanding(BaseCaseWorkerTemplateView):
             "organisation_merge_record"
         ] = submission_organisation_merge_record.organisation_merge_record
 
-        invited_organisation = self.client.organisations(invitation.contact.organisation)
+        invited_organisation = client.organisations(
+            invitation.contact.organisation, fields=["name"]
+        )
         context["invited_organisation"] = invited_organisation
 
         self.request.session["invitation_id"] = self.kwargs["invitation_id"]
@@ -129,6 +142,11 @@ class ReviewMatchingOrganisationsView(BaseCaseWorkerTemplateView):
         context["previous"] = previous
 
         context["user_in_required_groups"] = self.request.user.has_group(SECURITY_GROUPS_TRA_ADMINS)
+        if invitation_id := self.request.session.get("invitation_id"):
+            context["invitation_landing_page_url"] = reverse(
+                "organisations:merge_organisations_review_potential_duplicates_landing",
+                kwargs={"invitation_id": invitation_id},
+            )
 
         return context
 
