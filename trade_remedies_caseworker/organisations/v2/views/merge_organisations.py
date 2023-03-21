@@ -430,6 +430,11 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
                 kwargs={
                     "case_id": self.submission_organisation_merge_record.submission.case.id,
                     "submission_id": self.submission_organisation_merge_record.submission.id,
+                    "confirmed_duplicates": [
+                        each
+                        for each in self.organisation_merge_record.duplicate_organisations
+                        if each["status"] == "confirmed_duplicate"
+                    ],
                 },
             )
         )

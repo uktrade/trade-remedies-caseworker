@@ -11,9 +11,12 @@
             Review your answers
         </h1>
 
-        <p>There {% if confirmed_duplicates|length != 1 %}are{% else %}is{% endif %} <strong>{{ confirmed_duplicates|length }} organisation{% if confirmed_duplicates|length == 0 or confirmed_duplicates|length >= 2 %}s{% endif %}</strong> to be merged with the selected organisation. </p>
+        <p>There {% if confirmed_duplicates|length != 1 %}are{% else %}is{% endif %}
+            <strong>{{ confirmed_duplicates|length }} organisation
+                {% if confirmed_duplicates|length == 0 or confirmed_duplicates|length >= 2 %}s{% endif %}</strong> to be
+            merged with the selected organisation. </p>
 
-        <p>Our records will be updated with the following details:</p>
+        <p>Our records will show the following details:</p>
         {% include "v2/partials/organisation_card.html" with organisation=draft_merged_org request=request hide_edit_button=True %}
 
 
@@ -47,27 +50,40 @@
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
 
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                Merging organisations cannot be undone
-            </strong>
-        </div>
+        {% if confirmed_duplicates|length == 0 %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Submit
+                    </button>
+                    <a class="govuk-link govuk-link--no-visited-state"
+                        href="{% url 'organisations:cancel_organisation_merge' submission_organisation_merge_record_id=submission_organisation_merge_record.id %}">Cancel</a>
+                </div>
+            </form>
 
-        <form method="post">
-            {% csrf_token %}
-
-            {% include "v2/component_macros/checkbox.html" with heading="Please confirm the following" id="confirm" name="confirm" label="I have authority to complete this merge" %}
-            <div class="govuk-button-group">
-
-                <button class="govuk-button" data-module="govuk-button">
-                    Submit details
-                </button>
-
-                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:cancel_organisation_merge' submission_organisation_merge_record_id=submission_organisation_merge_record.id %}">Cancel merge</a>
+        {% else %}
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    Merging organisations cannot be undone
+                </strong>
             </div>
-        </form>
+
+            <form method="post">
+                {% csrf_token %}
+                {% include "v2/component_macros/checkbox.html" with heading="Please confirm the following" id="confirm" name="confirm" label="I have authority to complete this merge" %}
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Merge organisations
+                    </button>
+                    <a class="govuk-link govuk-link--no-visited-state"
+                        href="{% url 'organisations:cancel_organisation_merge' submission_organisation_merge_record_id=submission_organisation_merge_record.id %}">Cancel
+                        merge</a>
+                </div>
+            </form>
+        {% endif %}
 
     </div>
 {% endblock row_content %}

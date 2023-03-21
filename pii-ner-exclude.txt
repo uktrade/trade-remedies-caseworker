@@ -1,3 +1,5 @@
+Complete{% endblock page_title %
+href="/case/{{ case_id
 Domestic Producer
 Industrial User of Product
 Awaiting Approval

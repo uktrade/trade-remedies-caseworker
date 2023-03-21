@@ -9,19 +9,23 @@
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                Matching organisations complete
+                Matching organisations resolved
             </h1>
         </div>
-        <p>The duplicate organisations have been merged.</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>Cases are now registered under one organisation</li>
-            <li>Users are now registered under one organisation</li>
-            <li>Lead investigators assigned to the matching cases have been notified</li>
-        </ul>
+        {% if confirmed_duplicates|length == 0 %}
+            <p>The matching organisation(s) have been marked as not duplicate with the selected organisation.</p>
+        {% else %}
+            <p>The duplicate organisations have been merged with the selected organisation.</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Cases are now registered under one organisation</li>
+                <li>Users are now registered under one organisation</li>
+                <li>Lead investigators assigned to the matching cases have been notified</li>
+            </ul>
+        {% endif %}
         <div class="govuk-button-group">
             <a class="govuk-button" data-module="govuk-button"
                 href="/case/{{ case_id }}/submission/{{ submission_id }}/">
-                Return to representative invite
+                Review representative invite
             </a>
         </div>
     </div>
