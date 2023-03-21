@@ -17,7 +17,6 @@ from config.base_views import BaseCaseWorkerTemplateView
 from config.settings.base import GDS_DATETIME_STRING
 from core.base import GroupRequiredMixin
 from core.constants import (
-    CASE_ROLE_APPLICANT,
     SECURITY_GROUPS_TRA,
     SECURITY_GROUPS_TRA_ADMINS,
     SECURITY_GROUP_ORGANISATION_OWNER,
@@ -415,6 +414,19 @@ class AdminDebugToolsAssignOrganisationToCaseView(BaseAdminDebugToolsCreateUpdat
         context = super().get_context_data()
         context["cases"] = self.client.cases(fields=["id", "name"])
         context["organisations"] = self.client.organisations(fields=["id", "name"])
+        context["case_roles"] = [
+            {"key": "applicant", "value": "Applicant"},
+            {"key": "domestic_producer", "value": "Domestic Producer"},
+            {"key": "importer", "value": "Importer"},
+            {"key": "exporter", "value": "Exporter"},
+            {"key": "foreign_government", "value": "Foreign Government"},
+            {"key": "product_user", "value": "Industrial User of Product"},
+            {"key": "trade_body", "value": "Trade Body"},
+            {"key": "contributor", "value": "Contributor"},
+            {"key": "awaiting_approval", "value": "Awaiting Approval"},
+            {"key": "rejected", "value": "Rejected"},
+            {"key": "preparing", "value": "Preparing"},
+        ]
         return context
 
     def post(self, request, *args, **kwargs):
@@ -425,7 +437,7 @@ class AdminDebugToolsAssignOrganisationToCaseView(BaseAdminDebugToolsCreateUpdat
                 {
                     "case": request.POST["case_id"],
                     "organisation": request.POST["organisation_id"],
-                    "role_key": CASE_ROLE_APPLICANT,
+                    "role_key": request.POST["case_role"],
                     "sampled": True,
                     "validated_at": datetime.datetime.now().isoformat(),
                     "approved_at": datetime.datetime.now().isoformat(),

@@ -1,3 +1,6 @@
+Domestic Producer
+Industrial User of Product
+Awaiting Approval
 Test Organisation Card{% endblock page_title %
 organisation</a></li
 contact</a></li

@@ -31,6 +31,18 @@
                 </select>
             </div>
 
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Case role
+                </label>
+                <select class="govuk-select" name="case_role">
+                    {% for case_role in case_roles %}
+                        <option value="{{ case_role.key }}">{{ case_role.value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
             <button type="submit" class="govuk-button">Create</button>
         </form>
     </div>
