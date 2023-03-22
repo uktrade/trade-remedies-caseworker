@@ -40,7 +40,13 @@ class MergeOrganisationsSelectDifferencesForm(ValidationForm):
 
 
 class ReviewMergeForm(ValidationForm):
-    confirm = forms.BooleanField(error_messages={"required": "confirm_not_selected"})
+    confirm = forms.BooleanField(error_messages={"required": "confirm_not_selected"}, required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.confirmed_duplicates = kwargs.pop("confirmed_duplicates", [])
+        super().__init__(*args, **kwargs)
+        if not self.confirmed_duplicates:
+            self.fields["confirm"].required = False
 
 
 class SelectIfDuplicatesForm(ValidationForm):

@@ -390,6 +390,16 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
     form_class = ReviewMergeForm
     groups_required = SECURITY_GROUPS_TRA_ADMINS
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        self.confirmed_duplicates = [
+            each
+            for each in self.organisation_merge_record.potential_duplicates
+            if each["status"] == "confirmed_duplicate"
+        ]
+        kwargs["confirmed_duplicates"] = self.confirmed_duplicates
+        return kwargs
+
     def dispatch(self, request, *args, **kwargs):
         self.submission_organisation_merge_record = (
             self.client.submission_organisation_merge_records(
@@ -448,13 +458,9 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
                 kwargs={
                     "case_id": self.submission_organisation_merge_record.submission.case.id,
                     "submission_id": self.submission_organisation_merge_record.submission.id,
-                    "confirmed_duplicates": [
-                        each
-                        for each in self.organisation_merge_record.potential_duplicates
-                        if each["status"] == "confirmed_duplicate"
-                    ],
                 },
             )
+            + f"?confirmed_duplicates={'yes' if bool(self.confirmed_duplicates) else 'no'}"
         )
 
 

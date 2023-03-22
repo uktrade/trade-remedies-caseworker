@@ -12,15 +12,15 @@
                 Matching organisations resolved
             </h1>
         </div>
-        {% if confirmed_duplicates|length == 0 %}
-            <p>The matching organisation(s) have been marked as not duplicate with the selected organisation.</p>
-        {% else %}
+        {% if request.GET.confirmed_duplicates == "yes" %}
             <p>The duplicate organisations have been merged with the selected organisation.</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>Cases are now registered under one organisation</li>
                 <li>Users are now registered under one organisation</li>
                 <li>Lead investigators assigned to the matching cases have been notified</li>
             </ul>
+        {% else %}
+            <p>The matching organisation(s) have been marked as not duplicate with the selected organisation.</p>
         {% endif %}
         <div class="govuk-button-group">
             <a class="govuk-button" data-module="govuk-button"
