@@ -174,7 +174,7 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
             # there's still a pending duplicate to review, redirect to that
             # first we make sure the status of the SubmissionOrganisationMergeRecord is
             # 'in progress'
-            submission_organisation_merge_record.update({"status": "in_progress"})
+            somr.update({"status": "in_progress"})
 
             return redirect(
                 reverse(
@@ -186,7 +186,7 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
                 )
             )
         # there's none left! redirect to the next step (review)
-        submission_organisation_merge_record.update({"status": "complete"})
+        somr.update({"status": "complete"})
         return redirect(
             reverse(
                 "organisations:merge_organisations_review",
@@ -471,7 +471,11 @@ class CancelMergeView(BaseCaseWorkerTemplateView, FormInvalidMixin):
             duplicate_organisation
         ) in submission_organisation_merge_record.organisation_merge_record.potential_duplicates:
             self.client.duplicate_organisation_merges(duplicate_organisation.id).update(
-                {"status": "pending"}
+                {
+                    "status": "pending",
+                    "parent_fields": [],
+                    "child_fields": [],
+                }
             )
 
         submission_organisation_merge_record.update({"status": "not_started"})
