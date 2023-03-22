@@ -12,8 +12,8 @@
         </h1>
 
         <p>There {% if confirmed_duplicates|length != 1 %}are{% else %}is{% endif %}
-            <strong>{{ confirmed_duplicates|length }} organisation
-                {% if confirmed_duplicates|length == 0 or confirmed_duplicates|length >= 2 %}s{% endif %}</strong> to be
+            <strong>{{ confirmed_duplicates|length }}
+                {% if confirmed_duplicates|length == 0 or confirmed_duplicates|length >= 2 %}organisations{% else %}organisation{% endif %}</strong> to be
             merged with the selected organisation. </p>
 
         <p>Our records will show the following details:</p>

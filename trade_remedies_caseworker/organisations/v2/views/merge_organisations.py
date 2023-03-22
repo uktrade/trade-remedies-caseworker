@@ -156,7 +156,8 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
 
     def dispatch(self, request, *args, **kwargs):
         somr = self.client.submission_organisation_merge_records(
-            self.kwargs["submission_organisation_merge_record_id"], fields=["organisation_merge_record"]
+            self.kwargs["submission_organisation_merge_record_id"],
+            fields=["organisation_merge_record"],
         )
         organisation_merge_record = somr.organisation_merge_record
         # find out if there are any pending duplicates to be reviewed
