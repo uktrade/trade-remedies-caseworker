@@ -155,10 +155,10 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
     groups_required = SECURITY_GROUPS_TRA_ADMINS
 
     def dispatch(self, request, *args, **kwargs):
-        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
-            self.kwargs["submission_organisation_merge_record_id"]
+        somr = self.client.submission_organisation_merge_records(
+            self.kwargs["submission_organisation_merge_record_id"], fields=["organisation_merge_record"]
         )
-        organisation_merge_record = submission_organisation_merge_record.organisation_merge_record
+        organisation_merge_record = somr.organisation_merge_record
         # find out if there are any pending duplicates to be reviewed
         pending_duplicate_review = next(
             (
@@ -169,7 +169,6 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
             None,
         )
 
-        somr = submission_organisation_merge_record
         if pending_duplicate_review:
             # there's still a pending duplicate to review, redirect to that
             # first we make sure the status of the SubmissionOrganisationMergeRecord is
@@ -450,7 +449,7 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
                     "submission_id": self.submission_organisation_merge_record.submission.id,
                     "confirmed_duplicates": [
                         each
-                        for each in self.organisation_merge_record.duplicate_organisations
+                        for each in self.organisation_merge_record.potential_duplicates
                         if each["status"] == "confirmed_duplicate"
                     ],
                 },
