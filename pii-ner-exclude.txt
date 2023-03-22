@@ -1,3 +1,4 @@
+{{ forward_button_text }
 {{ block.super }
 Complete{% endblock page_title %
 href="/case/{{ case_id
