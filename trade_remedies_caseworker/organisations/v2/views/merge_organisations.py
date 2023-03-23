@@ -160,37 +160,36 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
             fields=["organisation_merge_record"],
         )
         organisation_merge_record = somr.organisation_merge_record
-        # find out if there are any pending duplicates to be reviewed
-        pending_duplicate_review = next(
-            (
-                potential_duplicate
-                for potential_duplicate in organisation_merge_record.potential_duplicates
-                if potential_duplicate.status == "pending"
-            ),
-            None,
-        )
 
-        if pending_duplicate_review:
-            # there's still a pending duplicate to review, redirect to that
-            # first we make sure the status of the SubmissionOrganisationMergeRecord is
-            # 'in progress'
-            somr.update({"status": "in_progress"})
+        next_duplicate_id = organisation_merge_record.potential_duplicates[0].id
+        if current_duplicate_id := self.request.GET.get("current_duplicate_id", None):
+            for index, each in enumerate(organisation_merge_record.potential_duplicates):
+                if each.id == current_duplicate_id:
+                    try:
+                        next_duplicate_id = organisation_merge_record.potential_duplicates[
+                            index + 1
+                        ].id
+                    except IndexError:
+                        # there's none left! redirect to the next step (review)
+                        somr.update({"status": "complete"})
+                        return redirect(
+                            reverse(
+                                "organisations:merge_organisations_review",
+                                kwargs={"submission_organisation_merge_record_id": somr.id},
+                            )
+                        )
+        # there's still a pending duplicate to review, redirect to that
+        # first we make sure the status of the SubmissionOrganisationMergeRecord is
+        # 'in progress'
+        somr.update({"status": "in_progress"})
 
-            return redirect(
-                reverse(
-                    "organisations:merge_organisations_select_if_duplicate",
-                    kwargs={
-                        "duplicate_organisation_merge_id": pending_duplicate_review.id,
-                        "submission_organisation_merge_record_id": somr.id,
-                    },
-                )
-            )
-        # there's none left! redirect to the next step (review)
-        somr.update({"status": "complete"})
         return redirect(
             reverse(
-                "organisations:merge_organisations_review",
-                kwargs={"submission_organisation_merge_record_id": somr.id},
+                "organisations:merge_organisations_select_if_duplicate",
+                kwargs={
+                    "duplicate_organisation_merge_id": next_duplicate_id,
+                    "submission_organisation_merge_record_id": somr.id,
+                },
             )
         )
 
@@ -297,6 +296,7 @@ class ConfirmNotDuplicateView(BaseCaseWorkerTemplateView, FormInvalidMixin):
                     ]
                 },
             )
+            + f"?current_duplicate_id={duplicate_organisation_merge.id}"
         )
 
 
@@ -382,6 +382,7 @@ class SelectDifferencesView(BaseDifferencesView):
                     ]
                 },
             )
+            + f"?current_duplicate_id={self.duplicate_organisation_merge.id}"
         )
 
 
@@ -395,7 +396,7 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
         self.confirmed_duplicates = [
             each
             for each in self.organisation_merge_record.potential_duplicates
-            if each["status"] == "confirmed_duplicate"
+            if each["status"] == "attributes_selected"
         ]
         kwargs["confirmed_duplicates"] = self.confirmed_duplicates
         return kwargs
@@ -469,26 +470,15 @@ class CancelMergeView(BaseCaseWorkerTemplateView, FormInvalidMixin):
     form_class = CancelMergeForm
 
     def form_valid(self, form):
-        submission_organisation_merge_record = self.client.submission_organisation_merge_records(
+        somr = self.client.submission_organisation_merge_records(
             self.kwargs["submission_organisation_merge_record_id"]
         )
-
-        for (
-            duplicate_organisation
-        ) in submission_organisation_merge_record.organisation_merge_record.potential_duplicates:
-            self.client.duplicate_organisation_merges(duplicate_organisation.id).update(
-                {
-                    "status": "pending",
-                    "parent_fields": [],
-                    "child_fields": [],
-                }
-            )
-
-        submission_organisation_merge_record.update({"status": "not_started"})
-        somr = submission_organisation_merge_record
+        self.client.organisation_merge_records(somr.organisation_merge_record.id).reset()
+        somr.update({"status": "not_started"})
+        invitation = self.client.invitations(submission_id=somr.submission.id, fields=["id"])[0]
         return redirect(
             reverse(
-                "organisations:merge_organisations_review_matching_organisations",
-                kwargs={"submission_organisation_merge_record_id": somr.id},
+                "organisations:merge_organisations_review_potential_duplicates_landing",
+                kwargs={"invitation_id": invitation.id},
             )
         )
