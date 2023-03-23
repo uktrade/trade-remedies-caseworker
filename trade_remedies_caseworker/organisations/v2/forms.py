@@ -62,3 +62,10 @@ class ConfirmNotDuplicateForm(ValidationForm):
 
 class CancelMergeForm(ValidationForm):
     ...
+
+
+class ChooseCorrectCaseRoleForm(ValidationForm):
+    chosen_case_role_id = forms.UUIDField(
+        required=True,
+        error_messages={"required": "is_matching_organisation_a_duplicate_no_selection"},
+    )
