@@ -7,16 +7,19 @@
             {% if not invites.0.accepted_at %}
                 {# The invitation has been sent but not accepted #}
                 <p><span class="bold">{{ submission.organisation.name }}</span> has invited <span
-                    class="bold">{{ invites.0.contact.organisation.name }}</span> to represent them in this case.
+                    class="bold">{{ invites.0.contact.organisation.name }}</span> to represent them in this
+                    case.
                 </p>
                 <p>The invite has not yet been accepted by {{ invites.0.contact.organisation.name }}.</p>
-                <a class="button" disabled href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
+                <a class="button" disabled
+                    href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
                     invite</a>
             {% elif invites.0.accepted_at %}
                 {# The invitation has been accepted but not reviewed by caseworkers yet #}
                 <p><span class="bold">{{ invites.0.contact.organisation.name }}</span> has accepted <strong
                     class="bold">{{ submission.organisation.name }}'s invite.</strong></p>
-                <p>Review the invite to decide if {{ invites.0.contact.organisation.name }} can act as a representative
+                <p>Review the invite to decide if {{ invites.0.contact.organisation.name }} can act as a
+                    representative
                     in this case.</p>
                 <a class="button" href="{% url 'verify_organisation_task_list' invitation_id=invites.0.id %}">Review
                     invite</a>
