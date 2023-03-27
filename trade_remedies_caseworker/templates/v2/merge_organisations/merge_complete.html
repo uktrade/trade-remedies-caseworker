@@ -24,7 +24,7 @@
         {% endif %}
         <div class="govuk-button-group">
             <a class="govuk-button" data-module="govuk-button"
-                href="/case/{{ case_id }}/submission/{{ submission_id }}/">
+                href="{% url 'verify_organisation_task_list' invitation_id=invitation_id %}">
                 Review representative invite
             </a>
         </div>

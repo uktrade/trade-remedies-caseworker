@@ -247,7 +247,8 @@ urlpatterns += [
         name="cancel_organisation_merge",
     ),
     path(
-        "merge_organisations/merge_complete/<uuid:case_id>/<uuid:submission_id>/",
+        "merge_organisations/merge_complete/<uuid:case_id>/"
+        "<uuid:submission_id>/<uuid:invitation_id>/",
         TemplateView.as_view(template_name="v2/merge_organisations/merge_complete.html"),
         name="merge_organisations_merge_complete",
     ),

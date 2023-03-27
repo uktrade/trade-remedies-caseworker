@@ -1,3 +1,4 @@
+case_id>/
 {{ forward_button_text }
 {{ block.super }
 Complete{% endblock page_title %

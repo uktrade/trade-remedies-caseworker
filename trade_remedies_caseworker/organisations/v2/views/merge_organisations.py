@@ -158,7 +158,7 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
     def dispatch(self, request, *args, **kwargs):
         somr = self.client.submission_organisation_merge_records(
             self.kwargs["submission_organisation_merge_record_id"],
-            fields=["organisation_merge_record"],
+            fields=["organisation_merge_record", "status"],
         )
         organisation_merge_record = somr.organisation_merge_record
 
@@ -441,6 +441,17 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
                 self.kwargs["submission_organisation_merge_record_id"]
             )
         )
+        if self.submission_organisation_merge_record.status == "complete":
+            # if the merge is complete, redirect to the invitation verification page
+            invitation = self.client.invitations(
+                submission_id=self.submission_organisation_merge_record.submission.id, fields=["id"]
+            )[0]
+            return redirect(
+                reverse(
+                    "verify_organisation_task_list",
+                    kwargs={"invitation_id": invitation.id},
+                )
+            )
         self.organisation_merge_record = (
             self.submission_organisation_merge_record.organisation_merge_record
         )
@@ -507,12 +518,16 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
             self.organisation_merge_record.id
         ).merge_organisations()
         self.submission_organisation_merge_record.update({"status": "complete"})
+        invitation = self.client.invitations(
+            submission_id=self.submission_organisation_merge_record.submission.id, fields=["id"]
+        )[0]
         return redirect(
             reverse(
                 "organisations:merge_organisations_merge_complete",
                 kwargs={
                     "case_id": self.submission_organisation_merge_record.submission.case.id,
                     "submission_id": self.submission_organisation_merge_record.submission.id,
+                    "invitation_id": invitation.id,
                 },
             )
             + f"?confirmed_duplicates={'yes' if bool(self.confirmed_duplicates) else 'no'}"
