@@ -172,7 +172,6 @@ class SelectDifferencesLooperView(BaseCaseWorkerView):
                         ].id
                     except IndexError:
                         # there's none left! redirect to the next step (review)
-                        somr.update({"status": "complete"})
                         return redirect(
                             reverse(
                                 "organisations:merge_organisations_review",
@@ -465,6 +464,9 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
                     or duplicate_case["case_id"]
                     not in self.organisation_merge_record.chosen_case_roles
                 ):
+                    case_role_ids = "&case_role_ids=".join(
+                        each for each in duplicate_case["role_ids"]
+                    )
                     return redirect(
                         reverse(
                             "organisations:merge_organisations_choose_correct_case_role",
@@ -474,7 +476,7 @@ class ReviewMergeView(BaseCaseWorkerView, FormInvalidMixin):
                                 ],
                             },
                         )
-                        + f"?case_role_ids={'&case_role_ids='.join(each for each in duplicate_case['role_ids'])}"
+                        + f"?case_role_ids={case_role_ids}"
                     )
         return super().dispatch(request, *args, **kwargs)
 
@@ -538,16 +540,28 @@ class CancelMergeView(BaseCaseWorkerTemplateView, FormInvalidMixin):
     template_name = "v2/merge_organisations/cancel_merge.html"
     form_class = CancelMergeForm
 
-    def form_valid(self, form):
-        somr = self.client.submission_organisation_merge_records(
+    def dispatch(self, request, *args, **kwargs):
+        self.somr = self.client.submission_organisation_merge_records(
             self.kwargs["submission_organisation_merge_record_id"]
         )
-        self.client.organisation_merge_records(somr.organisation_merge_record.id).reset()
-        somr.update({"status": "complete"})
-        invitation = self.client.invitations(submission_id=somr.submission.id, fields=["id"])[0]
+        self.invitation = self.client.invitations(
+            submission_id=self.somr.submission.id, fields=["id"]
+        )[0]
+        if self.somr.status == "complete":
+            return redirect(
+                reverse(
+                    "verify_organisation_task_list",
+                    kwargs={"invitation_id": self.invitation.id},
+                )
+            )
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.client.organisation_merge_records(self.somr.organisation_merge_record.id).reset()
+        self.somr.update({"status": "complete"})
         return redirect(
             reverse(
                 "verify_organisation_task_list",
-                kwargs={"invitation_id": invitation.id},
+                kwargs={"invitation_id": self.invitation.id},
             )
         )
