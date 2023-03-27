@@ -471,7 +471,7 @@ class PartiesView(CaseBaseView):
             fields=[
                 "created_at",
                 "created_by",
-                "organisation",
+                "organisation_name",
                 "contact",
             ],
             slim=True,
