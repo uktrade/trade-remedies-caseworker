@@ -1,0 +1,335 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Unverified party{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-full">
+        <span class="govuk-caption-xl">
+            Review matching organisations
+        </span>
+        <h1 class="govuk-heading-xl">
+            Select details to keep when the records are merged
+            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
+                of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
+        </h1>
+        <form method="post">
+            {% csrf_token %}
+            <table class="govuk-table merge">
+                <caption class="govuk-table__caption govuk-visually-hidden">
+                    A table to select which information should be kept during a merge.
+                </caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Field</th>
+                        <th scope="col" class="govuk-table__header">Selected organisation</th>
+                        <th scope="col" class="govuk-table__header">
+                            Matching organisation {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                                ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }}
+                                of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Name</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.name or child_organisation.name %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="parent_name" name="name" type="radio"
+                                            value="{{ parent_organisation.id }}"
+                                            {% if selected_radio_buttons.name == "parent" %}checked{% endif %}
+                                            {% if "name" in identical_fields %}disabled{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="parent_name">
+                                            {{ draft_parent_organisation.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.name or child_organisation.name %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="name" id="child_name" type="radio"
+                                            value="{{ child_organisation.id }}"
+                                            {% if selected_radio_buttons.name == "child" %}checked{% endif %}
+                                            {% if "name" in identical_fields %}disabled{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="child_name">
+                                            {% if "name" in identical_fields %}
+                                                <mark>{{ child_organisation.name }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.name }}
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Address</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.address or child_organisation.address %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="address" id="parent_address" type="radio"
+                                            value="{{ parent_organisation.id }}"
+                                            {% if "address" in duplicate_organisation_merge.parent_fields and "post_code" in duplicate_organisation_merge.parent_fields and "country" in duplicate_organisation_merge.parent_fields %}checked{% endif %}
+                                            {% if selected_radio_buttons.address == "parent" %}checked{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="parent_address">
+                                            {{ draft_parent_organisation.address|default_if_none:"" }}<br>
+                                            {{ draft_parent_organisation.post_code|default_if_none:"" }}<br>
+                                            {{ draft_parent_organisation.country_name|default_if_none:"" }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.address or child_organisation.address %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="address" id="child_address" type="radio"
+                                            value="{{ child_organisation.id }}"
+                                            {% if "address" in duplicate_organisation_merge.child_fields %}checked{% endif %}
+                                            {% if selected_radio_buttons.address == "child" %}checked{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="child_address">
+                                            {% if "address" in identical_fields %}
+                                                <mark>{{ child_organisation.address }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.address }}
+                                            {% endif %}
+                                            <br>
+                                            {% if "post_code" in identical_fields %}
+                                                <mark>{{ child_organisation.post_code }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.post_code }}
+                                            {% endif %}
+                                            <br>
+                                            {% if "country" in identical_fields %}
+                                                <mark>{{ child_organisation.country_name }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.country_name }}
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Reg number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.companies_house_id or child_organisation.companies_house_id %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="companies_house_id"
+                                            id="parent_companies_house_id" type="radio"
+                                            value="{{ parent_organisation.id }}"
+                                            {% if selected_radio_buttons.companies_house_id == "parent" %}checked{% endif %}
+                                            {% if "companies_house_id" in identical_fields %}disabled{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="parent_companies_house_id">
+                                            {{ draft_parent_organisation.companies_house_id }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.companies_house_id or child_organisation.companies_house_id %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="companies_house_id"
+                                            id="child_companies_house_id" type="radio"
+                                            value="{{ child_organisation.id }}"
+                                            {% if selected_radio_buttons.companies_house_id == "child" %}checked{% endif %}
+                                            {% if "companies_house_id" in identical_fields %}disabled{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="child_companies_house_id">
+                                            {% if "companies_house_id" in identical_fields %}
+                                                <mark>{{ child_organisation.companies_house_id }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.companies_house_id }}
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">Website</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.organisation_website or child_organisation.organisation_website %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="organisation_website" type="radio"
+                                            id="parent_organisation_website"
+                                            value="{{ parent_organisation.id }}"
+                                            {% if "organisation_website" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.organisation_website == "parent" %}checked{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="parent_organisation_website">
+                                            {{ draft_parent_organisation.organisation_website }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.organisation_website or child_organisation.organisation_website %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="organisation_website"
+                                            id="child_organisation_website" type="radio"
+                                            value="{{ child_organisation.id }}"
+                                            {% if "organisation_website" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.organisation_website == "child" %}checked{% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label" for="child_organisation_website">
+                                            {% if "organisation_website" in identical_fields %}
+                                                <mark>{{ child_organisation.organisation_website }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.organisation_website }}
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">VAT number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.vat_number or child_organisation.vat_number %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="vat_number" id="parent_vat_number"
+                                            type="radio"
+                                            value="{{ parent_organisation.id }}"
+                                            {% if "vat_number" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.vat_number == "parent" %}checked{% endif %}>
+                                        <label class="govuk-label govuk-radios__label" for="parent_vat_number">
+                                            {{ draft_parent_organisation.vat_number }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.vat_number or child_organisation.vat_number %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="vat_number" type="radio"
+                                            id="child_vat_number"
+                                            value="{{ child_organisation.id }}"
+                                            {% if "vat_number" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.vat_number == "child" %}checked{% endif %}>
+                                        <label class="govuk-label govuk-radios__label" for="child_vat_number">
+                                            {% if "vat_number" in identical_fields %}
+                                                <mark>{{ child_organisation.vat_number }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.vat_number }}
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">EORI number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.eori_number or child_organisation.eori_number %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="eori_number" type="radio"
+                                            id="parent_eori_number"
+                                            value="{{ parent_organisation.id }}"
+                                            {% if "eori_number" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.eori_number == "parent" %}checked{% endif %}>
+                                        <label class="govuk-label govuk-radios__label" for="parent_eori_number">
+                                            {{ draft_parent_organisation.eori_number }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.eori_number or child_organisation.eori_number %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="eori_number" type="radio"
+                                            id="child_eori_number"
+                                            value="{{ child_organisation.id }}"
+                                            {% if "eori_number" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.eori_number == "child" %}checked{% endif %}>
+                                        <label class="govuk-label govuk-radios__label" for="child_eori_number">
+                                            {% if "eori_number" in identical_fields %}
+                                                <mark>{{ child_organisation.eori_number }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.eori_number }}
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row no-border">
+                        <th scope="row" class="govuk-table__header">DUNS number</th>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.duns_number or child_organisation.duns_number %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="duns_number" type="radio"
+                                            id="parent_duns_number"
+                                            value="{{ parent_organisation.id }}"
+                                            {% if "duns_number" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.duns_number == "parent" %}checked{% endif %}>
+                                        <label class="govuk-label govuk-radios__label" for="parent_duns_number">
+                                            {{ draft_parent_organisation.duns_number }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell text-overflow">
+                            {% if draft_parent_organisation.duns_number or child_organisation.duns_number %}
+                                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" name="duns_number" type="radio"
+                                            id="child_duns_number"
+                                            value="{{ child_organisation.id }}"
+                                            {% if "duns_number" in identical_fields %}disabled{% endif %}
+                                            {% if selected_radio_buttons.duns_number == "child" %}checked{% endif %}>
+                                        <label class="govuk-label govuk-radios__label" for="child_duns_number">
+                                            {% if "duns_number" in identical_fields %}
+                                                <mark>{{ child_organisation.duns_number }}</mark>
+                                            {% else %}
+                                                {{ child_organisation.duns_number }}
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">
+                    Save and continue
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock row_content %}

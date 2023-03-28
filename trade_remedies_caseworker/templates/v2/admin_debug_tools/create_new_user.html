@@ -1,0 +1,58 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Create new user{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Create a new user
+        </h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Name
+                </label>
+                <input type="text" name="name" required>
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Email
+                </label>
+                <input type="email" name="email" required>
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Password
+                </label>
+                <input type="text" name="password" required>
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Organisation
+                </label>
+                <select class="govuk-select" name="organisation">
+                    {% for organisation in organisations %}
+                        <option value="{{ organisation.id }}">{{ organisation.name }} - {{ organisation.id }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Type
+                </label>
+                <select class="govuk-select" name="security_group">
+                    <option value="{{ group_owner }}">Owner</option>
+                    <option value="{{ group_user }}">Employee</option>
+                </select>
+            </div>
+
+            <button type="submit" class="govuk-button">Create</button>
+        </form>
+    </div>
+{% endblock row_content %}
