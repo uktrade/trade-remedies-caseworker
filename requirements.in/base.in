@@ -23,7 +23,7 @@ django-timezone-field==4.2.3
 dpath==1.4.2
 openpyxl==3.0.10
 pytz
-redis==3.2.0
+redis==4.4.4
 requests==2.25.1
 sentry-sdk==1.14.0
 urllib3==1.26.11
