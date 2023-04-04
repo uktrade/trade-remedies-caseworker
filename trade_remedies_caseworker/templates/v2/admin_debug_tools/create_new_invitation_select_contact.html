@@ -1,0 +1,58 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Create new representative invitation{% endblock page_title %}
+
+{% load get_item %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Select contact to invite or create a new one
+        </h1>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Use an existing contact
+                </label>
+                <select class="govuk-select" class="select_case" name="contact_id">
+                    <option value="" selected>Select an existing contact</option>
+                    {% for contact in contacts %}
+                        <option value="{{ contact.id }}">{{ contact.name }} ({{ contact.organisation_name }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <p>Or create a new contact</p>
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Name
+                </label>
+                <input type="text" name="name">
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Email
+                </label>
+                <input type="email" name="email">
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Organisation
+                </label>
+                <select class="govuk-select" class="select_case" name="organisation_id">
+                    {% for organisation in organisations %}
+                        <option value="{{ organisation.id }}">{{ organisation.name }} ({{ organisation.id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <button type="submit" class="govuk-button">Create</button>
+        </form>
+    </div>
+{% endblock row_content %}

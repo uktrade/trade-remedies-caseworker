@@ -4,6 +4,7 @@ import json
 import os
 
 import openpyxl
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -12,11 +13,15 @@ from django.views.generic import TemplateView, View
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
+from config.base_views import BaseCaseWorkerTemplateView
 from config.settings.base import GDS_DATETIME_STRING
 from core.base import GroupRequiredMixin
 from core.constants import (
     SECURITY_GROUPS_TRA,
     SECURITY_GROUPS_TRA_ADMINS,
+    SECURITY_GROUP_ORGANISATION_OWNER,
+    SECURITY_GROUP_ORGANISATION_USER,
+    SECURITY_GROUP_SUPER_USER,
     SECURITY_GROUP_TRA_ADMINISTRATOR,
 )
 
@@ -268,6 +273,228 @@ class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClient
             GDS_DATETIME_STRING
         ).replace(' ', '_').replace(':', '-')}.xlsx"""
         return response
+
+
+class AdminDebugToolsView(BaseCaseWorkerTemplateView):
+    groups_required = (SECURITY_GROUP_SUPER_USER,)
+    template_name = "v2/admin_debug_tools/landing.html"
+
+
+class BaseAdminDebugToolsCreateUpdateView(BaseCaseWorkerTemplateView):
+    groups_required = (SECURITY_GROUP_SUPER_USER,)
+
+
+class AdminDebugToolsCreateNewOrganisationView(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/create_new_organisation.html"
+
+    def post(self, request, *args, **kwargs):
+        self.client.organisations(request.POST)
+        messages.success(request, "Organisation created")
+        return redirect(reverse("admin_debug_tools_landing"))
+
+
+class AdminDebugToolsCreateNewContactView(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/create_new_contact.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.client.contacts(request.POST)
+        messages.success(request, "Contact created")
+        return redirect(reverse("admin_debug_tools_landing"))
+
+
+class AdminDebugToolsCreateNewUserView(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/create_new_user.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
+        context["group_user"] = SECURITY_GROUP_ORGANISATION_USER
+        return context
+
+    def post(self, request, *args, **kwargs):
+        new_user = self.client.users(
+            {
+                "name": request.POST["name"],
+                "email": request.POST["email"],
+                "password": request.POST["password"],
+            }
+        )
+        self.client.organisations(request.POST["organisation"]).add_user(
+            new_user.id, request.POST["security_group"], confirmed=True
+        )
+        self.client.user_profiles(user_id=new_user.id)[0].update(
+            {
+                "email_verified_at": datetime.datetime.now().isoformat(),
+            }
+        )
+        messages.success(request, "User created")
+        return redirect(reverse("admin_debug_tools_landing"))
+
+
+class AdminDebugToolsCreateNewInvitationView(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/create_new_invitation.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.client.cases(fields=["id", "name"])
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if self.client.organisation_case_roles(
+            organisation_id=request.POST["organisation_id"],
+            case_id=request.POST["case_id"],
+        ):
+            return redirect(
+                reverse(
+                    "admin_debug_tools_create_new_invitation_select_contact",
+                    kwargs={
+                        "inviting_organisation_id": request.POST["organisation_id"],
+                        "case_id": request.POST["case_id"],
+                    },
+                )
+            )
+        else:
+            messages.error(request, "The selected organisation doesn't have access to the case")
+            return redirect(reverse("admin_debug_tools_landing"))
+
+
+class AdminDebugToolsCreateNewInvitationSelectContactView(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/create_new_invitation_select_contact.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["contacts"] = self.client.contacts(
+            fields=["id", "organisation_name", "name", "email"],
+            organisation_id__isnull=False,
+        )
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if contact_id := request.POST.get("contact_id"):
+            contact = self.client.contacts(contact_id)
+        else:
+            contact = self.client.contacts(
+                {
+                    "name": request.POST["name"],
+                    "email": request.POST["email"],
+                    "organisation": request.POST["organisation_id"],
+                }
+            )
+
+        new_invitation = self.client.invitations(
+            {
+                "invitation_type": 2,
+                "case": self.kwargs["case_id"],
+                "contact": contact.id,
+                "organisation": self.kwargs["inviting_organisation_id"],
+                "name": contact.name,
+                "email": contact.email,
+            }
+        )
+        self.client.submissions(new_invitation.submission.id).update(
+            {"organisation": self.kwargs["inviting_organisation_id"]}
+        )
+        new_invitation.send()
+        messages.success(request, "Invitation created and sent")
+        return redirect(reverse("admin_debug_tools_landing"))
+
+
+class AdminDebugToolsAssignOrganisationToCaseView(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/assign_organisation_to_case.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["cases"] = self.client.cases(fields=["id", "name"])
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        context["case_roles"] = [
+            {"key": "applicant", "value": "Applicant"},
+            {"key": "domestic_producer", "value": "Domestic Producer"},
+            {"key": "importer", "value": "Importer"},
+            {"key": "exporter", "value": "Exporter"},
+            {"key": "foreign_government", "value": "Foreign Government"},
+            {"key": "product_user", "value": "Industrial User of Product"},
+            {"key": "trade_body", "value": "Trade Body"},
+            {"key": "contributor", "value": "Contributor"},
+            {"key": "awaiting_approval", "value": "Awaiting Approval"},
+            {"key": "rejected", "value": "Rejected"},
+            {"key": "preparing", "value": "Preparing"},
+        ]
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not self.client.organisation_case_roles(
+            organisation_id=request.POST["organisation_id"], case_id=request.POST["case_id"]
+        ):
+            self.client.organisation_case_roles(
+                {
+                    "case": request.POST["case_id"],
+                    "organisation": request.POST["organisation_id"],
+                    "role_key": request.POST["case_role"],
+                    "sampled": True,
+                    "validated_at": datetime.datetime.now().isoformat(),
+                    "approved_at": datetime.datetime.now().isoformat(),
+                }
+            )
+
+        messages.success(request, "Organisation assigned to case")
+        return redirect(reverse("admin_debug_tools_landing"))
+
+
+class AdminDebugToolsTestDuplicateFinding(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/select_an_organisation.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        merge_record = self.client.organisation_merge_records(
+            request.POST["organisation"],
+            params={"fresh": "yes"},
+        )
+        parent_organisation = self.client.organisations(request.POST["organisation"], slim=True)
+        return HttpResponse(
+            render(
+                request,
+                "v2/admin_debug_tools/show_duplicate_results.html",
+                {
+                    "potential_duplicates": merge_record.potential_duplicates,
+                    "parent_organisation": parent_organisation,
+                },
+            )
+        )
+
+
+class AdminDebugToolsTestOrganisationCard(BaseAdminDebugToolsCreateUpdateView):
+    template_name = "v2/admin_debug_tools/select_an_organisation.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["organisations"] = self.client.organisations(fields=["id", "name"])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        organisation_card_data = self.client.organisations(
+            request.POST["organisation"]
+        ).organisation_card_data()
+        return HttpResponse(
+            render(
+                request,
+                "v2/admin_debug_tools/test_organisation_card.html",
+                {
+                    "organisation_card": organisation_card_data,
+                },
+            )
+        )
 
 
 class PingdomHealthCheckView(View, APIClientMixin):

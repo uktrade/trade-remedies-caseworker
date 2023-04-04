@@ -1,3 +1,46 @@
+{{ contact.1 }
+aria-describedby="unverfied-reason-info
+} - Trade Remedies Service - GOV.UK</title
+{{case.reference}} - {{ case.name }
+{{ contact.name
+aria-describedby="unverfied-reason-info
+{{ contact.1 }
+} - Trade Remedies Service - GOV.UK</title
+{{case.reference}} - {{ case.name }
+{{ contact.name
+case_id>/
+{{ forward_button_text }
+{{ block.super }
+Complete{% endblock page_title %
+href="/case/{{ case_id
+Domestic Producer
+Industrial User of Product
+Awaiting Approval
+Test Organisation Card{% endblock page_title %
+organisation</a></li
+contact</a></li
+Test Organisation
+submission_organisation_merge_record = self.client.submission_organisation_merge_records
+Registration Number - {{ parent_organisation.companies_house_id }
+Registration Number - {{ potential_duplicate.child_organisation.companies_house_id
+hide_edit_button
+ABC
+FormView
+get_success_url
+contact_org_verify_at
+parts/
+Installer
+htmlcov/
+.cache
+celery
+NER
+parts/
+Installer
+htmlcov/
+.cache
+celery
+NER
+urllib3==1.26.11
 parts/
 Installer
 htmlcov/
@@ -152,6 +195,89 @@ document;e(n.querySelectorAll('[data-module="govuk-accordion"]'),(function(e){ne
 t.accordion).init()})),e(n.querySelectorAll('[data-module="govuk-button"]'),(function(e){new
 t.Button
 CharacterCount
+Confirm
+{{ invitation.contact.email }
+{{ invitation.email }
+{{ organisation.post_code }
+number:</dt
+class="x-cross
+{{ user.email }
+confirmed_duplicates|length
+Cancel
+Unverified party{% endblock page_title %
+{{ duplicate_organisation_merge.order_in_parent.0|add:1 }
+value=
+{{ draft_parent_organisation.companies_house_id }
+{{ child_organisation.companies_house_id }
+{{ draft_parent_organisation.organisation_website }
+{{ child_organisation.vat_number }}
+{{ draft_parent_organisation.eori_number }
+{{ child_organisation.eori_number }
+
+Create new organisation{% endblock
+name="companies_house_id
+DUNS
+duplicate_organisations|length =
+height="13
+case{% endblock page_title %
+/span><a
+govuk-!-font-size-16
+organisation_id>/change/
+URLS
+duplicate{% endblock page_title %
+{{ duplicate_organisation_merge.order_in_parent.1 }
+{{ draft_parent_organisation.name|default_if_none
+{{ draft_parent_organisation.country_name|default_if_none
+{{ child_organisation.address|default_if_none
+{{ draft_parent_organisation.organisation_website|default_if_none
+{{ draft_parent_organisation.vat_number|default_if_none
+{{ child_organisation.vat_number|default_if_none:
+{{ draft_parent_organisation.eori_number|default_if_none
+organisation_id>/change/
+URLS
+duplicate{% endblock page_title %
+{{ duplicate_organisation_merge.order_in_parent.1 }
+{{ draft_parent_organisation.name|default_if_none
+{{ draft_parent_organisation.country_name|default_if_none
+{{ child_organisation.address|default_if_none
+{{ draft_parent_organisation.organisation_website|default_if_none
+{{ draft_parent_organisation.vat_number|default_if_none
+{{ child_organisation.vat_number|default_if_none:
+{{ draft_parent_organisation.eori_number|default_if_none
+SECURITY_GROUPS_TRA_TOP_ADMINS
+Invite 3rd
+draft_submissions_this_role
+due_date":"Invalid
+Party Invite
+NOTIFY_SUBMISSION_DEFICIENCY
+Notice
+LOA_contact_id
+f'Sent {
+PRE_DOCUMENT_SEARCH
+ex_oficio
+NOTIFY_INFORM_INTERESTED_PARTIES
+index.html
+Journey
+Admin
+name="security_group
+admin_debug_tools_create_new_user
+Create new contact{%
+merge_organisations_select_differences_looper
+aria-label="Page
+4.2926 4.293h-12.986v2h12.896l-4.1855
+Complete{%
+merged.</p
+for="option_2
+Exit
+ABC
+FormView
+Cancel merge{%
+SubmissionOrganisationMergeRecord
+phantom_organisation_serializer
+DuplicateOrganisationMerge
+DB
+duplicate_organisation_merge.child_fields
+for="parent_address
 height="30" width="36">
 invite_contact_no_name
 case</a>

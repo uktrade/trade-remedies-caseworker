@@ -63,6 +63,9 @@
                     {% if user.permissions.create_ex_oficio %}
                         <li><a href="/case/create/">Create a new ex-officio case</a></li>
                     {% endif %}
+                    {% if "Super User" in user.groups and admin_debug_tools_enabled %}
+                        <li><a href="{% url 'admin_debug_tools_landing' %}">Admin debug tools</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </span>
