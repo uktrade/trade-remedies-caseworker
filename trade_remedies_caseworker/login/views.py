@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import logout
+from django.core.cache import cache
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -13,11 +14,17 @@ from core.utils import internal_redirect
 
 
 def logout_view(request):
+    # logout view
+
+    # we want to pick this up from the session here before it gets deleted
+    logged_out_by_other_session = request.session.get("logged_out_by_other_session", False)
     if "token" in request.session:
         del request.session["token"]
     if "user" in request.session:
         del request.session["user"]
     logout(request)
+    if logged_out_by_other_session:
+        return redirect(f"{reverse('login')}?logged_out_by_other_session=true")
     return redirect("/")
 
 
@@ -42,6 +49,7 @@ class LoginView(TemplateView, TradeRemediesAPIClientMixin):
             request.session["version"] = response.get("version")
             request.session["errors"] = None
             request.session.cycle_key()
+            cache.set(email, request.session.session_key)
             if (
                 settings.USE_2FA
                 and request.session["user"]["should_two_factor"]
