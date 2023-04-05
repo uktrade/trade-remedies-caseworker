@@ -1,3 +1,219 @@
+function(){return function(n){var
+o.m=n
+n})},o.r
+t&&t&&t.__esModule)return
+t}),2&e&&"string"!=typeof t)for(var
+e&&e.__esModule?function(){return
+n(16),_=n(18),b="prototype",w
+F
+P
+i):i
+U),d[r]!=i&&y(d
+S=4,w
+Math==Math?window:"undefined"!=typeof self&&self
+n){e.exports=!n(4)(function(){return
+function(){return 7}}).a})},function(e
+c;for(i
+null),(o="function"!=typeof e)&&(null==r?r="":"number"==typeof r?r
+String(r):"string"!=typeof
+n)t[r]===undefined&&(t[r]=n[r]);return t}function k(e){var
+if("dangerouslySetInnerHTML"===t)r&&(e.innerHTML
+t.replace(/^xlink:?/,""));null==r||!1===r?a?e.removeAttributeNS("http://www.w3.org/1999
+r))}else
+T(){for(var e;e
+j;if(null!=t&&"boolean"!=typeof t||(t=""),"string"==typeof
+document.createTextNode(t),e&&(e.parentNode&&e.parentNode.replaceChild(i
+t.nodeName;if("function"==typeof
+d(e
+I(t);for(;o&&!s&&(o
+l,3,n
+r),e
+l,1,n
+e}(e
+r);if(j="svg"===a||"foreignObject"!==a&&j
+h(e
+t?document.createElementNS("http://www.w3.org/2000
+null;null!=w?(d++,f[w]=_):(b||(_.splitText!==undefined?!o||_.nodeValue.trim():o))&&(p[v++]=_)}if(0!==y)for(var g=0;g<
+t[g],l
+i===v-1&&v--,i===h&&h++;break}l
+r),a=c[g],l&&l!==e&&l!==a&&(null==a?e.appendChild(l):l===a.nextSibling?k(a):e.insertBefore(l
+m(e
+n)t&&null!=t[r]||null==n[r]||v(e
+e(t
+m[o].nextBase
+r}function y(e
+=d||h
+=p
+e._dirty=!1,!y){o
+e.render(a
+x,1,l,!1):(_=i
+B(t
+null!=i&&i.ownerSVGElement!==undefined
+null!=t&&!("__preactattr_"in
+e.exports={version:"2.5.7"};"number"==typeof
+n(8),o
+a(e
+n)}catch(r){}if("get"in n||"set"in
+TypeError(e+
+S+r
+i?o.createElement(e):{}}},function(e
+=
+n;o&&(a(n,"name")||u(n,"name",t)),e[t]!==n&&(o&&(a(n
+r.call(o
+function(){return r.apply(o
+function!");return
+c(n
+i);if(a&&t!=t){for(;u
+n(27)("keys"),o
+r[e]||(r[e]=o(e))}},function(e
+e||r;return
+h||m?m
+n(1).Symbol
+u=!!i&&1/[1].indexOf(1,-0)<0;r(r
+Error("id
+r;if(t&&"function"==typeof(n
+r;if("function"==typeof(n
+m(e),r
+n}:o},function(e
+n)&&i.push(n);for(;t.length
+t[o++])&&(~s(i
+n)||i.push(n));return i}},function(e
+Math.max
+t){e.exports=!1},function(e
+n(2),o
+function(e){var
+strict";t.__esModule=!0,t["default"]=void
+n.templateInputValue(e).toLowerCase()}).indexOf(e.toLowerCase())},t.componentDidMount
+null===n
+e.query||o
+this.isQueryAnOption(t
+P=
+u+"__assistiveHint",z
+K})),(0,$.createElement)("input",X({"aria-expanded":w?"true":"false","aria-activedescendant":!!F&&u+"__option--"+_,"aria-owns":u+"__listbox","aria-autocomplete":this.hasAutoselect()?"both":"list"},z,{autoComplete:"off",className:""+L+T+B
+i.handleListMouseLeave(e)},id
+u+"__option--"+t
+function(e){i.elementReferences[t]=e},role:"option",tabIndex:"-1","aria-posinset":t+1,"aria-setsize":x.length})}),P&&(0,$.createElement)("li",{className
+=e.F;n--;)delete c[l][u[n]];return c()};e.exports
+i(n
+s(t),o
+i=0;i<o;)u.f(e
+n){if(!(t
+l[t](e
+e.apply(n
+n){n(59)("match",1,function(r
+r(this),n
+n!==undefined?n.call(e
+n(c
+r(o
+u){var a;return function(){var
+i),r&&o.apply(e
+e.minQueryLength
+v=0===n
+t[i],r=o?o+"
+r):e[r]=s}};return
+e}function o(t
+object"
+e={};for(var n in t)e[n]=i(t[n]);return e}function r(t
+i;"defineProperty"in Object&&function(){try{return
+Object.prototype.hasOwnProperty("__defineGetter__"),o="Getters &
+Element))return e(t
+c="get"in
+Document
+global&&global||{}),function(t){"Element"in
+HTMLElement
+s=!i.hasOwnProperty(n),a
+t.charAt(1).toUpperCase()}));"__defineGetter__"in Object.prototype&&"__defineSetter__"in Object.prototype?Object.defineProperty(e,r,{enumerable:!0,get:function(){return
+global&&global||{}),r.prototype.t=function(t
+this.translations[t];if(n.match(/%{(.\S+)}/)){if(!e)throw
+n}return
+Intl
+NumberFormat(this.locale)),t.replace(/%{(.\S+)}/g,(function(t
+Boolean(window
+Intl&&Intl
+locale')},r.prototype.selectPluralFormUsingFallbackRules=function(t){t=Math.abs(Math.floor(t));var e=this.getPluralRulesForLocale();return
+r.pluralRulesMap[n],i=0;i
+function(t){o(i
+l=/\s+/;if(i.length)for(o=0;o
+s.length>>>0,"object"==typeof
+c.length>>>0,"object"==typeof
+function(e){var n=arguments[1];if(n===t){var
+t[o])}}}()}(this)}.call("object"==typeof window&&window||"object"==typeof self&&self||"object"==typeof
+document.documentElement&&"Element"in
+this&&"classList"in Element.prototype&&((e
+HTMLAnchorElement,"relList","rel"),i(t
+this&&"matches"in
+SVGElement?e.parentNode:
+e.parentElement}return
+global&&global||{}),function(t){"Window"in
+t.Event)return!0;try{return
+document&&"undefined"!=typeof window){var n
+n}),"createEvent"in document||(window.addEventListener
+Element.prototype.addEventListener
+arguments[0],i
+Array
+v.apply(t
+document.createElement("span"),m
+y)}m.innerHTML=i.innerHTML
+=function(t){if(this.browserSupportsSessionStorage){var
+t};function u(t
+Date&&"getTime"in
+a||"maxlength"in
+e||{},l
+setInterval(function(){(!this.lastInputTimestamp||Date.now()-500>=this.lastInputTimestamp)&&this.updateIfValueChanged()}.bind(this),1e3)},p.prototype.handleBlur
+function(t){e(document.querySelectorAll('input[data-behaviour="exclusive"][type="checkbox"][name="'+t.name+'"]'),function(e){t.form===e.form&&(e.checked=!1,this.syncConditionalRevealWithInputState(e))}.bind(this))},f.prototype.handleClick
+E(t){this.$module
+function(){return this.$module.hasAttribute("open")?(this.$module.removeAttribute("open"),this.$summary.setAttribute("aria-expanded","false"),this.$content.style.display="none"):(this.$module.setAttribute("open","open"),this.$summary.setAttribute("aria
+48.0625em)"),"addEventListener"in this.mql?this.mql.addEventListener("change",this.syncState.bind(this)):this.mql.addListener(this.syncState.bind(this)),this.syncState(),this.$menuButton.addEventListener("click",this.handleMenuButtonClick.bind(this))):this.$menuButton.setAttribute("hidden",""))},v.prototype.syncState=function(){this.mql.matches?(this.$menu.removeAttribute("hidden"),this.$menuButton.setAttribute("hidden","")):(this.$menuButton.removeAttribute("hidden"),this.$menuButton.setAttribute("aria-expanded",this.menuIsOpen),this.menuIsOpen?this.$menu.removeAttribute("hidden"):this.$menu.setAttribute("hidden",""))},v.prototype.handleMenuButtonClick=function(){this.menuIsOpen=!this.menuIsOpen,this.syncState()},g.prototype.init=function(){this.$module&&this.setFocus()},g.prototype.setFocus=function(){var
+this&&"nextElementSibling"in
+this&&"previousElementSibling"in
+this.getHref(t).slice(1);t.setAttribute("id","tab_"+e),t.setAttribute("role","tab"),t.setAttribute("aria-controls",e),t.setAttribute("aria-selected","false"),t.setAttribute("tabindex","-1");var
+function(t){this.getPanel(t).classList.remove(this.jsHiddenClass)},E.prototype.hidePanel
+n.querySelector('[data
+b(o,t.errorSummary).init();var
+v(i).init(),e(n.querySelectorAll('[data
+t.CharacterCount=
+t.NotificationBanner
+t.
+e}return
+a-1;return
+x(r
+i;i+=n)if(r(t[i],i
+m.isFunction(e)&&e.prototype||a
+Object.create
+function(){},m
+c;c++){var
+null==t?void 0
+m.keys(n);for(e=0,u
+e?e[i]:i;if(t(n[o],o
+null==u?u
+m.values(n)),n[m.random(n.length-1)]):m.shuffle(n).slice(0,Math.max(0,t))},m.sortBy
+e)}}).sort(function(n
+r){m.has(n
+e=[],u=[];return m.each(n
+l.call(arguments,1))},m.uniq
+a}return
+n.apply(null
+m.now()-o;t
+null)))};return
+r)&&t.push(r);return M&&e(n
+m.keys(n),i
+n)m.isFunction(n[r])&&t.push(r);return
+m.keys(n),i=0,o
+n;if(null==o)return
+m.pick(n
+a)&&"constructor"in n&&"constructor"in
+c!==t.length)return!1;for(;c--;)if(!N(n[c],t[c],r,e))return!1}else{var
+N(n
+m.has(n,"callee")}),"function"!=typeof/./&&"object"!=typeof
+function(){return n}},m.noop=
+B={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#x27;","`":"&#x60;"},T=m.invert(B),R=function(n){var
+RegExp(r),u
+e.test(n)?n.replace(u
+L),u=
+t,__p='',__j
+p;\n";try{var
+r.apply(m
+function(){return this._wrapped},m.prototype.valueOf
 {{ contact.1 }
 aria-describedby="unverfied-reason-info
 } - Trade Remedies Service - GOV.UK</title
