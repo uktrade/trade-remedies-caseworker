@@ -1,15 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 from v2_api_client.mixins import APIClientMixin
 
 from core.base import GroupRequiredMixin
-from core.constants import SECURITY_GROUPS_TRA
+from core.constants import (
+    SECURITY_GROUPS_TRA,
+)
 
 
-class BaseCaseWorkerView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):
+class BaseCaseWorkerView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, View):
     groups_required = SECURITY_GROUPS_TRA
 
 

@@ -17,7 +17,7 @@
                     {% endfor %}
                 </p>
             {% endif %}
-            <div class="govuk-radios govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios govuk-radios{% if inline %}--inline{% endif %}" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="{{ id_one }}" name="{{ name }}"
                         type="radio" value="{{ value_one }}" {% if value == value_one %}checked{% endif %}>

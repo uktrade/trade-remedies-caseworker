@@ -165,6 +165,7 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                 "body_classes": body_class,
                 "cases": cases,
                 "tabs": tabs,
+                "admin_debug_tools_enabled": settings.ADMIN_DEBUG_TOOLS_ENABLED,
             },
         )
 
@@ -470,9 +471,10 @@ class PartiesView(CaseBaseView):
             fields=[
                 "created_at",
                 "created_by",
-                "organisation",
+                "organisation_name",
                 "contact",
             ],
+            slim=True,
         )
         caseworker_invitations = sorted(
             caseworker_invitations, key=lambda x: x.created_at, reverse=True

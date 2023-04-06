@@ -1,0 +1,44 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Select the correct party type{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">
+            Review matching organisations
+        </span>
+        <form method="post">
+            {% csrf_token %}
+            <h1 class="govuk-heading-xl">
+                Select the correct party type
+            </h1>
+            <p>The matching organisations are registered as different party types on the same case. Choose the correct
+                party
+                type for the case.</p>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        {{ case_roles.0.case.reference }} - {{ case_roles.0.case.name }}
+                    </legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        {% for case_role in case_roles %}
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="{{ case_role.id }}" name="chosen_case_role_id" type="radio"
+                                    value="{{ case_role.id }}">
+                                <label class="govuk-label govuk-radios__label" for="{{ case_role.id }}">
+                                    {{ case_role.role_name }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button" type="submit">
+                    Save and continue
+                </button>
+            </div>
+        </form>
+
+    </div>
+{% endblock row_content %}

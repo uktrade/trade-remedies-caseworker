@@ -1,0 +1,79 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Create new organisation{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Create a new organisation
+        </h1>
+        <form method="post">
+            {% csrf_token %}
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Name
+                </label>
+                <input type="text" name="name" required>
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Address
+                </label>
+                <input type="text" name="address">
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Post code
+                </label>
+                <input type="text" name="post_code">
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Registration number
+                </label>
+                <input type="text" name="companies_house_id">
+            </div>
+
+
+            {% include "v2/component_macros/country_dropdown.html" with id='country' name="country" %}
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    VAT number
+                </label>
+                <input type="text" name="vat_number">
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    EORI number
+                </label>
+                <input type="text" name="eori_number">
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    DUNS number
+                </label>
+                <input type="text" name="duns_number">
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Website
+                </label>
+                <input type="text" name="organisation_website">
+            </div>
+
+            <button type="submit" class="govuk-button">Create</button>
+        </form>
+    </div>
+{% endblock row_content %}
