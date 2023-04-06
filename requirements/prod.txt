@@ -12,6 +12,10 @@ asgiref==3.5.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
+async-timeout==4.0.2
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   redis
 boto3==1.17.89
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -122,7 +126,6 @@ lxml==4.9.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   pikepdf
-    #   python-docx
     #   v2-api-client
 markdown==2.6.11
     # via -r requirements.in/../requirements/base.txt
@@ -164,16 +167,12 @@ python-dateutil==2.8.2
     #   -r requirements.in/../requirements/base.txt
     #   botocore
     #   v2-api-client
-python-docx==0.8.11
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   v2-api-client
 pytz==2021.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
     #   django-timezone-field
-redis==3.2.0
+redis==4.4.4
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-redis

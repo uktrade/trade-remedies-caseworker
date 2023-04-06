@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django_audit_log_middleware import AuditLogMiddleware
 from sentry_sdk import set_user
+from django.core.cache import cache
 
 
 class APIUserMiddleware:
@@ -17,6 +18,15 @@ class APIUserMiddleware:
             request.args = args
             request.kwargs = kwargs
             request.token = request.session["token"]
+
+            # Checking if the user has been logged out by another session, if the session key
+            # stored in the cache is different from the one in the current session, then it has
+            # been replaced by another login
+            """if cache.get(
+                request.session["user"]["email"]
+            ) != request.session.session_key and not request.path == reverse("logout"):
+                request.session["logged_out_by_other_session"] = True
+                return redirect(reverse("logout"))"""
 
             if (
                 settings.USE_2FA
