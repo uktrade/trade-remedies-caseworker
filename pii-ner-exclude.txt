@@ -1,3 +1,28 @@
+request.session["user"]["email
+" Django settings for config project..
+Django 2.0.1
+https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+IpWhitelister
+BACKEND
+db.sqlite3
+VCAP_SERVICES
+RedisCache
+DefaultClient
+http://localhost:8000
+boto3
+S3 Root
+ClamAVFileUploadHandler
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+Order
+MAX FILE
+ROOT_LOG_LEVEL
+AutoField
+GOOGLE_ANALYTICS_TAG_MANAGER_ID
 function(){return function(n){var
 o.m=n
 n})},o.r

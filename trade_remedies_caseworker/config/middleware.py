@@ -4,7 +4,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django_audit_log_middleware import AuditLogMiddleware
 from sentry_sdk import set_user
-from django.core.cache import cache
 
 
 class APIUserMiddleware:
