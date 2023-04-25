@@ -310,7 +310,6 @@ soupsieve==2.3.1
 sqlparse==0.4.4
     # via
     #   -r requirements.in/base.in
-    #   -r requirements.in/dev.in
     #   django
 stack-data==0.6.2
     # via ipython
