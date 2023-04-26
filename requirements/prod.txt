@@ -193,7 +193,7 @@ six==1.16.0
     #   -r requirements.in/../requirements/base.txt
     #   django-session-timeout
     #   python-dateutil
-sqlparse==0.4.2
+sqlparse==0.4.4
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django
