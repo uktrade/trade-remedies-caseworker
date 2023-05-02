@@ -135,7 +135,7 @@
             {% endif %}
             <div class="govuk-button-group">
                 <a class="govuk-button {% if not user_in_required_groups %}govuk-button--disabled{% endif %}"
-                    {% if not user_in_required_groups %}disabled="disabled" aria-disabled="true"{% endif %}
+                    {% if not user_in_required_groups %}disabled="disabled" aria-disabled="true" href="#"{% endif %}
                     data-module="govuk-button"
                     {% if user_in_required_groups %}
                         {% if "submission_id" in request.resolver_match.kwargs %}
