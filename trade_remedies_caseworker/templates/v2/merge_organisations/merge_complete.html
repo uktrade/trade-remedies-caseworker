@@ -12,7 +12,7 @@
                 Matching organisations resolved
             </h1>
         </div>
-        {% if request.GET.confirmed_duplicates == "yes" %}
+        {% if request.session.confirmed_duplicates %}
             <p>The duplicate organisations have been merged with the selected organisation.</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>Cases are now registered under one organisation</li>
@@ -23,10 +23,17 @@
             <p>The matching organisation(s) have been marked as not duplicate with the selected organisation.</p>
         {% endif %}
         <div class="govuk-button-group">
-            <a class="govuk-button" data-module="govuk-button"
-                href="{% url 'verify_organisation_task_list' invitation_id=invitation_id %}">
-                Review representative invite
-            </a>
+            {% if request.session.came_from_invitation %}
+                <a class="govuk-button" data-module="govuk-button"
+                    href="{% url 'verify_organisation_task_list' invitation_id=invitation_id %}">
+                    Review representative invite
+                </a>
+            {% elif request.session.organisation_id and request.session.case_id %}
+                <a class="govuk-button" data-module="govuk-button"
+                    href="/case/{{ request.session.case_id }}/organisation/{{ request.session.organisation_id }}/">
+                    Back to organisation
+                </a>
+            {% endif %}
         </div>
     </div>
 

@@ -58,7 +58,7 @@
                         {{ submission_organisation_merge_record.status_name }}
                     </td>
                     <td class="govuk-table__cell action">
-                        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=invitation.submission.id %}">Select</a><a><span
+                        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=invitation.submission.id organisation_merge_record_id=organisation_merge_record.id %}">Select</a><a><span
                             class="govuk-visually-hidden">{{ invited_organisation.name }}</span>
                         </a></td>
                 </tr>
