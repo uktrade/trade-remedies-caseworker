@@ -64,7 +64,7 @@ class CompaniesHouseSearch(TemplateView, LoginRequiredMixin, TradeRemediesAPICli
 class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
     def get(self, request, *args, **kwargs):
         query = request.GET.get("term")
-        case_id = request.GET.get("case_id")
+        case_id = request.GET.get("case_id", "")
         results = self.client.organisations.get_organisations_by_company_name(
             query, case_id=case_id
         )

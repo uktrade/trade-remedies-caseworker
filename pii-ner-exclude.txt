@@ -1,3 +1,6 @@
+id="company_search_container"></div
+id="organisation_id
+{result.name
 request.session["user"]["email
 " Django settings for config project..
 Django 2.0.1
