@@ -56,7 +56,7 @@
             minLength: 3,
             source: function (query, populateResults) {
                 $.ajax({
-                    url: `/organisationname/search?term=${query}`,
+                    url: `/organisationname/search?term=${query}&ignore_case_count=yes`,
                     success: function (data) {
                         if (data.organisations) {
                             let names = data.organisations.map(result => `${result.name} (${result.companies_house_id})`);

@@ -68,10 +68,12 @@ class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
         results = self.client.organisations.get_organisations_by_company_name(
             query, case_id=case_id
         )
-        # organisations = {"organisations": [each.data_dict for each in results]}
-        organisations = {
-            "organisations": [each.data_dict for each in results if each.case_count > 0]
-        }
+        if request.GET.get("ignore_case_count"):
+            organisations = {"organisations": [each.data_dict for each in results]}
+        else:
+            organisations = {
+                "organisations": [each.data_dict for each in results if each.case_count > 0]
+            }
         return HttpResponse(json.dumps(organisations), content_type="application/json")
 
 
