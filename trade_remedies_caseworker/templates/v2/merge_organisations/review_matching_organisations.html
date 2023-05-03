@@ -34,7 +34,11 @@
                         {% if previous or previous is 0 %}
                             <div class="govuk-pagination__prev">
                                 <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
-                                    href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record.id %}?current_duplicate_index={{ current_duplicate_index|add:-1 }}"
+                                    {% if "submission_id" in request.resolver_match.kwargs %}
+                                        href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission_id organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ current_duplicate_index|add:-1 }}"
+                                    {% else %}
+                                        href="{% url 'organisations:merge_organisations_review_matching_organisations' organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ current_duplicate_index|add:-1 }}"
+                                    {% endif %}
                                     rel="prev">
                                     <svg class="govuk-pagination__icon govuk-pagination__icon--prev"
                                         xmlns="http://www.w3.org/2000/svg" height="13" width="15"
@@ -55,7 +59,11 @@
                                     {% else %}
                                         <li class="govuk-pagination__item {% if page == current_duplicate_index %}govuk-pagination__item--current{% else %}govuk-pagination__item{% endif %}">
                                             <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
-                                                href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}?current_duplicate_index={{ page }}"
+                                                {% if "submission_id" in request.resolver_match.kwargs %}
+                                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission_id organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ page }}"
+                                                {% else %}
+                                                    href="{% url 'organisations:merge_organisations_review_matching_organisations' organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ page }}"
+                                                {% endif %}
                                                 aria-label="Page {{ page|add:1 }}" aria-current="page">
                                                 {{ page|add:1 }}
                                             </a>
@@ -66,7 +74,11 @@
                                 {% for duplicate_organisation in duplicate_organisations %}
                                     <li class="govuk-pagination__item {% if forloop.counter0 == current_duplicate_index %}govuk-pagination__item--current{% else %}govuk-pagination__item{% endif %}">
                                         <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
-                                            href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}?current_duplicate_index={{ forloop.counter0 }}"
+                                            {% if "submission_id" in request.resolver_match.kwargs %}
+                                                href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission_id organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ forloop.counter0 }}"
+                                            {% else %}
+                                                href="{% url 'organisations:merge_organisations_review_matching_organisations' organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ forloop.counter0 }}"
+                                            {% endif %}
                                             aria-label="Page {{ forloop.counter }}" aria-current="page">
                                             {{ forloop.counter }}
                                         </a>
@@ -78,7 +90,11 @@
                         {% if next %}
                             <div class="govuk-pagination__next">
                                 <a class="govuk-link govuk-pagination__link govuk-link--no-visited-state"
-                                    href="{% url 'organisations:merge_organisations_review_matching_organisations' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}?current_duplicate_index={{ current_duplicate_index|add:1 }}"
+                                    {% if "submission_id" in request.resolver_match.kwargs %}
+                                        href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission_id organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ current_duplicate_index|add:1 }}"
+                                    {% else %}
+                                        href="{% url 'organisations:merge_organisations_review_matching_organisations' organisation_merge_record_id=organisation_merge_record_id %}?current_duplicate_index={{ current_duplicate_index|add:1 }}"
+                                    {% endif %}
                                     rel="next">
                                     <span class="govuk-pagination__link-title">Next</span>
                                     <svg class="govuk-pagination__icon govuk-pagination__icon--next"
@@ -119,10 +135,15 @@
             {% endif %}
             <div class="govuk-button-group">
                 <a class="govuk-button {% if not user_in_required_groups %}govuk-button--disabled{% endif %}"
-                    {% if not user_in_required_groups %}disabled="disabled" aria-disabled="true"{% endif %}
+                    {% if not user_in_required_groups %}disabled="disabled" aria-disabled="true" href="#"{% endif %}
                     data-module="govuk-button"
                     {% if user_in_required_groups %}
-                        href="{% url 'organisations:merge_organisations_select_differences_looper' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}"{% endif %}>
+                        {% if "submission_id" in request.resolver_match.kwargs %}
+                            href="{% url 'organisations:submission_merge_organisations_select_differences_looper' submission_id=submission_id organisation_merge_record_id=organisation_merge_record_id %}"
+                        {% else %}
+                            href="{% url 'organisations:merge_organisations_select_differences_looper' organisation_merge_record_id=organisation_merge_record_id %}"
+                        {% endif %}
+                    {% endif %}>
                     Continue review
                 </a>
             </div>

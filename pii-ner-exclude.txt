@@ -1,6 +1,9 @@
 id="company_search_container"></div
 id="organisation_id
 {result.name
+cases_idx.false|length
+href="/case/{{ request.session.case_id }
+submission_id
 request.session["user"]["email
 " Django settings for config project..
 Django 2.0.1
@@ -508,7 +511,7 @@ Admin
 name="security_group
 admin_debug_tools_create_new_user
 Create new contact{%
-merge_organisations_select_differences_looper
+submission_merge_organisations_select_differences_looper
 aria-label="Page
 4.2926 4.293h-12.986v2h12.896l-4.1855
 Complete{%
