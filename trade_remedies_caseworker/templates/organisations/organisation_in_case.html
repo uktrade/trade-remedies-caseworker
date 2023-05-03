@@ -3,51 +3,64 @@
 {% load set %}
 
 {% block case_page_content %}
-    <div id="party-details-page" data-attach="controllers/PartyDetails"
-        data-org-id="{{organisation.id}}"
-        data-case-id="{{case.id}}"
-        data-caserole="{{caserole.role.id}}"
-    >
+    <div id="party-details-page">
         <div class="grid-row">
             <div class="column-full">
-                <h2 class="heading-large pull-left"><span class="heading-secondary">{{caserole.role.name}}</span>{{party.name}}</h2>
+                <h2 class="heading-large pull-left"><span
+                        class="heading-secondary">{{ caserole.role.name }}</span>{{ party.name }}</h2>
                 {% if case %}
                     {% comment %} ***********   Function menu {% endcomment %}
                     <div class="pull-right margin-top-2">
-                        <a href="/case/{{case_id}}/submission/create/?for=public" class="link bold menu-icon" data-attach="menuExpand">Party actions</a>
+                        <a href="/case/{{ case_id }}/submission/create/?for=public" class="link bold menu-icon"
+                           data-attach="menuExpand">Party actions</a>
                         <span class="function-menu">
                             <div>
                                 <ul>
                                     <li>
-                                        <button type="button" class="link modal-form" data-url="/organisation/{{party.id}}/edit/" data-event-update="party-updated">Edit company details</button>
+                                        <button type="button" class="link modal-form"
+                                                data-url="/organisation/{{ party.id }}/edit/"
+                                                data-event-update="party-updated">Edit company details</button>
                                     </li>
                                     <li>
-                                        <form action="/organisations/{{organisation.id}}/case/{{case.id}}/sampled/" method="post" data-attach="RedirectManager">
+                                        <form action="/organisations/{{ organisation.id }}/case/{{ case.id }}/sampled/"
+                                              method="post" data-attach="RedirectManager">
                                             <button type="submit" class="link">
-                                                {% if organisation.sampled %}Remove from sampled list{% else %}Add to sampled list{% endif %}
+                                                {% if organisation.sampled %}Remove from sampled list{% else %}Add to
+                                                    sampled list{% endif %}
                                             </button>
                                         </form>
                                     </li>
                                     <li>
-                                        <form action="/organisations/{% if case %}case/{{case.id}}/organisation/{% endif %}{{organisation.id}}/delete/" method="post">
+                                        <form action="/organisations/{% if case %}case/{{ case.id }}/organisation/{% endif %}{{ organisation.id }}/delete/"
+                                              method="post">
                                             {% csrf_token %}
                                             {% set 'supress_delete' False %}
-                                            {% if organisation.users|length > 0 %}{% set 'supress_delete' True %}{% endif %}
+                                            {% if organisation.users|length > 0 %}
+                                                {% set 'supress_delete' True %}{% endif %}
                                             {% if submissions|length > 0 %}{% set 'supress_delete' True %}{% endif %}
-                                            {% if cases_idx.false|length > 1 %}{% set 'supress_delete' True %}{% endif %}
-                                            <button type="submit" value="delete" class="link" {% if supress_delete %}disabled{% endif %} data-handler="clickConfirm" data-title="Confirm delete" data-message="Are you sure you want to delete this empty party?<br>This action cannot be undone.">Delete party</button>
+                                            {% if cases_idx.false|length > 1 %}
+                                                {% set 'supress_delete' True %}{% endif %}
+                                            <button type="submit" value="delete" class="link"
+                                                    {% if supress_delete %}disabled{% endif %}
+                                                    data-handler="clickConfirm" data-title="Confirm delete"
+                                                    data-message="Are you sure you want to delete this empty party?<br>This action cannot be undone.">Delete party</button>
                                         </form>
                                     </li>
                                     <li>
-                                        <form action="/organisations/{% if case %}case/{{case.id}}/organisation/{% endif %}{{organisation.id}}/remove_from_case/" method="post">
+                                        <form action="/organisations/{% if case %}case/{{ case.id }}/organisation/{% endif %}{{ organisation.id }}/remove_from_case/"
+                                              method="post">
                                             {% csrf_token %}
                                             {% set 'supress_remove' supress_delete|_not %}
                                             {% if submissions|length > 0 %}{% set 'supress_remove' True %}{% endif %}
-                                            <button type="submit" value="remove" class="link" {% if supress_remove %}disabled{% endif %} data-handler="clickConfirm" data-title="Confirm remove" data-message="Are you sure you want to remove this party from the case?<br>This action cannot be undone.">Remove from case</button>
+                                            <button type="submit" value="remove" class="link"
+                                                    {% if supress_remove %}disabled{% endif %}
+                                                    data-handler="clickConfirm" data-title="Confirm remove"
+                                                    data-message="Are you sure you want to remove this party from the case?<br>This action cannot be undone.">Remove from case</button>
                                         </form>
                                     </li>
                                     <li>
-                                        <form action="/organisations/{{organisation.id}}/case/{{case.id}}/nonresponsive/" method="post" data-attach="RedirectManager">
+                                        <form action="/organisations/{{ organisation.id }}/case/{{ case.id }}/nonresponsive/"
+                                              method="post" data-attach="RedirectManager">
                                             {% if caserole.non_responsive %}
                                                 <button type="submit" class="link">Non co-operative [change]</button>
                                             {% else %}
@@ -56,14 +69,18 @@
                                         </form>
                                     </li>
                                     <li>
-                                        <button type="button" class="link modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/dedupe/" data-event-refresh="party-updated">View/merge duplicates</button>
+                                        <button type="button" class="link modal-form"
+                                                data-url="/case/{{ case.id }}/organisation/{{ organisation.id }}/dedupe/"
+                                                data-event-refresh="party-updated">View/merge duplicates</button>
                                     </li>
                                 </ul>
                             </div>
                         </span>
                     </div>
                 {% else %}
-                    <button type="button" class="link modal-form pull-right" data-url="/organisation/{{party.id}}/edit/">Edit company details<span class="visually-hidden"> party address</span></button>
+                    <button type="button" class="link modal-form pull-right"
+                            data-url="/organisation/{{ party.id }}/edit/">Edit company details<span
+                            class="visually-hidden"> party address</span></button>
                 {% endif %}
             </div>
         </div>
@@ -76,8 +93,16 @@
                 </div>
             </div>
         {% else %}
-            <div class="grid-row duplicate-banner">
-            </div>
+            <div class="grid-row duplicate-banner"></div>
+            {% if potential_duplicates %}
+                <div class="warning">
+                    <span>There are duplicate versions of this party.</span>
+                    <a type="button" class="button compact pull-right button-blue"
+                       href="{% url 'organisations:merge_organisations_review_matching_organisations' organisation_merge_record_id=organisation.id %}?case_id={{ case.id }}&organisation_id={{ organisation.id }}"
+                       data-event-refresh="party-updated">View/merge duplicates
+                    </a>
+                </div>
+            {% endif %}
             {% if caserole.non_responsive %}
                 <div class="grid-row">
                     <div class="column-full">
@@ -143,8 +168,10 @@
         {% else %}
             <div class="compact-section margin-top-1">
                 <div class="header-line">
-                    <span class="heading-medium">Cases and applications </span><div class="number-circle">{{ cases_idx.false|length }}</div>
-                    <a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">Expand case list</span></a>
+                    <span class="heading-medium">Cases and applications </span>
+                    <div class="number-circle">{{ cases_idx.false|length }}</div>
+                    <a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span
+                            class="visually-hidden">Expand case list</span></a>
                 </div>
                 <div class="expand-section" data-attach="Tabset">
                     <ul class="tabset">
@@ -162,8 +189,11 @@
 
             <div class="compact-section margin-top-1">
                 <div class="header-line">
-                    <span class="heading-medium">Users </span><div class="number-circle">{{organisation.users|length}}</div>
-                    {% if organisation.users|length > 0 %}<a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span class="visually-hidden">Expand case list</span></a>{% endif %}
+                    <span class="heading-medium">Users </span>
+                    <div class="number-circle">{{ organisation.users|length }}</div>
+                    {% if organisation.users|length > 0 %}
+                        <a href="javascript:void(0)" class="expander pull-right" data-attach="ExpandCollapse"><span
+                                class="visually-hidden">Expand case list</span></a>{% endif %}
                 </div>
                 <div class="party-details expand-section">
                     <ul class="contact-list">
@@ -177,9 +207,15 @@
             </div>
 
             <div class="pull-right margin-top-1">
-                <form action="/organisations/{% if case %}case/{{case.id}}/organisation/{% endif %}{{organisation.id}}/delete/" method="post">
+                <form action="/organisations/{% if case %}case/{{ case.id }}/organisation/{% endif %}{{ organisation.id }}/delete/"
+                      method="post">
                     {% csrf_token %}
-                    <button type="submit" value="delete" class="button button-red" {% if organisation.users|length > 0 %}disabled{% endif %} data-handler="clickConfirm" data-title="Confirm delete" data-message="Are you sure you want to delete this empty party?<br>This action cannot be undone.">Delete party</button>
+                    <button type="submit" value="delete" class="button button-red"
+                            {% if organisation.users|length > 0 %}disabled{% endif %} data-handler="clickConfirm"
+                            data-title="Confirm delete"
+                            data-message="Are you sure you want to delete this empty party?<br>This action cannot be undone.">
+                        Delete party
+                    </button>
                 </form>
             </div>
 
