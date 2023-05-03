@@ -67,9 +67,6 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["case_id"] = self.kwargs["case_id"]
-        context["organisations"] = self.client.organisations(
-            fields=["name", "address", "post_code", "companies_house_id"]
-        )
         return context
 
     def get_next_url(self, form=None):

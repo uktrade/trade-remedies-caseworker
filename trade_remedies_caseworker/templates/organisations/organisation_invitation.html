@@ -28,17 +28,10 @@
                     {% endfor %}
                 </p>
             {% endif %}
-            <select class="govuk-select" name="search-reg-org" id="company_search_container">
-                <option value=""></option>
-
-                {% for org in organisations %}
-                    <option value={{ org.id }}>
-                        {{ org.name }}{% if org.companies_house_id %} ({{ org.companies_house_id }}){% endif %}</option>
-                {% endfor %}
-            </select>
+            <div id="company_search_container"></div>
         </div>
     {% endwith %}
-
+    <input type="hidden" name="organisation_id" id="organisation_id" value="">
     <div style="display:none;" id="selected_company_wrapper">
         <div class="govuk-inset-text" id="selected_company"></div>
     </div>
@@ -52,48 +45,47 @@
 <!-- Function accessibleAutocomplete below is from https://alphagov.github.io/accessible-autocomplete/ -->
 
 {% block scripts %}
-    <script src="{% static 'v2/js/accessible-autocomplete.js' %}"></script>
+    <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
     <script type="text/javascript">
-        accessibleAutocomplete.enhanceSelectElement({
-            autoselect: true,
-            confirmOnBlur: false,
-            minLength: 3,
-            name: "input-autocomplete",
+        let proposed_names = {};
+        accessibleAutocomplete({
+            element: document.querySelector("#company_search_container"),
             placeholder: "Search",
-            selectElement: document.querySelector('#company_search_container'),
+            id: "my-autocomplete",
+            autoselect: true,
+            minLength: 3,
+            source: function (query, populateResults) {
+                $.ajax({
+                    url: `/organisationname/search?term=${query}&ignore_case_count=yes`,
+                    success: function (data) {
+                        if (data.organisations) {
+                            let names = data.organisations.map(result => `${result.name} (${result.companies_house_id})`);
+                            proposed_names = Object.fromEntries(data.organisations.map(result => [`${result.name} (${result.companies_house_id})`, result]));
+                            populateResults(names);
+                        } else {
+                        }
+                    }
+                })
+            },
             onConfirm: function (confirmed_name) {
-                if (typeof (confirmed_name) != "undefined") {
+                "use strict";
+
+                if (typeof (confirmed_name) !== "undefined") {
                     const selected_company_wrapper = $('#selected_company_wrapper');
                     const selected_company = $('#selected_company');
 
-                    {% for org in organisations %}
-                        if (confirmed_name.replace(/\s\(.+?\)/, "").trim() === "{{ org.name }}") {
-                            let company = {name: "", id: "", address: "", post_code: ""}
+                    if (confirmed_name in proposed_names) {
+                        let company_data = proposed_names[confirmed_name];
 
-                            {% if org.name is not None %}company["name"] = "{{ org.name }}"{% endif %}
-                            {% if org.companies_house_id is not None %}
-                                company["id"] = "({{ org.companies_house_id }})"
-                            {% endif %}
-                            {% if org.address is not None %}company["address"]
-                                = "{{ org.address|linebreaks|striptags }},"{% endif %}  //PS-IGNORE
-                            {% if org.post_code is not None %}company["post_code"] = "{{ org.post_code }}"{% endif %}
+                        $('[name=company_data]').val(JSON.stringify(company_data));
 
-                            $("#organisation-invite-form").submit(function () {
-                                $("<input />").attr("type", "hidden")
-                                    .attr("name", "organisation_id")
-                                    .attr("value", "{{ org.id }}")
-                                    .appendTo($(this));
-                            });
-
-                            selected_company_wrapper.show();
-                            selected_company.text(`${company.name} ${company.id} ${company.address} ${company.post_code}`);
-
-                            return true
-                        }
-                    {% endfor %}
-
+                        selected_company_wrapper.show();
+                        selected_company.text(`${company_data.name} (${company_data.companies_house_id}) ${company_data.address}`);
+                        $('#organisation_id').val(company_data.id);
+                        return true;
+                    }
                     selected_company_wrapper.hide();
-                    selected_company.text('')
+                    selected_company.text('');
                 }
             }
         })

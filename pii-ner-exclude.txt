@@ -1,3 +1,6 @@
+id="company_search_container"></div
+id="organisation_id
+{result.name
 cases_idx.false|length
 href="/case/{{ request.session.case_id }
 submission_id
