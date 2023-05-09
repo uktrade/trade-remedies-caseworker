@@ -253,7 +253,8 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                     "organisation_security_group": SECURITY_GROUP_ORGANISATION_OWNER
                     if self.request.session.get("new_contact", False)
                     else SECURITY_GROUP_ORGANISATION_USER,
-                }
+                },
+                fields=["id"]
             )
             new_invitation.send()
         return redirect(self.get_next_url())
