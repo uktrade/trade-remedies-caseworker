@@ -254,7 +254,7 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                     if self.request.session.get("new_contact", False)
                     else SECURITY_GROUP_ORGANISATION_USER,
                 },
-                fields=["id"]
+                fields=["id"],
             )
             new_invitation.send()
         return redirect(self.get_next_url())
@@ -286,4 +286,4 @@ class OrganisationInviteCompleteView(BaseOrganisationInviteView):
         return context
 
     def get_next_url(self, form=None):
-        return f'/case/{self.kwargs["case_id"]}/'
+        return f'/case/{self.kwargs["case_id"]}/parties/'
