@@ -28,11 +28,18 @@
                     href="{% url 'verify_organisation_task_list' invitation_id=invitation_id %}">
                     Review representative invite
                 </a>
-            {% elif request.session.organisation_id and request.session.case_id %}
-                <a class="govuk-button" data-module="govuk-button"
-                    href="/case/{{ request.session.case_id }}/organisation/{{ request.session.organisation_id }}/">
-                    Back to organisation
-                </a>
+            {% elif request.session.organisation_id %}
+                {% if request.session.case_id %}
+                    <a class="govuk-button" data-module="govuk-button"
+                        href="/case/{{ request.session.case_id }}/organisation/{{ request.session.organisation_id }}/">
+                        Back to organisation
+                    </a>
+                {% else %}
+                    <a class="govuk-button" data-module="govuk-button"
+                        href="/organisation/{{ request.session.organisation_id }}/">
+                        Back to organisation
+                    </a>
+                {% endif %}
             {% endif %}
         </div>
     </div>

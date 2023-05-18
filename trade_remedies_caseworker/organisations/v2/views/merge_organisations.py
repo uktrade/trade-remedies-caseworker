@@ -113,10 +113,10 @@ class ReviewMatchingOrganisationsView(BaseMergeOrganisationsTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if "case_id" in self.request.GET and "organisation_id" in self.request.GET:
-            self.request.session["case_id"] = self.request.GET["case_id"]
+        if "organisation_id" in self.request.GET:
             self.request.session["organisation_id"] = self.request.GET["organisation_id"]
-            self.request.session.modified = True
+        if "case_id" in self.request.GET:
+            self.request.session["case_id"] = self.request.GET["case_id"]
 
         organisation_merge_record_id = self.kwargs.get("organisation_merge_record_id")
         organisation_merge_record = self.client.organisation_merge_records(
@@ -521,6 +521,7 @@ class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
             self.request.session["submission_id"] = self.somr.submission.id
             self.request.session["invitation_id"] = invitation.id
             self.request.session["came_from_invitation"] = True
+
         return redirect(
             reverse(
                 "organisations:submission_merge_organisations_merge_complete",
