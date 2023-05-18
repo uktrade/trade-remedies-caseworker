@@ -51,7 +51,7 @@
                         {% endif %}
 
                         <ul class="govuk-pagination__list">
-                            {% if show_elipses %}
+                            {% if show_ellipses %}
                                 {# there are too many potential duplicates, show elipses in the list #}
                                 {% for page in pages %}
                                     {% if page == "..." %}
@@ -146,6 +146,9 @@
                     {% endif %}>
                     Continue review
                 </a>
+                {% if registration_of_interest %}
+                    <a class="govuk-link govuk-link--no-visited-state" href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">Back to registration of interest</a>
+                {% endif %}
             </div>
         </div>
     </div>

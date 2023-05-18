@@ -2,7 +2,11 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from config.base_views import BaseCaseWorkerTemplateView, BaseCaseWorkerView, FormInvalidMixin
-from core.constants import SECURITY_GROUPS_TRA_ADMINS
+from core.constants import (
+    SECURITY_GROUPS_TRA_ADMINS,
+    SUBMISSION_TYPE_REGISTER_INTEREST,
+    SUBMISSION_TYPE_THIRD_PARTY,
+)
 from organisations.v2.forms import (
     CancelMergeForm,
     ChooseCorrectCaseRoleForm,
@@ -149,7 +153,7 @@ class ReviewMatchingOrganisationsView(BaseMergeOrganisationsTemplateView):
 
         no_of_duplicates = len(organisation_merge_record.potential_duplicates)
         if no_of_duplicates >= 7:
-            context["show_elipses"] = True
+            context["show_ellipses"] = True
             # if there's more than 6 matches, paginate the results
             if current_duplicate_index == 0:
                 # we're the start of the list
@@ -184,6 +188,13 @@ class ReviewMatchingOrganisationsView(BaseMergeOrganisationsTemplateView):
                 "organisations:merge_organisations_review_potential_duplicates_landing",
                 kwargs={"invitation_id": invitation_id},
             )
+
+        if submission_id := self.kwargs.get("submission_id"):
+            submission = self.client.submissions(submission_id, fields=["type", "case"])
+            if submission.type.id == SUBMISSION_TYPE_REGISTER_INTEREST:
+                # this is an ROI, we want to show the 'return to registration of interest' link
+                context["registration_of_interest"] = True
+                context["submission"] = submission
 
         return context
 
@@ -508,19 +519,24 @@ class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
 
     def form_valid(self, form):
         # let's merge the organisations
-        self.client.organisation_merge_records(
+        """self.client.organisation_merge_records(
             self.organisation_merge_record.id
-        ).merge_organisations()
+        ).merge_organisations()"""
         self.request.session["confirmed_duplicates"] = bool(self.confirmed_duplicates)
         if somr := getattr(self, "somr", None):
             somr.update({"status": "complete"})
-            invitation = self.client.invitations(
-                submission_id=self.somr.submission.id, fields=["id"]
-            )[0]
             self.request.session["case_id"] = self.somr.submission.case.id
             self.request.session["submission_id"] = self.somr.submission.id
-            self.request.session["invitation_id"] = invitation.id
-            self.request.session["came_from_invitation"] = True
+
+            submission = self.client.submissions(self.somr.submission.id, fields=["type", "case"])
+            if submission.type.id == SUBMISSION_TYPE_REGISTER_INTEREST:
+                self.request.session["came_from_roi"] = True
+            elif submission.type.id == SUBMISSION_TYPE_THIRD_PARTY:
+                invitation = self.client.invitations(
+                    submission_id=self.somr.submission.id, fields=["id"]
+                )[0]
+                self.request.session["invitation_id"] = invitation.id
+                self.request.session["came_from_invitation"] = True
         return redirect(
             reverse(
                 "organisations:submission_merge_organisations_merge_complete",
@@ -546,8 +562,9 @@ class CancelMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        if submission_id := self.kwargs.get("submission_id"):
-            self.client.organisation_merge_records(self.somr.organisation_merge_record.id).reset()
+        self.client.organisation_merge_records(self.kwargs["organisation_merge_record_id"]).reset()
+        if self.kwargs.get("submission_id"):
+            # this merge journey is part of a submission
             self.somr.update({"status": "complete"})
             return redirect(
                 reverse(
@@ -556,9 +573,6 @@ class CancelMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
                 )
             )
         else:
-            self.client.organisation_merge_records(
-                self.kwargs["organisation_merge_record_id"]
-            ).reset()
             return redirect(
                 reverse(
                     "organisations:merge_organisations_review_matching_organisations",

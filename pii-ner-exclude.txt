@@ -1,3 +1,5 @@
+registration_of_interest
+caserole.approved_at
 id="company_search_container"></div
 id="organisation_id
 {result.name
