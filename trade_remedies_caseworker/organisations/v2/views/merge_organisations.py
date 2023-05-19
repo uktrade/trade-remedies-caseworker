@@ -247,7 +247,7 @@ class BaseDifferencesView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
             identical_fields = self.duplicate_organisation_merge.identical_fields
         else:
             phantom_parent_organisation_and_identical_fields = (
-                self.client.organisation_merge_records(
+                self.call_client(timeout=40).organisation_merge_records(
                     self.duplicate_organisation_merge.merge_record,
                 ).get_draft_merged_selections(
                     current_duplicate_id=self.duplicate_organisation_merge.id
@@ -398,7 +398,7 @@ class SelectCorrectCaseRoleView(BaseMergeOrganisationsTemplateView, FormInvalidM
         self.client.organisation_merge_records(self.kwargs["organisation_merge_record_id"]).update(
             {"chosen_case_roles_delimited": f"{chosen_case_role.id}*-*{chosen_case_role.case.id}"}
         )
-        return redirect(self.construct_next_url("submission_merge_organisations_review"))
+        return redirect(self.construct_next_url("merge_organisations_review"))
 
 
 class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
