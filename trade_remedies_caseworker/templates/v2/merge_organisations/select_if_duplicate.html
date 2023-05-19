@@ -11,9 +11,10 @@
             <h1 class="govuk-heading-xl">
                 Select if duplicate
                 {# we don't want to show the brackets (1 out of 3) if there is only 1 duplicate, same for the table below #}
-                {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}(
-                    {{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of
-                    {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
+                {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                    ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of
+                    {{ duplicate_organisation_merge.order_in_parent.1 }})
+                {% endif %}
             </h1>
         </div>
     </div>
@@ -29,9 +30,10 @@
                         <th scope="col" class="govuk-table__header">Selected organisation</th>
                         <th scope="col" class="govuk-table__header">
                             Matching organisation
-                            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}(
-                                {{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of
-                                {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
+                            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                                ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of
+                                {{ duplicate_organisation_merge.order_in_parent.1 }})
+                            {% endif %}
                         </th>
                     </tr>
                 </thead>
