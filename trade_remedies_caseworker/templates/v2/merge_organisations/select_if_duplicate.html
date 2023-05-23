@@ -11,7 +11,10 @@
             <h1 class="govuk-heading-xl">
                 Select if duplicate
                 {# we don't want to show the brackets (1 out of 3) if there is only 1 duplicate, same for the table below #}
-                {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
+                {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                    ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of
+                    {{ duplicate_organisation_merge.order_in_parent.1 }})
+                {% endif %}
             </h1>
         </div>
     </div>
@@ -27,7 +30,10 @@
                         <th scope="col" class="govuk-table__header">Selected organisation</th>
                         <th scope="col" class="govuk-table__header">
                             Matching organisation
-                            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of {{ duplicate_organisation_merge.order_in_parent.1 }}){% endif %}
+                            {% if duplicate_organisation_merge.order_in_parent.1 != 1 %}
+                                ({{ duplicate_organisation_merge.order_in_parent.0|add:1 }} of
+                                {{ duplicate_organisation_merge.order_in_parent.1 }})
+                            {% endif %}
                         </th>
                     </tr>
                 </thead>
@@ -146,8 +152,13 @@
                     <button class="govuk-button" data-module="govuk-button">
                         Save and continue
                     </button>
-                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:merge_organisations_exit_merge_process' submission_organisation_merge_record_id=submission_organisation_merge_record_id %}">
-                        Exit
+                    <a class="govuk-link govuk-link--no-visited-state"
+                        {% if "submission_id" in request.resolver_match.kwargs %}
+                            href="{% url 'organisations:submission_merge_organisations_exit_merge_process' submission_id=request.resolver_match.kwargs.submission_id organisation_merge_record_id=request.resolver_match.kwargs.organisation_merge_record_id %}"
+                        {% else %}
+                            href="{% url 'organisations:merge_organisations_exit_merge_process' organisation_merge_record_id=request.resolver_match.kwargs.organisation_merge_record_id %}"
+                        {% endif %}
+                    >Exit
                     </a>
                 </div>
             </form>

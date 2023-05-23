@@ -1926,6 +1926,11 @@ class CaseOrganisationView(CaseBaseView):
         invites = self._client.get_contact_case_invitations(
             self.case_id,
         )
+
+        v2_client = TRSAPIClient(token=self.request.user.token)
+        pending_potential_duplicates = v2_client.organisations(
+            self.organisation_id
+        ).find_similar_organisations()["pending_potential_duplicates"]
         return {
             "case": self.case,
             "invites": invites,
@@ -1936,6 +1941,7 @@ class CaseOrganisationView(CaseBaseView):
             "user_cases": user_cases,
             "roi_app_submission": roi_app_submission,
             "caserole": caserole,
+            "potential_duplicates": pending_potential_duplicates,
         }
 
 

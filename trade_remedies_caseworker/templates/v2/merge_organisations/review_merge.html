@@ -58,7 +58,12 @@
                         Submit
                     </button>
                     <a class="govuk-link govuk-link--no-visited-state"
-                        href="{% url 'organisations:cancel_organisation_merge' submission_organisation_merge_record_id=submission_organisation_merge_record.id %}">Cancel</a>
+                        {% if "submission_id" in request.resolver_match.kwargs %}
+                            href="{% url 'organisations:submission_cancel_organisation_merge' submission_id=submission_id organisation_merge_record_id=organisation_merge_record.id %}"
+                        {% else %}
+                            href="{% url 'organisations:cancel_organisation_merge' organisation_merge_record_id=organisation_merge_record.id %}"
+                        {% endif %}
+                    >Cancel</a>
                 </div>
             </form>
 
@@ -79,8 +84,12 @@
                         Merge organisations
                     </button>
                     <a class="govuk-link govuk-link--no-visited-state"
-                        href="{% url 'organisations:cancel_organisation_merge' submission_organisation_merge_record_id=submission_organisation_merge_record.id %}">Cancel
-                        merge</a>
+                        {% if "submission_id" in request.resolver_match.kwargs %}
+                            href="{% url 'organisations:submission_cancel_organisation_merge' submission_id=submission_id organisation_merge_record_id=organisation_merge_record.id %}"
+                        {% else %}
+                            href="{% url 'organisations:cancel_organisation_merge' organisation_merge_record_id=organisation_merge_record.id %}"
+                        {% endif %}
+                    >Cancel merge</a>
                 </div>
             </form>
         {% endif %}

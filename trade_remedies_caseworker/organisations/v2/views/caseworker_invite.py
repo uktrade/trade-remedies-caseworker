@@ -67,9 +67,6 @@ class OrganisationInviteView(BaseOrganisationInviteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["case_id"] = self.kwargs["case_id"]
-        context["organisations"] = self.client.organisations(
-            fields=["name", "address", "post_code", "companies_house_id"]
-        )
         return context
 
     def get_next_url(self, form=None):
@@ -256,7 +253,8 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                     "organisation_security_group": SECURITY_GROUP_ORGANISATION_OWNER
                     if self.request.session.get("new_contact", False)
                     else SECURITY_GROUP_ORGANISATION_USER,
-                }
+                },
+                fields=["id"],
             )
             new_invitation.send()
         return redirect(self.get_next_url())
@@ -288,4 +286,4 @@ class OrganisationInviteCompleteView(BaseOrganisationInviteView):
         return context
 
     def get_next_url(self, form=None):
-        return f'/case/{self.kwargs["case_id"]}/'
+        return f'/case/{self.kwargs["case_id"]}/parties/'
