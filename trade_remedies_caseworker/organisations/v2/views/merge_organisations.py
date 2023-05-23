@@ -113,10 +113,10 @@ class ReviewMatchingOrganisationsView(BaseMergeOrganisationsTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if "case_id" in self.request.GET and "organisation_id" in self.request.GET:
-            self.request.session["case_id"] = self.request.GET["case_id"]
+        if "organisation_id" in self.request.GET:
             self.request.session["organisation_id"] = self.request.GET["organisation_id"]
-            self.request.session.modified = True
+        if "case_id" in self.request.GET:
+            self.request.session["case_id"] = self.request.GET["case_id"]
 
         organisation_merge_record_id = self.kwargs.get("organisation_merge_record_id")
         organisation_merge_record = self.client.organisation_merge_records(
@@ -247,9 +247,11 @@ class BaseDifferencesView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
             identical_fields = self.duplicate_organisation_merge.identical_fields
         else:
             phantom_parent_organisation_and_identical_fields = (
-                self.client.organisation_merge_records(
+                self.call_client(timeout=40)
+                .organisation_merge_records(
                     self.duplicate_organisation_merge.merge_record,
-                ).get_draft_merged_selections(
+                )
+                .get_draft_merged_selections(
                     current_duplicate_id=self.duplicate_organisation_merge.id
                 )
             )
@@ -398,16 +400,7 @@ class SelectCorrectCaseRoleView(BaseMergeOrganisationsTemplateView, FormInvalidM
         self.client.organisation_merge_records(self.kwargs["organisation_merge_record_id"]).update(
             {"chosen_case_roles_delimited": f"{chosen_case_role.id}*-*{chosen_case_role.case.id}"}
         )
-
-        return redirect(
-            reverse(
-                "organisations:submission_merge_organisations_review",
-                kwargs={
-                    "submission_id": self.kwargs["submission_id"],
-                    "organisation_merge_record_id": self.kwargs["organisation_merge_record_id"],
-                },
-            )
-        )
+        return redirect(self.construct_next_url("merge_organisations_review"))
 
 
 class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
@@ -458,15 +451,7 @@ class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
                         each for each in duplicate_case["role_ids"]
                     )
                     return redirect(
-                        reverse(
-                            "organisations:submission_merge_organisations_choose_correct_case_role",
-                            kwargs={
-                                "submission_id": self.kwargs["submission_id"],
-                                "organisation_merge_record_id": self.kwargs[
-                                    "organisation_merge_record_id"
-                                ],
-                            },
-                        )
+                        self.construct_next_url("merge_organisations_choose_correct_case_role")
                         + f"?case_role_ids={case_role_ids}"
                     )
         return super().dispatch(request, *args, **kwargs)
@@ -521,6 +506,7 @@ class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
             self.request.session["submission_id"] = self.somr.submission.id
             self.request.session["invitation_id"] = invitation.id
             self.request.session["came_from_invitation"] = True
+
         return redirect(
             reverse(
                 "organisations:submission_merge_organisations_merge_complete",
