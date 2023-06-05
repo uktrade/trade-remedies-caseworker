@@ -8,7 +8,15 @@
 
 {% block main_content %}
     <div id="party-details-page" class="margin-top-1">
-
+        {% if pending_potential_duplicates %}
+            <div class="warning">
+                <span>There are duplicate versions of this party.</span>
+                <a type="button" class="button compact pull-right button-blue"
+                    href="{% url 'organisations:merge_organisations_review_matching_organisations' organisation_merge_record_id=organisation.id %}?organisation_id={{ organisation.id }}"
+                    data-event-refresh="party-updated">View/merge duplicates
+                </a>
+            </div>
+        {% endif %}
         {% include 'organisations/_party_details.html' with party=party %}
         <div class="compact-section margin-top-1">
             <div class="header-line">

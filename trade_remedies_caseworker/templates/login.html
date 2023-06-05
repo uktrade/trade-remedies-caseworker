@@ -7,6 +7,11 @@
 {% endblock %}
 
 {% block main_content %}
+    {% if request.GET.logged_out_by_other_session %}
+        <div class="govuk-inset-text" style="color:red;">
+            You have been signed out due to activity on another device.
+        </div>
+    {% endif %}
     {% if form_errors.error_summaries %}
         {% for error in form_errors.error_summaries %}
             <a href="#{{ error.0 }}"><span class="error-message">{{ error.1 }}</span></a>

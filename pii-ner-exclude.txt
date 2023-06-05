@@ -1,3 +1,40 @@
+{{ duplicate_organisation_merge.order_in_parent.0|add:1
+contact_email_read_only
+{sampled_str}'
+f"/case/{case_id}/parties?alert={alert
+{{party.name}
+organisation_id=
+id="company_search_container"></div
+id="organisation_id
+{result.name
+cases_idx.false|length
+href="/case/{{ request.session.case_id }
+submission_id
+request.session["user"]["email
+" Django settings for config project..
+Django 2.0.1
+https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+IpWhitelister
+BACKEND
+db.sqlite3
+VCAP_SERVICES
+RedisCache
+DefaultClient
+http://localhost:8000
+boto3
+S3 Root
+ClamAVFileUploadHandler
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+Order
+MAX FILE
+ROOT_LOG_LEVEL
+AutoField
+GOOGLE_ANALYTICS_TAG_MANAGER_ID
 function(){return function(n){var
 o.m=n
 n})},o.r
@@ -224,6 +261,8 @@ aria-describedby="unverfied-reason-info
 } - Trade Remedies Service - GOV.UK</title
 {{case.reference}} - {{ case.name }
 {{ contact.name
+f"We
+{{
 case_id>/
 {{ forward_button_text }
 {{ block.super }
@@ -478,7 +517,7 @@ Admin
 name="security_group
 admin_debug_tools_create_new_user
 Create new contact{%
-merge_organisations_select_differences_looper
+submission_merge_organisations_select_differences_looper
 aria-label="Page
 4.2926 4.293h-12.986v2h12.896l-4.1855
 Complete{%
