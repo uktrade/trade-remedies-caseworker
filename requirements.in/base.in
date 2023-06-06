@@ -1,7 +1,7 @@
 git+https://github.com/uktrade/trade-remedies-client.git@master#trade-remedies-client
 git+https://github.com/uktrade/trs_v2_api_client.git@master#egg=v2_api_client
 
-Django==3.2.18
+Django==3.2.19
 Markdown==2.6.11
 boto3==1.17.89
 certifi>=2022.12.07
@@ -24,7 +24,7 @@ dpath==1.4.2
 openpyxl==3.0.10
 pytz
 redis==4.4.4
-requests==2.25.1
+requests==2.31.0
 sentry-sdk==1.14.0
 sqlparse==0.4.4
 urllib3==1.26.11

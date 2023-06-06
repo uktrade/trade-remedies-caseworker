@@ -276,6 +276,11 @@ urlpatterns += [
         name="merge_organisations_choose_correct_case_role",
     ),
     path(
+        "merge_organisations/choose_correct_case_role/" "<uuid:organisation_merge_record_id>/",
+        merge_organisations.SelectCorrectCaseRoleView.as_view(),
+        name="merge_organisations_choose_correct_case_role",
+    ),
+    path(
         "submission/<uuid:submission_id>/merge_organisations/review_merge/"
         "<uuid:organisation_merge_record_id>/",
         merge_organisations.ReviewMergeView.as_view(),

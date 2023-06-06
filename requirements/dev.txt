@@ -41,7 +41,7 @@ certifi==2022.12.7
     #   sentry-sdk
 cfgv==3.3.1
     # via pre-commit
-chardet==4.0.0
+charset-normalizer==3.1.0
     # via requests
 click==8.0.4
     # via
@@ -62,7 +62,7 @@ deprecation==2.1.0
     # via pikepdf
 distlib==0.3.4
     # via virtualenv
-django==3.2.18
+django==3.2.19
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -284,7 +284,7 @@ redis==4.4.4
     # via
     #   -r requirements.in/base.in
     #   django-redis
-requests==2.25.1
+requests==2.31.0
     # via
     #   -r requirements.in/base.in
     #   api-client

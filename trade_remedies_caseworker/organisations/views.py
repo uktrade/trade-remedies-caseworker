@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from django_countries import countries
 from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from v2_api_client.client import TRSAPIClient
 
 from core.base import FeatureFlagMixin
 from core.constants import (
@@ -149,6 +150,11 @@ class OrganisationView(BaseOrganisationTemplateView):
         users = self._client.get_organisation_users(organisation_id)
         cases_idx = deep_index_items_by_exists(cases, "archived_at")
         organisation.update({"users": users})
+
+        v2_client = TRSAPIClient(token=self.request.user.token)
+        pending_potential_duplicates = v2_client.organisations(
+            organisation_id
+        ).find_similar_organisations()["pending_potential_duplicates"]
         return render(
             request,
             self.template_name,
@@ -157,6 +163,7 @@ class OrganisationView(BaseOrganisationTemplateView):
                 "organisation": organisation,
                 "party": organisation,
                 "cases_idx": cases_idx,
+                "pending_potential_duplicates": pending_potential_duplicates,
             },
         )
 
