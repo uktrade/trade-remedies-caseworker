@@ -151,7 +151,7 @@ class OrganisationView(BaseOrganisationTemplateView):
         cases_idx = deep_index_items_by_exists(cases, "archived_at")
         organisation.update({"users": users})
 
-        v2_client = TRSAPIClient(token=self.request.user.token, timeout=50)
+        v2_client = TRSAPIClient(token=self.request.user.token)
         pending_potential_duplicates = v2_client.organisations(
             organisation_id
         ).find_similar_organisations()["pending_potential_duplicates"]
