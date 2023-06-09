@@ -30,7 +30,7 @@
                 </a>
             {% elif request.session.came_from_roi %}
                 <a class="govuk-button" data-module="govuk-button"
-                    href="/case/{{ request.session.case_id }}/submission/{{ request.session.submission_id }}/">
+                    href="/case/{{ request.session.case_id }}/submission/{{ request.session.submission_id }}/?open_verification_modal=yes">
                     Review registration of interest
                 </a>
             {% elif request.session.organisation_id %}

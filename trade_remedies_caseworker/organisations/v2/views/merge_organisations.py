@@ -80,26 +80,42 @@ class ReviewPotentialDuplicatesLanding(BaseMergeOrganisationsTemplateView):
 class ExitMergeOrganisationsView(BaseMergeOrganisationsView):
     def get(self, request, *args, **kwargs):
         if submission_id := self.kwargs.get("submission_id"):
-            submission_organisation_merge_record = (
-                self.client.submission_organisation_merge_records(submission_id)
-            )
             # if there's only 1 duplicate, update the status of the SubmissionMergeRecord
             # to 'not_started'
             organisation_merge_record = self.client.organisation_merge_records(
                 self.kwargs["organisation_merge_record_id"]
             )
-            if len(organisation_merge_record.potential_duplicates) == 1:
-                submission_organisation_merge_record.update({"status": "not_started"})
-            invitation_id = self.client.invitations(
-                submission_id=submission_organisation_merge_record.submission.id,
-                fields=["id"],
-            )[0].id
-            return redirect(
-                reverse(
-                    "organisations:merge_organisations_review_potential_duplicates_landing",
-                    kwargs={"invitation_id": invitation_id},
+            submission_organisation_merge_record = (
+                self.client.submission_organisation_merge_records(
+                    submission_id,
+                    params={"organisation_id": organisation_merge_record.parent_organisation.id},
                 )
             )
+            if len(organisation_merge_record.potential_duplicates) == 1:
+                submission_organisation_merge_record.update({"status": "not_started"})
+
+            submission = self.client.submissions(
+                submission_organisation_merge_record.submission.id,
+                fields=["id", "case", "type"]
+            )
+            if submission.type.id == SUBMISSION_TYPE_THIRD_PARTY:
+                invitation_id = self.client.invitations(
+                    submission_id=submission.id,
+                    fields=["id"],
+                )[0].id
+                return redirect(
+                    reverse(
+                        "organisations:merge_organisations_review_potential_duplicates_landing",
+                        kwargs={"invitation_id": invitation_id},
+                    )
+                )
+            elif submission.type.id == SUBMISSION_TYPE_REGISTER_INTEREST:
+                return redirect(
+                    reverse(
+                        "organisations:submission_merge_organisations_review_matching_organisations",
+                        kwargs={"submission_id": submission.id, "organisation_merge_record_id": organisation_merge_record.id},
+                    )
+                )
         else:
             return redirect(
                 reverse(
@@ -224,6 +240,7 @@ class SelectDifferencesLooperView(BaseMergeOrganisationsView):
             # 'in progress'
             somr = self.client.submission_organisation_merge_records(
                 submission_id,
+                params={"organisation_id": organisation_merge_record.parent_organisation.id},
             )
             somr.update({"status": "in_progress"})
 
@@ -433,6 +450,7 @@ class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
         if submission_id := self.kwargs.get("submission_id"):
             self.somr = self.client.submission_organisation_merge_records(
                 submission_id,
+                params={"organisation_id": self.kwargs["organisation_merge_record_id"]},
             )
             if self.somr.status == "complete":
                 # if the merge is complete, redirect to the invitation verification page
@@ -504,9 +522,9 @@ class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
 
     def form_valid(self, form):
         # let's merge the organisations
-        """self.client.organisation_merge_records(
+        self.client.organisation_merge_records(
             self.organisation_merge_record.id
-        ).merge_organisations()"""
+        ).merge_organisations()
         self.request.session["confirmed_duplicates"] = bool(self.confirmed_duplicates)
         if somr := getattr(self, "somr", None):
             somr.update({"status": "complete"})
@@ -535,15 +553,22 @@ class CancelMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if submission_id := self.kwargs.get("submission_id"):
-            self.somr = self.client.submission_organisation_merge_records(submission_id)
-            self.invitation = self.client.invitations(submission_id=submission_id, fields=["id"])[0]
-            if self.somr.status == "complete":
-                return redirect(
-                    reverse(
-                        "verify_organisation_task_list",
-                        kwargs={"invitation_id": self.invitation.id},
+            self.somr = self.client.submission_organisation_merge_records(
+                submission_id,
+                params={"organisation_id": self.kwargs["organisation_merge_record_id"]}
+            )
+            submission = self.client.submissions(submission_id, fields=["type", "case"])
+            if submission.type.id == SUBMISSION_TYPE_THIRD_PARTY:
+                self.invitation = self.client.invitations(submission_id=submission_id, fields=["id"])[0]
+                if self.somr.status == "complete":
+                    return redirect(
+                        reverse(
+                            "verify_organisation_task_list",
+                            kwargs={"invitation_id": self.invitation.id},
+                        )
                     )
-                )
+            elif submission.type.id == SUBMISSION_TYPE_REGISTER_INTEREST:
+                return redirect(f"/case/{submission.case.id}/submission/{submission_id}/")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
