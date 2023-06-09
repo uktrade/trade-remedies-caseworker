@@ -247,7 +247,7 @@ class BaseDifferencesView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
             identical_fields = self.duplicate_organisation_merge.identical_fields
         else:
             phantom_parent_organisation_and_identical_fields = (
-                self.call_client(timeout=40)
+                self.call_client(timeout=50)
                 .organisation_merge_records(
                     self.duplicate_organisation_merge.merge_record,
                 )
