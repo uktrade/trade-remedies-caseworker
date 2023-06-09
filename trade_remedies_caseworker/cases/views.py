@@ -1927,7 +1927,7 @@ class CaseOrganisationView(CaseBaseView):
             self.case_id,
         )
 
-        v2_client = TRSAPIClient(token=self.request.user.token)
+        v2_client = TRSAPIClient(token=self.request.user.token, timeout=50)
         pending_potential_duplicates = v2_client.organisations(
             self.organisation_id
         ).find_similar_organisations()["pending_potential_duplicates"]
