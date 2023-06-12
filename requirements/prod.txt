@@ -34,10 +34,6 @@ charset-normalizer==3.1.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
-deprecation==2.1.0
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   pikepdf
 django==3.2.19
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -82,7 +78,9 @@ django-ipware==3.0.7
     #   django-audit-log-middleware
     #   django-log-formatter-ecs
 django-log-formatter-ecs==0.0.5
-    # via -r requirements.in/../requirements/base.txt
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   v2-api-client
 django-redis==5.2.0
     # via -r requirements.in/../requirements/base.txt
 django-session-timeout==0.0.3
@@ -125,7 +123,6 @@ kubi-ecs-logger==0.1.0
 lxml==4.9.2
     # via
     #   -r requirements.in/../requirements/base.txt
-    #   pikepdf
     #   v2-api-client
 markdown==2.6.11
     # via -r requirements.in/../requirements/base.txt
@@ -141,23 +138,10 @@ openpyxl==3.0.10
     # via
     #   -r requirements.in/../requirements/base.txt
     #   v2-api-client
-packaging==23.0
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   deprecation
-    #   pikepdf
 phonenumbers==8.13.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   v2-api-client
-pikepdf==7.1.1
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   v2-api-client
-pillow==9.4.0
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   pikepdf
 pyheck==0.1.5
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -209,7 +193,7 @@ urllib3==1.26.11
     #   botocore
     #   requests
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@feature/trsv2-597/caseworker-roi-merge-process
     # via -r requirements.in/../requirements/base.txt
 waitress==2.1.2
     # via -r requirements.in/../requirements/base.txt

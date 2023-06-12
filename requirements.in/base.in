@@ -1,5 +1,5 @@
 git+https://github.com/uktrade/trade-remedies-client.git@master#trade-remedies-client
-git+https://github.com/uktrade/trs_v2_api_client.git@master#egg=v2_api_client
+git+https://github.com/uktrade/trs_v2_api_client.git@feature/trsv2-597/caseworker-roi-merge-process#egg=v2_api_client
 
 Django==3.2.19
 Markdown==2.6.11
