@@ -1396,19 +1396,15 @@ class SubmissionVerifyViewTasks(SubmissionVerifyBaseView):
             case_id=case_id, organisation_id=get(submission, "organisation/id")
         )
         v2_client = TRSAPIClient(token=self.request.user.token)
-        interested_party_somr = (
-            v2_client.submission_organisation_merge_records(
-                submission_id,
-                params={"organisation_id": organisation_id},
-            )
+        interested_party_somr = v2_client.submission_organisation_merge_records(
+            submission_id,
+            params={"organisation_id": organisation_id},
         )
         if submission["organisation"]["id"] != submission["contact"]["organisation"]["id"]:
             # this is a representative ROI
-            representative_somr = (
-                v2_client.submission_organisation_merge_records(
-                    submission_id,
-                    params={"organisation_id": submission["contact"]["organisation"]["id"]},
-                )
+            representative_somr = v2_client.submission_organisation_merge_records(
+                submission_id,
+                params={"organisation_id": submission["contact"]["organisation"]["id"]},
             )
         else:
             # it's an interested party ROI
