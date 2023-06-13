@@ -19,7 +19,7 @@
                 {% if thirdparty %}
                     <div class="info narrow">
                         <p>A third party user <strong class="bold">{{ submission.contact.name }}</strong> from <strong
-                                class="bold">{{ contact_org.name }}</strong> is applying to join the case.</p>
+                            class="bold">{{ contact_org.name }}</strong> is applying to join the case.</p>
                         <p>They are applying on behalf of <strong class="bold">{{ party.name }}</strong></p>
                     </div>
                 {% else %}
@@ -104,11 +104,11 @@
                 {% if interested_party_submission_organisation_merge_record %}
                     {% if interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates or interested_party_submission_organisation_merge_record.status == "complete" %}
                         <li class="task-list-item edit-item">
-                            {% if interested_party_submission_organisation_merge_record.status == "codmplete" %}
+                            {% if interested_party_submission_organisation_merge_record.status == "complete" %}
                                 Resolve matches for {{ submission.organisation.name }}
                             {% else %}
                                 <a class="link"
-                                   href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=interested_party_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
+                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=interested_party_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
                                     matches for {{ submission.organisation.name }}</a>
                             {% endif %}
                             <div class="pull-right state-container">
@@ -131,7 +131,7 @@
                                 matches for {{ submission.contact.organisation.name }}
                             {% else %}
                                 <a class="link"
-                                   href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=representative_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
+                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=representative_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
                                     matches for {{ submission.contact.organisation.name }}</a>
                             {% endif %}
                             <div class="pull-right state-container">
