@@ -1,4 +1,3 @@
-
 {% load to_json %}
 {% load text_element %}
 
@@ -11,19 +10,23 @@
             {% set 'thirdparty' False %}
         {% endif %}
         <div class="form-group">
-            <h2 class="heading-large"><span class="heading-secondary">{{submission.type.name}}</span>Approve user and organisation into case</h2>
+            <h2 class="heading-large"><span class="heading-secondary">{{ submission.type.name }}</span>Approve user and
+                organisation into case</h2>
         </div>
         {% set 'party' submission.organisation %}
         <div class="grid-row">
             <div class="column-full">
                 {% if thirdparty %}
                     <div class="info narrow">
-                        <p>A third party user <strong class="bold">{{submission.contact.name}}</strong> from <strong class="bold">{{contact_org.name}}</strong> is applying to join the case.</p>
-                        <p>They are applying on behalf of <strong class="bold">{{party.name}}</strong></p>
+                        <p>A third party user <strong class="bold">{{ submission.contact.name }}</strong> from <strong
+                            class="bold">{{ contact_org.name }}</strong> is applying to join the case.</p>
+                        <p>They are applying on behalf of <strong class="bold">{{ party.name }}</strong></p>
                     </div>
                 {% else %}
                     <div class="info narrow">
-                        <p>An organisation user <strong class="bold">{{submission.created_by.name}}</strong> is applying for <strong class="bold">{{submission.organisation.name}}</strong> to participate in the case.</p>
+                        <p>An organisation user <strong class="bold">{{ submission.created_by.name }}</strong> is
+                            applying for <strong class="bold">{{ submission.organisation.name }}</strong> to participate
+                            in the case.</p>
                     </div>
                 {% endif %}
             </div>
@@ -41,7 +44,6 @@
                     {% set 'loa_state' 'complete' %}
                 {% endif %}
 
-
                 {% if submission.deficiency_notice_params.merge_complete %}
                     {% set 'merge_state' 'complete' %}
                 {% elif org_matches|length <= 1 %}
@@ -54,7 +56,6 @@
                     {% set 'org_verify_state' 'in-progress' %}
                 {% elif submission.deficiency_notice_params.org_verify == 'rejected' %}
                     {% set 'org_verify_state' 'complete' %}
-                    {% set 'verify_disabled' True %}
                     {% set 'approve_disabled' True %}
                 {% else %}
                     {% set 'approve_disabled' True %}
@@ -88,15 +89,70 @@
                     {% set 'notify_disabled' False %}
                 {% endif %}
 
+                {% set 'verify_disabled' False %}
+                {% if representative_submission_organisation_merge_record and representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates and representative_submission_organisation_merge_record.status != "complete" %}
+                    {% set 'verify_disabled' True %}
+                {% endif %}
+
+                {% if interested_party_submission_organisation_merge_record and interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates and interested_party_submission_organisation_merge_record.status != "complete" %}
+                    {% set 'verify_disabled' True %}
+                {% endif %}
+
+
                 {% include "cases/verify/taskline.html" with  state=loa_state label='Enter Letter of authority contact details' function_name='LoaDetails' %}
-                {% include "cases/verify/taskline.html" with  state=merge_state label='View/merge duplicate organisations' function_name='mergeOrganisation' disabled=merge_disabled %}
-                {% include "cases/verify/taskline.html" with  state=contact_org_verify_state label=rep_verify_label function_name='verifyContactOrganisation' %}
+
+                {% if interested_party_submission_organisation_merge_record %}
+                    {% if interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates or interested_party_submission_organisation_merge_record.status == "complete" %}
+                        <li class="task-list-item edit-item">
+                            {% if interested_party_submission_organisation_merge_record.status == "complete" %}
+                                Resolve matches for {{ submission.organisation.name }}
+                            {% else %}
+                                <a class="link"
+                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=interested_party_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
+                                    matches for {{ submission.organisation.name }}</a>
+                            {% endif %}
+                            <div class="pull-right state-container">
+                                {% if interested_party_submission_organisation_merge_record.status == 'complete' %}
+                                    <strong class="task-completed">Completed</strong>
+                                {% elif interested_party_submission_organisation_merge_record.status == 'in_progress' %}
+                                    <strong class="task-completed progress">In progress</strong>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endif %}
+
+
+                {% if representative_submission_organisation_merge_record %}
+                    {% if representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates or representative_submission_organisation_merge_record.status == "complete" %}
+                        <li class="task-list-item edit-item">
+                            {% if representative_submission_organisation_merge_record.status == "complete" %}
+                                Resolve
+                                matches for {{ submission.contact.organisation.name }}
+                            {% else %}
+                                <a class="link"
+                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=representative_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
+                                    matches for {{ submission.contact.organisation.name }}</a>
+                            {% endif %}
+                            <div class="pull-right state-container">
+                                {% if representative_submission_organisation_merge_record.status == 'complete' %}
+                                    <strong class="task-completed">Completed</strong>
+                                {% elif representative_submission_organisation_merge_record.status == 'in_progress' %}
+                                    <strong class="task-completed progress">In progress</strong>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endif %}
+
+
+                {% include "cases/verify/taskline.html" with  state=contact_org_verify_state label=rep_verify_label function_name='verifyContactOrganisation' disabled=verify_disabled %}
                 {% include "cases/verify/taskline.html" with  state=org_verify_state label=org_verify_label function_name='verifyOrganisation' disabled=verify_disabled %}
                 {% include "cases/verify/taskline.html" with  state=approve_state label='Choose to accept into case' function_name='acceptToCase' disabled=approve_disabled %}
                 {% include "cases/verify/taskline.html" with  state=notify_state label='Notify contact' function_name='notify' disabled=notify_disabled %}
             </ul>
             <div class="button-group form-group margin-top-1 {% if not lastpage %}editing{% else %} issuing{% endif %}">
-                <button class="button button-grey pull-right dlg-close" >Exit</button>
+                <button class="button button-grey pull-right dlg-close">Exit</button>
             </div>
         </div>
         <div class="edit-page">
