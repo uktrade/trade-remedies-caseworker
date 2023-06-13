@@ -95,8 +95,7 @@ class ExitMergeOrganisationsView(BaseMergeOrganisationsView):
                 submission_organisation_merge_record.update({"status": "not_started"})
 
             submission = self.client.submissions(
-                submission_organisation_merge_record.submission.id,
-                fields=["id", "case", "type"]
+                submission_organisation_merge_record.submission.id, fields=["id", "case", "type"]
             )
             if submission.type.id == SUBMISSION_TYPE_THIRD_PARTY:
                 invitation_id = self.client.invitations(
@@ -112,8 +111,12 @@ class ExitMergeOrganisationsView(BaseMergeOrganisationsView):
             elif submission.type.id == SUBMISSION_TYPE_REGISTER_INTEREST:
                 return redirect(
                     reverse(
-                        "organisations:submission_merge_organisations_review_matching_organisations",
-                        kwargs={"submission_id": submission.id, "organisation_merge_record_id": organisation_merge_record.id},
+                        "organisations:submission_merge_organisations_"
+                        "review_matching_organisations",
+                        kwargs={
+                            "submission_id": submission.id,
+                            "organisation_merge_record_id": organisation_merge_record.id,
+                        },
                     )
                 )
         else:
@@ -275,7 +278,7 @@ class BaseDifferencesView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
             identical_fields = self.duplicate_organisation_merge.identical_fields
         else:
             phantom_parent_organisation_and_identical_fields = (
-                self.call_client(timeout=40)
+                self.call_client(timeout=50)
                 .organisation_merge_records(
                     self.duplicate_organisation_merge.merge_record,
                 )
@@ -555,11 +558,13 @@ class CancelMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
         if submission_id := self.kwargs.get("submission_id"):
             self.somr = self.client.submission_organisation_merge_records(
                 submission_id,
-                params={"organisation_id": self.kwargs["organisation_merge_record_id"]}
+                params={"organisation_id": self.kwargs["organisation_merge_record_id"]},
             )
             submission = self.client.submissions(submission_id, fields=["type", "case"])
             if submission.type.id == SUBMISSION_TYPE_THIRD_PARTY:
-                self.invitation = self.client.invitations(submission_id=submission_id, fields=["id"])[0]
+                self.invitation = self.client.invitations(
+                    submission_id=submission_id, fields=["id"]
+                )[0]
                 if self.somr.status == "complete":
                     return redirect(
                         reverse(
