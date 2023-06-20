@@ -1,3 +1,9 @@
+ORGANISATION_ADMIN
+TaskManager
+request.session.came_from_adhoc_merge %
+ORGANISATION_ADMIN
+TaskManager
+request.session.came_from_adhoc_merge %
 Underscore.js 1.9.2
 n="object"==typeof self&&self.self===self&&self||"object"==typeof
 Symbol?Symbol.prototype

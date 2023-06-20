@@ -1,7 +1,12 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from organisations.v2.views import caseworker_invite, edit_organisation, merge_organisations
+from organisations.v2.views import (
+    caseworker_invite,
+    edit_organisation,
+    merge_organisations,
+    adhoc_organisation_merge,
+)
 from organisations.views import (
     ContactDeleteView,
     ContactFormView,
@@ -306,5 +311,15 @@ urlpatterns += [
         "submission/merge_organisations/merge_complete/",
         TemplateView.as_view(template_name="v2/merge_organisations/merge_complete.html"),
         name="submission_merge_organisations_merge_complete",
+    ),
+]
+
+
+# Adhoc Merge Organisations
+urlpatterns += [
+    path(
+        "adhoc_organisation_merge/start/",
+        adhoc_organisation_merge.StartView.as_view(),
+        name="adhoc_organisation_merge_start",
     ),
 ]

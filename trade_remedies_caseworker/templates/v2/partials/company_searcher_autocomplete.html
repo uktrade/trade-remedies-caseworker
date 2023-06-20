@@ -1,0 +1,26 @@
+{% load get_item %}
+
+{% with form_errors|get_item:id as error %}
+    <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--{{ label_size }}" for="search-reg-org">
+                {{ label }}
+            </label>
+        </h1>
+        <div id="sort-hint" class="govuk-hint">
+            Enter an organisation name or registration number.
+        </div>
+        {% if error %}
+            <p id="uk_employer-error" class="govuk-error-message">
+                {% for error in error %}
+                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                {% endfor %}
+            </p>
+        {% endif %}
+        <div id="{{ id }}_autocomplete"></div>
+    </div>
+{% endwith %}
+<input type="hidden" name="{{ id }}" id="{{ id }}" value="">
+<div style="display:none;" id="{{ id }}_selected_wrapper">
+    <div class="govuk-inset-text" id="{{ id }}_selected"></div>
+</div>

@@ -28,6 +28,13 @@
                     href="{% url 'verify_organisation_task_list' invitation_id=invitation_id %}">
                     Review representative invite
                 </a>
+            {% elif request.session.came_from_adhoc_merge %}
+                <div class="govuk-button-group">
+                    <a class="govuk-button" data-module="govuk-button" href="/">
+                        Return to dashboard
+                    </a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:adhoc_organisation_merge_start' %}">Merge two organisations</a>
+                </div>
             {% elif request.session.came_from_roi %}
                 <a class="govuk-button" data-module="govuk-button"
                     href="/case/{{ request.session.case_id }}/submission/{{ request.session.submission_id }}/?open_verification_modal=yes">

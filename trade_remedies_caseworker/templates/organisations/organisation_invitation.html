@@ -46,48 +46,8 @@
 
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
+    <script src="{% static 'v2/js/company_searcher_autocomplete.js' %}"></script>
     <script type="text/javascript">
-        let proposed_names = {};
-        accessibleAutocomplete({
-            element: document.querySelector("#company_search_container"),
-            placeholder: "Search",
-            id: "my-autocomplete",
-            autoselect: true,
-            minLength: 3,
-            source: function (query, populateResults) {
-                $.ajax({
-                    url: `/organisationname/search?term=${query}&ignore_case_count=yes`,
-                    success: function (data) {
-                        if (data.organisations) {
-                            let names = data.organisations.map(result => `${result.name} (${result.companies_house_id})`);
-                            proposed_names = Object.fromEntries(data.organisations.map(result => [`${result.name} (${result.companies_house_id})`, result]));
-                            populateResults(names);
-                        } else {
-                        }
-                    }
-                })
-            },
-            onConfirm: function (confirmed_name) {
-                "use strict";
-
-                if (typeof (confirmed_name) !== "undefined") {
-                    const selected_company_wrapper = $('#selected_company_wrapper');
-                    const selected_company = $('#selected_company');
-
-                    if (confirmed_name in proposed_names) {
-                        let company_data = proposed_names[confirmed_name];
-
-                        $('[name=company_data]').val(JSON.stringify(company_data));
-
-                        selected_company_wrapper.show();
-                        selected_company.text(`${company_data.name} (${company_data.companies_house_id}) ${company_data.address}`);
-                        $('#organisation_id').val(company_data.id);
-                        return true;
-                    }
-                    selected_company_wrapper.hide();
-                    selected_company.text('');
-                }
-            }
-        })
+        initialise_company_searcher($('#company_search_container'), $('#selected_company_wrapper'), $('#selected_company'), $('#organisation_id'));
     </script>
 {% endblock %}
