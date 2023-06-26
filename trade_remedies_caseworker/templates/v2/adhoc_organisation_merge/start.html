@@ -38,5 +38,13 @@
     <script type="text/javascript">
         initialise_company_searcher($('#organisation_1_autocomplete'), $('#organisation_1_selected_wrapper'), $('#organisation_1_selected'), $('#organisation_1'));
         initialise_company_searcher($('#organisation_2_autocomplete'), $('#organisation_2_selected_wrapper'), $('#organisation_2_selected'), $('#organisation_2'));
+
+        // Set the exclude value for the other org when one is selected
+        $('#organisation_1').change(function () {
+            $('#organisation_2_exclude').val($(this).val())
+        })
+        $('#organisation_2').change(function () {
+            $('#organisation_1_exclude').val($(this).val())
+        })
     </script>
 {% endblock scripts %}

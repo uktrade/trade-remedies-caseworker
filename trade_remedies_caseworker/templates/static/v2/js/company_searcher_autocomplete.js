@@ -9,8 +9,15 @@ function initialise_company_searcher(company_search_container, selected_company_
         autoselect: true,
         minLength: 3,
         source: function (query, populateResults) {
+            // Construct the URL to search for companies
+            // If there is an exclude_id, then we want to exclude that company from the search results
+            let url = `/organisationname/search?term=${query}&ignore_case_count=yes`
+            if ($(`#${selected_company_hidden_input.attr("id")}_exclude`).length){
+                url = `/organisationname/search?term=${query}&ignore_case_count=yes&exclude_id=${$(`#${selected_company_hidden_input.attr("id")}_exclude`).val()}`
+            }
+
             $.ajax({
-                url: `/organisationname/search?term=${query}&ignore_case_count=yes`,
+                url: url,
                 success: function (data) {
                     if (data.organisations) {
                         let names = data.organisations.map(result => `${result.name} (${result.companies_house_id})`);
@@ -27,7 +34,7 @@ function initialise_company_searcher(company_search_container, selected_company_
                     let company_data = proposed_names[confirmed_name];
                     selected_company_wrapper.show();
                     selected_company.text(`${company_data.name} (${company_data.companies_house_id}) ${company_data.address}`);
-                    selected_company_hidden_input.val(company_data.id);
+                    selected_company_hidden_input.val(company_data.id).trigger("change");
                     return true;
                 }
                 selected_company_wrapper.hide();
