@@ -23,11 +23,7 @@ class StartView(FormInvalidMixin, BaseCaseWorkerView):
                 "organisations:merge_organisations_select_differences",
                 kwargs={
                     "organisation_merge_record_id": omr["id"],
-                    "duplicate_organisation_merge_id": omr.potential_duplicates[
-                        0
-                    ][
-                        "id"
-                    ],
+                    "duplicate_organisation_merge_id": omr.potential_duplicates[0]["id"],
                 },
             )
         )
