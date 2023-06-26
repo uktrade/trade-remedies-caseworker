@@ -66,7 +66,7 @@
                     {% if "Super User" in user.groups and admin_debug_tools_enabled %}
                         <li><a href="{% url 'admin_debug_tools_landing' %}">Admin debug tools</a></li>
                     {% endif %}
-                    {% if "Lead Investigator" in request.user.groups %}
+                    {% if can_adhoc_merge %}
                         <li><a href="{% url 'organisations:adhoc_organisation_merge_start' %}">Merge two organisations</a></li>
                     {% endif %}
                 </ul>

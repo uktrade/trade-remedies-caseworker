@@ -2,12 +2,14 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from config.base_views import BaseCaseWorkerView, FormInvalidMixin
+from core.constants import SECURITY_GROUPS_TRA_ADMINS
 from organisations.v2.forms import AdhocMergeForm
 
 
 class StartView(FormInvalidMixin, BaseCaseWorkerView):
     template_name = "v2/adhoc_organisation_merge/start.html"
     form_class = AdhocMergeForm
+    groups_required = SECURITY_GROUPS_TRA_ADMINS
 
     def form_valid(self, form):
         omr = self.client.organisation_merge_records.adhoc_merge(
