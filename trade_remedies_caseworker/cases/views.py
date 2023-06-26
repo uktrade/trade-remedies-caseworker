@@ -153,6 +153,7 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
         users_groups = set(request.user.groups)
         allowed_groups = set(SECURITY_GROUPS_TRA_TOP_ADMINS)
         can_navigate = bool(users_groups.intersection(allowed_groups))
+        can_adhoc_merge = bool(users_groups.intersection(SECURITY_GROUPS_TRA_ADMINS))
         for case in cases:
             case["can_navigate"] = can_navigate or case.get("user_case", False)
 
@@ -166,6 +167,7 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                 "cases": cases,
                 "tabs": tabs,
                 "admin_debug_tools_enabled": settings.ADMIN_DEBUG_TOOLS_ENABLED,
+                "can_adhoc_merge": can_adhoc_merge,
             },
         )
 

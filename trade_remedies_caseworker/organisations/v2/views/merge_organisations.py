@@ -525,7 +525,7 @@ class ReviewMergeView(BaseMergeOrganisationsTemplateView, FormInvalidMixin):
 
     def form_valid(self, form):
         # let's merge the organisations
-        self.client.organisation_merge_records(
+        self.call_client(timeout=60).organisation_merge_records(
             self.organisation_merge_record.id
         ).merge_organisations()
         self.request.session["confirmed_duplicates"] = bool(self.confirmed_duplicates)

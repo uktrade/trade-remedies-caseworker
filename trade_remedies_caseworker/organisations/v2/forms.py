@@ -69,3 +69,12 @@ class ChooseCorrectCaseRoleForm(ValidationForm):
         required=True,
         error_messages={"required": "is_matching_organisation_a_duplicate_no_selection"},
     )
+
+
+class AdhocMergeForm(ValidationForm):
+    organisation_1 = forms.UUIDField(
+        required=True, error_messages={"required": "companies_house_not_searched"}
+    )
+    organisation_2 = forms.UUIDField(
+        required=True, error_messages={"required": "companies_house_not_searched"}
+    )
