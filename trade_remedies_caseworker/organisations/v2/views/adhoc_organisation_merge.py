@@ -18,12 +18,13 @@ class StartView(FormInvalidMixin, BaseCaseWorkerView):
         )
         self.request.session["came_from_adhoc_merge"] = True
 
+        duplicate_organisation_merge_id = omr.potential_duplicates[0]["id"]
         return redirect(
             reverse(
                 "organisations:merge_organisations_select_differences",
                 kwargs={
                     "organisation_merge_record_id": omr["id"],
-                    "duplicate_organisation_merge_id": omr.potential_duplicates[0]["id"],
+                    "duplicate_organisation_merge_id": duplicate_organisation_merge_id,
                 },
             )
         )
