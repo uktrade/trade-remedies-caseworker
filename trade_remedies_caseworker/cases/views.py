@@ -1395,7 +1395,20 @@ class SubmissionVerifyViewTasks(SubmissionVerifyBaseView):
         caserole = self._client.get_organisation_case_role(
             case_id=case_id, organisation_id=get(submission, "organisation/id")
         )
-        org_matches = self._client.get_organisation_matches(organisation_id, with_details="none")
+        v2_client = TRSAPIClient(token=self.request.user.token)
+        interested_party_somr = v2_client.submission_organisation_merge_records(
+            submission_id,
+            params={"organisation_id": organisation_id},
+        )
+        if submission["organisation"]["id"] != submission["contact"]["organisation"]["id"]:
+            # this is a representative ROI
+            representative_somr = v2_client.submission_organisation_merge_records(
+                submission_id,
+                params={"organisation_id": submission["contact"]["organisation"]["id"]},
+            )
+        else:
+            # it's an interested party ROI
+            representative_somr = None
 
         return render(
             request,
@@ -1404,7 +1417,8 @@ class SubmissionVerifyViewTasks(SubmissionVerifyBaseView):
                 "submission": submission,
                 "organisation": organisation,
                 "caserole": caserole,
-                "org_matches": org_matches,
+                "interested_party_submission_organisation_merge_record": interested_party_somr,
+                "representative_submission_organisation_merge_record": representative_somr,
                 "page_data": {
                     "submission": submission,
                     "organisation": organisation,
@@ -1927,7 +1941,7 @@ class CaseOrganisationView(CaseBaseView):
             self.case_id,
         )
 
-        v2_client = TRSAPIClient(token=self.request.user.token)
+        v2_client = TRSAPIClient(token=self.request.user.token, timeout=50)
         pending_potential_duplicates = v2_client.organisations(
             self.organisation_id
         ).find_similar_organisations()["pending_potential_duplicates"]

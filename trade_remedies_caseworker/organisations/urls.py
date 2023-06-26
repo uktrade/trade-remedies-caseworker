@@ -213,7 +213,7 @@ urlpatterns += [
         name="submission_merge_organisations_review_matching_organisations",
     ),
     path(
-        "merge_organisations/review_matching_organisations/" "<uuid:organisation_merge_record_id>/",
+        "merge_organisations/review_matching_organisations/<uuid:organisation_merge_record_id>/",
         merge_organisations.ReviewMatchingOrganisationsView.as_view(),
         name="merge_organisations_review_matching_organisations",
     ),

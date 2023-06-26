@@ -14,6 +14,7 @@ define(["modules/helpers", "modules/popUps", "modules/Events"], function (
     this.target_block = target_block && $(target_block);
     this.update_event = this.el.attr("data-event-update");
     this.refresh_event = this.el.attr("data-event-refresh");
+    this.open_by_detault = this.el.attr("data-open-by-default");
     if (this.refresh_event) {
       new Events().listen(this.refresh_event, _.bind(this.loadContent, this));
     }
@@ -24,6 +25,9 @@ define(["modules/helpers", "modules/popUps", "modules/Events"], function (
     }
     if (this.url || this.element) {
       el.on("click", _.bind(onClick, this));
+        if (this.open_by_detault) {
+          this.openWindow();
+        }
     } else {
       console.error("Modal url not found", el);
     }

@@ -58,8 +58,6 @@ cycler==0.11.0
     # via matplotlib
 decorator==5.1.1
     # via ipython
-deprecation==2.1.0
-    # via pikepdf
 distlib==0.3.4
     # via virtualenv
 django==3.2.19
@@ -105,7 +103,9 @@ django-ipware==3.0.7
     #   django-audit-log-middleware
     #   django-log-formatter-ecs
 django-log-formatter-ecs==0.0.5
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   v2-api-client
 django-redis==5.2.0
     # via -r requirements.in/base.in
 django-session-timeout==0.0.3
@@ -157,9 +157,7 @@ kiwisolver==1.4.0
 kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 lxml==4.9.2
-    # via
-    #   pikepdf
-    #   v2-api-client
+    # via v2-api-client
 markdown==2.6.11
     # via -r requirements.in/base.in
 markupsafe==2.1.2
@@ -186,9 +184,7 @@ openpyxl==3.0.10
     #   v2-api-client
 packaging==21.3
     # via
-    #   deprecation
     #   matplotlib
-    #   pikepdf
     #   pytest
 parse==1.19.0
     # via
@@ -208,12 +204,8 @@ phonenumbers==8.13.7
     # via v2-api-client
 pickleshare==0.7.5
     # via ipython
-pikepdf==7.1.1
-    # via v2-api-client
 pillow==9.3.0
-    # via
-    #   matplotlib
-    #   pikepdf
+    # via matplotlib
 pip-tools==6.5.1
     # via -r requirements.in/dev.in
 platformdirs==2.5.1
