@@ -65,8 +65,9 @@ class OrganisationNameSearch(TemplateView, LoginRequiredMixin, APIClientMixin):
     def get(self, request, *args, **kwargs):
         query = request.GET.get("term")
         case_id = request.GET.get("case_id", "")
+        exclude_id = request.GET.get("exclude_id", "")
         results = self.client.organisations.get_organisations_by_company_name(
-            query, case_id=case_id
+            query, case_id=case_id, exclude_id=exclude_id
         )
         if request.GET.get("ignore_case_count"):
             organisations = {"organisations": [each.data_dict for each in results]}
