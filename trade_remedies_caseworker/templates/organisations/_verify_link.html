@@ -30,7 +30,7 @@ this organisation in the case
                 {% endif %}
                 <div class="warning">
                     <span>The verification process for this party is not yet complete.</span>
-                    <button type="button" class="button compact pull-right button-blue modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/verify_caserole_tasks/">Verification process</button>
+                    <button type="button" {% if request.GET.open_verification_modal == "yes" %}data-open-by-default="true"{% endif %} class="button compact pull-right button-blue modal-form" data-url="/case/{{case.id}}/organisation/{{organisation.id}}/verify_caserole_tasks/">Verification process</button>
                 </div>
             {% endif %}
         </div>

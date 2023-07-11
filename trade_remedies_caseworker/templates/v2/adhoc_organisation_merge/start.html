@@ -1,0 +1,50 @@
+{% extends "v2/govuk/base.html" %}
+
+{% load static %}
+
+{% block page_title %}Select two organisations to merge{% endblock page_title %}
+
+{% block extra_css %}
+    <link href="{% static 'v2/css/accessible-autocomplete.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post" id="merge-two-orgs-form">
+            {% csrf_token %}
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        Select two organisations to merge
+                    </h1>
+                </legend>
+                {% include "v2/partials/company_searcher_autocomplete.html" with id="organisation_1" label="Organisation 1" label_size="s" %}
+                {% include "v2/partials/company_searcher_autocomplete.html" with id="organisation_2" label="Organisation 2" label_size="s" %}
+            </fieldset>
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </div>
+        </form>
+    </div>
+
+{% endblock row_content %}
+
+{% block scripts %}
+    <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'v2/js/company_searcher_autocomplete.js' %}"></script>
+    <script type="text/javascript">
+        initialise_company_searcher($('#organisation_1_autocomplete'), $('#organisation_1_selected_wrapper'), $('#organisation_1_selected'), $('#organisation_1'));
+        initialise_company_searcher($('#organisation_2_autocomplete'), $('#organisation_2_selected_wrapper'), $('#organisation_2_selected'), $('#organisation_2'));
+
+        // Set the exclude value for the other org when one is selected
+        $('#organisation_1').change(function () {
+            $('#organisation_2_exclude').val($(this).val())
+        })
+        $('#organisation_2').change(function () {
+            $('#organisation_1_exclude').val($(this).val())
+        })
+    </script>
+{% endblock scripts %}
