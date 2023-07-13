@@ -2,14 +2,14 @@
 {% load set %}
 {% block case_page_content %}
     <form class="bundle-builder"
-        action="{% if submission.id %}/case/{{case_id}}/submission/{{submission.id}}/{% else %}/case/{{case_id}}/submission/create/{% endif %}?__prefix={{case_id}}"
+        action="{% if submission.id %}/case/{{ case_id }}/submission/{{ submission.id }}/{% else %}/case/{{ case_id }}/submission/create/{% endif %}?__prefix={{ case_id }}"
         method="POST"
         enctype="multipart/form-data"
         data-attach="BundleBuilder"
-        data-redirect="/case/{{case_id}}/submission/{{submission.id}}/"
-        data-case="{{case_id}}"
-        data-submission="{{submission.id}}"
-        data-organisation="{{organisation_id}}"
+        data-redirect="/case/{{ case_id }}/submission/{{ submission.id }}/"
+        data-case="{{ case_id }}"
+        data-submission="{{ submission.id }}"
+        data-organisation="{{ organisation_id }}"
         data-notify-url="/notify/">
         {% csrf_token %}
         {% set 'has_docs' documents.caseworker|length %}
@@ -61,23 +61,49 @@
         {% if not submission or submission.tra_editable %}
             <div class="button-group form-group margin-top-1 {% if not lastpage %}editing{% else %} {% if submission.type.key == 'public' %}publishing{% else %}issuing{% endif %}{% endif %}">
                 <span class="issue-button-group pull-left">
-                    <button class="button button-blue pull-left" data-notify="true" type="submit" name="btn-value" value="send" disabled="disabled">Send the {{submission_group_name}}</button>
+                    <button class="button button-blue pull-left" data-notify="true" type="submit" name="btn-value"
+                        value="send" disabled="disabled">Send the {{ submission_group_name }}</button>
                 </span>
                 <span class="publish-button-group pull-left">
-                    {% if user.permissions.publish_public %}<button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value" value="publish" disabled="disabled">Publish</button>{% endif %}
+                    {% if user.permissions.publish_public %}
+                        <button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value"
+                            value="publish" disabled="disabled">Publish</button>{% endif %}
                 </span>
                 <span class="edit-button-group pull-left">
-                    <button class="button button-blue" tabindex="0" type="submit" name="save" value="save" disabled="disabled">Save and continue</button>
+                    <button class="button button-blue" tabindex="0" type="submit" name="save" value="save"
+                        disabled="disabled">Save and continue</button>
                 </span>
-                <button type="button" id="modalButton" class="hidden modal-form" data-url="-" data-notify="/case/{{case.id}}/submission/{{submission.id}}/notify/"></button>
+                <button type="button" id="modalButton" class="hidden modal-form" data-url="-"
+                    data-notify="/case/{{ case.id }}/submission/{{ submission.id }}/notify/"></button>
                 {# discard button #}
                 {% if submission.id %}
-                    <button type="submit" class="button button-red pull-right margin-left-1" tabindex="1" name="btn-value" value="discard" title="Discard (delete) this draft submission"
-                        data-handler="clickConfirm" data-title="Confirm delete" data-message="Are you sure you want to delete this draft submission?<br>This action cannot be undone.">Discard</button>
+                    <button type="submit" class="button button-red pull-right margin-left-1" tabindex="1"
+                        name="btn-value" value="discard" title="Discard (delete) this draft submission"
+                        data-handler="clickConfirm" data-title="Confirm delete"
+                        data-message="Are you sure you want to delete this draft submission?<br>This action cannot be undone.">
+                        Discard
+                    </button>
                 {% endif %}
-                <button type="submit" name="btn-value" class="button button-grey pull-right" value="save-exit" title="Save any changes, then exit">Save and exit</button>
+                <button type="submit" name="btn-value" class="button button-grey pull-right" value="save-exit"
+                    title="Save any changes, then exit">Save and exit
+                </button>
             </div>
         {% endif %}
 
     </form>
 {% endblock %}
+
+{% block body_end %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#submissionType").change(function () {
+                if ($(this).val() === "34") {
+                    $("#interested_party_select_div").show()
+                } else {
+                    $("#interested_party_select_div").hide()
+                }
+            }).trigger("change")
+        })
+    </script>
+{% endblock body_end %}
