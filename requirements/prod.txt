@@ -34,7 +34,11 @@ charset-normalizer==3.1.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
-django==3.2.19
+deprecation==2.1.0
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   pikepdf
+django==3.2.20
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
@@ -123,6 +127,7 @@ kubi-ecs-logger==0.1.0
 lxml==4.9.2
     # via
     #   -r requirements.in/../requirements/base.txt
+    #   pikepdf
     #   v2-api-client
 markdown==2.6.11
     # via -r requirements.in/../requirements/base.txt
@@ -138,10 +143,23 @@ openpyxl==3.0.10
     # via
     #   -r requirements.in/../requirements/base.txt
     #   v2-api-client
+packaging==23.1
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   deprecation
+    #   pikepdf
 phonenumbers==8.13.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   v2-api-client
+pikepdf==8.1.1
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   v2-api-client
+pillow==10.0.0
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   pikepdf
 pyheck==0.1.5
     # via
     #   -r requirements.in/../requirements/base.txt
