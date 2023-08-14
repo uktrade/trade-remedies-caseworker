@@ -97,7 +97,7 @@ jmespath==0.10.0
     #   botocore
 kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
-lxml==4.9.2
+lxml==4.9.3
     # via
     #   pikepdf
     #   v2-api-client
@@ -112,10 +112,12 @@ openpyxl==3.0.10
     #   -r requirements.in/base.in
     #   v2-api-client
 packaging==23.1
-    # via pikepdf
-phonenumbers==8.13.7
+    # via
+    #   deprecation
+    #   pikepdf
+phonenumbers==8.13.18
     # via v2-api-client
-pikepdf==8.1.1
+pikepdf==8.3.2
     # via v2-api-client
 pillow==10.0.0
     # via pikepdf
@@ -162,7 +164,7 @@ urllib3==1.26.11
     #   botocore
     #   requests
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 waitress==2.1.2
     # via -r requirements.in/base.in
