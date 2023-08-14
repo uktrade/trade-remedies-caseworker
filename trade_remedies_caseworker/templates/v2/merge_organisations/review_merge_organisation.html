@@ -1,0 +1,99 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Verify parties on case{% endblock page_title %}
+{% block v1_caseworker_css %}{% endblock v1_caseworker_css %}
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">{{ invitation.case.reference }}: {{ invitation.case.name }}</span>
+        <h1 class="govuk-heading-xl">Representative invite</h1>
+        <div class="address-card">
+            <div class="address-container">
+                <div class="govuk-warning-text">
+                    <p class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong>
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            The organisation in this representative invite matches other organisations in our records.
+                        </strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <h2 class="govuk-heading-m" id="subsection-title">Review matching organisations</h2>
+        <p>Organisations are matching when one or more of their registered details are the same as another
+            organisation.</p>
+        <p>You need to check if they are duplicates before you can review this representative invite.</p>
+        <table class="govuk-table sortable mobile-table-border" id="table-header">
+            <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                A table listing all of the parties waiting to be verified
+            </caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Organisation
+                    </th>
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Matching organisations
+                    </th>
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                    </th>
+                    <th class="govuk-table__header">
+                        <span class="govuk-visually-hidden--desktop">Action:</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row no-border">
+                    <td class="govuk-table__cell text-overflow">
+                        <span class="govuk-visually-hidden--desktop">Organisation: </span><a
+                            href="{% url 'organisations:v1_view_organisation' organisation_id=invited_organisation.id %}"
+                            class="govuk-link--no-visited-state">{{ invited_organisation.name }}</a>
+                    </td>
+                    <td class="govuk-table__cell text-overflow">
+                        <span class="govuk-visually-hidden--desktop">Matches: </span>{{ organisation_merge_record.potential_duplicates|length }}
+                    </td>
+                    <td class="govuk-table__cell text-overflow">
+                        <span class="govuk-visually-hidden--desktop">Status: </span>
+                        {{ submission_organisation_merge_record.status_name }}
+                    </td>
+                    <td class="govuk-table__cell action">
+                        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=invitation.submission.id organisation_merge_record_id=organisation_merge_record.id %}">Select</a><a><span
+                            class="govuk-visually-hidden">{{ invited_organisation.name }}</span>
+                        </a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">Party details</h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <strong>Interested party</strong><br>
+                        <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.organisation.id %}"
+                            class="govuk-link--no-visited-state">{{ invitation.organisation_name }}</a><br>
+                        <a href="/users/cusomter/{{ invitation.created_by.id }}"
+                            data-url="/users/cusomter/{{ invitation.created_by.id }}"
+                            class="modal-form govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
+                    </li>
+                    <li>
+                        <strong>Representative </strong><br>
+                        <a href="{% url 'organisations:v1_view_organisation' organisation_id=invitation.contact.organisation %}"
+                            class="govuk-link--no-visited-state">{{ invitation.contact.organisation_name }}</a><br>
+                        <a href="/users/cusomter/{{ invitation.contact.user_id }}"
+                            data-url="/users/cusomter/{{ invitation.contact.user_id }}"
+                            class="modal-form govuk-link--no-visited-state">{{ invitation.contact.name }}</a>
+                    </li>
+                    <li>
+                        <strong>Submitted by</strong><br>
+                        <a href="/users/cusomter/{{ invitation.created_by.id }}"
+                            data-url="/users/cusomter/{{ invitation.created_by.id }}"
+                            class="modal-form govuk-link--no-visited-state">{{ invitation.created_by.name }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+{% endblock row_content %}

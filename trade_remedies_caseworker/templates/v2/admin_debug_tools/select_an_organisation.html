@@ -1,0 +1,25 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Select an Organisation{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Select an organisation</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="govuk-form-group">
+                <label class="govuk-label">
+                    Organisation
+                </label>
+                <select class="govuk-select" name="organisation">
+                    {% for organisation in organisations %}
+                        <option value="{{ organisation.id }}">{{ organisation.name }} - {{ organisation.id }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="govuk-button">Continue</button>
+        </form>
+    </div>
+{% endblock row_content %}

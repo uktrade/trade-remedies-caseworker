@@ -153,6 +153,7 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
         users_groups = set(request.user.groups)
         allowed_groups = set(SECURITY_GROUPS_TRA_TOP_ADMINS)
         can_navigate = bool(users_groups.intersection(allowed_groups))
+        can_adhoc_merge = bool(users_groups.intersection(SECURITY_GROUPS_TRA_ADMINS))
         for case in cases:
             case["can_navigate"] = can_navigate or case.get("user_case", False)
 
@@ -165,6 +166,8 @@ class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
                 "body_classes": body_class,
                 "cases": cases,
                 "tabs": tabs,
+                "admin_debug_tools_enabled": settings.ADMIN_DEBUG_TOOLS_ENABLED,
+                "can_adhoc_merge": can_adhoc_merge,
             },
         )
 
@@ -396,7 +399,6 @@ class CaseView(CaseBaseView):
     )
 
     def add_page_data(self):
-
         team = self._client.get_case_team_members(self.case_id)
         team_by_group = index_users_by_group([member.get("user") for member in team])
         group_order = [
@@ -471,9 +473,10 @@ class PartiesView(CaseBaseView):
             fields=[
                 "created_at",
                 "created_by",
-                "organisation",
+                "organisation_name",
                 "contact",
             ],
+            slim=True,
         )
         caseworker_invitations = sorted(
             caseworker_invitations, key=lambda x: x.created_at, reverse=True
@@ -1394,7 +1397,20 @@ class SubmissionVerifyViewTasks(SubmissionVerifyBaseView):
         caserole = self._client.get_organisation_case_role(
             case_id=case_id, organisation_id=get(submission, "organisation/id")
         )
-        org_matches = self._client.get_organisation_matches(organisation_id, with_details="none")
+        v2_client = TRSAPIClient(token=self.request.user.token)
+        interested_party_somr = v2_client.submission_organisation_merge_records(
+            submission_id,
+            params={"organisation_id": organisation_id},
+        )
+        if submission["organisation"]["id"] != submission["contact"]["organisation"]["id"]:
+            # this is a representative ROI
+            representative_somr = v2_client.submission_organisation_merge_records(
+                submission_id,
+                params={"organisation_id": submission["contact"]["organisation"]["id"]},
+            )
+        else:
+            # it's an interested party ROI
+            representative_somr = None
 
         return render(
             request,
@@ -1403,7 +1419,8 @@ class SubmissionVerifyViewTasks(SubmissionVerifyBaseView):
                 "submission": submission,
                 "organisation": organisation,
                 "caserole": caserole,
-                "org_matches": org_matches,
+                "interested_party_submission_organisation_merge_record": interested_party_somr,
+                "representative_submission_organisation_merge_record": representative_somr,
                 "page_data": {
                     "submission": submission,
                     "organisation": organisation,
@@ -1598,7 +1615,6 @@ class SubmissionVerifyNotify(SubmissionVerifyBaseView):
         )
 
     def post(self, request, case_id, organisation_id, *args, **kwargs):
-
         submission_id = self.get_submission_id(case_id=case_id, organisation_id=organisation_id)
         self._client.approve_submission(submission_id=submission_id)
         return HttpResponse(json.dumps({"result": True}))
@@ -1926,6 +1942,11 @@ class CaseOrganisationView(CaseBaseView):
         invites = self._client.get_contact_case_invitations(
             self.case_id,
         )
+
+        v2_client = TRSAPIClient(token=self.request.user.token, timeout=50)
+        pending_potential_duplicates = v2_client.organisations(
+            self.organisation_id
+        ).find_similar_organisations()["pending_potential_duplicates"]
         return {
             "case": self.case,
             "invites": invites,
@@ -1936,6 +1957,7 @@ class CaseOrganisationView(CaseBaseView):
             "user_cases": user_cases,
             "roi_app_submission": roi_app_submission,
             "caserole": caserole,
+            "potential_duplicates": pending_potential_duplicates,
         }
 
 

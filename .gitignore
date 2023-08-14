@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+*.env*
 env/
 build/
 develop-eggs/
@@ -102,7 +103,6 @@ ENV/
 
 # sqlite
 **/db_sqlite3
-**/db.sqlite3
 
 #sass compile cache
 .sass-cache/

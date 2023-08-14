@@ -14,7 +14,7 @@
     {% with form_errors.organisation_id as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
             <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--xl" for="search-reg-org">
+                <label class="govuk-label govuk-label--xl" for="organisation_id">
                     Which organisation do you want to invite?
                 </label>
             </h1>
@@ -28,16 +28,10 @@
                     {% endfor %}
                 </p>
             {% endif %}
-            <select class="govuk-select" name="search-reg-org" id="company_search_container">
-                <option value=""></option>
-
-                {% for org in organisations %}
-                    <option value={{ org.id }}>{{ org.name }}{% if org.companies_house_id %} ({{ org.companies_house_id }}){% endif %}</option>
-                {% endfor %}
-            </select>
+            <div id="company_search_container"></div>
         </div>
     {% endwith %}
-
+    <input type="hidden" name="organisation_id" id="organisation_id" value="">
     <div style="display:none;" id="selected_company_wrapper">
         <div class="govuk-inset-text" id="selected_company"></div>
     </div>
@@ -52,48 +46,8 @@
 
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
+    <script src="{% static 'v2/js/company_searcher_autocomplete.js' %}"></script>
     <script type="text/javascript">
-        accessibleAutocomplete.enhanceSelectElement({
-            autoselect: true,
-            confirmOnBlur: false,
-            minLength: 3,
-            name: "input-autocomplete",
-            placeholder: "Search",
-            selectElement: document.querySelector('#company_search_container'),
-            onConfirm: function (confirmed_name) {
-                if (typeof (confirmed_name) != "undefined") {
-                    const selected_company_wrapper = $('#selected_company_wrapper');
-                    const selected_company = $('#selected_company');
-
-                    {% for org in organisations %}
-                        if (confirmed_name.replace(/\s\(.+?\)/, "").trim() === "{{ org.name }}") {
-                            let company = { name: "", id: "", address: "", post_code: "" }
-
-                            {% if org.name is not None %}company["name"] = "{{ org.name }}"{% endif %}
-                            {% if org.companies_house_id is not None %}
-                                company["id"] = "({{ org.companies_house_id }})"
-                            {% endif %}
-                            {% if org.address is not None %}company["address"] = "{{ org.address|linebreaks|striptags }},"{% endif %}  //PS-IGNORE
-                            {% if org.post_code is not None %}company["post_code"] = "{{ org.post_code }}"{% endif %}
-
-                            $("#organisation-invite-form").submit(function () {
-                                $("<input />").attr("type", "hidden")
-                                    .attr("name", "organisation_id")
-                                    .attr("value", "{{ org.id }}")
-                                    .appendTo($(this));
-                            });
-
-                            selected_company_wrapper.show();
-                            selected_company.text(`${company.name} ${company.id} ${company.address} ${company.post_code}`);
-
-                            return true
-                        }
-                    {% endfor %}
-
-                    selected_company_wrapper.hide();
-                    selected_company.text('')
-                }
-            }
-        })
+        initialise_company_searcher($('#company_search_container'), $('#selected_company_wrapper'), $('#selected_company'), $('#organisation_id'));
     </script>
 {% endblock %}

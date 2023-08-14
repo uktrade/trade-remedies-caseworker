@@ -194,7 +194,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SECURE = env("SECURE_COOKIE", default=False)
 SESSION_EXPIRE_SECONDS = env("SESSION_LENGTH_MINUTES", default=30) * 60
-SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = env.bool("SESSION_EXPIRE_AFTER_LAST_ACTIVITY", default=True)
 CSRF_COOKIE_SECURE = env("SECURE_CSRF_COOKIE", default=False)
 CSRF_COOKIE_HTTPONLY = env("CSRF_COOKIE_HTTPONLY", default=False)
 SESSION_COOKIE_AGE = env("SESSION_LENGTH_MINUTES", default=30) * 60
@@ -238,9 +238,16 @@ CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
 FILE_UPLOAD_HANDLERS = (
+    "v2_api_client.shared.upload_handler.django_upload_handler.ExtractMetadataFileUploadHandler",
     "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 )  # Order is important
+
+# DEFAULT CHUNK SIZE OF 32 MB
+DEFAULT_CHUNK_SIZE = env.int("DEFAULT_CHUNK_SIZE", default=33554432)
+
+# MAX FILE SIZE OF 30 MB
+FILE_MAX_SIZE_BYTES = env.int("FILE_MAX_SIZE_BYTES", default=31457280)
 
 # Temporary basic auth
 BASICAUTH_USERS = {
@@ -363,3 +370,5 @@ COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
 
 GDS_DATETIME_STRING = "%d %b %Y at %-I:%M%p"
+
+ADMIN_DEBUG_TOOLS_ENABLED = env.bool("ADMIN_DEBUG_TOOLS_ENABLED", default=False)

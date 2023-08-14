@@ -1,0 +1,22 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Cancel merge{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Cancel merge
+        </h1>
+        <p>Are you sure you want to cancel this merge?</p>
+        <p>This will reset all of your selections, allowing you to start again.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="govuk-button-group">
+                <button class="govuk-button {% if forward_button_classes %}{{ forward_button_classes }}{% endif %}"
+                    data-module="govuk-button">
+                    Cancel merge
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock row_content %}

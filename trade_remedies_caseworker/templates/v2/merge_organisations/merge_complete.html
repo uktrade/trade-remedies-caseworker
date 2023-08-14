@@ -1,0 +1,59 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Matching organisations resolved{% endblock page_title %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block row_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Matching organisations resolved
+            </h1>
+        </div>
+        {% if request.session.confirmed_duplicates %}
+            <p>The duplicate organisations have been merged with the selected organisation.</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Cases are now registered under one organisation</li>
+                <li>Users are now registered under one organisation</li>
+                <li>Lead investigators assigned to the matching cases have been notified</li>
+            </ul>
+        {% else %}
+            <p>The matching organisation(s) have been marked as not duplicate with the selected organisation.</p>
+        {% endif %}
+        <div class="govuk-button-group">
+            {% if request.session.came_from_invitation %}
+                <a class="govuk-button" data-module="govuk-button"
+                    href="{% url 'verify_organisation_task_list' invitation_id=invitation_id %}">
+                    Review representative invite
+                </a>
+            {% elif request.session.came_from_adhoc_merge %}
+                <div class="govuk-button-group">
+                    <a class="govuk-button" data-module="govuk-button" href="/">
+                        Return to dashboard
+                    </a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'organisations:adhoc_organisation_merge_start' %}">Merge two organisations</a>
+                </div>
+            {% elif request.session.came_from_roi %}
+                <a class="govuk-button" data-module="govuk-button"
+                    href="/case/{{ request.session.case_id }}/submission/{{ request.session.submission_id }}/?open_verification_modal=yes">
+                    Review registration of interest
+                </a>
+            {% elif request.session.organisation_id %}
+                {% if request.session.case_id %}
+                    <a class="govuk-button" data-module="govuk-button"
+                        href="/case/{{ request.session.case_id }}/organisation/{{ request.session.organisation_id }}/">
+                        Back to organisation
+                    </a>
+                {% else %}
+                    <a class="govuk-button" data-module="govuk-button"
+                        href="/organisation/{{ request.session.organisation_id }}/">
+                        Back to organisation
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock row_content %}

@@ -6,8 +6,7 @@
     <head>
         {% block head %}
             <meta charset="utf-8">
-            <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - Trade
-                Remedies Service</title>
+            <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - Trade Remedies Service - GOV.UK</title>
             <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
             <meta name="theme-color" content="#0b0c0c">
 
@@ -25,7 +24,7 @@
                 href="{% static 'v2/assets/images/govuk-apple-touch-icon-152x152.png' %}">
             <link rel="apple-touch-icon" href="{% static 'v2/assets/images/govuk-apple-touch-icon.png' %}">
 
-            <link href="{% static 'javascripts/vendor/ui/jquery-ui.min.css' %}" media="screen" rel="stylesheet"/>
+            <link href="{% static 'v2/css/jquery-ui.min.css' %}" media="screen" rel="stylesheet"/>
 
             <!--[if IE 8]>
         <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
@@ -46,7 +45,7 @@
         {% endblock extra_css %}
     </head>
 
-    <body class="govuk-template__body cases-nav">
+    <body class="govuk-template__body caseworker-width">
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
         <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
@@ -214,9 +213,7 @@
             </footer>
 
             <script src="{% static 'v2/js/govuk-frontend-4.5.0.min.js' %}"></script>
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-                integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="  {# /PS-IGNORE #}
-                crossorigin="anonymous"></script>
+            <script src="{% static 'v2/js/jquery-3.7.0.min.js' %}"></script>
 
             <script type="text/javascript">
                 $(document).ready(function () {
@@ -234,6 +231,33 @@
                 })
             </script>
             {% block scripts %}{% endblock scripts %}
+            {% if user.is_authenticated %}
+                <script type="text/javascript" src="{% static 'javascripts/vendor/require.js' %}"></script>
+                <script type="text/javascript" src="{% static 'javascripts/vendor/underscore-min.js' %}"></script>
+                <script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
+                <script type="text/javascript">
+                    window.dit = window.dit || {};
+                    window.dit.environment = "{{ ENV_NAME }}";
+                    window.dit.jsBase = "{% static 'javascripts' %}";
+                    window.dit.csrfToken = "{{ csrf_token }}";
+                    window.dit.csrfToken_input = '{% csrf_token %}';
+                    {% if submission %}
+                        window.dit.submission_id = '{{submission.id}}';
+                    {% endif %}
+                    {% if user %}
+                        window.dit.user_id = '{{user.id}}';
+                    {% endif %}
+                    {% if organisation %}
+                        window.dit.organisation_id = '{{organisation.id}}';
+                    {% endif %}
+                    window.dit.user = {
+                        id: '{{ user.id }}',
+                        name: '{{ user.name }}',
+                        is_admin: {% if user.is_admin %}true{% else %}false{% endif %},
+                        hoi: {% if user.is_top_admin %}true{% else %}false{% endif %},
+                    };
+                </script>
+            {% endif %}
         </body>
 
     </html>
