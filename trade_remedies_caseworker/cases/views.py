@@ -1058,10 +1058,21 @@ class SubmissionView(CaseBaseView):
 class SubmissionCreateView(SubmissionView):
     groups_required = SECURITY_GROUPS_TRA
 
+    def add_page_data(self):
+        page_data = super().add_page_data()
+        v2_client = TRSAPIClient(token=self.request.user.token)
+        page_data["interested_org_case_roles"] = [
+            each
+            for each in v2_client.organisation_case_roles(
+                case_id=self.kwargs["case_id"], fields=["organisation", "organisation_name"]
+            )
+            if each.organisation != "Secretary of State"
+        ]
+        return page_data
+
     def post(self, request, case_id, *args, **kwargs):
-        btn_value = request.POST.get("btn-value")
         send_to = request.POST.getlist("send_to")
-        organisation_id = request.POST.get("organisation_id")
+        organisation_id = request.POST.get("interested_party_id")
 
         submission_data = {
             "submission_type": int(

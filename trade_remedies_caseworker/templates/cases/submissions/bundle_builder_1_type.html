@@ -19,6 +19,17 @@
                     {% endfor %}
                 </select>
             </div>
+
+            <div class="form-group edit-item type-textarea" style="display:none;" id="interested_party_select_div">
+                <label class="form-label" for="submissionType">Interested party</label>
+                <p>Select the interested party to show on the public file</p>
+                <select class="form-control auto-width" id="interested_party_id" name="interested_party_id">
+                    {% for org_case_role in interested_org_case_roles %}
+                        <option value="{{ org_case_role.organisation }}">{{ org_case_role.organisation_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
         {% endif %}
     </div>
 </div>
