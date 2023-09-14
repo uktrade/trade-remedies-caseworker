@@ -1,3 +1,5 @@
+HEALTH_CHECK_TOKEN=AUTH-TOKEN-FOR-TRUSTED-USER
+ORGANISATION_NAME="Trade Remedies Authority
 ORGANISATION_ADMIN
 TaskManager
 request.session.came_from_adhoc_merge %
