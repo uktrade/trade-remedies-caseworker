@@ -112,9 +112,7 @@ openpyxl==3.0.10
     #   -r requirements.in/base.in
     #   v2-api-client
 packaging==23.1
-    # via
-    #   deprecation
-    #   pikepdf
+    # via pikepdf
 phonenumbers==8.13.18
     # via v2-api-client
 pikepdf==8.3.2
@@ -158,13 +156,13 @@ tenacity==8.0.1
     # via api-client
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
     # via -r requirements.in/base.in
-urllib3==1.26.11
+urllib3==1.26.17
     # via
     #   -r requirements.in/base.in
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 waitress==2.1.2
     # via -r requirements.in/base.in
