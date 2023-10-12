@@ -117,8 +117,10 @@ phonenumbers==8.13.18
     # via v2-api-client
 pikepdf==8.3.2
     # via v2-api-client
-pillow==10.0.0
-    # via pikepdf
+pillow==10.0.1
+    # via
+    #   -r requirements.in/base.in
+    #   pikepdf
 pyheck==0.1.5
     # via dotwiz
 python-dateutil==2.8.2

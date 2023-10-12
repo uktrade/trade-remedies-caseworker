@@ -156,7 +156,7 @@ pikepdf==8.3.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   v2-api-client
-pillow==10.0.0
+pillow==10.0.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   pikepdf
