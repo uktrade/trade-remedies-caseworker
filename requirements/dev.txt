@@ -212,8 +212,9 @@ pickleshare==0.7.5
     # via ipython
 pikepdf==8.3.2
     # via v2-api-client
-pillow==9.3.0
+pillow==10.0.1
     # via
+    #   -r requirements.in/base.in
     #   matplotlib
     #   pikepdf
 pip-tools==6.5.1
@@ -334,14 +335,14 @@ traitlets==5.9.0
     #   matplotlib-inline
 typing-extensions==4.1.1
     # via black
-urllib3==1.26.11
+urllib3==1.26.17
     # via
     #   -r requirements.in/base.in
     #   botocore
     #   requests
     #   selenium
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit
