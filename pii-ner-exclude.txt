@@ -1,3 +1,6 @@
+ORGANISATION_NAME="Trade Remedies Authority
+pillow>=10.0.1
+pillow>=10.0.1
 interested_org_case_roles
 builder{%
 discard button
