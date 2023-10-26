@@ -205,7 +205,7 @@ tenacity==8.0.1
     #   api-client
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
     # via -r requirements.in/../requirements/base.txt
-urllib3==1.26.17
+urllib3==1.26.18
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
