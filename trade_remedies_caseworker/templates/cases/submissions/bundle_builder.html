@@ -92,18 +92,3 @@
 
     </form>
 {% endblock %}
-
-{% block body_end %}
-    {{ block.super }}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#submissionType").change(function () {
-                if ($(this).val() === "34") {
-                    $("#interested_party_select_div").show()
-                } else {
-                    $("#interested_party_select_div").hide()
-                }
-            }).trigger("change")
-        })
-    </script>
-{% endblock body_end %}
