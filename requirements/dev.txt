@@ -62,7 +62,7 @@ deprecation==2.1.0
     # via pikepdf
 distlib==0.3.4
     # via virtualenv
-django==3.2.20
+django==3.2.23
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -350,7 +350,7 @@ waitress==2.1.2
     # via -r requirements.in/base.in
 wcwidth==0.2.5
     # via prompt-toolkit
-werkzeug==2.2.3
+werkzeug==3.0.1
     # via -r requirements.in/base.in
 wheel==0.38.4
     # via
