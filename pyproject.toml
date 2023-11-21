@@ -156,4 +156,4 @@ markers = [
     ]
 
 DJANGO_SETTINGS_MODULE = "trade_remedies_caseworker.config.settings.test"
-python_paths = ". trade_remedies_caseworker"
+pythonpaths = ". trade_remedies_caseworker"
