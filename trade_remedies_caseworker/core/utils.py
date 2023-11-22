@@ -58,7 +58,6 @@ def deep_update(target, source):
     Deep merge two dicts
     """
     if isinstance(source, dict):
-
         for key, item in source.items():
             if key in target:
                 target[key] = deep_update(target[key], item)
