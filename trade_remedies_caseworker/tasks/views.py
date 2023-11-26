@@ -13,7 +13,6 @@ from core.utils import (
 
 
 class TaskView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
-
     fields = {
         "Task": {
             "id": 0,
