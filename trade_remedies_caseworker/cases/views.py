@@ -1066,7 +1066,6 @@ class SubmissionCreateView(SubmissionView):
                 request.POST.get("submission_type_id", SUBMISSION_TYPE_QUESTIONNAIRE)
             ),
             "case_id": str(case_id),
-            "organisation_id": str(organisation_id) if organisation_id else None,
             "contact_id": request.POST.getlist("contact_id"),
             "public": request.POST.get("public"),
         }
