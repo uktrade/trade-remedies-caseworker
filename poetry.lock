@@ -910,22 +910,22 @@ hiredis = ["redis[hiredis] (>=3,!=4.0.0,!=4.0.1)"]
 
 [[package]]
 name = "django-session-timeout"
-version = "0.0.3"
+version = "0.1.0"
 description = "Middleware to expire sessions after specific amount of time"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-session-timeout-0.0.3.tar.gz", hash = "sha256:339ce15fabe551a9dda5e6be484cf5ecf6f5be09665ca0907c06682cef0a146e"},
-    {file = "django_session_timeout-0.0.3-py2.py3-none-any.whl", hash = "sha256:86c150f1cacd9e72748d85c79c30d3b3aa96d6fb00797a133e7310f880d68579"},
+    {file = "django-session-timeout-0.1.0.tar.gz", hash = "sha256:648fe4ffa762f3bb62ce7a9ed1bbba8e37648158d555f18a880471982941084c"},
+    {file = "django_session_timeout-0.1.0-py2.py3-none-any.whl", hash = "sha256:e01b2502d4b9995edb93be1a66f304d0314cecb4f671ddc26cb4525a07e56282"},
 ]
 
 [package.dependencies]
-Django = ">=1.8"
-six = ">=1.1"
+Django = ">=1.11"
+six = ">=1.12"
 
 [package.extras]
-docs = ["sphinx (>=1.4.0)"]
-test = ["flake8 (==3.0.3)", "flake8-blind-except (==0.1.1)", "flake8-debugger (==1.4.0)", "freezegun (==0.3.9)", "isort (==4.2.5)", "pytest (==3.0.5)", "pytest-django (==3.1.2)"]
+docs = ["sphinx (>=1.8.4)"]
+test = ["coverage[toml] (==5.0.3)", "flake8 (==3.7.9)", "flake8-blind-except (==0.1.1)", "flake8-debugger (==3.1.0)", "freezegun (==0.3.15)", "isort[pyproject] (==4.3.21)", "pytest (==5.3.5)", "pytest-cov (==2.8.1)", "pytest-django (==3.8.0)"]
 
 [[package]]
 name = "django-storages"
@@ -3021,4 +3021,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "6024015247831f8854826456e34ab8a5c63f614c881d5f3f2f2fdd7c153fbefe"
+content-hash = "8faec10bcea60d3ec27ac4585541e93d415f0b52a48c169195ef93b0eede8ab4"
