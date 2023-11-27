@@ -1022,12 +1022,13 @@ pyheck = "0.1.5"
 
 [[package]]
 name = "dpath"
-version = "1.4.2"
+version = "2.1.6"
 description = "Filesystem-like pathing and searching for dictionaries"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "dpath-1.4.2.tar.gz", hash = "sha256:0f635f49e88843a4a519aca1c599faee271730f818a81860827e7d7b4d40273f"},
+    {file = "dpath-2.1.6-py3-none-any.whl", hash = "sha256:31407395b177ab63ef72e2f6ae268c15e938f2990a8ecf6510f5686c02b6db73"},
+    {file = "dpath-2.1.6.tar.gz", hash = "sha256:f1e07c72e8605c6a9e80b64bc8f42714de08a789c7de417e49c3f87a19692e47"},
 ]
 
 [[package]]
@@ -3047,4 +3048,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "9e9e6513684266ee00a56f065641a72653e8736e1ec9b3ceb0f9dd46af3648cb"
+content-hash = "332fc391ab1b0363e8d0ca4a12198091070552c11ad0701835331f6497cac708"
