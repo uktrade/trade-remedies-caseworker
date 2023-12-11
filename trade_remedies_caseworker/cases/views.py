@@ -1059,7 +1059,6 @@ class SubmissionCreateView(SubmissionView):
     groups_required = SECURITY_GROUPS_TRA
 
     def post(self, request, case_id, *args, **kwargs):
-        btn_value = request.POST.get("btn-value")
         send_to = request.POST.getlist("send_to")
         organisation_id = request.POST.get("organisation_id")
 

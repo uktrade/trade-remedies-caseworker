@@ -26,7 +26,7 @@ def deep_index_items_by(items, key):
     index = {}
     for item in items or []:
         try:
-            index_key = str((dpath.util.get(item, key) or "")).lower()
+            index_key = str((dpath.get(item, key) or "")).lower()
         except KeyError:
             # NOTE: on key missing, this indexes as '', same as a None value.
             index_key = ""
@@ -45,7 +45,7 @@ def deep_index_items_by_exists(items, key):
     for item in items or []:
         index_key = None
         try:
-            index_key = dpath.util.get(item, key) and "true"
+            index_key = dpath.get(item, key) and "true"
         except KeyError:
             pass
         index[index_key or "false"].append(item)
@@ -58,7 +58,6 @@ def deep_update(target, source):
     Deep merge two dicts
     """
     if isinstance(source, dict):
-
         for key, item in source.items():
             if key in target:
                 target[key] = deep_update(target[key], item)
@@ -73,7 +72,7 @@ def get(item, key, default=None):
     """
     val = default
     try:
-        val = dpath.util.get(item, key)
+        val = dpath.get(item, key)
     except KeyError:
         pass
     return val
