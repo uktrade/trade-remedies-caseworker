@@ -79,7 +79,6 @@ class UserBaseTemplateView(LoginRequiredMixin, TemplateView, TradeRemediesAPICli
 
 
 class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
-
     groups_required = SECURITY_GROUPS_TRA_ADMINS
     template_name = "settings/users.html"
 
@@ -125,7 +124,6 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
 
 
 class UserView(UserBaseTemplateView):
-
     delete_user = False
     template_name = "settings/user.html"
 
