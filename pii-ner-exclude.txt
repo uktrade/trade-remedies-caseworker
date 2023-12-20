@@ -1,3 +1,11 @@
+Validate
+Confirmation
+SHELL
+COLOUR_NONE=\033[0m
+Validate
+Confirmation
+SHELL
+COLOUR_NONE=\033[0m
 restore_dependency_cache
 save_dependency_cache
 cimg/python:3.9.5
