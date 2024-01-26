@@ -40,11 +40,12 @@ urllib3 = "1.26.18"
 waitress = "2.1.2"
 werkzeug = "2.3.8"
 whitenoise = "5.3.0"
-pillow = "^10.0.1"
+pillow = "^10.2.0"
 trade-remedies-client = {git = "https://github.com/uktrade/trade-remedies-client.git", rev = "master"}
 v2-api-client = {git = "https://github.com/uktrade/trs_v2_api_client.git", rev = "master"}
 gunicorn = "20.0.4"
 gevent = "23.9.1"
+lxml = "4.8.0"
 
 [tool.poetry.dev-dependencies]
 behave-django = "1.4.0"
