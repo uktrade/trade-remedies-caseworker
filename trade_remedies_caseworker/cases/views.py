@@ -813,9 +813,11 @@ class SubmissionView(CaseBaseView):
                 role_participants = participants.get(role, {}).get("parties", [])
                 filtered = list(
                     filter(
-                        lambda party: party
-                        if party.get("sampled") == sampled and not party.get("gov_body")
-                        else None,
+                        lambda party: (
+                            party
+                            if party.get("sampled") == sampled and not party.get("gov_body")
+                            else None
+                        ),
                         role_participants,
                     )
                 )
@@ -961,9 +963,11 @@ class SubmissionView(CaseBaseView):
                     result = self._client.set_submission_state(
                         case_id,
                         submission_id,
-                        "sent"
-                        if (btn_value == "send" or submission_group_name == "public")
-                        else "",
+                        (
+                            "sent"
+                            if (btn_value == "send" or submission_group_name == "public")
+                            else ""
+                        ),
                         {"publish": "issue", "withdraw": "un-issue"}[btn_value],
                     )
                     result = self._client.update_submission(
@@ -1780,9 +1784,11 @@ class SubmissionNotifyView(CaseBaseView):
             json.dumps(
                 {
                     "alert": f'Sent {len(send_to)} request{"" if len(send_to) < 2 else "s"}',
-                    "redirect_url": f'/case/{case_id}/submission/{submission.get("id")}/'
-                    if len(send_to) < 2
-                    else f"/case/{case_id}/submissions/",
+                    "redirect_url": (
+                        f'/case/{case_id}/submission/{submission.get("id")}/'
+                        if len(send_to) < 2
+                        else f"/case/{case_id}/submissions/"
+                    ),
                     "error": None,
                 }
             ),

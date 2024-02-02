@@ -78,11 +78,13 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                             kwargs={"invitation_id": self.invitation.id},
                         ),
                         "link_text": "Representative",
-                        "status": "Complete"
-                        if self.invitation.submission.deficiency_notice_params
-                        and "contact_org_verify"
-                        in self.invitation.submission.deficiency_notice_params
-                        else "Not Started",
+                        "status": (
+                            "Complete"
+                            if self.invitation.submission.deficiency_notice_params
+                            and "contact_org_verify"
+                            in self.invitation.submission.deficiency_notice_params
+                            else "Not Started"
+                        ),
                         "ready_to_do": True,
                     },
                     {
@@ -91,9 +93,9 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                             kwargs={"invitation_id": self.invitation.id},
                         ),
                         "link_text": "Letter of Authority",
-                        "status": "Complete"
-                        if self.invitation.authorised_signatory
-                        else "Not Started",
+                        "status": (
+                            "Complete" if self.invitation.authorised_signatory else "Not Started"
+                        ),
                         "ready_to_do": True,
                     },
                 ],
@@ -102,22 +104,26 @@ class OrganisationVerificationTaskListView(BaseOrganisationVerificationView, Tas
                 "heading": "Confirm",
                 "sub_steps": [
                     {
-                        "link": reverse(
-                            "verify_organisation_verify_confirm",
-                            kwargs={"invitation_id": self.invitation.id},
-                        )
-                        if self.invitation.submission.deficiency_notice_params
-                        and self.invitation.submission.deficiency_notice_params.get(
-                            "contact_org_verify", False
-                        )
-                        else reverse(
-                            "verify_organisation_verify_confirm_declined",
-                            kwargs={"invitation_id": self.invitation.id},
+                        "link": (
+                            reverse(
+                                "verify_organisation_verify_confirm",
+                                kwargs={"invitation_id": self.invitation.id},
+                            )
+                            if self.invitation.submission.deficiency_notice_params
+                            and self.invitation.submission.deficiency_notice_params.get(
+                                "contact_org_verify", False
+                            )
+                            else reverse(
+                                "verify_organisation_verify_confirm_declined",
+                                kwargs={"invitation_id": self.invitation.id},
+                            )
                         ),
                         "link_text": "Submit decision",
-                        "status": "Complete"
-                        if self.invitation.approved_at or self.invitation.rejected_at
-                        else "Not started yet",
+                        "status": (
+                            "Complete"
+                            if self.invitation.approved_at or self.invitation.rejected_at
+                            else "Not started yet"
+                        ),
                     },
                 ],
             },

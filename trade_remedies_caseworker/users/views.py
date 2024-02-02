@@ -361,9 +361,9 @@ class ContactLookupView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClient
         return HttpResponse(
             json.dumps(
                 {
-                    "result": client.lookup_contacts(search)
-                    if search
-                    else client.get_contact(contact_id)
+                    "result": (
+                        client.lookup_contacts(search) if search else client.get_contact(contact_id)
+                    )
                 }
             ),
             content_type="application/json",
