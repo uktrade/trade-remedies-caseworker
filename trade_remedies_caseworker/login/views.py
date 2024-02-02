@@ -123,8 +123,8 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
         except APIException as exc:
             if exc.status_code == 401:
                 return redirect("/accounts/logout/")
-            request.session["twofactor_error"] = (
-                "The code you entered is incorrect. Retry or resend code."
-            )
+            request.session[
+                "twofactor_error"
+            ] = "The code you entered is incorrect. Retry or resend code."
             request.session.modified = True
             return redirect("/")
