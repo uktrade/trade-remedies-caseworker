@@ -62,9 +62,9 @@ class ReviewPotentialDuplicatesLanding(BaseMergeOrganisationsTemplateView):
             invitation.submission.id, params={"organisation_id": invitation.contact.organisation}
         )
         context["submission_organisation_merge_record"] = submission_organisation_merge_record
-        context[
-            "organisation_merge_record"
-        ] = submission_organisation_merge_record.organisation_merge_record
+        context["organisation_merge_record"] = (
+            submission_organisation_merge_record.organisation_merge_record
+        )
 
         invited_organisation = client.organisations(
             invitation.contact.organisation, fields=["name"]
