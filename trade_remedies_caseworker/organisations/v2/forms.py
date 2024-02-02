@@ -56,10 +56,12 @@ class SelectIfDuplicatesForm(ValidationForm):
     )
 
 
-class ConfirmNotDuplicateForm(ValidationForm): ...
+class ConfirmNotDuplicateForm(ValidationForm):
+    pass
 
 
-class CancelMergeForm(ValidationForm): ...
+class CancelMergeForm(ValidationForm):
+    pass
 
 
 class ChooseCorrectCaseRoleForm(ValidationForm):
