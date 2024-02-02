@@ -11,7 +11,7 @@ from django.conf import settings
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.test import Client
 from trade_remedies_client.exceptions import APIException
 
@@ -317,7 +317,7 @@ def internal_redirect(url, default_path):
     :param url: URL to redirect to
     :param default_path: Default path to redirect to if url is unsafe
     """
-    if not is_safe_url(url, settings.ALLOWED_HOSTS):
+    if not url_has_allowed_host_and_scheme(url, settings.ALLOWED_HOSTS):
         return redirect(default_path)
 
     return redirect(url)
