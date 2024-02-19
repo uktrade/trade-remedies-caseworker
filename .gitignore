@@ -130,5 +130,3 @@ trade_remedies_caseworker/static/
 # NER output
 ner_output_file.txt
 /.pii-secret-hook/
-
-requirements-dev.txt

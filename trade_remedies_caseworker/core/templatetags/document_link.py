@@ -14,9 +14,9 @@ Usage:
 def document_link(document, with_link=True, with_confidential_mark=False):
     _link = ["", escape(document.get("name")), ""]
     if with_link:
-        _link[
-            0
-        ] = f"""<a href="/document/{document['id']}/download/" class="link" target="_blank">"""
+        _link[0] = (
+            f"""<a href="/document/{document['id']}/download/" class="link" target="_blank">"""
+        )
         _link[2] = "</a>"
     if with_confidential_mark:
         _link.append(" (confidential)" if document.get("confidential") else " (non-confidential)")

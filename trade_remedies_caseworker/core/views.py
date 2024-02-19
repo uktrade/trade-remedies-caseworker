@@ -247,18 +247,27 @@ class ExportFeedbackView(LoginRequiredMixin, GroupRequiredMixin, View, APIClient
                     feedback_object.url,
                     feedback_object.journey,
                     feedback_object.verbose_rating_name,
-                    "True"
-                    if "process_not_clear" in feedback_object.what_didnt_work_so_well
-                    else "False",
-                    "True"
-                    if "not_enough_guidance" in feedback_object.what_didnt_work_so_well
-                    else "False",
-                    "True"
-                    if "asked_for_info_didnt_have" in feedback_object.what_didnt_work_so_well
-                    else "False",
-                    "True"
-                    if "didnt_get_information_i_expected" in feedback_object.what_didnt_work_so_well
-                    else "False",
+                    (
+                        "True"
+                        if "process_not_clear" in feedback_object.what_didnt_work_so_well
+                        else "False"
+                    ),
+                    (
+                        "True"
+                        if "not_enough_guidance" in feedback_object.what_didnt_work_so_well
+                        else "False"
+                    ),
+                    (
+                        "True"
+                        if "asked_for_info_didnt_have" in feedback_object.what_didnt_work_so_well
+                        else "False"
+                    ),
+                    (
+                        "True"
+                        if "didnt_get_information_i_expected"
+                        in feedback_object.what_didnt_work_so_well
+                        else "False"
+                    ),
                     "True" if "other_issue" in feedback_object.what_didnt_work_so_well else "False",
                     feedback_object.what_didnt_work_so_well_other,
                     feedback_object.how_could_we_improve_service,

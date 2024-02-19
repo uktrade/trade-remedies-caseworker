@@ -2,6 +2,7 @@
 user_context context processor providing a global user context to
 templates which contains the current user's token and basic info
 """
+
 from config.version import __version__
 from trade_remedies_client.client import Client
 from django.conf import settings

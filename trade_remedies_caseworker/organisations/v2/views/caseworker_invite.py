@@ -250,9 +250,11 @@ class OrganisationInviteReviewView(BaseOrganisationInviteView):
                     # We want to give them ownership if it's a new organisation, else we will make
                     # them a user - if they already are part of the organisation this will not
                     # change anything
-                    "organisation_security_group": SECURITY_GROUP_ORGANISATION_OWNER
-                    if self.request.session.get("new_contact", False)
-                    else SECURITY_GROUP_ORGANISATION_USER,
+                    "organisation_security_group": (
+                        SECURITY_GROUP_ORGANISATION_OWNER
+                        if self.request.session.get("new_contact", False)
+                        else SECURITY_GROUP_ORGANISATION_USER
+                    ),
                 },
                 fields=["id"],
             )
