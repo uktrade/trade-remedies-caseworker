@@ -10,7 +10,7 @@ this organisation in the case
 {% comment %} *****   is the validation done?  *****{% endcomment %}
 {% set 'caserole' submission.organisation_case_role_outer %}
 {% if caserole.validated_at or caserole.role.key == 'rejected' %}
-    {% if submission.deficiency_notice_params.notification_sent_at or caserole.role.key == 'applicant' %}
+    {% if "notification_sent_at" in submission.deficiency_notice_params or caserole.role.key == 'applicant' %}
         {% set 'validation_complete' True %}
     {% endif %}
 {% endif %}
