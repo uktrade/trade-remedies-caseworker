@@ -239,7 +239,7 @@ CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
 FILE_UPLOAD_HANDLERS = (
-    "v2_api_client.shared.upload_handler.django_upload_handler.ExtractMetadataFileUploadHandler",
+    #"v2_api_client.shared.upload_handler.django_upload_handler.ExtractMetadataFileUploadHandler",
     "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 )  # Order is important
