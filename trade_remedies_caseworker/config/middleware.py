@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from core.models import TransientUser
 from django.conf import settings
 from django.shortcuts import redirect
@@ -85,4 +87,19 @@ class SentryContextMiddleware:
         else:
             set_user(None)
         response = self.get_response(request)
+        return response
+
+class TrackForbiddenMiddleware:
+    """
+    Middleware to track forbidden requests
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if response.status_code == 403:
+            # Track forbidden requests
+            sentry_sdk.capture_message(f"URL is forbidden, {request.path}, {response.content}, {request.user.email}")
         return response
