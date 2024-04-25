@@ -38,7 +38,7 @@
                         {% endif %}
                     </td>
                     <td>{{event.created_by.user}}</td>
-                    <td>{% ifequal event.milestone "True" %}<div class="icon icon-tick"></div>{% endifequal %}</td>
+                    <td>{% if event.milestone == "True" %}<div class="icon icon-tick"></div>{% endif %}</td>
                 </tr>
                 {% if event.data and event.milestone != 'True' %}
                     <tr>
