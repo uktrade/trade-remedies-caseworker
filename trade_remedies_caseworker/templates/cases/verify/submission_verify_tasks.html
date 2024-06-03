@@ -101,7 +101,7 @@
                 {% include "cases/verify/taskline.html" with  state=loa_state label='Enter Letter of authority contact details' function_name='LoaDetails' %}
 
                 {% if interested_party_submission_organisation_merge_record %}
-                    {% if interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates or interested_party_submission_organisation_merge_record.status == "complete" %}
+                    {% if interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates and interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length > 0 or interested_party_submission_organisation_merge_record.status == "complete" %}
                         <li class="task-list-item edit-item">
                             {% if interested_party_submission_organisation_merge_record.status == "complete" %}
                                 {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.organisation.name }}
@@ -124,7 +124,7 @@
 
 
                 {% if representative_submission_organisation_merge_record %}
-                    {% if representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates or representative_submission_organisation_merge_record.status == "complete" %}
+                    {% if representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates and representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length > 0 or representative_submission_organisation_merge_record.status == "complete" %}
                         <li class="task-list-item edit-item">
                             {% if representative_submission_organisation_merge_record.status == "complete" %}
                                 {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.contact.organisation.name }}
