@@ -104,11 +104,11 @@
                     {% if interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates and interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length > 0 or interested_party_submission_organisation_merge_record.status == "complete" %}
                         <li class="task-list-item edit-item">
                             {% if interested_party_submission_organisation_merge_record.status == "complete" %}
-                                {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.organisation.name }}
+                                {{ interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.organisation.name }}
                             {% else %}
                                 <a class="link"
                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=interested_party_submission_organisation_merge_record.organisation_merge_record.id %}">
-                                    {{ organisation_merge_record.potential_duplicates|length }} potential duplicate matches for {{ submission.organisation.name }}
+                                    {{ interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.organisation.name }}
                                 </a>
                             {% endif %}
                             <div class="pull-right state-container">
@@ -127,11 +127,11 @@
                     {% if representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates and representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length > 0 or representative_submission_organisation_merge_record.status == "complete" %}
                         <li class="task-list-item edit-item">
                             {% if representative_submission_organisation_merge_record.status == "complete" %}
-                                {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.contact.organisation.name }}
+                                {{ representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.contact.organisation.name }}
                             {% else %}
                                 <a class="link"
                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=representative_submission_organisation_merge_record.organisation_merge_record.id %}">
-                                    {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.contact.organisation.name }}
+                                    {{ representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.contact.organisation.name }}
                                 </a>
                             {% endif %}
                             <div class="pull-right state-container">
