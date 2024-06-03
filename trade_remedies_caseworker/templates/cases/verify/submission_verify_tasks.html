@@ -98,18 +98,18 @@
                     {% set 'verify_disabled' True %}
                 {% endif %}
 
-
                 {% include "cases/verify/taskline.html" with  state=loa_state label='Enter Letter of authority contact details' function_name='LoaDetails' %}
 
                 {% if interested_party_submission_organisation_merge_record %}
                     {% if interested_party_submission_organisation_merge_record.organisation_merge_record.potential_duplicates or interested_party_submission_organisation_merge_record.status == "complete" %}
                         <li class="task-list-item edit-item">
                             {% if interested_party_submission_organisation_merge_record.status == "complete" %}
-                                Resolve matches for {{ submission.organisation.name }}
+                                {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.organisation.name }}
                             {% else %}
                                 <a class="link"
-                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=interested_party_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
-                                    matches for {{ submission.organisation.name }}</a>
+                                   href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=interested_party_submission_organisation_merge_record.organisation_merge_record.id %}">
+                                    {{ organisation_merge_record.potential_duplicates|length }} potential duplicate matches for {{ submission.organisation.name }}
+                                </a>
                             {% endif %}
                             <div class="pull-right state-container">
                                 {% if interested_party_submission_organisation_merge_record.status == 'complete' %}
@@ -127,12 +127,12 @@
                     {% if representative_submission_organisation_merge_record.organisation_merge_record.potential_duplicates or representative_submission_organisation_merge_record.status == "complete" %}
                         <li class="task-list-item edit-item">
                             {% if representative_submission_organisation_merge_record.status == "complete" %}
-                                Resolve
-                                matches for {{ submission.contact.organisation.name }}
+                                {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.contact.organisation.name }}
                             {% else %}
                                 <a class="link"
-                                    href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=representative_submission_organisation_merge_record.organisation_merge_record.id %}">Resolve
-                                    matches for {{ submission.contact.organisation.name }}</a>
+                                   href="{% url 'organisations:submission_merge_organisations_review_matching_organisations' submission_id=submission.id organisation_merge_record_id=representative_submission_organisation_merge_record.organisation_merge_record.id %}">
+                                    {{ organisation_merge_record.potential_duplicates|length }} potential duplicate organisations for {{ submission.contact.organisation.name }}
+                                </a>
                             {% endif %}
                             <div class="pull-right state-container">
                                 {% if representative_submission_organisation_merge_record.status == 'complete' %}
@@ -146,8 +146,8 @@
                 {% endif %}
 
 
-                {% include "cases/verify/taskline.html" with  state=contact_org_verify_state label=rep_verify_label function_name='verifyContactOrganisation' disabled=verify_disabled %}
-                {% include "cases/verify/taskline.html" with  state=org_verify_state label=org_verify_label function_name='verifyOrganisation' disabled=verify_disabled %}
+                {% include "cases/verify/taskline.html" with  state=contact_org_verify_state label=rep_verify_label function_name='verifyContactOrganisation' %}
+                {% include "cases/verify/taskline.html" with  state=org_verify_state label=org_verify_label function_name='verifyOrganisation' %}
                 {% include "cases/verify/taskline.html" with  state=approve_state label='Choose to accept into case' function_name='acceptToCase' disabled=approve_disabled %}
                 {% include "cases/verify/taskline.html" with  state=notify_state label='Notify contact' function_name='notify' disabled=notify_disabled %}
             </ul>

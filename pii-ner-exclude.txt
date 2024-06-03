@@ -1,3 +1,4 @@
+{{ organisation_merge_record.potential_duplicates|length }
 {{event.type}
 {{event.humanised|linebreaksbr}
 f"""<a
