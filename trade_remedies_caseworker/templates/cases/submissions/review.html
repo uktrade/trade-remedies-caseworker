@@ -62,7 +62,7 @@
             {% set 'deficiency_notice' submission.deficiency_notice_params.review_result|_equals:'deficient' %}
             {% set 'building_deficiency_notice' deficiency_notice|_and:received_state %}
             {% set 'not_reviewed' submission.deficiency_notice_params.review_result|_not %}
-            {% set 'reviewing' True %}
+            {% set 'reviewing' not_reviewed|_or:submission.status.version %}
             {% set 'reviewed' not_reviewed|_not %}
             {% set 'not_published' submission.issued_at|_not %}
             {% set 'publishing' submission.deficiency_notice_params.publish|_and:not_published %}
