@@ -5,19 +5,19 @@
 {% block case_page_content %}
 
     <form class="bundle-builder"
-        action="{% if submission.id %}/case/{{ case_id }}/submission/{{ submission.id }}/{% else %}/case/{{ case_id }}/submission/create/{% endif %}?__prefix={{ case_id }}"
-        method="POST"
-        data-attach="BundleBuilder"
-        enctype="multipart/form-data"
-        data-redirect="/case/{{ case_id }}/submission/{{ submission.id }}/"
-        data-case="{{ case_id }}"
-        data-submission="{{ submission.id }}"
-        data-organisation="{{ organisation_id }}"
-        data-notify-url="/status/notify/">
+          action="{% if submission.id %}/case/{{ case_id }}/submission/{{ submission.id }}/{% else %}/case/{{ case_id }}/submission/create/{% endif %}?__prefix={{ case_id }}"
+          method="POST"
+          data-attach="BundleBuilder"
+          enctype="multipart/form-data"
+          data-redirect="/case/{{ case_id }}/submission/{{ submission.id }}/"
+          data-case="{{ case_id }}"
+          data-submission="{{ submission.id }}"
+          data-organisation="{{ organisation_id }}"
+          data-notify-url="/status/notify/">
         {% csrf_token %}
         {% include 'cases/submissions/bundle_builder_alert_block.html' %}
         <div class="column-full review_submission" data-attach="ReviewSubmission"
-            data-submission='{{ submission|to_json }}'>
+             data-submission='{{ submission|to_json }}'>
             <h2 class="heading-large"><span
                 class="heading-secondary">{{ submission.organisation.name }}</span>{% block main_title %}
                     {{ submission.type.name }}{% endblock %}</h2>
@@ -62,8 +62,7 @@
             {% set 'deficiency_notice' submission.deficiency_notice_params.review_result|_equals:'deficient' %}
             {% set 'building_deficiency_notice' deficiency_notice|_and:received_state %}
             {% set 'not_reviewed' submission.deficiency_notice_params.review_result|_not %}
-            {% set 'reviewing' not_reviewed|_and:received_state %}
-            {% set 'reviewing' reviewing|_or:submission.status.deficient %}
+            {% set 'reviewing' True %}
             {% set 'reviewed' not_reviewed|_not %}
             {% set 'not_published' submission.issued_at|_not %}
             {% set 'publishing' submission.deficiency_notice_params.publish|_and:not_published %}
@@ -78,10 +77,10 @@
                                     {% if not submission.issued_at and submission.deficiency_notice_params.publish != 'true' %}
                                         {% if user.permissions.publish_public %}
                                             <button class="link pull-right" value="publish-start"
-                                                {% if not submission.organisation_case_role_outer.validated_at and not submission.organisation.is_tra %}
-                                                    disabled
-                                                    title="Unable to publish submissions for {{ organisation.name }} until verification is completed"
-                                                {% endif %}
+                                                    {% if not submission.organisation_case_role_outer.validated_at and not submission.organisation.is_tra %}
+                                                        disabled
+                                                        title="Unable to publish submissions for {{ organisation.name }} until verification is completed"
+                                                    {% endif %}
                                             >
                                                 Publish current version
                                             </button>
@@ -116,17 +115,17 @@
                             {% if not submission.issued_at and submission.deficiency_notice_params.publish != 'true' %}
                                 {% if user.permissions.publish_public and documents.nonconfidential|length > 0 %}
                                     <button class="link pull-right" value="publish-start"
-                                        {% if not submission.organisation_case_role_outer.validated_at and not submission.organisation.is_tra %}
-                                            disabled
-                                            title="Unable to publish submissions for {{ organisation.name }} until verification is completed"
-                                        {% endif %}
+                                            {% if not submission.organisation_case_role_outer.validated_at and not submission.organisation.is_tra %}
+                                                disabled
+                                                title="Unable to publish submissions for {{ organisation.name }} until verification is completed"
+                                            {% endif %}
                                     >Publish current version
                                     </button>
                                 {% endif %}
                             {% elif submission.issued_at %}
                                 {% if user.permissions.publish_public %}
                                     <button type="button" class="link pull-right correct" name="btn-value"
-                                        value="withdraw"
+                                            value="withdraw"
                                     >Withdraw
                                     </button>
                                 {% endif %}
@@ -201,20 +200,20 @@
                             <button type="button" value="approve" class="button button-green">Approve submission
                             </button>
                             <button type="button" data-reveals="#deficiency-docs-browser" value="reject"
-                                class="button button-red" value="reject">Deny submission
+                                    class="button button-red" value="reject">Deny submission
                             </button>
                         </div>
                     {% endif %}
                     <div class="issue-button-group">
                         <button class="button button-blue pull-left margin-left-1" data-notify="true" type="submit"
-                            name="btn-value" value="send" disabled="disabled">Send the deficiency notice
+                                name="btn-value" value="send" disabled="disabled">Send the deficiency notice
                         </button>
                         <a class="button button-grey pull-right" href="/case/{{ case_id }}/submissions/">Exit without
                             sending</a>
                     </div>
                     <div class="publish-button-group">
                         <button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value"
-                            value="publish" disabled="disabled">Publish the deficiency notice
+                                value="publish" disabled="disabled">Publish the deficiency notice
                         </button>
                         <a class="button button-grey pull-right" href="/case/{{ case_id }}/submissions/">Exit without
                             publishing</a>
@@ -225,7 +224,7 @@
                         </button>
                     </div>
                     <button type="button" id="modalButton" class="hidden modal-form" data-url="-"
-                        data-notify="/case/{{ case.id }}/submission/{{ submission.id }}/notify/"></button>
+                            data-notify="/case/{{ case.id }}/submission/{{ submission.id }}/notify/"></button>
 
                 </div>
 
@@ -255,7 +254,7 @@
                     <div class="form-group publish-button-group">
                         {% if user.permissions.publish_public %}
                             <button class="button button-blue pull-left margin-left-1" type="submit" name="btn-value"
-                                value="publish">Publish
+                                    value="publish">Publish
                             </button>{% endif %}
                         <button class="button button-grey margin-top-1 pull-right" type="button" value="publish-cancel">
                             Cancel publishing
