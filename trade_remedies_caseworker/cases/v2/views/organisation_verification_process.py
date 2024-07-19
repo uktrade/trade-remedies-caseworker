@@ -141,7 +141,7 @@ class OrganisationVerificationVerifyRepresentative(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         invited_organisation = self.client.organisations(
-            self.invitation.contact.organisation,
+            self.invitation.contact.organisation, fields=["name"]
         )
         invited_organisation_card = invited_organisation.organisation_card_data()
         context["invited_organisation"] = invited_organisation
