@@ -10,7 +10,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-Django = "~=4.2.15"
+Django = "~=4.2.16"
 Markdown = "2.6.11"
 boto3 = "1.17.89"
 certifi = "^2024.7.4"
