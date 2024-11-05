@@ -25,8 +25,6 @@ from core.constants import (
     SECURITY_GROUP_TRA_ADMINISTRATOR,
 )
 
-health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
-
 
 class SystemView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
     groups_required = (SECURITY_GROUP_TRA_ADMINISTRATOR,)
