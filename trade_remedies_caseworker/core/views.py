@@ -34,15 +34,6 @@ class SystemView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
         return render(request, self.template_name, context=context)
 
 
-class HealthCheckView(View, TradeRemediesAPIClientMixin):
-    def get(self, request):
-        response = self.trusted_client.health_check()
-        if all([response[k] == "OK" for k in response]):
-            return HttpResponse("OK")
-        else:
-            return HttpResponse(f"ERROR: {response}")
-
-
 class BaseCaseView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
     groups_required = SECURITY_GROUPS_TRA
     template_name = None
