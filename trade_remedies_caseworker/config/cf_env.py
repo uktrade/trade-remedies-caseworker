@@ -57,10 +57,9 @@ class CloudFoundrySettings(BaseSettings):
     GOOGLE_ANALYTICS_TAG_MANAGER_ID: str = ""
     ADMIN_DEBUG_TOOLS_ENABLED: bool = False
 
-
     def get_allowed_hosts(self) -> list[str]:
         return self.ALLOWED_HOSTS.split(",") if self.ALLOWED_HOSTS else ["localhost"]
-    
+
     def get_s3_bucket_config(self) -> dict:
         """Return s3 bucket config that matches keys used in CF"""
 
