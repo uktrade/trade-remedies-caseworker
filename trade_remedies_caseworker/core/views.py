@@ -1,6 +1,7 @@
 import datetime
 import io
 import json
+import os
 
 import openpyxl
 from django.contrib import messages
@@ -24,6 +25,8 @@ from core.constants import (
     SECURITY_GROUP_TRA_ADMINISTRATOR,
 )
 
+health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
+
 
 class SystemView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
     groups_required = (SECURITY_GROUP_TRA_ADMINISTRATOR,)
@@ -32,6 +35,15 @@ class SystemView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         context = {"body_classes": "full-width"}
         return render(request, self.template_name, context=context)
+
+
+class HealthCheckView(View, TradeRemediesAPIClientMixin):
+    def get(self, request):
+        response = self.trusted_client.health_check()
+        if all([response[k] == "OK" for k in response]):
+            return HttpResponse("OK")
+        else:
+            return HttpResponse(f"ERROR: {response}")
 
 
 class BaseCaseView(LoginRequiredMixin, GroupRequiredMixin, TemplateView):
