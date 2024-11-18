@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_settings import BaseSettings
 
@@ -20,7 +20,7 @@ class CloudFoundrySettings(BaseSettings):
     ALLOWED_HOSTS: str = ""
     ORGANISATION_NAME: str = "Organisation name placeholder"
     ORGANISATION_INITIALISM: str = "Organisation initialism placeholder"
-    BASIC_AUTH_USER: bool = False
+    BASIC_AUTH_USER: Optional[Dict[str, str]] = None
     RESTRICT_IPS: bool = False
     VCAP_SERVICES: Optional[VCAPServices] = {}
     REDIS_DATABASE_NUMBER: int = 1
