@@ -162,7 +162,6 @@ USE_L10N = True
 USE_TZ = True
 
 _VCAP_SERVICES = env.VCAP_SERVICES
-sentry_sdk.capture_message(_VCAP_SERVICES)
 
 # Redis - Trade remedies uses different redis database numbers for the Django Cache
 # API:        0
@@ -171,8 +170,10 @@ sentry_sdk.capture_message(_VCAP_SERVICES)
 REDIS_DATABASE_NUMBER = env.REDIS_DATABASE_NUMBER
 if "redis" in _VCAP_SERVICES:
     REDIS_BASE_URL = _VCAP_SERVICES["redis"][0]["credentials"]["uri"]
+    sentry_sdk.capture_message(f"Using VCAP redis on URL {REDIS_BASE_URL}")
 else:
     REDIS_BASE_URL = env.REDIS_BASE_URL
+    sentry_sdk.capture_message(f"Using local redis on URL {REDIS_BASE_URL}")
 
 CACHES = {
     "default": {
