@@ -162,6 +162,7 @@ USE_L10N = True
 USE_TZ = True
 
 _VCAP_SERVICES = env.VCAP_SERVICES
+sentry_sdk.capture_message(json.dumps(_VCAP_SERVICES))
 
 # Redis - Trade remedies uses different redis database numbers for the Django Cache
 # API:        0

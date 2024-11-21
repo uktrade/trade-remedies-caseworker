@@ -29,7 +29,6 @@ class CloudFoundrySettings(BaseSettings):
     SESSION_EXPIRE_AFTER_LAST_ACTIVITY: bool = True
     SECURE_CSRF_COOKIE: bool = False
     CSRF_COOKIE_HTTPONLY: bool = False
-    SESSION_LENGTH_MINUTES: int = 30
     USE_2FA: bool = True
     API_BASE_URL: str = "http://localhost:8000"
     HEALTH_CHECK_TOKEN: str = "health"
