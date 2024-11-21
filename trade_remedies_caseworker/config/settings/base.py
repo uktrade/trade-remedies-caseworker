@@ -93,11 +93,6 @@ MIDDLEWARE = [
     "config.middleware.SentryContextMiddleware",
 ]
 
-# Add basic authentication if configured
-basic_auth_user = env.BASIC_AUTH_USER
-if basic_auth_user:
-    MIDDLEWARE.insert(0, "basicauth.middleware.BasicAuthMiddleware")
-
 if env.RESTRICT_IPS:
     MIDDLEWARE.insert(0, "ip_restriction.IpWhitelister")
 
@@ -259,9 +254,6 @@ BASICAUTH_USERS = {
 COUNTRIES_OVERRIDE = {
     "EU": "EU Customs Union",
 }
-
-if basic_auth_user:
-    BASICAUTH_USERS = json.loads(basic_auth_user)
 
 SHOW_ENV_BANNER = env.SHOW_ENV_BANNER
 ENV_NAME = env.ENV_NAME
