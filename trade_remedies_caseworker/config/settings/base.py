@@ -168,8 +168,8 @@ _VCAP_SERVICES = env.VCAP_SERVICES
 # Caseworker: 1
 # Public:     2
 REDIS_DATABASE_NUMBER = env.REDIS_DATABASE_NUMBER
-if "redis" in _VCAP_SERVICES:
-    REDIS_BASE_URL = _VCAP_SERVICES["redis"][0]["credentials"]["uri"]
+if redis := getattr(_VCAP_SERVICES, "redis", None):
+    REDIS_BASE_URL = _VCAP_SERVICES.redis[0]["credentials"]["uri"]
     sentry_sdk.capture_message(f"Using VCAP redis on URL {REDIS_BASE_URL}")
 else:
     REDIS_BASE_URL = env.REDIS_BASE_URL
