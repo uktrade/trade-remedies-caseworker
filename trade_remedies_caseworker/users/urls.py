@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserManagerView, UserView, MyAccountView, ContactLookupView
+from .views import UserManagerView, UserView, MyAccountView, ContactLookupView, CustomDeleteUserView
 
 
 urlpatterns = [
@@ -11,4 +11,9 @@ urlpatterns = [
     path("cusomter/<uuid:user_id>/", UserView.as_view(), name="edit_customer"),
     path("create/investigator/", UserView.as_view(), name="create_investigator"),
     path("create/customer/", UserView.as_view(), name="create_customer"),
+    path(
+        "custom_delete_user/<uuid:user_id>/",
+        CustomDeleteUserView.as_view(),
+        name="custom_delete_user",
+    ),
 ]
