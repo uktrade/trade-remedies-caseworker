@@ -9,11 +9,7 @@ requires = ["poetry-core^1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-<<<<<<< HEAD
-python = "^3.9.20"
-=======
 python = ">=3.9.0,<4.0"
->>>>>>> master
 Django = "~=4.2.16"
 Markdown = "2.6.11"
 boto3 = "1.17.89"
