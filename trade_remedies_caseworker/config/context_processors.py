@@ -30,10 +30,12 @@ def user_context(request):
         context["authenticated"] = True
     return context
 
+
 def _get_panel_layout():
     if settings.DEBUG:
         return {"value": False}
     return Client().get_system_parameters("PRE_RELEASE_PANELS", {}).get("value", False)
+
 
 def page_context(request):
     return {
