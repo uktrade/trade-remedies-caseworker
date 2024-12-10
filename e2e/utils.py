@@ -1,9 +1,15 @@
+import os
+import random
+import string
 import inspect
 import re
 import time
 import pytest
 
 from functools import wraps
+
+def get_base_url():
+    return os.getenv("BASE_FRONTEND_TESTING_URL", "http://localhost:8001/")
 
 def clean_full_url(url):
     """Clean a URL by removing multiple slashes."""
@@ -61,3 +67,34 @@ def retry(tries=3, delay=3, backoff=2, logger=None):
             return f_retry
 
     return deco_retry
+
+
+def generate_test_email():
+    """Generate a random sample email address."""
+    prefix = "test_"
+    suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+    name = ".".join([prefix, suffix])
+    domain = "@gov.uk"
+    return name + domain
+
+
+def generate_test_password():
+    """Generate a random sample password."""
+    # password needs to be in the format
+    # capital letter, lowercase letter, number, special character
+    password = ''.join(random.choices(string.ascii_uppercase, k=1))
+    password += ''.join(random.choices(string.ascii_lowercase, k=1))
+    password += ''.join(random.choices(string.digits, k=1))
+    password += ''.join(random.choices(string.punctuation, k=1))
+    password += ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=8))
+    return password
+
+
+def generate_test_address():
+    """Generate a random address."""
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+
+
+def genetrate_test_postcode():
+    """Generate a random postcode."""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
