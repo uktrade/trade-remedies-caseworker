@@ -7,8 +7,7 @@ services:
       - "8001:8000"
     volumes:
       - ./trade_remedies_caseworker:/app/
-      - ./requirements.in:/app/requirements.in/
-      - ./requirements:/app/requirements/
+      - ./requirements-dev.txt:/app/requirements-dev.txt
     env_file:
       - local.env
     command: python manage.py runserver 0.0.0.0:8000
