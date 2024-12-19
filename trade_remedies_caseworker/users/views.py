@@ -13,8 +13,7 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 from core.base import GroupRequiredMixin
 from core.utils import validate_required_fields, pluck, get
-from core.constants import SECURITY_GROUP_TRA_ADMINISTRATOR, SECURITY_GROUPS_TRA_ADMINS
-
+from core.constants import SECURITY_GROUP_TRA_ADMINISTRATOR, SECURITY_GROUPS_TRA_ADMINS, SECURITY_GROUPS_TRA
 
 logger = logging.getLogger(__name__)
 
@@ -123,13 +122,9 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
         )
 
 
-class CustomDeleteUserView(UserBaseTemplateView):
+class CustomDeleteUserView(UserBaseTemplateView, GroupRequiredMixin):
+    groups_required = SECURITY_GROUPS_TRA
     template_name = "settings/custom_delete_user.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.tra:
-            return super().dispatch(request, *args, **kwargs)
-        return HttpResponseForbidden()
 
     def post(self, request, *args, **kwargs):
         client = self.client(request.user)
