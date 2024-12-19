@@ -123,6 +123,20 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
         )
 
 
+class CustomDeleteUserView(UserBaseTemplateView):
+    template_name = "settings/custom_delete_user.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.tra:
+            return super().dispatch(request, *args, **kwargs)
+        return HttpResponseForbidden()
+
+    def post(self, request, *args, **kwargs):
+        client = self.client(request.user)
+        client.delete_user(user_id=kwargs["user_id"])
+        return HttpResponse("/")
+
+
 class UserView(UserBaseTemplateView):
     delete_user = False
     template_name = "settings/user.html"

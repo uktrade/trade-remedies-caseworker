@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">Delete user</h1>
+  <p class="govuk-body">Are you sure you want to delete this user?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="govuk-button">Delete user</button>
+  </form>
+{% endblock %}

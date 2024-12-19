@@ -3241,3 +3241,4 @@ reset_password_request.html
 Application
 API
 form_errors.error_summaries
+users_my_account
