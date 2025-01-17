@@ -13,7 +13,11 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 from core.base import GroupRequiredMixin
 from core.utils import validate_required_fields, pluck, get
-from core.constants import SECURITY_GROUP_TRA_ADMINISTRATOR, SECURITY_GROUPS_TRA_ADMINS, SECURITY_GROUPS_TRA
+from core.constants import (
+    SECURITY_GROUP_TRA_ADMINISTRATOR,
+    SECURITY_GROUPS_TRA_ADMINS,
+    SECURITY_GROUPS_TRA,
+)
 
 logger = logging.getLogger(__name__)
 
