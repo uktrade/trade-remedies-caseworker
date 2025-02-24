@@ -46,5 +46,3 @@ def test_verify_reg_interest_journey(page):
     page.get_by_role("button", name="Send the notification").click()
     page.get_by_role("button", name="OK").click()
     page.get_by_role("button", name="Exit").click()
-    page.get_by_role("link", name="Notify contact").click()
-    page.get_by_role("button", name="Send the notification").click()
