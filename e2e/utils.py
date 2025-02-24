@@ -101,3 +101,13 @@ def generate_test_address():
 def genetrate_test_postcode():
     """Generate a random postcode."""
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+
+
+def login_user(page, email, password, base_url):
+    """Login a user with the given email and password."""
+    page.goto(base_url)
+    page.get_by_label("Email").click()
+    page.get_by_label("Email").fill(email)
+    page.get_by_label("Password").click()
+    page.get_by_label("Password").fill(password)
+    page.get_by_role("button", name="Log in").click()
