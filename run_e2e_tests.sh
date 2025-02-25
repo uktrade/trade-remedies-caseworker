@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Load environment variables for tests requiring credentials
+# This includes variables like:
+# - TEST_USER_EMAIL
+# - TEST_USER_PASSWORD
+# - TEST_REPR_INVITE_CASE_ID
+# - TEST_REPR_COMPANY_NAME
+if [ -f .e2e.env ]; then
+    source .e2e.env
+else
+    echo "Warning: .e2e.env file not found. Some tests may fail."
+fi
+
 # Initialize variables
 target=""
 target_url=""
