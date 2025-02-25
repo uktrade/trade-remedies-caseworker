@@ -12,7 +12,7 @@ def test_verify_reg_interest_journey(page):
     email = os.environ.get("TEST_USER_EMAIL")
     password = os.environ.get("TEST_USER_PASSWORD")
     case_id = os.environ.get("TEST_REPR_INVITE_CASE_ID")
-    company_name = os.environ.get("TEST_PEPR_COMPANY_NAME")
+    company_name = os.environ.get("TEST_REPR_COMPANY_NAME")
 
     login_user(page, email, password)
 
