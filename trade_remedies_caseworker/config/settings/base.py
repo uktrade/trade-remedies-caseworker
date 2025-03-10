@@ -220,8 +220,8 @@ STATICFILES_DIRS = [
 
 app_bucket_creds = env.get_s3_bucket_config()
 
-AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = app_bucket_creds.get("storage_key")
-AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = app_bucket_creds.get("storage_secret")
+# AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = app_bucket_creds.get("storage_key")
+# AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = app_bucket_creds.get("storage_secret")
 AWS_STORAGE_BUCKET_NAME = app_bucket_creds.get("bucket_name")
 AWS_S3_REGION_NAME = AWS_REGION = app_bucket_creds.get("aws_region")
 AWS_S3_SIGNATURE_VERSION = "s3v4"
