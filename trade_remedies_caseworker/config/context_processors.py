@@ -9,6 +9,8 @@ from django.conf import settings
 
 
 def motd_context(request):
+    if settings.DEBUG:
+        return {"public_notice": ""}
     return {"public_notice": Client().get_system_parameters("PUBLIC_NOTICE").get("value")}
 
 
@@ -29,15 +31,19 @@ def user_context(request):
     return context
 
 
+def _get_panel_layout():
+    if settings.DEBUG:
+        return {"value": False}
+    return Client().get_system_parameters("PRE_RELEASE_PANELS", {}).get("value", False)
+
+
 def page_context(request):
     return {
         "global_header_text": settings.ORGANISATION_NAME,
         "homepage_url": "/cases/",
         "logo_link_title": "Investigator caselist",
         "panel_side": request.COOKIES.get("panel_side"),
-        "PANEL_LAYOUT": Client()
-        .get_system_parameters("PRE_RELEASE_PANELS", {})
-        .get("value", False),
+        "PANEL_LAYOUT": _get_panel_layout(),
         "SHOW_ENV_BANNER": settings.SHOW_ENV_BANNER,
         "ENV_NAME": settings.ENV_NAME,
         "GIT_BRANCH": settings.GIT_BRANCH,

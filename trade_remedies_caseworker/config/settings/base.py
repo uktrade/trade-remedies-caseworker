@@ -19,6 +19,8 @@ import sentry_sdk
 from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from config.env import env
+
 # We use django-environ but do not read a `.env` file. Locally we feed
 # docker-compose an environment from a local.env file in the project root.
 # In our PaaS the service's environment is supplied from Vault.
@@ -27,17 +29,15 @@ from sentry_sdk.integrations.django import DjangoIntegration
 # as we want to get an `ImproperlyConfigured` exception to avoid a badly
 # configured deployment.
 root = environ.Path(__file__) - 4
-env = environ.Env(
-    DEBUG=(bool, False),
-)
 
-SENTRY_ENABLE_TRACING = env.bool("SENTRY_ENABLE_TRACING", default=False)
-SENTRY_TRACES_SAMPLE_RATE = env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.1)
+SENTRY_ENVIRONMENT = env.SENTRY_ENVIRONMENT
+SENTRY_ENABLE_TRACING = env.SENTRY_ENABLE_TRACING
+SENTRY_TRACES_SAMPLE_RATE = env.SENTRY_TRACES_SAMPLE_RATE
 
 sentry_sdk.init(
-    dsn=env("SENTRY_DSN", default=""),
+    dsn=env.SENTRY_DSN,
     integrations=[DjangoIntegration()],
-    environment=env("SENTRY_ENVIRONMENT", default="local"),
+    environment=SENTRY_ENVIRONMENT,
     enable_tracing=SENTRY_ENABLE_TRACING,
     traces_sample_rate=SENTRY_TRACES_SAMPLE_RATE,
 )
@@ -51,16 +51,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("DJANGO_SECRET_KEY")
+SECRET_KEY = env.DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = env.DEBUG
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost"])
+ALLOWED_HOSTS = ["*"]
 
-ORGANISATION_NAME = env("ORGANISATION_NAME", default="Organisation name placeholder")
+ORGANISATION_NAME = env.ORGANISATION_NAME
 
-ORGANISATION_INITIALISM = env("ORGANISATION_INITIALISM", default="PLACEHOLDER")
+ORGANISATION_INITIALISM = env.ORGANISATION_INITIALISM
 
 # Application definition
 INSTALLED_APPS = [
@@ -99,12 +99,7 @@ MIDDLEWARE = [
     "config.middleware.SentryContextMiddleware",
 ]
 
-# Add basic authentication if configured
-basic_auth_user = env("BASIC_AUTH_USER", default=False)
-if basic_auth_user:
-    MIDDLEWARE.insert(0, "basicauth.middleware.BasicAuthMiddleware")
-
-if env("RESTRICT_IPS", default=False):
+if env.RESTRICT_IPS:
     MIDDLEWARE.insert(0, "ip_restriction.IpWhitelister")
 
 ROOT_URLCONF = "config.urls"
@@ -139,12 +134,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
-}
+DATABASES = env.get_database_config()
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -172,17 +162,19 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-_VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
+_VCAP_SERVICES = env.VCAP_SERVICES
 
 # Redis - Trade remedies uses different redis database numbers for the Django Cache
 # API:        0
 # Caseworker: 1
 # Public:     2
-REDIS_DATABASE_NUMBER = env("REDIS_DATABASE_NUMBER", default=1)
-if "redis" in _VCAP_SERVICES:
-    REDIS_BASE_URL = _VCAP_SERVICES["redis"][0]["credentials"]["uri"]
+REDIS_DATABASE_NUMBER = env.REDIS_DATABASE_NUMBER
+if redis := getattr(_VCAP_SERVICES, "redis", None):
+    REDIS_BASE_URL = _VCAP_SERVICES.redis[0]["credentials"]["uri"]
+    sentry_sdk.capture_message(f"Using VCAP redis on URL {REDIS_BASE_URL}")
 else:
-    REDIS_BASE_URL = env("REDIS_BASE_URL", default="redis://redis:6379")
+    REDIS_BASE_URL = env.REDIS_BASE_URL
+    sentry_sdk.capture_message(f"Using local redis on URL {REDIS_BASE_URL}")
 
 CACHES = {
     "default": {
@@ -197,24 +189,24 @@ CACHES = {
 # Session configuration
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = env("SECURE_COOKIE", default=False)
-SESSION_EXPIRE_SECONDS = env("SESSION_LENGTH_MINUTES", default=30) * 60
-SESSION_EXPIRE_AFTER_LAST_ACTIVITY = env.bool("SESSION_EXPIRE_AFTER_LAST_ACTIVITY", default=True)
-CSRF_COOKIE_SECURE = env("SECURE_CSRF_COOKIE", default=False)
-CSRF_COOKIE_HTTPONLY = env("CSRF_COOKIE_HTTPONLY", default=False)
-SESSION_COOKIE_AGE = env("SESSION_LENGTH_MINUTES", default=30) * 60
-RESTRICT_IPS = env("RESTRICT_IPS", default=False)
-USE_2FA = env("USE_2FA", default=True)
+SESSION_COOKIE_SECURE = env.SECURE_COOKIE
+SESSION_EXPIRE_SECONDS = env.SESSION_LENGTH_MINUTES * 60
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = env.SESSION_EXPIRE_AFTER_LAST_ACTIVITY
+CSRF_COOKIE_SECURE = env.SECURE_CSRF_COOKIE
+CSRF_COOKIE_HTTPONLY = env.CSRF_COOKIE_HTTPONLY
+SESSION_COOKIE_AGE = env.SESSION_LENGTH_MINUTES * 60
+RESTRICT_IPS = env.RESTRICT_IPS
+USE_2FA = env.USE_2FA
 LOGOUT_REDIRECT_URL = "/"
 FRIENDLY_DATE_FORMAT = "%-d %B %Y"
 API_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
-API_BASE_URL = env("API_BASE_URL", default="http://localhost:8000")
+API_BASE_URL = env.API_BASE_URL
 API_PREFIX = "api/v1"
 API_URL = f"{API_BASE_URL}/{API_PREFIX}"
-HEALTH_CHECK_TOKEN = env("HEALTH_CHECK_TOKEN")
-PUBLIC_BASE_URL = env("PUBLIC_BASE_URL", default="http://localhost:8002")
-ENVIRONMENT_KEY = env("ENVIRONMENT_KEY", default="CW-ENV")
+HEALTH_CHECK_TOKEN = env.HEALTH_CHECK_TOKEN
+PUBLIC_BASE_URL = env.PUBLIC_BASE_URL
+ENVIRONMENT_KEY = env.ENVIRONMENT_KEY
 APPEND_SLASH = True
 
 # Static files (CSS, JavaScript, Images)
@@ -226,10 +218,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "templates", "static"),
 ]
 
-AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = env("S3_STORAGE_KEY", default=None)
-AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env("S3_STORAGE_SECRET", default=None)
-AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME", default=None)
-AWS_S3_REGION_NAME = AWS_REGION = env("AWS_REGION", default="eu-west-1")
+app_bucket_creds = env.get_s3_bucket_config()
+
+# AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = app_bucket_creds.get("storage_key")
+# AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = app_bucket_creds.get("storage_secret")
+AWS_STORAGE_BUCKET_NAME = app_bucket_creds.get("bucket_name")
+AWS_S3_REGION_NAME = AWS_REGION = app_bucket_creds.get("aws_region")
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
@@ -238,9 +232,9 @@ S3_CLIENT = "boto3"
 # S3 Root directory name
 S3_DOCUMENT_ROOT_DIRECTORY = "documents"
 
-CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
-CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
-CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
+CLAM_AV_USERNAME = env.CLAM_AV_USERNAME
+CLAM_AV_PASSWORD = env.CLAM_AV_PASSWORD
+CLAM_AV_DOMAIN = env.CLAM_AV_DOMAIN
 
 FILE_UPLOAD_HANDLERS = (
     "v2_api_client.shared.upload_handler.django_upload_handler.ExtractMetadataFileUploadHandler",
@@ -249,10 +243,10 @@ FILE_UPLOAD_HANDLERS = (
 )  # Order is important
 
 # DEFAULT CHUNK SIZE OF 32 MB
-DEFAULT_CHUNK_SIZE = env.int("DEFAULT_CHUNK_SIZE", default=33554432)
+DEFAULT_CHUNK_SIZE = env.DEFAULT_CHUNK_SIZE
 
 # MAX FILE SIZE OF 30 MB
-FILE_MAX_SIZE_BYTES = env.int("FILE_MAX_SIZE_BYTES", default=31457280)
+FILE_MAX_SIZE_BYTES = env.FILE_MAX_SIZE_BYTES
 
 # Temporary basic auth
 BASICAUTH_USERS = {
@@ -264,14 +258,11 @@ COUNTRIES_OVERRIDE = {
     "EU": "EU Customs Union",
 }
 
-if basic_auth_user:
-    BASICAUTH_USERS = json.loads(basic_auth_user)
+SHOW_ENV_BANNER = env.SHOW_ENV_BANNER
+ENV_NAME = env.ENV_NAME
 
-SHOW_ENV_BANNER = env("SHOW_ENV_BANNER", default=False)
-ENV_NAME = env("ENV_NAME", default="production")
-
-GIT_BRANCH = env("GIT_BRANCH", default="")
-GIT_COMMIT = env("GIT_COMMIT", default="")
+GIT_BRANCH = env.GIT_BRANCH
+GIT_COMMIT = env.GIT_COMMIT
 
 LOGGING = {
     "version": 1,
@@ -291,28 +282,28 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": env("ROOT_LOG_LEVEL", default="INFO"),
+        "level": env.ROOT_LOG_LEVEL,
     },
     "loggers": {
         "django": {
             "handlers": [
                 "stdout",
             ],
-            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+            "level": env.DJANGO_LOG_LEVEL,
             "propagate": False,
         },
         "django.server": {
             "handlers": [
                 "stdout",
             ],
-            "level": env("DJANGO_SERVER_LOG_LEVEL", default="INFO"),
+            "level": env.DJANGO_SERVER_LOG_LEVEL,
             "propagate": False,
         },
         "django.request": {
             "handlers": [
                 "stdout",
             ],
-            "level": env("DJANGO_REQUEST_LOG_LEVEL", default="INFO"),
+            "level": env.DJANGO_REQUEST_LOG_LEVEL,
             "propagate": False,
         },
     },
@@ -338,28 +329,28 @@ ENVIRONMENT_LOGGING = {
         "handlers": [
             "ecs",
         ],
-        "level": env("ROOT_LOG_LEVEL", default="INFO"),
+        "level": env.ROOT_LOG_LEVEL,
     },
     "loggers": {
         "django": {
             "handlers": [
                 "ecs",
             ],
-            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+            "level": env.DJANGO_LOG_LEVEL,
             "propagate": False,
         },
         "django.server": {
             "handlers": [
                 "ecs",
             ],
-            "level": env("DJANGO_SERVER_LOG_LEVEL", default="ERROR"),
+            "level": env.DJANGO_SERVER_LOG_LEVEL,
             "propagate": False,
         },
         "django.request": {
             "handlers": [
                 "ecs",
             ],
-            "level": env("DJANGO_REQUEST_LOG_LEVEL", default="ERROR"),
+            "level": env.DJANGO_REQUEST_LOG_LEVEL,
             "propagate": False,
         },
     },
@@ -367,7 +358,7 @@ ENVIRONMENT_LOGGING = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-GOOGLE_ANALYTICS_TAG_MANAGER_ID = env("GOOGLE_ANALYTICS_TAG_MANAGER_ID", default="")
+GOOGLE_ANALYTICS_TAG_MANAGER_ID = env.GOOGLE_ANALYTICS_TAG_MANAGER_ID
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
@@ -376,4 +367,4 @@ COUNTRIES_FIRST_BREAK = "------"
 
 GDS_DATETIME_STRING = "%d %b %Y at %-I:%M%p"
 
-ADMIN_DEBUG_TOOLS_ENABLED = env.bool("ADMIN_DEBUG_TOOLS_ENABLED", default=False)
+ADMIN_DEBUG_TOOLS_ENABLED = env.ADMIN_DEBUG_TOOLS_ENABLED
