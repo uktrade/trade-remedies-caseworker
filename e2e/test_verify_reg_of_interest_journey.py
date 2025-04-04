@@ -11,10 +11,10 @@ def test_verify_reg_interest_journey(page):
     
     email = os.environ.get("TEST_USER_EMAIL")
     password = os.environ.get("TEST_USER_PASSWORD")
-    case_id = os.environ.get("TEST_REPR_INVITE_CASE_ID")
+    case_id = os.environ.get("TEST_REGISTER_INTEREST_CASE_ID")
     company_name = os.environ.get("TEST_REPR_COMPANY_NAME")
 
-    login_user(page, email, password)
+    login_user(page, email, password, BASE_URL)
 
     page.wait_for_timeout(200)
 
@@ -23,7 +23,8 @@ def test_verify_reg_interest_journey(page):
     # go to the reps menu
     page.locator("#menu-bar > div:nth-child(3)").click()
 
-    page.get_by_role("link", name=company_name, exact=True).click()
+    page.locator(f"a:has-text('{company_name}')").first.click()
+    
     page.get_by_role("link", name="Registration of Interest").click()
     page.get_by_role("button", name="Verification process").click()
     page.get_by_role("link", name=f"Verify {company_name}").click()
