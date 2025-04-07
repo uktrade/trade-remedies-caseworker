@@ -90,7 +90,7 @@ class CloudFoundrySettings(BaseSettings):
                 }
             }
         db_settings = env_obj.db()
-        if not db_settings:
+        if not db_settings and os.environ.get("DJANGO_SETTINGS_MODULE") == "config.settings.local":
             return {
                 "default": {
                     "ENGINE": "django.db.backends.sqlite3",
