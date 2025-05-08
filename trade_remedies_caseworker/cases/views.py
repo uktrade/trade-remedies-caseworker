@@ -529,64 +529,72 @@ class SubmissionsView(CaseBaseView):
         if not role.get("allow_cw_create"):
             return role["key"]
         return "sampled" if party.get("sampled") else "not_sampled"
-    
-    def consolidate_submissions(self, case, participants, submissions_by_party, counts, selected_tab):
+
+    def consolidate_submissions(
+        self, case, participants, submissions_by_party, counts, selected_tab
+    ):
         # Pre-process case roles to avoid repeated API calls
         all_roles = self._client.get_case_roles()
         roles = []
         single_role_return = None
-        
+
         empty_submissions = submissions_by_party.get("", [])
-        
+
         for role in all_roles:
 
             if role.get("key") == selected_tab or role.get("allow_cw_create"):
                 role_participants = []
-                
+
                 # Get parties for this role
                 parties = participants.get(role["key"], {}).get("parties", [])
-                
+
                 # Track if this role has customer parties
                 has_customer_parties = False
-                
+
                 for party in parties:
                     tab = self.get_tab(role, party)
-                    
-                    party_submissions = submissions_by_party.get(party["id"], []) + empty_submissions
-                    
+
+                    party_submissions = (
+                        submissions_by_party.get(party["id"], []) + empty_submissions
+                    )
+
                     # Only process if there are submissions
                     if party_submissions:
                         counts[tab] = counts.get(tab, 0) + len(party_submissions)
-                        
+
                         # Only add to participants if this is the selected tab
                         if tab == selected_tab:
                             # Avoid modifying original data - create minimal copy
                             role_party = party.copy()
                             role_party["submissions"] = party_submissions
                             role_participants.append(role_party)
-                            
+
                             # Update customer parties flag
                             if not party.get("gov_body"):
                                 has_customer_parties = True
-                
+
                 # Only sort if we have participants for this role
                 if role_participants:
                     # Choose sort key based on tab
-                    sort_key = "submissions/0/received_at" if selected_tab == CASE_ROLE_AWAITING_APPROVAL else "name"
+                    sort_key = (
+                        "submissions/0/received_at"
+                        if selected_tab == CASE_ROLE_AWAITING_APPROVAL
+                        else "name"
+                    )
                     role_participants.sort(key=lambda pt: get(pt, sort_key) or "")
-                    
+
                     # Update role with processed data
                     role_with_participants = role.copy()
                     role_with_participants["participants"] = role_participants
                     if has_customer_parties:
                         role_with_participants["customer_parties"] = True
-                    
+
                     # Handle single role return case
                     if role.get("key") == selected_tab:
                         single_role_return = role_with_participants
                     elif role.get("allow_cw_create"):
                         roles.append(role_with_participants)
-        
+
         return [single_role_return] if single_role_return else roles
 
     def get_name(self, participant):
@@ -598,34 +606,36 @@ class SubmissionsView(CaseBaseView):
             participants.extend(source[role]["parties"])
         participants.sort(key=lambda p: p.get("name") or "")
         return participants
-    
+
     def divide_submissions(self, submissions):
         result = {"incoming": [], "outgoing": [], "draft": []}
-        
+
         for submission in submissions:
             if get(submission, "status/sent"):
                 result["outgoing"].append(submission)
             elif get(submission, "status/default") and get(submission, "type/direction") != 1:
                 result["draft"].append(submission)
-            elif not get(submission, "status/draft") or get(submission, "type/key") == "application":
+            elif (
+                not get(submission, "status/draft") or get(submission, "type/key") == "application"
+            ):
                 result["incoming"].append(submission)
-        
+
         result["incoming"].sort(key=lambda su: su.get("received_at") or "", reverse=True)
-        result["outgoing"].sort(key=lambda su: su.get("sent_at") or "", reverse=True) 
+        result["outgoing"].sort(key=lambda su: su.get("sent_at") or "", reverse=True)
         result["draft"].sort(key=lambda su: su.get("created_at") or "", reverse=True)
-        
+
         return result
-    
+
     def add_page_data(self):
         tab = self.request.GET.get("tab", "sampled").lower()
-        
+
         all_submissions = self._client.get_submissions(self.case_id, show_global=True)
-        
+
         # Use a more efficient approach to handle draft submissions
         draft_submissions = []
         non_draft_submissions = []
         submission_by_type = {}
-        
+
         # Process submissions in a single pass
         for sub in all_submissions:
             # Index by type
@@ -633,7 +643,7 @@ class SubmissionsView(CaseBaseView):
             if sub_type not in submission_by_type:
                 submission_by_type[sub_type] = []
             submission_by_type[sub_type].append(sub)
-            
+
             # Handle draft logic
             if get(sub, "status/default"):
                 if get(sub, "version") == "1":
@@ -642,13 +652,13 @@ class SubmissionsView(CaseBaseView):
                     non_draft_submissions.append(sub)
             else:
                 non_draft_submissions.append(sub)
-        
+
         # Handle draft applications in a more efficient way
         application = submission_by_type.get("application", [{}])[0]
         if application.get("status", {}).get("default") is True:
             application["tra_editable"] = True
             non_draft_submissions.append(application)
-            
+
         # Create submissions_by_party more efficiently
         submissions_by_party = {}
         for sub in non_draft_submissions:
@@ -656,18 +666,18 @@ class SubmissionsView(CaseBaseView):
             if org_id not in submissions_by_party:
                 submissions_by_party[org_id] = []
             submissions_by_party[org_id].append(sub)
-        
+
         # Get other required data
         case_enums = self._client.get_all_case_enums()
         invites = self._client.get_case_invite_submissions(self.case_id)
         participants = self._client.get_case_participants(self.case_id, fields=org_fields)
-        
+
         # Create flat participants list without creating a new function call
         flat_participants = []
         for role in participants:
             flat_participants.extend(participants[role]["parties"])
         flat_participants.sort(key=lambda pt: pt.get("name") or "")
-        
+
         # Setup template
         counts = {}
         if self.sub_page:
@@ -675,10 +685,10 @@ class SubmissionsView(CaseBaseView):
             tab = self.request.GET.get("tab", "incoming").lower()
         elif self._client.get_system_boolean("PRE_NEW_SUBMISSION_PAGE"):
             self.template_name = "cases/submissions_new.html"
-        
+
         # Create an efficient submission groups dictionary without separate sorting
         submission_groups = self.divide_submissions(all_submissions)
-        
+
         # Build context with minimal data processing
         context = {
             "raw_participants": participants,
@@ -694,11 +704,13 @@ class SubmissionsView(CaseBaseView):
             "submission_groups": submission_groups,
             "all_submissions": all_submissions,
         }
-        
+
         # Handle application vs ex_officio ones more efficiently
-        if not submission_by_type.get("application") and submission_by_type.get("ex officio application"):
+        if not submission_by_type.get("application") and submission_by_type.get(
+            "ex officio application"
+        ):
             context["submissions"]["application"] = submission_by_type["ex officio application"]
-        
+
         return context
 
 
