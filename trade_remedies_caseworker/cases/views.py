@@ -78,43 +78,74 @@ org_fields = json.dumps(
 )
 
 
-def fetch_all_paginated_results(api_method, *args, page_size=50, max_pages=None, **kwargs):
+def fetch_all_paginated_results(api_method, *args, page_size=25, max_pages=5, **kwargs):
     """
-    Generic utility to fetch ALL results by paginating through API calls
-
+    Generic utility to fetch ALL results by paginating through API calls using parallel requests
+    
     Args:
         api_method: Function to call for fetching each page
         *args: Positional arguments to pass to the API method
-        page_size: Number of items per page (default: 50)
-        max_pages: Maximum number of pages to fetch (default: None = unlimited)
+        page_size: Number of items per page (default: 25)
+        max_pages: Maximum number of pages to fetch (default: 5)
         **kwargs: Keyword arguments to pass to the API method
-
+        
     Returns:
         list: Combined list of all results from all pages
     """
-    page = 1
+    import concurrent.futures
+    from concurrent.futures import ThreadPoolExecutor
+    import logging
+
     all_results = []
-
-    while True:
-        # Call the API method with the current page parameters
-        current_page_results = api_method(*args, page=page, page_size=page_size, **kwargs)
-
-        # If the page is empty, we're done
-        if not current_page_results:
-            break
-
-        all_results.extend(current_page_results)
-
-        # If we got fewer items than page_size, we've reached the last page
-        if len(current_page_results) < page_size:
-            break
-
-        # Check if we've reached the maximum number of pages
-        if max_pages and page >= max_pages:
-            break
-
-        page += 1
-
+    
+    try:
+        # Get first page
+        first_page = api_method(*args, page=1, page_size=page_size, **kwargs)
+        
+        # If no results or only partial page, return immediately
+        if not first_page:
+            return []
+            
+        all_results.extend(first_page)
+        
+        # If first page wasn't full or we only need one page, return
+        if len(first_page) < page_size or max_pages <= 1:
+            return all_results
+        
+        # Function to fetch a specific page
+        def fetch_page(page_num):
+            try:
+                return page_num, api_method(*args, page=page_num, page_size=page_size, **kwargs)
+            except Exception as e:
+                logging.error(f"Error fetching page {page_num}: {str(e)}")
+                return page_num, []
+        
+        # Use ThreadPool to fetch remaining pages in parallel
+        with ThreadPoolExecutor(max_workers=min(5, max_pages-1)) as executor:
+            # Submit all remaining page requests at once
+            future_to_page = {
+                executor.submit(fetch_page, page): page 
+                for page in range(2, max_pages + 1)
+            }
+            
+            # Process results and store by page number
+            page_results = {}
+            for future in concurrent.futures.as_completed(future_to_page):
+                page_num, results = future.result()
+                if results:
+                    page_results[page_num] = results
+        
+        # Add results in correct page order
+        for page_num in sorted(page_results.keys()):
+            all_results.extend(page_results[page_num])
+            
+            # If we find a non-full page, we've reached the end
+            if len(page_results[page_num]) < page_size:
+                break
+                
+    except Exception as e:
+        logging.error(f"Error in paginated results fetching: {str(e)}")
+    
     return all_results
 
 
