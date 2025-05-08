@@ -78,6 +78,46 @@ org_fields = json.dumps(
 )
 
 
+def fetch_all_paginated_results(api_method, *args, page_size=50, max_pages=None, **kwargs):
+    """
+    Generic utility to fetch ALL results by paginating through API calls
+
+    Args:
+        api_method: Function to call for fetching each page
+        *args: Positional arguments to pass to the API method
+        page_size: Number of items per page (default: 50)
+        max_pages: Maximum number of pages to fetch (default: None = unlimited)
+        **kwargs: Keyword arguments to pass to the API method
+
+    Returns:
+        list: Combined list of all results from all pages
+    """
+    page = 1
+    all_results = []
+
+    while True:
+        # Call the API method with the current page parameters
+        current_page_results = api_method(*args, page=page, page_size=page_size, **kwargs)
+
+        # If the page is empty, we're done
+        if not current_page_results:
+            break
+
+        all_results.extend(current_page_results)
+
+        # If we got fewer items than page_size, we've reached the last page
+        if len(current_page_results) < page_size:
+            break
+
+        # Check if we've reached the maximum number of pages
+        if max_pages and page >= max_pages:
+            break
+
+        page += 1
+
+    return all_results
+
+
 class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
     template_name = "cases/cases.html"
 
@@ -295,6 +335,22 @@ class CaseBaseView(
         """
         perms = self.get_permission_required()
         return not perms or self.request.user.has_perms(perms)
+
+    def fetch_all_submissions(self, case_id, show_global=False, fields=None):
+        """
+        Fetch ALL submissions by paginating through results until complete
+
+        Args:
+            case_id: The case ID
+            show_global: Whether to include TRA submissions
+            fields: Optional fields to return
+
+        Returns:
+            list: Combined list of all submissions from all pages
+        """
+        return fetch_all_paginated_results(
+            self._client.get_submissions, case_id, show_global=show_global, fields=fields
+        )
 
 
 class CaseAdminView(CaseBaseView):
@@ -629,7 +685,7 @@ class SubmissionsView(CaseBaseView):
     def add_page_data(self):
         tab = self.request.GET.get("tab", "sampled").lower()
 
-        all_submissions = self._client.get_submissions(self.case_id, show_global=True)
+        all_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
 
         # Use a more efficient approach to handle draft submissions
         draft_submissions = []
@@ -838,7 +894,7 @@ class SubmissionView(CaseBaseView):
             )
             case_enums = self._client.get_all_case_enums(direction=DIRECTION_TRA_TO_PUBLIC)
             # Get all draft submissions of this type
-            all_submissions = self._client.get_submissions(self.case_id, show_global=True)
+            all_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
             draft_submissions = (
                 deep_index_items_by(all_submissions, "status/default").get("true") or []
             )
@@ -1863,7 +1919,12 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         item = request.GET.get("item")
         template = request.GET.get("template")
         result = {}
-        case_submissions = client.get_submissions(case_id)
+        case_submissions = fetch_all_paginated_results(
+            client.get_submissions,
+            case_id,
+            show_global=False,
+        )
+        self.fetch_all_submissions(self.case_id, show_global=True)
         idx_submissions = deep_index_items_by(case_submissions, "organisation/id")
         org_id = str(organisation_id)
         third_party_contacts = []
@@ -2424,7 +2485,7 @@ class PublicFileView(CaseBaseView):
             "value": tab,
         }
 
-        case_submissions = self._client.get_submissions(self.case_id, show_global=True)
+        case_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
         by_tra = deep_index_items_by_exists(case_submissions, "is_tra")
         tra_by_published = deep_index_items_by_exists(by_tra.get("true"), "issued_at")
         by_published = deep_index_items_by_exists(case_submissions, "issued_at")
