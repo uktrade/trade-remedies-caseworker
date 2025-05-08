@@ -687,7 +687,6 @@ class SubmissionsView(CaseBaseView):
 
         all_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
 
-        # Use a more efficient approach to handle draft submissions
         draft_submissions = []
         non_draft_submissions = []
         submission_by_type = {}
@@ -709,13 +708,11 @@ class SubmissionsView(CaseBaseView):
             else:
                 non_draft_submissions.append(sub)
 
-        # Handle draft applications in a more efficient way
         application = submission_by_type.get("application", [{}])[0]
         if application.get("status", {}).get("default") is True:
             application["tra_editable"] = True
             non_draft_submissions.append(application)
 
-        # Create submissions_by_party more efficiently
         submissions_by_party = {}
         for sub in non_draft_submissions:
             org_id = get(sub, "organisation/id")
@@ -742,7 +739,6 @@ class SubmissionsView(CaseBaseView):
         elif self._client.get_system_boolean("PRE_NEW_SUBMISSION_PAGE"):
             self.template_name = "cases/submissions_new.html"
 
-        # Create an efficient submission groups dictionary without separate sorting
         submission_groups = self.divide_submissions(all_submissions)
 
         # Build context with minimal data processing
@@ -761,7 +757,7 @@ class SubmissionsView(CaseBaseView):
             "all_submissions": all_submissions,
         }
 
-        # Handle application vs ex_officio ones more efficiently
+        # Handle application vs ex_officio ones more
         if not submission_by_type.get("application") and submission_by_type.get(
             "ex officio application"
         ):
