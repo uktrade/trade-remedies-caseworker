@@ -17,7 +17,7 @@ certifi = "^2024.7.4"
 django-audit-log-middleware = "0.0.4"
 django-basicauth = "0.5.2"
 django-cache-memoize = "0.2.0"
-django-chunk-upload-handlers = "0.0.12"
+django-chunk-upload-handlers = "0.0.15"
 django-countries = "7.2.1"
 django-environ = "0.4.5"
 django-extensions = "3.1.5"
@@ -43,9 +43,13 @@ whitenoise = "5.3.0"
 pillow = "^10.3.0"
 trade-remedies-client = {git = "https://github.com/uktrade/trade-remedies-client.git", rev = "master"}
 v2-api-client = {git = "https://github.com/uktrade/trs_v2_api_client.git", rev = "master"}
-gunicorn = "22.0.0"
+gunicorn = "23.0.0"
 gevent = "23.9.1"
 lxml = "4.9.1"
+pydantic-settings = "2.5.2"
+dbt-copilot-python = "0.1.4"
+dj-database-url = "0.5.0"
+psycopg2-binary = "^2.9.10"
 
 [tool.poetry.dev-dependencies]
 behave-django = "1.4.0"
@@ -87,7 +91,7 @@ exclude = '''
 '''
 
 [tool.flake8]
-max-line-length = 100
+max-line-length = 120
 max-complexity = 10
 per-file-ignores = '__init__.py: F401'
 import_order_style = 'smarkets'

@@ -2,6 +2,7 @@ import itertools
 import json
 import logging
 import re
+import concurrent.futures
 
 import v2_api_client.client
 from django.conf import settings
@@ -76,6 +77,73 @@ org_fields = json.dumps(
         }
     }
 )
+
+
+def fetch_all_paginated_results(api_method, *args, page_size=25, max_pages=5, **kwargs):
+    """
+    Generic utility to fetch ALL results by paginating through API calls using parallel requests
+
+    Args:
+        api_method: Function to call for fetching each page
+        *args: Positional arguments to pass to the API method
+        page_size: Number of items per page (default: 25)
+        max_pages: Maximum number of pages to fetch (default: 5)
+        **kwargs: Keyword arguments to pass to the API method
+
+    Returns:
+        list: Combined list of all results from all pages
+    """
+
+    all_results = []
+
+    try:
+        # Get first page
+        first_page = api_method(*args, page=1, page_size=page_size, **kwargs)
+
+        # If no results or only partial page, return immediately
+        if not first_page:
+            return []
+
+        all_results.extend(first_page)
+
+        # If first page wasn't full or we only need one page, return
+        if len(first_page) < page_size or max_pages <= 1:
+            return all_results
+
+        # Function to fetch a specific page
+        def fetch_page(page_num):
+            try:
+                return page_num, api_method(*args, page=page_num, page_size=page_size, **kwargs)
+            except Exception as e:
+                logging.error(f"Error fetching page {page_num}: {str(e)}")
+                return page_num, []
+
+        # Use ThreadPool to fetch remaining pages in parallel
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(5, max_pages - 1)) as executor:
+            # Submit all remaining page requests at once
+            future_to_page = {
+                executor.submit(fetch_page, page): page for page in range(2, max_pages + 1)
+            }
+
+            # Process results and store by page number
+            page_results = {}
+            for future in concurrent.futures.as_completed(future_to_page):
+                page_num, results = future.result()
+                if results:
+                    page_results[page_num] = results
+
+        # Add results in correct page order
+        for page_num in sorted(page_results.keys()):
+            all_results.extend(page_results[page_num])
+
+            # If we find a non-full page, we've reached the end
+            if len(page_results[page_num]) < page_size:
+                break
+
+    except Exception as e:
+        logging.error(f"Error in paginated results fetching: {str(e)}")
+
+    return all_results
 
 
 class CasesView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
@@ -295,6 +363,22 @@ class CaseBaseView(
         """
         perms = self.get_permission_required()
         return not perms or self.request.user.has_perms(perms)
+
+    def fetch_all_submissions(self, case_id, show_global=False, fields=None):
+        """
+        Fetch ALL submissions by paginating through results until complete
+
+        Args:
+            case_id: The case ID
+            show_global: Whether to include TRA submissions
+            fields: Optional fields to return
+
+        Returns:
+            list: Combined list of all submissions from all pages
+        """
+        return fetch_all_paginated_results(
+            self._client.get_submissions, case_id, show_global=show_global, fields=fields
+        )
 
 
 class CaseAdminView(CaseBaseView):
@@ -533,32 +617,68 @@ class SubmissionsView(CaseBaseView):
     def consolidate_submissions(
         self, case, participants, submissions_by_party, counts, selected_tab
     ):
+        # Pre-process case roles to avoid repeated API calls
+        all_roles = self._client.get_case_roles()
         roles = []
-        single_role_return = None  # for awaiting and rejected - only return that specific role
-        for role in self._client.get_case_roles():
-            role["participants"] = []
-            for party in participants.get(role["key"], {}).get("parties", []):
-                tab = self.get_tab(role, party)
-                submissions = submissions_by_party.get(party["id"], [])
+        single_role_return = None
 
-                submissions += submissions_by_party.get("", [])
-                if submissions:
-                    counts[tab] = counts.get(tab, 0) + len(submissions)
-                    if tab == selected_tab:
-                        party["submissions"] = submissions
-                        role["participants"].append(party)
-                        if not party.get("gov_body"):
-                            role["customer_parties"] = True
-            sort_key = (
-                "submissions/0/received_at"
-                if selected_tab == CASE_ROLE_AWAITING_APPROVAL
-                else "name"
-            )
-            role["participants"].sort(key=lambda pt: get(pt, sort_key) or "")
-            if role.get("key") == selected_tab:
-                single_role_return = role
-            if role.get("allow_cw_create"):
-                roles.append(role)
+        empty_submissions = submissions_by_party.get("", [])
+
+        for role in all_roles:
+
+            if role.get("key") == selected_tab or role.get("allow_cw_create"):
+                role_participants = []
+
+                # Get parties for this role
+                parties = participants.get(role["key"], {}).get("parties", [])
+
+                # Track if this role has customer parties
+                has_customer_parties = False
+
+                for party in parties:
+                    tab = self.get_tab(role, party)
+
+                    party_submissions = (
+                        submissions_by_party.get(party["id"], []) + empty_submissions
+                    )
+
+                    # Only process if there are submissions
+                    if party_submissions:
+                        counts[tab] = counts.get(tab, 0) + len(party_submissions)
+
+                        # Only add to participants if this is the selected tab
+                        if tab == selected_tab:
+                            # Avoid modifying original data - create minimal copy
+                            role_party = party.copy()
+                            role_party["submissions"] = party_submissions
+                            role_participants.append(role_party)
+
+                            # Update customer parties flag
+                            if not party.get("gov_body"):
+                                has_customer_parties = True
+
+                # Only sort if we have participants for this role
+                if role_participants:
+                    # Choose sort key based on tab
+                    sort_key = (
+                        "submissions/0/received_at"
+                        if selected_tab == CASE_ROLE_AWAITING_APPROVAL
+                        else "name"
+                    )
+                    role_participants.sort(key=lambda pt: get(pt, sort_key) or "")
+
+                    # Update role with processed data
+                    role_with_participants = role.copy()
+                    role_with_participants["participants"] = role_participants
+                    if has_customer_parties:
+                        role_with_participants["customer_parties"] = True
+
+                    # Handle single role return case
+                    if role.get("key") == selected_tab:
+                        single_role_return = role_with_participants
+                    elif role.get("allow_cw_create"):
+                        roles.append(role_with_participants)
+
         return [single_role_return] if single_role_return else roles
 
     def get_name(self, participant):
@@ -567,59 +687,79 @@ class SubmissionsView(CaseBaseView):
     def flatten_participants(self, source):
         participants = []
         for role in source:
-            rec = source[role]
-            participants = participants + rec["parties"]
-        participants.sort(key=self.get_name)
+            participants.extend(source[role]["parties"])
+        participants.sort(key=lambda p: p.get("name") or "")
         return participants
 
     def divide_submissions(self, submissions):
-        incoming = []
-        outgoing = []
-        draft = []
+        result = {"incoming": [], "outgoing": [], "draft": []}
 
         for submission in submissions:
             if get(submission, "status/sent"):
-                outgoing.append(submission)
+                result["outgoing"].append(submission)
             elif get(submission, "status/default") and get(submission, "type/direction") != 1:
-                draft.append(submission)
-            else:
-                if (
-                    not get(submission, "status/draft")
-                    or get(submission, "type/key") == "application"
-                ):  # customer draft should not be seen by investigators
-                    incoming.append(submission)
-        return {
-            "incoming": sorted(incoming, key=lambda su: su.get("received_at") or "", reverse=True),
-            "outgoing": sorted(outgoing, key=lambda su: su.get("sent_at") or "", reverse=True),
-            "draft": sorted(draft, key=lambda su: su.get("created_at") or "", reverse=True),
-        }
+                result["draft"].append(submission)
+            elif (
+                not get(submission, "status/draft") or get(submission, "type/key") == "application"
+            ):
+                result["incoming"].append(submission)
+
+        result["incoming"].sort(key=lambda su: su.get("received_at") or "", reverse=True)
+        result["outgoing"].sort(key=lambda su: su.get("sent_at") or "", reverse=True)
+        result["draft"].sort(key=lambda su: su.get("created_at") or "", reverse=True)
+
+        return result
 
     def add_page_data(self):
         tab = self.request.GET.get("tab", "sampled").lower()
-        all_submissions = self._client.get_submissions(self.case_id, show_global=True)
-        submissions_by_type = deep_index_items_by(all_submissions, "type/name")
 
-        # Get submissions that have just been created by customer
-        # or are still in draft after creation
-        draft_submissions = deep_index_items_by(all_submissions, "status/default").get("true") or []
-        # Remove any that are back with the customer following deficiency
-        draft_first_version_submissions = (
-            deep_index_items_by(draft_submissions, "version").get("1") or []
-        )
-        # Exclude these drafts from our list
-        non_draft_submissions = [
-            sub for sub in all_submissions if sub not in draft_first_version_submissions
-        ]
-        # draft applications are included to allow a heads up view
-        # to the caseworker before it's submitted
-        if submissions_by_type.get("application", [{}])[0].get("status", {}).get("default") is True:
-            submissions_by_type["application"][0]["tra_editable"] = True
-            non_draft_submissions += submissions_by_type["application"]
-        submissions_by_party = deep_index_items_by(non_draft_submissions, "organisation/id")
+        all_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
+
+        draft_submissions = []
+        non_draft_submissions = []
+        submission_by_type = {}
+
+        # Process submissions in a single pass
+        for sub in all_submissions:
+            # Index by type
+            sub_type = get(sub, "type/name")
+            if sub_type not in submission_by_type:
+                submission_by_type[sub_type] = []
+            submission_by_type[sub_type].append(sub)
+
+            # Handle draft logic
+            if get(sub, "status/default"):
+                if get(sub, "version") == "1":
+                    draft_submissions.append(sub)
+                else:
+                    non_draft_submissions.append(sub)
+            else:
+                non_draft_submissions.append(sub)
+
+        application = submission_by_type.get("application", [{}])[0]
+        if application.get("status", {}).get("default") is True:
+            application["tra_editable"] = True
+            non_draft_submissions.append(application)
+
+        submissions_by_party = {}
+        for sub in non_draft_submissions:
+            org_id = get(sub, "organisation/id")
+            if org_id not in submissions_by_party:
+                submissions_by_party[org_id] = []
+            submissions_by_party[org_id].append(sub)
+
+        # Get other required data
         case_enums = self._client.get_all_case_enums()
         invites = self._client.get_case_invite_submissions(self.case_id)
         participants = self._client.get_case_participants(self.case_id, fields=org_fields)
-        flat_participants = self.flatten_participants(participants)
+
+        # Create flat participants list without creating a new function call
+        flat_participants = []
+        for role in participants:
+            flat_participants.extend(participants[role]["parties"])
+        flat_participants.sort(key=lambda pt: pt.get("name") or "")
+
+        # Setup template
         counts = {}
         if self.sub_page:
             self.template_name = f"cases/submissions_{self.sub_page}.html"
@@ -627,29 +767,30 @@ class SubmissionsView(CaseBaseView):
         elif self._client.get_system_boolean("PRE_NEW_SUBMISSION_PAGE"):
             self.template_name = "cases/submissions_new.html"
 
+        submission_groups = self.divide_submissions(all_submissions)
+
+        # Build context with minimal data processing
         context = {
             "raw_participants": participants,
-            "submissions": submissions_by_type,
+            "submissions": submission_by_type,
             "participants": flat_participants,
             "counts": counts,
             "all_roles": self.consolidate_submissions(
-                self.case,
-                participants=participants,
-                submissions_by_party=submissions_by_party,
-                counts=counts,
-                selected_tab=tab,
+                self.case, participants, submissions_by_party, counts, tab
             ),
             "submission_types": case_enums["case_worker_allowed_submission_types"],
             "invites": invites,
             "tab": tab,
-            "submission_groups": self.divide_submissions(all_submissions),
+            "submission_groups": submission_groups,
             "all_submissions": all_submissions,
         }
-        # TODO: Temp handling of application vs ex_officio ones
-        if not submissions_by_type.get("application") and submissions_by_type.get(
+
+        # Handle application vs ex_officio ones more
+        if not submission_by_type.get("application") and submission_by_type.get(
             "ex officio application"
         ):
-            context["submissions"]["application"] = submissions_by_type["ex officio application"]
+            context["submissions"]["application"] = submission_by_type["ex officio application"]
+
         return context
 
 
@@ -777,7 +918,7 @@ class SubmissionView(CaseBaseView):
             )
             case_enums = self._client.get_all_case_enums(direction=DIRECTION_TRA_TO_PUBLIC)
             # Get all draft submissions of this type
-            all_submissions = self._client.get_submissions(self.case_id, show_global=True)
+            all_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
             draft_submissions = (
                 deep_index_items_by(all_submissions, "status/default").get("true") or []
             )
@@ -1802,7 +1943,12 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
         item = request.GET.get("item")
         template = request.GET.get("template")
         result = {}
-        case_submissions = client.get_submissions(case_id)
+        case_submissions = fetch_all_paginated_results(
+            client.get_submissions,
+            case_id,
+            show_global=False,
+        )
+        self.fetch_all_submissions(self.case_id, show_global=True)
         idx_submissions = deep_index_items_by(case_submissions, "organisation/id")
         org_id = str(organisation_id)
         third_party_contacts = []
@@ -2363,7 +2509,7 @@ class PublicFileView(CaseBaseView):
             "value": tab,
         }
 
-        case_submissions = self._client.get_submissions(self.case_id, show_global=True)
+        case_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
         by_tra = deep_index_items_by_exists(case_submissions, "is_tra")
         tra_by_published = deep_index_items_by_exists(by_tra.get("true"), "issued_at")
         by_published = deep_index_items_by_exists(case_submissions, "issued_at")
