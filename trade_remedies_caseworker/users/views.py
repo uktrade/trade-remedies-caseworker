@@ -87,6 +87,10 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
 
     def get(self, request, *args, **kwargs):
         tab = request.GET.get("tab", "caseworker")
+        # Get pagination parameters from request
+        page = int(request.GET.get("page", 1))
+        page_size = int(request.GET.get("page_size", 25))
+
         tabs = {
             "value": tab,
             "tabList": [
@@ -95,15 +99,39 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
                 {"label": "Incomplete customer accounts", "value": "pending"},
             ],
         }
+
         create_url = {
             "caseworker": {"url": reverse("create_investigator"), "label": "Investigator"},
             "public": {"url": reverse("create_customer"), "label": "Customer"},
             "pending": {"url": reverse("create_customer"), "label": "Customer"},
         }[tab]
+
         client = self.client(request.user)
         group_name = "caseworker" if tab == "caseworker" else "public"
-        users = client.get_all_users(group_name=group_name)
-        users.sort(key=lambda usr: usr.get("created_at"), reverse=True)
+
+        users_data = client.get_all_users(group_name=group_name, page=page, page_size=page_size)
+
+        # Handle different response formats
+        if isinstance(users_data, dict) and "results" in users_data:
+            # API returns paginated response with metadata
+            users = users_data["results"]
+            pagination = {
+                "page": page,
+                "page_size": page_size,
+                "total": users_data.get("count", 0),
+                "total_pages": (users_data.get("count", 0) + page_size - 1) // page_size
+            }
+        else:
+            # This is for backward compatibility
+            users = users_data
+            total_users = len(users)
+            pagination = {
+                "page": page,
+                "page_size": page_size,
+                "total": total_users,
+                "total_pages": (total_users + page_size - 1) // page_size
+            }
+
         for user in users:
             user_id = user["id"]
             url = {
@@ -122,6 +150,7 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
                 "body_classes": "full-width",
                 "tabs": tabs,
                 "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
+                "pagination": pagination,
             },
         )
 

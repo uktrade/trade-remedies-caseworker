@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load format_date %}
+{% load get_range %}
 
 {% set 'inactive_count' 0 %}
 
@@ -89,6 +90,79 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if pagination %}
+            <div class="pagination-summary govuk-body">
+                Showing page {{ pagination.page }} of {{ pagination.total_pages }} 
+                ({{ pagination.total }} total {{ tabs.value }} users)
+            </div>
+
+            <nav class="govuk-pagination" aria-label="Pagination">
+            {% if pagination.page > 1 %}
+            <div class="govuk-pagination__prev">
+                <a class="govuk-link govuk-pagination__link" href="?tab={{ tabs.value }}&page={{ pagination.page|add:'-1' }}" rel="prev">
+                <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                    <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                </svg>
+                <span class="govuk-pagination__link-title">
+                    Previous<span class="govuk-visually-hidden"> page</span>
+                </span>
+                </a>
+            </div>
+            {% endif %}
+
+            <ul class="govuk-pagination__list">
+                {% if pagination.page > 3 %}
+                <li class="govuk-pagination__item">
+                <a class="govuk-link govuk-pagination__link" href="?tab={{ tabs.value }}&page=1" aria-label="Page 1">
+                    1
+                </a>
+                </li>
+                {% if pagination.page > 4 %}
+                <li class="govuk-pagination__item govuk-pagination__ellipsis">…</li>
+                {% endif %}
+                {% endif %}
+
+                {% with start=pagination.page|add:'-1'|default:1 %}
+                {% with end=pagination.page|add:'1' %}
+                {% for i in pagination.total_pages|get_range:start:end %}
+                {% if i > 0 and i <= pagination.total_pages %}
+                <li class="govuk-pagination__item {% if i == pagination.page %}govuk-pagination__item--current{% endif %}">
+                    <a class="govuk-link govuk-pagination__link" href="?tab={{ tabs.value }}&page={{ i }}" aria-label="Page {{ i }}" {% if i == pagination.page %}aria-current="page"{% endif %}>
+                    {{ i }}
+                    </a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                {% endwith %}
+                {% endwith %}
+
+                {% if pagination.page < pagination.total_pages|add:'-2' %}
+                {% if pagination.page < pagination.total_pages|add:'-3' %}
+                <li class="govuk-pagination__item govuk-pagination__ellipsis">…</li>
+                {% endif %}
+                <li class="govuk-pagination__item">
+                <a class="govuk-link govuk-pagination__link" href="?tab={{ tabs.value }}&page={{ pagination.total_pages }}" aria-label="Page {{ pagination.total_pages }}">
+                    {{ pagination.total_pages }}
+                </a>
+                </li>
+                {% endif %}
+            </ul>
+
+            {% if pagination.page < pagination.total_pages %}
+            <div class="govuk-pagination__next">
+                <a class="govuk-link govuk-pagination__link" href="?tab={{ tabs.value }}&page={{ pagination.page|add:'1' }}" rel="next">
+                <span class="govuk-pagination__link-title">
+                    Next<span class="govuk-visually-hidden"> page</span>
+                </span>
+                <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                    <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+                </svg>
+                </a>
+            </div>
+            {% endif %}
+            </nav>
+        {% endif %}
 
     </div>
 
