@@ -113,13 +113,12 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
 
         # Handle different response formats
         if isinstance(users_data, dict) and "results" in users_data:
-            # API returns paginated response with metadata
             users = users_data["results"]
             pagination = {
                 "page": page,
                 "page_size": page_size,
                 "total": users_data.get("count", 0),
-                "total_pages": (users_data.get("count", 0) + page_size - 1) // page_size
+                "total_pages": (users_data.get("count", 0) + page_size - 1) // page_size,
             }
         else:
             # This is for backward compatibility
@@ -129,7 +128,7 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
                 "page": page,
                 "page_size": page_size,
                 "total": total_users,
-                "total_pages": (total_users + page_size - 1) // page_size
+                "total_pages": (total_users + page_size - 1) // page_size,
             }
 
         for user in users:
