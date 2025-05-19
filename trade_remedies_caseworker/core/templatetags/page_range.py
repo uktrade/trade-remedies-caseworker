@@ -12,7 +12,19 @@ def page_range(total, start=1, end=None):
             {{ i }}
         {% endfor %}
     """
-    if end is None:
-        end = int(total)
+    try:
+        total = int(total)
+        start = int(start)
+        if end is None:
+            end = total
+        else:
+            end = int(end)
 
-    return range(int(start), min(int(end) + 1, int(total) + 1))
+        # Make sure start and end are within valid range
+        start = max(1, start)
+        end = min(total, end)
+
+        # Make sure end is inclusive by adding 1 to range
+        return list(range(start, end + 1))
+    except (ValueError, TypeError):
+        return []

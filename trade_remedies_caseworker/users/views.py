@@ -111,26 +111,13 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
 
         users_data = client.get_all_users(group_name=group_name, page=page, page_size=page_size)
 
-        # Handle different response formats
-        if isinstance(users_data, dict) and "results" in users_data:
-            users = users_data["results"]
-            pagination = {
-                "page": page,
-                "page_size": page_size,
-                "total": users_data.get("count", 0),
-                "total_pages": (users_data.get("count", 0) + page_size - 1) // page_size,
-            }
-        else:
-            # This is for backward compatibility
-            users = users_data
-            total_users = len(users)
-            pagination = {
-                "page": page,
-                "page_size": page_size,
-                "total": total_users,
-                "total_pages": (total_users + page_size - 1) // page_size,
-            }
-
+        users = users_data["results"]
+        pagination = {
+            "page": page,
+            "page_size": page_size,
+            "total": users_data.get("total_count", 0),
+            "total_pages": users_data.get("total_pages", 0),
+        }
         for user in users:
             user_id = user["id"]
             url = {
