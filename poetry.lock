@@ -3366,7 +3366,7 @@ files = [
 
 [[package]]
 name = "trade-remedies-client"
-version = "0.1.1"
+version = "0.1.2"
 description = "An API client for the Trade Remedies API"
 optional = false
 python-versions = "*"
@@ -3382,7 +3382,7 @@ requests = "*"
 type = "git"
 url = "https://github.com/uktrade/trade-remedies-client.git"
 reference = "master"
-resolved_reference = "f226af1b4570764d602cac90f791ac8fa16853e3"
+resolved_reference = "c6d9f03492e08c329eee0df32356322574f7935e"
 
 [[package]]
 name = "traitlets"
