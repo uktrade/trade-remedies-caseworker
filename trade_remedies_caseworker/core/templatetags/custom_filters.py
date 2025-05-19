@@ -129,13 +129,3 @@ def split(str):
 @register.filter
 def splitlines(str):
     return (str or "").splitlines()
-
-
-@register.filter
-def get_range(total, start=1, end=None):
-    """
-    Return a range of numbers for pagination.
-    """
-    if end is None:
-        end = total + 1
-    return range(int(start), min(int(end) + 1, int(total) + 1))
