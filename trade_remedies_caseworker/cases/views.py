@@ -617,68 +617,32 @@ class SubmissionsView(CaseBaseView):
     def consolidate_submissions(
         self, case, participants, submissions_by_party, counts, selected_tab
     ):
-        # Pre-process case roles to avoid repeated API calls
-        all_roles = self._client.get_case_roles()
         roles = []
-        single_role_return = None
+        single_role_return = None  # for awaiting and rejected - only return that specific role
+        for role in self._client.get_case_roles():
+            role["participants"] = []
+            for party in participants.get(role["key"], {}).get("parties", []):
+                tab = self.get_tab(role, party)
+                submissions = submissions_by_party.get(party["id"], [])
 
-        empty_submissions = submissions_by_party.get("", [])
-
-        for role in all_roles:
-
-            if role.get("key") == selected_tab or role.get("allow_cw_create"):
-                role_participants = []
-
-                # Get parties for this role
-                parties = participants.get(role["key"], {}).get("parties", [])
-
-                # Track if this role has customer parties
-                has_customer_parties = False
-
-                for party in parties:
-                    tab = self.get_tab(role, party)
-
-                    party_submissions = (
-                        submissions_by_party.get(party["id"], []) + empty_submissions
-                    )
-
-                    # Only process if there are submissions
-                    if party_submissions:
-                        counts[tab] = counts.get(tab, 0) + len(party_submissions)
-
-                        # Only add to participants if this is the selected tab
-                        if tab == selected_tab:
-                            # Avoid modifying original data - create minimal copy
-                            role_party = party.copy()
-                            role_party["submissions"] = party_submissions
-                            role_participants.append(role_party)
-
-                            # Update customer parties flag
-                            if not party.get("gov_body"):
-                                has_customer_parties = True
-
-                # Only sort if we have participants for this role
-                if role_participants:
-                    # Choose sort key based on tab
-                    sort_key = (
-                        "submissions/0/received_at"
-                        if selected_tab == CASE_ROLE_AWAITING_APPROVAL
-                        else "name"
-                    )
-                    role_participants.sort(key=lambda pt: get(pt, sort_key) or "")
-
-                    # Update role with processed data
-                    role_with_participants = role.copy()
-                    role_with_participants["participants"] = role_participants
-                    if has_customer_parties:
-                        role_with_participants["customer_parties"] = True
-
-                    # Handle single role return case
-                    if role.get("key") == selected_tab:
-                        single_role_return = role_with_participants
-                    elif role.get("allow_cw_create"):
-                        roles.append(role_with_participants)
-
+                submissions += submissions_by_party.get("", [])
+                if submissions:
+                    counts[tab] = counts.get(tab, 0) + len(submissions)
+                    if tab == selected_tab:
+                        party["submissions"] = submissions
+                        role["participants"].append(party)
+                        if not party.get("gov_body"):
+                            role["customer_parties"] = True
+            sort_key = (
+                "submissions/0/received_at"
+                if selected_tab == CASE_ROLE_AWAITING_APPROVAL
+                else "name"
+            )
+            role["participants"].sort(key=lambda pt: get(pt, sort_key) or "")
+            if role.get("key") == selected_tab:
+                single_role_return = role
+            if role.get("allow_cw_create"):
+                roles.append(role)
         return [single_role_return] if single_role_return else roles
 
     def get_name(self, participant):
@@ -712,54 +676,30 @@ class SubmissionsView(CaseBaseView):
 
     def add_page_data(self):
         tab = self.request.GET.get("tab", "sampled").lower()
+        all_submissions = self._client.get_submissions(self.case_id, show_global=True)
+        submissions_by_type = deep_index_items_by(all_submissions, "type/name")
 
-        all_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
-
-        draft_submissions = []
-        non_draft_submissions = []
-        submission_by_type = {}
-
-        # Process submissions in a single pass
-        for sub in all_submissions:
-            # Index by type
-            sub_type = get(sub, "type/name")
-            if sub_type not in submission_by_type:
-                submission_by_type[sub_type] = []
-            submission_by_type[sub_type].append(sub)
-
-            # Handle draft logic
-            if get(sub, "status/default"):
-                if get(sub, "version") == "1":
-                    draft_submissions.append(sub)
-                else:
-                    non_draft_submissions.append(sub)
-            else:
-                non_draft_submissions.append(sub)
-
-        application = submission_by_type.get("application", [{}])[0]
-        if application.get("status", {}).get("default") is True:
-            application["tra_editable"] = True
-            non_draft_submissions.append(application)
-
-        submissions_by_party = {}
-        for sub in non_draft_submissions:
-            org_id = get(sub, "organisation/id")
-            if org_id not in submissions_by_party:
-                submissions_by_party[org_id] = []
-            submissions_by_party[org_id].append(sub)
-
-        # Get other required data
+        # Get submissions that have just been created by customer
+        # or are still in draft after creation
+        draft_submissions = deep_index_items_by(all_submissions, "status/default").get("true") or []
+        # Remove any that are back with the customer following deficiency
+        draft_first_version_submissions = (
+            deep_index_items_by(draft_submissions, "version").get("1") or []
+        )
+        # Exclude these drafts from our list
+        non_draft_submissions = [
+            sub for sub in all_submissions if sub not in draft_first_version_submissions
+        ]
+        # draft applications are included to allow a heads up view
+        # to the caseworker before it's submitted
+        if submissions_by_type.get("application", [{}])[0].get("status", {}).get("default") is True:
+            submissions_by_type["application"][0]["tra_editable"] = True
+            non_draft_submissions += submissions_by_type["application"]
+        submissions_by_party = deep_index_items_by(non_draft_submissions, "organisation/id")
         case_enums = self._client.get_all_case_enums()
         invites = self._client.get_case_invite_submissions(self.case_id)
         participants = self._client.get_case_participants(self.case_id, fields=org_fields)
-
-        # Create flat participants list without creating a new function call
-        flat_participants = []
-        for role in participants:
-            flat_participants.extend(participants[role]["parties"])
-        flat_participants.sort(key=lambda pt: pt.get("name") or "")
-
-        # Setup template
+        flat_participants = self.flatten_participants(participants)
         counts = {}
         if self.sub_page:
             self.template_name = f"cases/submissions_{self.sub_page}.html"
@@ -767,30 +707,29 @@ class SubmissionsView(CaseBaseView):
         elif self._client.get_system_boolean("PRE_NEW_SUBMISSION_PAGE"):
             self.template_name = "cases/submissions_new.html"
 
-        submission_groups = self.divide_submissions(all_submissions)
-
-        # Build context with minimal data processing
         context = {
             "raw_participants": participants,
-            "submissions": submission_by_type,
+            "submissions": submissions_by_type,
             "participants": flat_participants,
             "counts": counts,
             "all_roles": self.consolidate_submissions(
-                self.case, participants, submissions_by_party, counts, tab
+                self.case,
+                participants=participants,
+                submissions_by_party=submissions_by_party,
+                counts=counts,
+                selected_tab=tab,
             ),
             "submission_types": case_enums["case_worker_allowed_submission_types"],
             "invites": invites,
             "tab": tab,
-            "submission_groups": submission_groups,
+            "submission_groups": self.divide_submissions(all_submissions),
             "all_submissions": all_submissions,
         }
-
-        # Handle application vs ex_officio ones more
-        if not submission_by_type.get("application") and submission_by_type.get(
+        # TODO: Temp handling of application vs ex_officio ones
+        if not submissions_by_type.get("application") and submissions_by_type.get(
             "ex officio application"
         ):
-            context["submissions"]["application"] = submission_by_type["ex officio application"]
-
+            context["submissions"]["application"] = submissions_by_type["ex officio application"]
         return context
 
 
