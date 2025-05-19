@@ -5,7 +5,7 @@ from core.templatetags import register
 def page_range(total, start=1, end=None):
     """
     Return a range of integers for pagination.
-    
+
     Usage:
         {% page_range total start end as range %}
         {% for i in range %}
@@ -14,5 +14,5 @@ def page_range(total, start=1, end=None):
     """
     if end is None:
         end = int(total)
-    
+
     return range(int(start), min(int(end) + 1, int(total) + 1))
