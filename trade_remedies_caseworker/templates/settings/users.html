@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load format_date %}
-{% load custom_filters %}
+{% load page_range %}
 
 {% set 'inactive_count' 0 %}
 
@@ -125,7 +125,8 @@
 
                 {% with start=pagination.page|add:'-1'|default:1 %}
                 {% with end=pagination.page|add:'1' %}
-                {% for i in pagination.total_pages|get_range:start:end %}
+                {% page_range pagination.total_pages start end as page_numbers %}
+                {% for i in page_numbers %}
                 {% if i > 0 and i <= pagination.total_pages %}
                 <li class="govuk-pagination__item {% if i == pagination.page %}govuk-pagination__item--current{% endif %}">
                     <a class="govuk-link govuk-pagination__link" href="?tab={{ tabs.value }}&page={{ i }}" aria-label="Page {{ i }}" {% if i == pagination.page %}aria-current="page"{% endif %}>
