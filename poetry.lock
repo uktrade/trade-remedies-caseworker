@@ -3377,7 +3377,7 @@ requests = "*"
 type = "git"
 url = "https://github.com/uktrade/trade-remedies-client.git"
 reference = "master"
-resolved_reference = "c6d9f03492e08c329eee0df32356322574f7935e"
+resolved_reference = "31b95fbaac08e2578b87bd08ecb976ec9f3d2d0e"
 
 [[package]]
 name = "traitlets"
