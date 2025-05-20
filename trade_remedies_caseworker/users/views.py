@@ -105,11 +105,11 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
             "public": {"url": reverse("create_customer"), "label": "Customer"},
             "pending": {"url": reverse("create_customer"), "label": "Customer"},
         }[tab]
-        
+
         edit_url_pattern = {
             "caseworker": "edit_investigator",
-            "public": "edit_customer", 
-            "pending": "edit_customer"
+            "public": "edit_customer",
+            "pending": "edit_customer",
         }[tab]
 
         client = self.client(request.user)
@@ -117,7 +117,7 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
 
         try:
             users_data = client.get_all_users(group_name=group_name, page=page, page_size=page_size)
-            
+
             users = users_data["results"]
             pagination = {
                 "page": page,
@@ -125,17 +125,17 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
                 "total": users_data.get("pagination", {}).get("total_count", 0),
                 "total_pages": users_data.get("pagination", {}).get("total_pages", 0),
             }
-            
+
             # Process users in a single pass
             inactive_count = 0
             for user in users:
                 # Add URL in a more efficient way
                 user["url"] = reverse(edit_url_pattern, args=(user["id"],))
-                
+
                 # Count inactive users in the same loop
                 if user.get("active") is False:
                     inactive_count += 1
-                    
+
             return render(
                 request,
                 self.template_name,
@@ -161,7 +161,12 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
                     "body_classes": "full-width",
                     "tabs": tabs,
                     "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
-                    "pagination": {"page": page, "page_size": page_size, "total": 0, "total_pages": 0},
+                    "pagination": {
+                        "page": page,
+                        "page_size": page_size,
+                        "total": 0,
+                        "total_pages": 0,
+                    },
                 },
             )
 
