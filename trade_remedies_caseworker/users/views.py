@@ -87,6 +87,10 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
 
     def get(self, request, *args, **kwargs):
         tab = request.GET.get("tab", "caseworker")
+        # Get pagination parameters from request
+        page = int(request.GET.get("page", 1))
+        page_size = int(request.GET.get("page_size", 25))
+
         tabs = {
             "value": tab,
             "tabList": [
@@ -95,35 +99,76 @@ class UserManagerView(UserBaseTemplateView, GroupRequiredMixin):
                 {"label": "Incomplete customer accounts", "value": "pending"},
             ],
         }
+
         create_url = {
             "caseworker": {"url": reverse("create_investigator"), "label": "Investigator"},
             "public": {"url": reverse("create_customer"), "label": "Customer"},
             "pending": {"url": reverse("create_customer"), "label": "Customer"},
         }[tab]
+
+        edit_url_pattern = {
+            "caseworker": "edit_investigator",
+            "public": "edit_customer",
+            "pending": "edit_customer",
+        }[tab]
+
         client = self.client(request.user)
         group_name = "caseworker" if tab == "caseworker" else "public"
-        users = client.get_all_users(group_name=group_name)
-        users.sort(key=lambda usr: usr.get("created_at"), reverse=True)
-        for user in users:
-            user_id = user["id"]
-            url = {
-                "caseworker": reverse("edit_investigator", args=(user_id,)),
-                "public": reverse("edit_customer", args=(user_id,)),
-                "pending": reverse("edit_customer", args=(user_id,)),
-            }[tab]
-            user["url"] = url
-        return render(
-            request,
-            self.template_name,
-            {
-                "create_url": create_url,
-                "users": users,
-                "inactive_user_count": sum(user["active"] is False for user in users),
-                "body_classes": "full-width",
-                "tabs": tabs,
-                "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
-            },
-        )
+
+        try:
+            users_data = client.get_all_users(group_name=group_name, page=page, page_size=page_size)
+
+            users = users_data["results"]
+            pagination = {
+                "page": page,
+                "page_size": page_size,
+                "total": users_data.get("pagination", {}).get("total_count", 0),
+                "total_pages": users_data.get("pagination", {}).get("total_pages", 0),
+            }
+
+            # Process users in a single pass
+            inactive_count = 0
+            for user in users:
+                # Add URL in a more efficient way
+                user["url"] = reverse(edit_url_pattern, args=(user["id"],))
+
+                # Count inactive users in the same loop
+                if user.get("active") is False:
+                    inactive_count += 1
+
+            return render(
+                request,
+                self.template_name,
+                {
+                    "create_url": create_url,
+                    "users": users,
+                    "inactive_user_count": inactive_count,
+                    "body_classes": "full-width",
+                    "tabs": tabs,
+                    "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
+                    "pagination": pagination,
+                },
+            )
+        except Exception as e:
+            logger.error(f"Error fetching users: {e}")
+            return render(
+                request,
+                self.template_name,
+                {
+                    "create_url": create_url,
+                    "users": [],
+                    "error": "Error loading users. Please try again.",
+                    "body_classes": "full-width",
+                    "tabs": tabs,
+                    "tra_admin_role": SECURITY_GROUP_TRA_ADMINISTRATOR,
+                    "pagination": {
+                        "page": page,
+                        "page_size": page_size,
+                        "total": 0,
+                        "total_pages": 0,
+                    },
+                },
+            )
 
 
 class CustomDeleteUserView(UserBaseTemplateView, GroupRequiredMixin):
