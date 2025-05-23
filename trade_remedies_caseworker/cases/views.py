@@ -2001,6 +2001,22 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                         invite["contact"]["invited"] = invite["email_sent"]
                         third_party_contacts.append(invite["contact"])
         return third_party_contacts
+    
+    def fetch_all_submissions(self, case_id, show_global=False, fields=None):
+        """
+        Fetch ALL submissions by paginating through results until complete
+
+        Args:
+            case_id: The case ID
+            show_global: Whether to include TRA submissions
+            fields: Optional fields to return
+
+        Returns:
+            list: Combined list of all submissions from all pages
+        """
+        return fetch_all_paginated_results(
+            self._client.get_submissions, case_id, show_global=show_global, fields=fields
+        )
 
 
 class CaseOrganisationView(CaseBaseView):
