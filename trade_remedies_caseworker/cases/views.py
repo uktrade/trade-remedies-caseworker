@@ -676,7 +676,7 @@ class SubmissionsView(CaseBaseView):
 
     def add_page_data(self):
         tab = self.request.GET.get("tab", "sampled").lower()
-        all_submissions = self._client.get_submissions(self.case_id, show_global=True)
+        all_submissions = self.fetch_all_submissions(self.case_id, show_global=True)
         submissions_by_type = deep_index_items_by(all_submissions, "type/name")
 
         # Get submissions that have just been created by customer
@@ -2001,7 +2001,7 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
                         invite["contact"]["invited"] = invite["email_sent"]
                         third_party_contacts.append(invite["contact"])
         return third_party_contacts
-    
+
     def fetch_all_submissions(self, case_id, show_global=False, fields=None):
         """
         Fetch ALL submissions by paginating through results until complete
