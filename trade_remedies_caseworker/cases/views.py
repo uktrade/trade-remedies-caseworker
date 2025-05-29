@@ -1887,7 +1887,6 @@ class OrganisationDetailsView(LoginRequiredMixin, View, TradeRemediesAPIClientMi
             case_id,
             show_global=False,
         )
-        self.fetch_all_submissions(self.case_id, show_global=True)
         idx_submissions = deep_index_items_by(case_submissions, "organisation/id")
         org_id = str(organisation_id)
         third_party_contacts = []

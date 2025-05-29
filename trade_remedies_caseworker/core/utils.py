@@ -115,6 +115,10 @@ def index_users_by_group(users):
     depending on the groups they are assigned.
     """
     index = {}
+
+    if isinstance(users, dict):
+        users = users.get("results", [])
+
     for user in users:
         for group in user.get("groups", []):
             index.setdefault(group, [])
